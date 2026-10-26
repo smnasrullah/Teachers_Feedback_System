@@ -1,0 +1,42 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Filter words" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <h1>{% translate "Filter words" %}</h1>
+  <p class="field-hint">{% translate "Comments are checked word by word. Words you add here extend the built-in lists. An allowed word is never removed, even when a list contains it." %}</p>
+  <form method="post" novalidate class="card grid gap-4">
+    <h2>{% translate "Add a word" %}</h2>
+    {% csrf_token %}
+    {% include "components/form_errors.html" with form=form %}
+    {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div><button type="submit" class="btn btn-primary">{% translate "Add" %}</button></div>
+  </form>
+  {% for title, terms in lists %}
+  <section class="grid gap-3">
+    <h2>{{ title }}</h2>
+    {% if terms %}
+    <table class="data-table" role="table">
+      <caption class="sr-only">{{ title }}</caption>
+      <thead role="rowgroup"><tr role="row">
+        <th scope="col" role="columnheader">{% translate "Word" %}</th>
+        <th scope="col" role="columnheader"><span class="sr-only">{% translate "Actions" %}</span></th>
+      </tr></thead>
+      <tbody role="rowgroup">
+      {% for term in terms %}
+        <tr role="row">
+          <td role="cell" data-label="{% translate 'Word' %}">{{ term.term }}</td>
+          <td role="cell" data-label="{% translate 'Actions' %}">
+            <form method="post" action="{% url 'feedback:filter_term_delete' term.pk %}">{% csrf_token %}<button type="submit" class="btn btn-ghost">{% translate "Remove" %}</button></form>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="field-hint">{% translate "Nothing added yet." %}</p>
+    {% endif %}
+  </section>
+  {% endfor %}
+</div>
+{% endblock %}

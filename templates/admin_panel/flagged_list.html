@@ -1,0 +1,22 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Flagged comments" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <h1>{% translate "Flagged comments" %}</h1>
+  <p class="field-hint">{% translate "These comments contained abusive words. Only the cleaned text is kept and shown, without course, round or time." %}</p>
+  {% if page_obj %}
+  <ul class="grid gap-3">
+    {% for answer in page_obj %}
+    <li class="card grid gap-2">
+      <span class="field-hint">{{ answer.question.text }}</span>
+      <p>{{ answer.encrypted_text }}</p>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    {% include "components/empty_state.html" with title=_("Nothing flagged") text=_("No comment has needed cleaning of abusive words.") icon="flag" %}
+  {% endif %}
+  {% include "components/pagination.html" with page_obj=page_obj query=query %}
+</div>
+{% endblock %}

@@ -298,6 +298,11 @@ class Answer(models.Model):
     int_value = models.PositiveSmallIntegerField(_("rating"), null=True, blank=True)
     choice_value = models.CharField(_("choice"), max_length=CHOICE_VALUE_MAX_LENGTH, blank=True)
     encrypted_text = TimelessEncryptedTextField(_("comment"), null=True, blank=True)
+    flagged = models.BooleanField(
+        _("flagged by the filter"),
+        default=False,
+        help_text=_("The filter found abusive words in the comment and removed them."),
+    )
 
     class Meta:
         verbose_name = _("answer")
@@ -315,6 +320,34 @@ class Answer(models.Model):
 
     def __str__(self):
         return f"Answer({self.pk})"
+
+
+class FilterTermKind(models.TextChoices):
+    BLOCK = "block", _("Blocked word")
+    ALLOW = "allow", _("Allowed word")
+
+
+class FilterTerm(models.Model):
+    """A word the owner added to the filter's files: blocked (removed from comments) or
+    allowed (never removed, even when a word list contains it). One word, stored folded."""
+
+    term = models.CharField(_("word"), max_length=64)
+    kind = models.CharField(_("kind"), max_length=8, choices=FilterTermKind.choices)
+
+    class Meta:
+        ordering = ["kind", "term"]
+        verbose_name = _("filter word")
+        verbose_name_plural = _("filter words")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["kind", "term"],
+                name="one_filter_term_per_kind",
+                violation_error_message=_("This word is already in the list."),
+            )
+        ]
+
+    def __str__(self):
+        return self.term
 
 
 class Draft(models.Model):

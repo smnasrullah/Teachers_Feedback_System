@@ -207,6 +207,15 @@ SECOND_FACTOR_PENDING_SECONDS = 10 * 60
 # Results and comment lists stay hidden below this many responses (never fewer than 3).
 MIN_RESPONSES = env.int("MIN_RESPONSES", default=5)
 
+# What the comment filter does with abusive words: "remove" them or "mask" them with asterisks.
+PROFANITY_ACTION = env("PROFANITY_ACTION", default="remove")
+# Optional AI check of comments (only the comment text is sent, after personal details are removed).
+# A failure or timeout falls back to the local word lists, so a submission never waits on it.
+FILTER_AI_ENABLED = env.bool("FILTER_AI_ENABLED", default=False)
+ANTHROPIC_API_KEY = env("ANTHROPIC_API_KEY", default="")
+FILTER_AI_MODEL = env("FILTER_AI_MODEL", default="claude-haiku-5-5")
+FILTER_AI_TIMEOUT = env.float("FILTER_AI_TIMEOUT", default=3.0)
+
 LOGGING = build_logging_config(
     json_logs=env.bool("LOG_JSON", default=False), level=env("LOG_LEVEL", default="INFO")
 )

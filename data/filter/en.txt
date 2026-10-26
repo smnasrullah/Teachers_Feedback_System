@@ -1,0 +1,33 @@
+# English abusive words, one per line, matched as whole words (lower case).
+# Starter list: extend it here or from Admin > Filter words. Lines starting with # are ignored.
+fuck
+fucker
+fuckers
+fucking
+fucked
+motherfucker
+shit
+shitty
+bullshit
+bitch
+bitches
+bastard
+asshole
+assholes
+dumbass
+jackass
+ass
+dick
+dickhead
+cunt
+whore
+slut
+piss
+pissed
+idiot
+idiots
+moron
+morons
+retard
+retarded
+scumbag

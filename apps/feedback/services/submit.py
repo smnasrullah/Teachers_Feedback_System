@@ -168,9 +168,7 @@ def _clean_text(question: Question, raw) -> dict | None:
     result = text_filter.clean(text)
     if result.empty:
         if question.required:
-            raise ValidationError(
-                _("Nothing was left of this answer after it was cleaned. Please rewrite it."),
-                code="cleaned_empty",
-            )
+            message = _("Nothing was left of this answer after it was cleaned. Please rewrite it.")
+            raise ValidationError(" ".join([message, *result.messages()]), code="cleaned_empty")
         return None
-    return {"encrypted_text": result.text}
+    return {"encrypted_text": result.text, "flagged": result.flagged}

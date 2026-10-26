@@ -91,6 +91,18 @@ def admin_nav_items(current: str = "") -> list[dict]:
             "icon": "list",
         },
         {
+            "key": "filter-terms",
+            "label": _("Filter words"),
+            "url": reverse("feedback:filter_terms"),
+            "icon": "settings",
+        },
+        {
+            "key": "flagged",
+            "label": _("Flagged comments"),
+            "url": reverse("feedback:flagged"),
+            "icon": "flag",
+        },
+        {
             "key": "windows",
             "label": _("Feedback rounds"),
             "url": reverse("feedback:windows"),

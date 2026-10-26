@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import question_views, window_views
+from . import filter_views, question_views, window_views
 
 app_name = "feedback"
 
@@ -21,6 +21,13 @@ urlpatterns = [
     path(
         "manage/question-categories/<int:pk>/", question_views.category_edit, name="category_edit"
     ),
+    path("manage/filter-words/", filter_views.filter_terms_view, name="filter_terms"),
+    path(
+        "manage/filter-words/<int:pk>/delete/",
+        filter_views.filter_term_delete,
+        name="filter_term_delete",
+    ),
+    path("manage/flagged-comments/", filter_views.flagged_list, name="flagged"),
     path("manage/feedback-rounds/", window_views.window_list, name="windows"),
     path("manage/feedback-rounds/new/", window_views.window_create, name="window_create"),
     path("manage/feedback-rounds/<int:pk>/", window_views.window_edit, name="window_edit"),

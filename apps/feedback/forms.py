@@ -9,12 +9,13 @@ from apps.core.forms import StyledFormMixin
 from apps.feedback.models import (
     AppliesTo,
     FeedbackWindow,
+    FilterTerm,
     Question,
     QuestionCategory,
     QuestionType,
     WindowStatus,
 )
-from apps.feedback.services import questions, windows
+from apps.feedback.services import filter_terms, questions, windows
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M"
 DATETIME_INPUT = forms.DateTimeInput(attrs={"type": "datetime-local"}, format=DATETIME_FORMAT)
@@ -91,6 +92,15 @@ class CategoryForm(StyledFormMixin, forms.ModelForm):
     class Meta:
         model = QuestionCategory
         fields = ["name", "name_bn", "order"]
+
+
+class FilterTermForm(StyledFormMixin, forms.ModelForm):
+    class Meta:
+        model = FilterTerm
+        fields = ["term", "kind"]
+
+    def clean_term(self):
+        return filter_terms.normalise_term(self.cleaned_data["term"])
 
 
 class QuestionFilterForm(StyledFormMixin, forms.Form):

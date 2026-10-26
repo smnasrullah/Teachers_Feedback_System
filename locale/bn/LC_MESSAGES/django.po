@@ -2981,3 +2981,87 @@ msgstr[1] "এই পর্বে %(count)s টি কোর্স অফার�
 
 msgid "Placeholders: %(removed)d removed, %(kept)d kept because they have answers."
 msgstr "নমুনা প্রশ্ন: %(removed)d টি মুছেছে, উত্তর থাকায় %(kept)d টি রয়ে গেছে।"
+
+msgid "The answer is empty."
+msgstr "উত্তরটি ফাঁকা।"
+
+msgid "Abusive words are not allowed."
+msgstr "গালিগালাজ বা অশ্লীল শব্দ অনুমোদিত নয়।"
+
+msgid "Phone numbers, e-mail addresses, links and ID numbers are removed from answers."
+msgstr "ফোন নম্বর, ই-মেইল ঠিকানা, লিংক ও আইডি নম্বর উত্তর থেকে বাদ দেওয়া হয়।"
+
+msgid "The answer looks like random characters or has no words."
+msgstr "উত্তরটি এলোমেলো অক্ষরের মতো দেখাচ্ছে বা এতে কোনো শব্দ নেই।"
+
+msgid "Blocked word"
+msgstr "নিষিদ্ধ শব্দ"
+
+msgid "Allowed word"
+msgstr "অনুমোদিত শব্দ"
+
+msgid "word"
+msgstr "শব্দ"
+
+msgid "kind"
+msgstr "ধরন"
+
+msgid "filter word"
+msgstr "ফিল্টার শব্দ"
+
+msgid "filter words"
+msgstr "ফিল্টার শব্দ"
+
+msgid "This word is already in the list."
+msgstr "এই শব্দটি তালিকায় আগে থেকেই আছে।"
+
+msgid "flagged by the filter"
+msgstr "ফিল্টার চিহ্নিত করেছে"
+
+msgid "The filter found abusive words in the comment and removed them."
+msgstr "ফিল্টার মন্তব্যে গালিগালাজ পেয়ে সেগুলো বাদ দিয়েছে।"
+
+msgid "Enter a single word, without spaces."
+msgstr "ফাঁকা ছাড়া একটি মাত্র শব্দ লিখুন।"
+
+msgid "The word was added."
+msgstr "শব্দটি যোগ করা হয়েছে।"
+
+msgid "The word was removed."
+msgstr "শব্দটি সরানো হয়েছে।"
+
+msgid "Blocked words"
+msgstr "নিষিদ্ধ শব্দ সমূহ"
+
+msgid "Allowed words"
+msgstr "অনুমোদিত শব্দ সমূহ"
+
+msgid "Filter words"
+msgstr "ফিল্টার শব্দ"
+
+msgid "Flagged comments"
+msgstr "চিহ্নিত মন্তব্য"
+
+msgid "Comments are checked word by word. Words you add here extend the built-in lists. An allowed word is never removed, even when a list contains it."
+msgstr "মন্তব্য শব্দ ধরে ধরে যাচাই হয়। এখানে যোগ করা শব্দ অন্তর্নির্মিত তালিকা বাড়ায়। অনুমোদিত শব্দ কোনো তালিকায় থাকলেও কখনো বাদ যায় না।"
+
+msgid "Add a word"
+msgstr "শব্দ যোগ করুন"
+
+msgid "Add"
+msgstr "যোগ করুন"
+
+msgid "Word"
+msgstr "শব্দ"
+
+msgid "Nothing added yet."
+msgstr "এখনো কিছু যোগ করা হয়নি।"
+
+msgid "These comments contained abusive words. Only the cleaned text is kept and shown, without course, round or time."
+msgstr "এই মন্তব্যগুলোতে গালিগালাজ ছিল। শুধু পরিষ্কার করা লেখা রাখা ও দেখানো হয়, কোর্স, পর্ব বা সময় ছাড়া।"
+
+msgid "Nothing flagged"
+msgstr "কিছু চিহ্নিত হয়নি"
+
+msgid "No comment has needed cleaning of abusive words."
+msgstr "কোনো মন্তব্য থেকে গালিগালাজ বাদ দেওয়ার প্রয়োজন হয়নি।"

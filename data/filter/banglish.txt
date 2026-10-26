@@ -1,0 +1,24 @@
+# Bangla abuse written in Latin letters, one per line, matched as whole words (lower case).
+# Starter list: extend it here or from Admin > Filter words. Lines starting with # are ignored.
+harami
+haramzada
+haramjada
+haramjadi
+khankir
+khanki
+magi
+maggi
+madarchod
+bokachoda
+bokachod
+chudi
+chudir
+chuda
+chutmarani
+shuor
+shuorer
+kutta
+kuttar
+gandu
+bal
+baler
