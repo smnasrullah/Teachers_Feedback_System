@@ -12,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from .logging import request_id_var
 from .permissions import access_policy_of, is_exempt
 from .services import sessions
+from .services.localize import remember_language
 
 logger = logging.getLogger(__name__)
 
@@ -110,6 +111,20 @@ class SessionSecurityMiddleware:
                 logout(request)
                 messages.info(request, self.notices[problem])
         return self.get_response(request)
+
+
+class SavedLanguageMiddleware:
+    """After a login, make the person's saved language this browser's language."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        language = request.session.pop(sessions.LANGUAGE_KEY, None)
+        if language:
+            remember_language(response, request, language)
+        return response
 
 
 class AccessPolicyMiddleware:

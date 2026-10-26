@@ -17,6 +17,8 @@ SEEN_AT_KEY = "_tfs_seen_at"
 SECOND_FACTOR_KEY = "_tfs_second_factor_at"
 # Set when this login signed another device out: when that device had signed in (epoch seconds).
 NEW_DEVICE_KEY = "_tfs_replaced_device_at"
+# Set at login: the person's saved language, waiting to become this browser's language cookie.
+LANGUAGE_KEY = "_tfs_saved_language"
 MAX_USER_AGENT = 255
 # Write the last-seen time at most this often to avoid a session save on every request.
 SEEN_AT_RESOLUTION = 60
@@ -35,6 +37,7 @@ def start(request, user) -> None:
     now = int(time.time())
     request.session[LOGIN_ID_KEY] = login_id
     request.session[AUTH_AT_KEY] = now
+    request.session[LANGUAGE_KEY] = user.language
     request.session[SEEN_AT_KEY] = now
     ip = client_ip(request)
     device = {

@@ -1,6 +1,5 @@
 """The signed-in person's profile: nickname, picture, language and theme."""
 
-from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
@@ -11,6 +10,7 @@ from apps.accounts.models import Theme
 from apps.accounts.services import account as account_service
 from apps.accounts.views.account import EVERYONE, account_context
 from apps.core.permissions import role_required
+from apps.core.services.localize import remember_language
 
 THEME_COOKIE = "tfs_theme"
 YEAR = 365 * 24 * 60 * 60
@@ -18,13 +18,7 @@ YEAR = 365 * 24 * 60 * 60
 
 def _remember_choices(response, request, user):
     """Make the saved language and theme win over what this browser last used."""
-    response.set_cookie(
-        settings.LANGUAGE_COOKIE_NAME,
-        user.language,
-        max_age=settings.LANGUAGE_COOKIE_AGE,
-        samesite=settings.LANGUAGE_COOKIE_SAMESITE,
-        secure=request.is_secure(),
-    )
+    remember_language(response, request, user.language)
     if user.theme == Theme.SYSTEM:
         response.delete_cookie(THEME_COOKIE)
     else:

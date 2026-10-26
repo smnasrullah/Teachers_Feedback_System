@@ -15,7 +15,7 @@ from apps.accounts.models import (
     User,
 )
 from apps.core.permissions import Role
-from apps.core.services.sessions import SECOND_FACTOR_KEY
+from apps.core.services.sessions import LANGUAGE_KEY, SECOND_FACTOR_KEY
 
 PASSWORD = "Long-enough-pass-1"
 _sequence = itertools.count(1)
@@ -123,4 +123,6 @@ def sign_in(client, user: User) -> None:
     client.force_login(user)
     session = client.session
     session[SECOND_FACTOR_KEY] = int(time.time())
+    # Tests pick their own language; the saved-language cookie is tested through real logins.
+    session.pop(LANGUAGE_KEY, None)
     session.save()

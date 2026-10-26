@@ -484,3 +484,22 @@ def test_auth_pages_are_available_in_bangla(client):
     assert "আইডি ও কোড" in signup_page
     failed = client.post(url("login"), {"username": "stu_nobody", "password": "x"})
     assert "ইউজারনেম বা পাসওয়ার্ড সঠিক নয়।" in failed.content.decode()
+
+
+@pytest.mark.parametrize("saved", ["bn", "en"])
+def test_login_applies_the_saved_language(web, saved):
+    user = student()
+    user.language = saved
+    user.save()
+    web.cookies["django_language"] = "en" if saved == "bn" else "bn"
+    response = log_in(web, user)
+    assert response.status_code == 302
+    assert response.cookies["django_language"].value == saved
+    assert "django_language" not in web.get(url("dashboard_student")).cookies
+
+
+def test_failed_login_does_not_touch_the_language(web):
+    user = student()
+    user.language = "bn"
+    user.save()
+    assert "django_language" not in log_in(web, user, password="wrong-password-1").cookies
