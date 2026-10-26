@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet('run', 'test', 'lint', 'fmt', 'migrate', 'seed', 'messages', 'css')]
+    [ValidateSet('run', 'test', 'lint', 'fmt', 'migrate', 'reset-db', 'seed', 'messages', 'css')]
     [string]$Target
 )
 
@@ -18,7 +18,10 @@ function Invoke-Step {
 }
 
 switch ($Target) {
-    'run'     { Invoke-Step $py @('manage.py', 'runserver') }
+    'run'     {
+        Invoke-Step $py @('manage.py', 'migrate')
+        Invoke-Step $py @('manage.py', 'runserver')
+    }
     'test'    { Invoke-Step $py @('-m', 'pytest', '-q') }
     'lint'    {
         Invoke-Step $py @('-m', 'ruff', 'check', '.')
@@ -29,6 +32,7 @@ switch ($Target) {
         Invoke-Step $py @('-m', 'ruff', 'format', '.')
     }
     'migrate' { Invoke-Step $py @('manage.py', 'migrate') }
+    'reset-db' { Invoke-Step $py @('scripts/reset_dev_db.py') }
     'seed'    { Invoke-Step $py @('manage.py', 'seed_demo') }
     'messages' { Invoke-Step $py @('scripts/compile_messages.py') }
     'css'     { Invoke-Step $py @('manage.py', 'tailwind', 'build') }

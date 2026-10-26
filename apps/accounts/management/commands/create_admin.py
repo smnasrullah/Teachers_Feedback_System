@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy
 from apps.accounts.models import User
 from apps.accounts.services.passwords import validate_strong_password
 from apps.auditlog.services import audit
+from apps.core.services.migrations import unapplied_migrations
 
 MAX_ATTEMPTS = 3
 
@@ -21,6 +22,10 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
+        if unapplied_migrations():
+            raise CommandError(
+                _("The database is not fully migrated. Run: python manage.py migrate")
+            )
         email = self._ask_email()
         password = self._ask_password()
         try:

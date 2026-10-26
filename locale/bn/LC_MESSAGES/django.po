@@ -897,6 +897,9 @@ msgstr "এই শিক্ষক %(department)s বিভাগের প্র
 msgid "Too many invalid attempts."
 msgstr "অনেকবার ভুল চেষ্টা করা হয়েছে।"
 
+msgid "The database is not fully migrated. Run: python manage.py migrate"
+msgstr "ডেটাবেস পুরোপুরি মাইগ্রেট করা হয়নি। চালান: python manage.py migrate"
+
 msgid "Two-factor authentication"
 msgstr "দ্বি-স্তর যাচাই (টু-ফ্যাক্টর)"
 
