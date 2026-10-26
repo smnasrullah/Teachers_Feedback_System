@@ -11,6 +11,7 @@ from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.db import IntegrityError, transaction
 from django.utils.translation import gettext as _
 
+from apps.analytics import services as analytics
 from apps.auditlog.services import audit
 from apps.feedback.models import (
     SCALE_MAX,
@@ -45,6 +46,7 @@ def submit_feedback(
             raise SubmissionRejected(Rejection.REAUTH_REQUIRED)
         with transaction.atomic():
             receipt = _store(student_profile, offering, window, answers)
+            transaction.on_commit(lambda: analytics.invalidate(window))
             audit.record(
                 "feedback.submitted",
                 request=request,

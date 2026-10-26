@@ -3331,3 +3331,12 @@ msgid "%(n)s course is still waiting for your feedback."
 msgid_plural "%(n)s courses are still waiting for your feedback."
 msgstr[0] "%(n)sটি কোর্স এখনও আপনার মতামতের অপেক্ষায় আছে।"
 msgstr[1] "%(n)sটি কোর্স এখনও আপনার মতামতের অপেক্ষায় আছে।"
+
+msgid "Approximate: tagged from word lists, not read by a person."
+msgstr "আনুমানিক: শব্দতালিকা থেকে চিহ্নিত, কোনো ব্যক্তি পড়ে দেখেননি।"
+
+msgid "Not enough responses to show this."
+msgstr "এটি দেখানোর মতো যথেষ্ট সাড়া নেই।"
+
+msgid "Results are released after the round closes."
+msgstr "রাউন্ড শেষ হওয়ার পর ফলাফল প্রকাশ করা হবে।"

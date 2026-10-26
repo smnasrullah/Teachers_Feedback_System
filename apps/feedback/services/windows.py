@@ -9,6 +9,7 @@ from django.db import transaction
 from django.utils.translation import gettext as _
 
 from apps.academics.models import Semester
+from apps.analytics import services as analytics
 from apps.auditlog.services import audit
 from apps.feedback.models import FeedbackWindow
 
@@ -73,6 +74,7 @@ def save_window(form, *, actor, request=None) -> FeedbackWindow:
     if data["is_active"] and not form.is_locked:
         ensure_no_overlap(data, exclude_pk=form.instance.pk)
     window = form.save()
+    transaction.on_commit(lambda: analytics.invalidate(window))
     audit.record(
         f"feedback.window_{'created' if created else 'updated'}",
         request=request,

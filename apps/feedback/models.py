@@ -246,6 +246,7 @@ class SubmissionReceipt(models.Model):
     class Meta:
         verbose_name = _("submission receipt")
         verbose_name_plural = _("submission receipts")
+        indexes = [models.Index(fields=["window", "offering"], name="receipt_window_offering")]
         constraints = [
             models.UniqueConstraint(
                 fields=["student_profile", "offering", "window"], name="one_receipt_per_round"
@@ -276,7 +277,10 @@ class FeedbackResponse(models.Model):
     class Meta:
         verbose_name = _("feedback response")
         verbose_name_plural = _("feedback responses")
-        indexes = [models.Index(fields=["offering", "window"], name="response_offering_window")]
+        indexes = [
+            models.Index(fields=["offering", "window"], name="response_offering_window"),
+            models.Index(fields=["window", "offering"], name="response_window_offering"),
+        ]
 
     def __str__(self):
         return f"FeedbackResponse({self.pk})"
@@ -308,6 +312,7 @@ class Answer(models.Model):
     class Meta:
         verbose_name = _("answer")
         verbose_name_plural = _("answers")
+        indexes = [models.Index(fields=["question", "response"], name="answer_question_response")]
         constraints = [
             models.UniqueConstraint(
                 fields=["response", "question"], name="one_answer_per_question"
