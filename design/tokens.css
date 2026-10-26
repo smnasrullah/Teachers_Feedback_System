@@ -1,0 +1,128 @@
+/* TFS design tokens + mockup components. WCAG-AA validated pairs (see docs/BLUEPRINT.md §6).
+   Production: move the :root block to static/src/tokens.css (Tailwind v4 @theme inline). */
+
+@font-face{font-family:"Plus Jakarta Sans";font-weight:400;font-display:swap;src:url(fonts/plus-jakarta-sans-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Plus Jakarta Sans";font-weight:500;font-display:swap;src:url(fonts/plus-jakarta-sans-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Plus Jakarta Sans";font-weight:600;font-display:swap;src:url(fonts/plus-jakarta-sans-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Plus Jakarta Sans";font-weight:700;font-display:swap;src:url(fonts/plus-jakarta-sans-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Hind Siliguri";font-weight:400;font-display:swap;unicode-range:U+0964-0965,U+0980-09FE,U+200C-200D,U+20B9,U+25CC;src:url(fonts/hind-siliguri-bengali-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Hind Siliguri";font-weight:500;font-display:swap;unicode-range:U+0964-0965,U+0980-09FE,U+200C-200D,U+20B9,U+25CC;src:url(fonts/hind-siliguri-bengali-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Hind Siliguri";font-weight:600;font-display:swap;unicode-range:U+0964-0965,U+0980-09FE,U+200C-200D,U+20B9,U+25CC;src:url(fonts/hind-siliguri-bengali-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Hind Siliguri";font-weight:700;font-display:swap;unicode-range:U+0964-0965,U+0980-09FE,U+200C-200D,U+20B9,U+25CC;src:url(fonts/hind-siliguri-bengali-700-normal.woff2) format("woff2")}
+
+:root{
+  --bg:#F8FAFC; --surface:#FFFFFF; --text:#0F172A; --muted:#475569; --subtle:#64748B;
+  --border:#E2E8F0; --border-input:#64748B;
+  --primary:#1E3A8A; --primary-600:#2548B0; --primary-soft:#EFF4FF; --on-primary:#FFFFFF;
+  --success:#047857; --success-soft:#ECFDF5; --success-bright:#10B981;
+  --warning:#B45309; --warning-soft:#FFFBEB; --warning-bright:#F59E0B;
+  --danger:#DC2626; --danger-text:#B91C1C; --danger-soft:#FEF2F2;
+  --star:#D97706; --star-empty:#64748B; --focus:#2548B0;
+  --shadow:0 4px 20px rgba(15,23,42,.06);
+  --r-card:16px; --r-btn:12px; --r-chip:999px;
+  --font:"Plus Jakarta Sans","Hind Siliguri",system-ui,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#0F172A; --surface:#1E293B; --text:#E2E8F0; --muted:#94A3B8; --subtle:#94A3B8;
+  --border:#334155; --border-input:#7C8DA5;
+  --primary:#93B4FF; --primary-600:#7BA3FF; --primary-soft:#1E2A4A; --on-primary:#0F172A;
+  --success:#34D399; --success-soft:#0F2A22; --success-bright:#34D399;
+  --warning:#FBBF24; --warning-soft:#2A2110; --warning-bright:#FBBF24;
+  --danger:#F87171; --danger-text:#F87171; --danger-soft:#2A1517;
+  --star:#FBBF24; --star-empty:#7C8DA5; --focus:#93B4FF;
+  --shadow:0 4px 20px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16px;line-height:1.55;min-height:100vh}
+h1,h2,h3{line-height:1.25;letter-spacing:-.01em}
+h1{font-size:32px;font-weight:700} h2{font-size:24px;font-weight:700} h3{font-size:20px;font-weight:600}
+p{max-width:68ch}
+a{color:var(--primary);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* bilingual switch: <span class="en">..</span><span class="bn">..</span> */
+html[lang="bn"] .en{display:none} html[lang="en"] .bn{display:none}
+
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:8px;background:var(--primary);color:var(--on-primary);padding:8px 14px;border-radius:var(--r-btn);z-index:99}
+.skip:focus{left:8px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+.stack>*+*{margin-top:16px} .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.grow{flex:1 1 auto} .muted{color:var(--muted)} .subtle{color:var(--subtle)} .small{font-size:14px} .tiny{font-size:12px}
+.num{font-variant-numeric:tabular-nums}
+
+/* navbar */
+.nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav .wrap{display:flex;align-items:center;gap:12px;min-height:60px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--text);text-decoration:none}
+.logo-mark{width:32px;height:32px;border-radius:10px;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;font-size:15px}
+.icon-btn{min-width:44px;min-height:44px;border-radius:var(--r-btn);border:1px solid transparent;background:transparent;color:var(--text);display:inline-grid;place-items:center;cursor:pointer;font:inherit;position:relative}
+.icon-btn:hover{background:var(--primary-soft)}
+.pill-toggle{display:inline-flex;border:1px solid var(--border-input);border-radius:var(--r-chip);padding:2px}
+.pill-toggle button{min-height:40px;min-width:48px;border:0;background:transparent;border-radius:var(--r-chip);font:inherit;font-size:14px;color:var(--text);cursor:pointer}
+.pill-toggle button[aria-pressed="true"]{background:var(--primary);color:var(--on-primary)}
+.dot{position:absolute;top:9px;right:10px;width:9px;height:9px;border-radius:50%;background:var(--danger);border:2px solid var(--surface)}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;font-weight:700;flex:none;border:1px solid var(--border)}
+.avatar.lg{width:72px;height:72px;font-size:26px}
+
+/* surfaces */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-card);box-shadow:var(--shadow);padding:20px}
+.card.flat{box-shadow:none}
+.tint{background:var(--primary-soft);border-radius:var(--r-card);padding:14px 16px}
+
+/* buttons */
+.btn{min-height:44px;padding:0 20px;border-radius:var(--r-btn);border:1px solid transparent;font:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;transition:background .15s}
+.btn.primary{background:var(--primary);color:var(--on-primary)} .btn.primary:hover{background:var(--primary-600)}
+.btn.ghost{background:transparent;color:var(--text);border-color:var(--border-input)} .btn.ghost:hover{background:var(--primary-soft)}
+.btn.danger{background:var(--danger);color:#fff}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+
+/* badges (icon + text, never colour alone) */
+.badge{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 12px;border-radius:var(--r-chip);font-size:13px;font-weight:600}
+.badge.pending{background:var(--warning-soft);color:var(--warning)}
+.badge.done{background:var(--success-soft);color:var(--success)}
+.badge.closed{background:var(--border);color:var(--muted)}
+.badge.alert{background:var(--danger-soft);color:var(--danger-text)}
+.badge.info{background:var(--primary-soft);color:var(--primary)}
+
+/* progress ring */
+.ring{--p:50;position:relative;width:104px;height:104px;flex:none}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .track{stroke:var(--border);fill:none;stroke-width:9}
+.ring .val{stroke:var(--success);fill:none;stroke-width:9;stroke-linecap:round;stroke-dasharray:calc(var(--p)*2.827) 283}
+.ring .label{position:absolute;inset:0;display:grid;place-content:center;text-align:center;line-height:1.1}
+.ring .label b{font-size:24px}
+
+/* meter bars */
+.meter{height:10px;border-radius:var(--r-chip);background:var(--border);overflow:hidden}
+.meter>i{display:block;height:100%;border-radius:var(--r-chip);background:var(--primary)}
+.meter.good>i{background:var(--success)} .meter.warn>i{background:var(--warning-bright)}
+
+/* stars (svg symbol use) */
+.stars{display:inline-flex;gap:2px;color:var(--star)}
+.stars svg{width:18px;height:18px;fill:currentColor}
+.stars .off{color:var(--star-empty);opacity:.55}
+
+/* ballot stub: the one signature element. Perforated edge + notches. */
+.stub{position:relative;display:grid;grid-template-columns:1fr auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-card);box-shadow:var(--shadow)}
+.stub .main{padding:18px 20px;min-width:0}
+.stub .tear{border-radius:0 var(--r-card) var(--r-card) 0;position:relative;padding:18px 20px;border-left:2px dashed var(--border-input);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;min-width:150px}
+.stub .tear::before,.stub .tear::after{content:"";position:absolute;left:-11px;width:20px;height:20px;border-radius:50%;background:var(--bg);border:1px solid var(--border)}
+.stub .tear::before{top:-11px;clip-path:inset(50% 0 0 0)} .stub .tear::after{bottom:-11px;clip-path:inset(0 0 50% 0)}
+.stub.sealed .tear{background:var(--success-soft)}
+.seal{width:76px;height:76px;border-radius:50%;border:2px solid var(--success);outline:1px solid var(--success);outline-offset:3px;color:var(--success);display:grid;place-content:center;justify-items:center;text-align:center;font-size:13px;font-weight:700;line-height:1.2;transform:rotate(-8deg)}
+.seal .ico{width:16px;height:16px}
+@media (max-width:640px){
+  .stub{grid-template-columns:1fr}
+  .stub .tear{border-radius:0 0 var(--r-card) var(--r-card);border-left:0;border-top:2px dashed var(--border-input);flex-direction:row;justify-content:space-between;min-width:0}
+  .stub .tear::before,.stub .tear::after{top:-11px;clip-path:none;width:20px;height:20px}
+  .stub .tear::before{left:-11px} .stub .tear::after{left:auto;right:-11px;bottom:auto}
+}
+h1,h2,h3{text-wrap:balance}
+table{border-collapse:collapse;width:100%} th,td{text-align:left;padding:12px 12px;border-bottom:1px solid var(--border);font-size:15px}
+th{font-weight:600;color:var(--muted);font-size:14px}

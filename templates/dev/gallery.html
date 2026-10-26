@@ -1,0 +1,124 @@
+{% extends "layouts/dashboard.html" %}
+{% load static ui %}
+{% comment %}Dev-only (DEBUG) component gallery. Demo copy is intentionally English-only.{% endcomment %}
+{% block title %}Component gallery{% endblock %}
+{% block head %}<script src="{% static 'vendor/chart.umd.min.js' %}" defer></script><script src="{% static 'js/charts.js' %}" defer></script>{% endblock %}
+{% block content %}
+<div>
+  <h1>Component gallery</h1>
+  <p class="text-muted">Every component in every state. Toggle language and theme in the top bar.</p>
+</div>
+
+<section class="grid gap-4" aria-labelledby="g-nav">
+  <h2 id="g-nav">Navbar</h2>
+  <div class="card card-flat p-0 overflow-hidden">
+    {% include "components/navbar.html" with static_nav=True user_name="" %}
+  </div>
+  <div class="card card-flat p-0 overflow-visible min-h-80">
+    {% include "components/navbar.html" with static_nav=True user_name="Tanvir" unread_count=2 logout_url="#logout" %}
+  </div>
+</section>
+
+<section class="grid gap-4" aria-labelledby="g-btn">
+  <h2 id="g-btn">Buttons and badges</h2>
+  <div class="flex flex-wrap gap-3">
+    {% include "components/button.html" with label="Primary" icon="send" %}
+    {% include "components/button.html" with label="Ghost" variant="ghost" %}
+    {% include "components/button.html" with label="Danger" variant="danger" icon="alert" %}
+    {% include "components/button.html" with label="Disabled" disabled=True %}
+    {% include "components/button.html" with label="As link" href="#g-btn" variant="ghost" %}
+  </div>
+  <div class="flex flex-wrap gap-3">
+    {% include "components/badge.html" with variant="pending" label="Pending" %}
+    {% include "components/badge.html" with variant="done" label="Done" %}
+    {% include "components/badge.html" with variant="closed" label="Closed" %}
+    {% include "components/badge.html" with variant="alert" label="Needs attention" %}
+    {% include "components/badge.html" with variant="info" label="Info" %}
+  </div>
+</section>
+
+<section class="grid gap-4" aria-labelledby="g-card">
+  <h2 id="g-card">Cards and stat tiles</h2>
+  <div class="grid-cards">
+    {% include "components/stat_tile.html" with label="Responses" value="1,284" icon="users" delta="+12% vs last round" trend="up" %}
+    {% include "components/stat_tile.html" with label="Average rating" value="4.2" icon="award" delta="-0.1 vs last round" trend="down" %}
+    {% include "components/stat_tile.html" with label="Pending" value="37" icon="clock" delta="No change" trend="flat" %}
+  </div>
+  {% card title="Card with title" card_id="demo-card" %}<p class="text-muted">Card body text sits here.</p>{% endcard %}
+  {% card flat=True %}<p>Flat card without title.</p>{% endcard %}
+</section>
+
+<section class="grid gap-4" aria-labelledby="g-form">
+  <h2 id="g-form">Form controls</h2>
+  <form class="grid gap-4 max-w-xl" action="#g-form">
+    {% include "components/input.html" with id="g-name" name="name" label="Full name" hint="As shown on your ID card." required=True %}
+    {% include "components/input.html" with id="g-email" name="email" label="Email" type="email" value="not-an-email" error="Enter a valid email address." %}
+    {% include "components/input.html" with id="g-off" name="off" label="Disabled" value="Locked" disabled=True %}
+    {% include "components/select.html" with id="g-dept" name="dept" label="Department" options=dept_options value="cse" %}
+    {% include "components/textarea.html" with id="g-comment" name="comment" label="Comment" hint="At least 10 characters." %}
+    {% include "components/textarea.html" with id="g-comment2" name="comment2" label="Comment (error)" error="Please write at least 10 characters." value="Too short" %}
+  </form>
+</section>
+
+<section class="grid gap-4" aria-labelledby="g-rate">
+  <h2 id="g-rate">Star rating</h2>
+  <div class="card grid gap-6">
+    <div><p class="font-semibold">Empty</p>{% include "components/star_rating.html" with name="g-r1" label="Teaching quality" required=True %}</div>
+    <div><p class="font-semibold">Selected (4)</p>{% include "components/star_rating.html" with name="g-r2" label="Course content" value=4 %}</div>
+    <div><p class="font-semibold">Invalid</p>{% include "components/star_rating.html" with name="g-r3" label="Fairness" required=True invalid=True %}<p class="field-error mt-2">{% icon "alert-circle" %}Please choose a rating.</p></div>
+    <div><p class="font-semibold">Read only (3)</p>{% include "components/star_rating.html" with name="g-r4" label="Average" value=3 readonly=True %}</div>
+  </div>
+</section>
+
+<section class="grid gap-4" aria-labelledby="g-prog">
+  <h2 id="g-prog">Progress, skeleton, empty state</h2>
+  <div class="grid-cards">
+    <div class="card flex items-center gap-5">{% include "components/progress_ring.html" with done=3 total=6 %}<div class="grid gap-2 flex-1">{% include "components/meter.html" with value=60 label="Round time elapsed" %}{% include "components/meter.html" with value=85 label="Response rate" tone="good" %}{% include "components/meter.html" with value=25 label="Low response" tone="warn" %}</div></div>
+    <div class="card">{% include "components/skeleton.html" %}</div>
+    <div class="card">{% include "components/empty_state.html" with title="No feedback yet" text="Results appear here after the round closes." icon="inbox" action_label="Back to dashboard" action_url="#g-nav" %}</div>
+  </div>
+</section>
+
+<section class="grid gap-4" aria-labelledby="g-stub">
+  <h2 id="g-stub">Ballot stub</h2>
+  <div class="grid gap-4 lg:grid-cols-2">
+    {% include "components/stub.html" with code="CSE 2205, Theory, 3 credits" title="Operating Systems" teacher="Dr. Mahbubur Rahman" feedback_url="#g-stub" %}
+    {% include "components/stub.html" with sealed=True code="CSE 2201, Theory, 3 credits" title="Database Systems" teacher="Dr. Shirin Akter" %}
+  </div>
+</section>
+
+<section class="grid gap-4" aria-labelledby="g-fb">
+  <h2 id="g-fb">Toast, modal, breadcrumb</h2>
+  <div class="grid gap-3">
+    {% include "components/toast.html" with level="success" title="Saved" text="Your draft was saved." %}
+    {% include "components/toast.html" with level="info" text="The round closes in 2 days." %}
+    {% include "components/toast.html" with level="warning" text="You have unanswered questions." %}
+    {% include "components/toast.html" with level="error" title="Could not submit" text="Please fix the highlighted fields." %}
+  </div>
+  <div>{% include "components/button.html" with label="Open modal" open="#g-modal" variant="ghost" %}</div>
+  {% modal id="g-modal" title="Final and anonymous" %}
+    <p class="text-muted">After you submit you cannot change your answers, and nobody can see who wrote them.</p>
+    <div class="modal-actions">
+      {% include "components/button.html" with label="Go back" variant="ghost" close=True %}
+      {% include "components/button.html" with label="Submit" close=True icon="send" %}
+    </div>
+  {% endmodal %}
+  {% include "components/breadcrumb.html" with crumbs=crumbs %}
+</section>
+
+<section class="grid gap-4" aria-labelledby="g-table">
+  <h2 id="g-table">Data table and pagination</h2>
+  {% include "components/data_table.html" with caption="Teacher ranking" columns=table_columns rows=table_rows %}
+  {% include "components/data_table.html" with caption="Empty table" columns=table_columns rows=empty_rows empty_title="No teachers found" empty_text="Try a different filter." %}
+  {% include "components/pagination.html" with page_obj=page_obj %}
+</section>
+
+<section class="grid gap-4" aria-labelledby="g-chart">
+  <h2 id="g-chart">Charts</h2>
+  <div class="grid-cards">
+    <div class="card">{% include "components/chart.html" with chart_id="g-bar" config=bar_chart summary="Bar chart of average ratings per category" %}</div>
+    <div class="card">{% include "components/chart.html" with chart_id="g-radar" config=radar_chart summary="Radar chart comparing teacher and department averages" %}</div>
+    <div class="card">{% include "components/chart.html" with chart_id="g-line" config=trend_chart summary="Line chart of average rating over four semesters" %}</div>
+  </div>
+</section>
+{% endblock %}

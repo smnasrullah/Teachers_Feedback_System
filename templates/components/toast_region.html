@@ -1,0 +1,1 @@
+<div class="toast-region" id="toast-region">{% for message in messages %}{% include "components/toast.html" with level=message.level_tag text=message %}{% endfor %}</div>

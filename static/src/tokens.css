@@ -1,0 +1,156 @@
+/* Design tokens — BLUEPRINT §6 (WCAG-AA validated pairs). Light by default, `.dark` on <html> switches the set. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/plus-jakarta-sans-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-weight: 500;
+  font-display: swap;
+  src: url("../fonts/plus-jakarta-sans-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-weight: 600;
+  font-display: swap;
+  src: url("../fonts/plus-jakarta-sans-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/plus-jakarta-sans-latin-700-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Hind Siliguri";
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0964-0965, U+0980-09FE, U+200C-200D, U+20B9, U+25CC;
+  src: url("../fonts/hind-siliguri-bengali-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Hind Siliguri";
+  font-weight: 500;
+  font-display: swap;
+  unicode-range: U+0964-0965, U+0980-09FE, U+200C-200D, U+20B9, U+25CC;
+  src: url("../fonts/hind-siliguri-bengali-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Hind Siliguri";
+  font-weight: 600;
+  font-display: swap;
+  unicode-range: U+0964-0965, U+0980-09FE, U+200C-200D, U+20B9, U+25CC;
+  src: url("../fonts/hind-siliguri-bengali-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Hind Siliguri";
+  font-weight: 700;
+  font-display: swap;
+  unicode-range: U+0964-0965, U+0980-09FE, U+200C-200D, U+20B9, U+25CC;
+  src: url("../fonts/hind-siliguri-bengali-700-normal.woff2") format("woff2");
+}
+
+:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --subtle: #64748b;
+  --border: #e2e8f0;
+  --border-input: #64748b;
+  --primary: #1e3a8a;
+  --primary-600: #2548b0;
+  --primary-soft: #eff4ff;
+  --on-primary: #ffffff;
+  --success: #047857;
+  --success-soft: #ecfdf5;
+  --success-bright: #10b981;
+  --warning: #b45309;
+  --warning-soft: #fffbeb;
+  --warning-bright: #f59e0b;
+  --danger: #dc2626;
+  --danger-text: #b91c1c;
+  --danger-soft: #fef2f2;
+  --on-danger: #ffffff;
+  --star: #d97706;
+  --star-empty: #64748b;
+  --focus: #2548b0;
+  --overlay: rgb(15 23 42 / 0.55);
+  --shadow: 0 4px 20px rgb(15 23 42 / 0.06);
+  --shadow-pop: 0 20px 60px rgb(15 23 42 / 0.35);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --subtle: #94a3b8;
+  --border: #334155;
+  --border-input: #7c8da5;
+  --primary: #93b4ff;
+  --primary-600: #7ba3ff;
+  --primary-soft: #1e2a4a;
+  --on-primary: #0f172a;
+  --success: #34d399;
+  --success-soft: #0f2a22;
+  --success-bright: #34d399;
+  --warning: #fbbf24;
+  --warning-soft: #2a2110;
+  --warning-bright: #fbbf24;
+  --danger: #f87171;
+  --danger-text: #f87171;
+  --danger-soft: #2a1517;
+  --on-danger: #0f172a;
+  --star: #fbbf24;
+  --star-empty: #7c8da5;
+  --focus: #93b4ff;
+  --overlay: rgb(0 0 0 / 0.65);
+  --shadow: 0 4px 20px rgb(0 0 0 / 0.35);
+  --shadow-pop: 0 20px 60px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-border: var(--border);
+  --color-border-input: var(--border-input);
+  --color-primary: var(--primary);
+  --color-primary-600: var(--primary-600);
+  --color-primary-soft: var(--primary-soft);
+  --color-on-primary: var(--on-primary);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-text: var(--danger-text);
+  --color-danger-soft: var(--danger-soft);
+  --color-star: var(--star);
+  --color-focus: var(--focus);
+
+  --radius-card: 16px;
+  --radius-btn: 12px;
+  --radius-chip: 999px;
+  --shadow-soft: var(--shadow);
+
+  /* Bangla-aware stack: Latin glyphs from Plus Jakarta Sans, Bengali glyphs from Hind Siliguri. */
+  --font-sans: "Plus Jakarta Sans", "Hind Siliguri", system-ui, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, Consolas, monospace;
+
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 32px;
+}

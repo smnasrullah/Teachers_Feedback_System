@@ -1,0 +1,21 @@
+{% load static i18n %}{% get_current_language as LANGUAGE_CODE %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% translate "Something went wrong" %} — {% translate "Teacher Feedback System" %}</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
+  <script src="{% static 'js/theme.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
+</head>
+<body class="bg-bg text-text min-h-screen antialiased">
+  <main class="wrap py-16">
+    <div class="empty">
+      <p class="error-code num" aria-hidden="true">500</p>
+      <h1>{% translate "Something went wrong on our side" %}</h1>
+      <p>{% translate "Your feedback and data are safe. Please try again in a few minutes." %}</p>
+      <a class="btn btn-primary mt-4" href="/">{% translate "Back to home" %}</a>
+    </div>
+  </main>
+</body>
+</html>

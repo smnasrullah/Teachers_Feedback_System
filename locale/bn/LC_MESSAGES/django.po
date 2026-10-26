@@ -1,0 +1,354 @@
+# Bangla translations for the Teacher Feedback System.
+msgid ""
+msgstr ""
+"Project-Id-Version: tfs\n"
+"Language: bn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Teacher Feedback System"
+msgstr "শিক্ষক মূল্যায়ন ব্যবস্থা"
+
+msgid "Skip to content"
+msgstr "মূল অংশে যান"
+
+msgid "Main navigation"
+msgstr "প্রধান নেভিগেশন"
+
+msgid "More"
+msgstr "আরও"
+
+msgid "Menu"
+msgstr "মেনু"
+
+msgid "Close"
+msgstr "বন্ধ করুন"
+
+msgid "All sections"
+msgstr "সব বিভাগ"
+
+msgid "Breadcrumb"
+msgstr "পথ নির্দেশিকা"
+
+msgid "required"
+msgstr "আবশ্যক"
+
+msgid "Anonymous by design. Student feedback is never linked to a person."
+msgstr "বেনামি থাকাই এর নকশা। শিক্ষার্থীর মতামত কখনো কোনো ব্যক্তির সঙ্গে যুক্ত হয় না।"
+
+msgid "Language"
+msgstr "ভাষা"
+
+msgid "Teacher Feedback"
+msgstr "শিক্ষক মূল্যায়ন"
+
+msgid "Teacher Feedback System, home"
+msgstr "শিক্ষক মূল্যায়ন ব্যবস্থা, হোম"
+
+msgid "Notifications"
+msgstr "বিজ্ঞপ্তি"
+
+msgid "You have no new notifications."
+msgstr "আপনার কোনো নতুন বিজ্ঞপ্তি নেই।"
+
+msgid "Log out"
+msgstr "লগ আউট"
+
+msgid "Log in"
+msgstr "লগ ইন"
+
+msgid "Notifications, %(unread_count)s unread"
+msgstr "বিজ্ঞপ্তি, %(unread_count)sটি না-পড়া"
+
+msgid "Account menu for %(user_name)s"
+msgstr "%(user_name)s-এর অ্যাকাউন্ট মেনু"
+
+msgid "Pagination"
+msgstr "পৃষ্ঠা নেভিগেশন"
+
+msgid "Previous"
+msgstr "আগের"
+
+msgid "Page"
+msgstr "পৃষ্ঠা"
+
+msgid "Next"
+msgstr "পরের"
+
+msgid "done"
+msgstr "সম্পন্ন"
+
+msgid "%(done)s of %(total)s done"
+msgstr "%(total)sটির মধ্যে %(done)sটি সম্পন্ন"
+
+msgid "Loading…"
+msgstr "লোড হচ্ছে…"
+
+msgid "Very poor"
+msgstr "খুবই খারাপ"
+
+msgid "Poor"
+msgstr "খারাপ"
+
+msgid "Fair"
+msgstr "মোটামুটি"
+
+msgid "Good"
+msgstr "ভালো"
+
+msgid "Excellent"
+msgstr "চমৎকার"
+
+msgid "Not rated"
+msgstr "রেটিং দেওয়া হয়নি"
+
+msgid "%(value)s out of 5"
+msgstr "৫-এর মধ্যে %(value)s"
+
+msgid "%(n)s out of 5"
+msgstr "৫-এর মধ্যে %(n)s"
+
+msgid "Sealed"
+msgstr "সিলড"
+
+msgid "Submitted"
+msgstr "জমা হয়েছে"
+
+msgid "Pending"
+msgstr "বাকি আছে"
+
+msgid "Give feedback"
+msgstr "মতামত দিন"
+
+msgid "Dark mode"
+msgstr "ডার্ক মোড"
+
+msgid "Dismiss"
+msgstr "সরিয়ে দিন"
+
+msgid "Honest, anonymous course feedback"
+msgstr "সৎ ও বেনামি কোর্স মতামত"
+
+msgid "Anonymous by design"
+msgstr "বেনামি থাকাই নকশা"
+
+msgid "Tell your teachers what helps you learn — without your name attached."
+msgstr "কীসে আপনার শেখা সহজ হয় তা শিক্ষকদের জানান — আপনার নাম প্রকাশ না করেই।"
+
+msgid "Each semester, students rate their courses and teachers in short rounds. Teachers see only combined results, and only after the round closes."
+msgstr "প্রতি সেমিস্টারে শিক্ষার্থীরা ছোট ছোট রাউন্ডে কোর্স ও শিক্ষকদের মূল্যায়ন করেন। শিক্ষকরা শুধু সম্মিলিত ফলাফল দেখেন, তাও রাউন্ড শেষ হওয়ার পর।"
+
+msgid "Log in to give feedback"
+msgstr "মতামত দিতে লগ ইন করুন"
+
+msgid "Create student account"
+msgstr "শিক্ষার্থী অ্যাকাউন্ট খুলুন"
+
+msgid "How it works"
+msgstr "কীভাবে কাজ করে"
+
+msgid "CSE 2201, Theory, 3 credits"
+msgstr "CSE 2201, থিওরি, ৩ ক্রেডিট"
+
+msgid "Database Systems"
+msgstr "ডাটাবেজ সিস্টেম"
+
+msgid "Dr. Shirin Akter"
+msgstr "ড. শিরিন আক্তার"
+
+msgid "Join with your student ID"
+msgstr "শিক্ষার্থী আইডি দিয়ে যোগ দিন"
+
+msgid "Sign up once with your student ID and the code from your department, then verify with a one-time code."
+msgstr "একবার শিক্ষার্থী আইডি ও বিভাগ থেকে পাওয়া কোড দিয়ে নিবন্ধন করুন, তারপর এককালীন কোড দিয়ে যাচাই করুন।"
+
+msgid "Answer a short form"
+msgstr "একটি ছোট ফর্ম পূরণ করুন"
+
+msgid "When a round opens, rate each course with stars and add comments if you like. You can save a draft."
+msgstr "রাউন্ড শুরু হলে প্রতিটি কোর্সে তারা দিয়ে রেটিং দিন, চাইলে মন্তব্য লিখুন। খসড়া সংরক্ষণও করা যায়।"
+
+msgid "Submit and get your seal"
+msgstr "জমা দিন ও সিল পান"
+
+msgid "After you submit, your course is sealed. Nobody can change it, and nobody can see who wrote it."
+msgstr "জমা দেওয়ার পর কোর্সটি সিল হয়ে যায়। কেউ তা বদলাতে পারে না, আর কে লিখেছেন তাও কেউ দেখতে পারে না।"
+
+msgid "Teachers improve"
+msgstr "শিক্ষকরা উন্নতি করেন"
+
+msgid "When the round closes, teachers and department heads see combined results and act on them."
+msgstr "রাউন্ড শেষ হলে শিক্ষক ও বিভাগীয় প্রধানরা সম্মিলিত ফলাফল দেখে পদক্ষেপ নেন।"
+
+msgid "Our anonymity promise"
+msgstr "আমাদের বেনামিত্বের প্রতিশ্রুতি"
+
+msgid "Your answers are stored separately from your account. There is no link between who you are and what you wrote."
+msgstr "আপনার উত্তর অ্যাকাউন্ট থেকে আলাদাভাবে সংরক্ষিত হয়। আপনি কে আর কী লিখেছেন — এ দুয়ের মধ্যে কোনো যোগসূত্র নেই।"
+
+msgid "The system records only that you submitted for a course, never when or what."
+msgstr "সিস্টেম শুধু রাখে যে আপনি কোনো কোর্সে জমা দিয়েছেন — কখন বা কী লিখেছেন, তা কখনোই নয়।"
+
+msgid "Results appear only after the round closes, and only when enough students have answered."
+msgstr "ফলাফল শুধু রাউন্ড শেষ হওয়ার পর এবং যথেষ্ট শিক্ষার্থী উত্তর দিলেই দেখা যায়।"
+
+msgid "Comments are screened for abusive language before teachers can read them."
+msgstr "শিক্ষকরা পড়ার আগে মন্তব্যগুলো অশালীন ভাষার জন্য যাচাই করা হয়।"
+
+msgid "Who uses it"
+msgstr "কারা ব্যবহার করেন"
+
+msgid "Students"
+msgstr "শিক্ষার্থী"
+
+msgid "See this semester's courses, give feedback, and track what is left."
+msgstr "এই সেমিস্টারের কোর্স দেখুন, মতামত দিন এবং কী বাকি আছে তা জানুন।"
+
+msgid "Teachers"
+msgstr "শিক্ষক"
+
+msgid "Read combined results per course once the round has closed."
+msgstr "রাউন্ড শেষ হলে প্রতিটি কোর্সের সম্মিলিত ফলাফল পড়ুন।"
+
+msgid "Department heads"
+msgstr "বিভাগীয় প্রধান"
+
+msgid "Compare courses in your department and follow up on low scores."
+msgstr "বিভাগের কোর্সগুলো তুলনা করুন এবং কম স্কোরের বিষয়ে ব্যবস্থা নিন।"
+
+msgid "Administrators"
+msgstr "অ্যাডমিন"
+
+msgid "Run rounds, manage courses and keep the system safe."
+msgstr "রাউন্ড চালান, কোর্স পরিচালনা করুন এবং সিস্টেম নিরাপদ রাখুন।"
+
+msgid "Frequently asked questions"
+msgstr "সচরাচর জিজ্ঞাসা"
+
+msgid "Can my teacher see what I wrote?"
+msgstr "আমার শিক্ষক কি আমার লেখা দেখতে পারেন?"
+
+msgid "Teachers see comments without any name or ID, and only after the round closes. If fewer than five students answered, nothing is shown at all."
+msgstr "শিক্ষকরা নাম বা আইডি ছাড়া মন্তব্য দেখেন, তাও রাউন্ড শেষ হওয়ার পর। পাঁচজনের কম শিক্ষার্থী উত্তর দিলে কিছুই দেখানো হয় না।"
+
+msgid "Do I have to give feedback?"
+msgstr "মতামত দেওয়া কি বাধ্যতামূলক?"
+
+msgid "Feedback is requested for every course, but your answers are always your own choice. You can save a draft and come back until the round ends."
+msgstr "প্রতিটি কোর্সের জন্য মতামত চাওয়া হয়, তবে উত্তর সবসময় আপনার নিজের সিদ্ধান্ত। রাউন্ড শেষ না হওয়া পর্যন্ত খসড়া রেখে পরে ফিরে আসতে পারেন।"
+
+msgid "Can I change my feedback after submitting?"
+msgstr "জমা দেওয়ার পর কি মতামত বদলানো যায়?"
+
+msgid "No. Submission is final so that results can be trusted. Please review your answers before you confirm."
+msgstr "না। ফলাফল বিশ্বাসযোগ্য রাখতে জমা দেওয়া চূড়ান্ত। নিশ্চিত করার আগে উত্তরগুলো দেখে নিন।"
+
+msgid "What if I forget my password?"
+msgstr "পাসওয়ার্ড ভুলে গেলে কী করব?"
+
+msgid "Use the forgot password option on the login page. We send a one-time code to the contact you registered with."
+msgstr "লগইন পাতায় পাসওয়ার্ড ভুলে গেছি অপশনটি ব্যবহার করুন। নিবন্ধনের সময় দেওয়া যোগাযোগে আমরা একটি এককালীন কোড পাঠাই।"
+
+msgid "Who can see my student ID?"
+msgstr "আমার শিক্ষার্থী আইডি কারা দেখতে পারেন?"
+
+msgid "Only administrators and the head of your own department. Teachers never see it."
+msgstr "শুধু অ্যাডমিন এবং আপনার নিজের বিভাগের প্রধান। শিক্ষকরা কখনো দেখেন না।"
+
+msgid "Access denied"
+msgstr "প্রবেশাধিকার নেই"
+
+msgid "You don't have access to this page"
+msgstr "এই পাতায় আপনার প্রবেশাধিকার নেই"
+
+msgid "Your account is not allowed to see this. If you think this is a mistake, please contact your department office."
+msgstr "আপনার অ্যাকাউন্টে এটি দেখার অনুমতি নেই। ভুল মনে হলে বিভাগীয় অফিসে যোগাযোগ করুন।"
+
+msgid "Page not found"
+msgstr "পাতা পাওয়া যায়নি"
+
+msgid "We can't find that page"
+msgstr "আমরা সেই পাতাটি খুঁজে পাচ্ছি না"
+
+msgid "The link may be old or mistyped. Go back to the home page and try again."
+msgstr "লিংকটি পুরনো বা ভুল হতে পারে। হোম পাতায় ফিরে আবার চেষ্টা করুন।"
+
+msgid "Something went wrong"
+msgstr "কিছু একটা ভুল হয়েছে"
+
+msgid "Something went wrong on our side"
+msgstr "আমাদের দিকে কিছু একটা ভুল হয়েছে"
+
+msgid "Your feedback and data are safe. Please try again in a few minutes."
+msgstr "আপনার মতামত ও তথ্য নিরাপদ আছে। কয়েক মিনিট পরে আবার চেষ্টা করুন।"
+
+msgid "Back to home"
+msgstr "হোমে ফিরুন"
+
+msgid "Your feedback is anonymous. Teachers see only combined results, and only after the round closes."
+msgstr "আপনার মতামত বেনামি। শিক্ষকরা শুধু সম্মিলিত ফলাফল দেখেন, তাও রাউন্ড শেষ হওয়ার পর।"
+
+msgid "Dashboard"
+msgstr "ড্যাশবোর্ড"
+
+msgid "Courses"
+msgstr "কোর্স"
+
+msgid "Reports"
+msgstr "রিপোর্ট"
+
+msgid "Calendar"
+msgstr "ক্যালেন্ডার"
+
+msgid "Manage"
+msgstr "ব্যবস্থাপনা"
+
+msgid "Settings"
+msgstr "সেটিংস"
+
+msgid "Teacher"
+msgstr "শিক্ষক"
+
+msgid "Course"
+msgstr "কোর্স"
+
+msgid "Responses"
+msgstr "উত্তর"
+
+msgid "Average"
+msgstr "গড়"
+
+msgid "Teaching"
+msgstr "পাঠদান"
+
+msgid "Content"
+msgstr "বিষয়বস্তু"
+
+msgid "Support"
+msgstr "সহায়তা"
+
+msgid "Fairness"
+msgstr "ন্যায্যতা"
+
+msgid "Clarity"
+msgstr "স্পষ্টতা"
+
+msgid "Choose a department"
+msgstr "বিভাগ বেছে নিন"
+
+msgid "This semester"
+msgstr "এই সেমিস্টার"
+
+msgid "Department"
+msgstr "বিভাগ"
+
+msgid "Average rating"
+msgstr "গড় রেটিং"
+
+msgid "Bangla"
+msgstr "বাংলা"
+
+msgid "English"
+msgstr "ইংরেজি"

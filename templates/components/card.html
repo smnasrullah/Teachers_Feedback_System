@@ -1,0 +1,5 @@
+{# {% card title="…" card_id="x" flat=True %}body{% endcard %} #}
+<section class="card{% if flat %} card-flat{% endif %}"{% if title %} aria-labelledby="{{ card_id|default:'card' }}-title"{% endif %}>
+  {% if title %}<div class="card-head"><h3 id="{{ card_id|default:'card' }}-title">{{ title }}</h3></div>{% endif %}
+  {{ body }}
+</section>

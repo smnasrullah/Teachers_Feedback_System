@@ -1,0 +1,11 @@
+{# Params: caption, columns [{key,label,numeric}], rows [{key: value}], empty_title, empty_text. Stacks into cards below 640px. #}
+{% load ui %}
+{% if rows %}
+<table class="data-table" role="table">
+  <caption class="sr-only">{{ caption }}</caption>
+  <thead role="rowgroup"><tr role="row">{% for col in columns %}<th scope="col" role="columnheader"{% if col.numeric %} class="cell-num"{% endif %}>{{ col.label }}</th>{% endfor %}</tr></thead>
+  <tbody role="rowgroup">{% for row in rows %}<tr role="row">{% for col in columns %}<td role="cell" data-label="{{ col.label }}"{% if col.numeric %} class="cell-num"{% endif %}>{{ row|get_item:col.key }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+</table>
+{% else %}
+{% include "components/empty_state.html" with title=empty_title text=empty_text icon="list" %}
+{% endif %}

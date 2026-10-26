@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Django
+db.sqlite3
+*.log
+/staticfiles/
+/media/
+/backups/
+
+# Secrets (NEVER commit)
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Tailwind / tooling
+.django_tailwind_cli/
+node_modules/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Built assets
+/static/css/

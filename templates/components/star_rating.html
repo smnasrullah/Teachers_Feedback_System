@@ -1,0 +1,19 @@
+{# Params: name, label, value (1-5 or empty), required, invalid, readonly. Native radios in a radiogroup: arrows move, touch targets 44px, numeric value always shown. #}
+{% load i18n ui %}
+{% if readonly %}
+<div class="rate-line" role="img" aria-label="{% blocktranslate %}{{ value }} out of 5{% endblocktranslate %}">
+  <span class="rate rate-readonly">{% for n in "12345" %}<span class="rate-item{% if n|add:0 <= value %} is-on{% endif %}">{% icon "star" %}</span>{% endfor %}</span>
+  <span class="rate-val num">{{ value }} / 5</span>
+</div>
+{% else %}
+<div class="rate-line" data-rate>
+  <div class="rate" role="radiogroup" aria-labelledby="{{ name }}-label"{% if required %} aria-required="true"{% endif %}{% if invalid %} aria-invalid="true"{% endif %}>
+    <span class="sr-only" id="{{ name }}-label">{{ label }}</span>
+    {% for n in "12345" %}
+    <label class="rate-item"><input type="radio" name="{{ name }}" value="{{ n }}"{% if value|stringformat:"s" == n %} checked{% endif %}{% if required %} required{% endif %} data-label="{% if n == '1' %}{% translate 'Very poor' %}{% elif n == '2' %}{% translate 'Poor' %}{% elif n == '3' %}{% translate 'Fair' %}{% elif n == '4' %}{% translate 'Good' %}{% else %}{% translate 'Excellent' %}{% endif %}">
+      {% icon "star" %}<span class="sr-only">{% blocktranslate %}{{ n }} out of 5{% endblocktranslate %}</span></label>
+    {% endfor %}
+  </div>
+  <output class="rate-val num" data-rate-out for="{{ name }}-label">{% if value %}{{ value }} / 5{% else %}{% translate "Not rated" %}{% endif %}</output>
+</div>
+{% endif %}

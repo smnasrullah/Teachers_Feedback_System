@@ -1,0 +1,7 @@
+{# {% modal id="confirm" title="…" %}body{% endmodal %} — open with data-open="#confirm", close with data-close #}
+{% load i18n ui %}
+<dialog class="modal" id="{{ id }}" aria-labelledby="{{ id }}-title">
+  <div class="card-head"><h2 class="text-xl" id="{{ id }}-title">{{ title }}</h2>
+    <button type="button" class="icon-btn" data-close aria-label="{% translate 'Close' %}">{% icon "x" %}</button></div>
+  {{ body }}
+</dialog>

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load i18n ui %}
+{% block body %}
+<header class="nav"><div class="wrap">
+  {% include "components/logo.html" %}
+  <span class="flex-1"></span>
+  {% include "components/lang_toggle.html" %}
+  {% include "components/theme_toggle.html" %}
+</div></header>
+<main id="main" class="wrap grid place-items-center py-8" tabindex="-1">
+  <div class="auth-card grid gap-4">
+    {% block content %}{% endblock %}
+    <p class="flex gap-2 items-start text-sm text-muted">
+      {% icon "shield" "ico-lg" %}
+      <span>{% translate "Your feedback is anonymous. Teachers see only combined results, and only after the round closes." %}</span>
+    </p>
+  </div>
+</main>
+{% endblock %}

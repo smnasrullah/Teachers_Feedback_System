@@ -1,0 +1,13 @@
+{% extends "layouts/public.html" %}
+{% load i18n ui %}
+{% block title %}{% block error_title %}{% endblock %} — {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="wrap py-16">
+  <div class="empty">
+    <p class="error-code num" aria-hidden="true">{% block error_code %}{% endblock %}</p>
+    <h1>{% block error_heading %}{% endblock %}</h1>
+    <p>{% block error_text %}{% endblock %}</p>
+    <a class="btn btn-primary mt-4" href="{% url 'core:home' %}">{% icon "home" %}{% translate "Back to home" %}</a>
+  </div>
+</div>
+{% endblock %}

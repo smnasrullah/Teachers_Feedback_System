@@ -1,0 +1,7 @@
+{# Params: crumbs [{label,url}] — the last entry is the current page (url omitted) #}
+{% load i18n ui %}
+<nav class="breadcrumb" aria-label="{% translate 'Breadcrumb' %}"><ol>
+  {% for crumb in crumbs %}
+    <li>{% if crumb.url and not forloop.last %}<a href="{{ crumb.url }}">{{ crumb.label }}</a>{% icon "chevron-right" %}{% else %}<span aria-current="page">{{ crumb.label }}</span>{% endif %}</li>
+  {% endfor %}
+</ol></nav>

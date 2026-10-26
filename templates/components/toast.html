@@ -1,0 +1,7 @@
+{# Params: level (success|error|warning|info), text, title #}
+{% load i18n ui %}
+<div class="toast toast-{{ level|default:'info' }}" role="{% if level == 'error' or level == 'warning' %}alert{% else %}status{% endif %}"{% if level != 'error' and level != 'warning' %} data-autodismiss{% endif %}>
+  <span class="toast-ico">{% if level == 'success' %}{% icon "check" "ico-lg" %}{% elif level == 'error' %}{% icon "alert-circle" "ico-lg" %}{% elif level == 'warning' %}{% icon "alert" "ico-lg" %}{% else %}{% icon "info" "ico-lg" %}{% endif %}</span>
+  <div class="toast-body">{% if title %}<div class="toast-title">{{ title }}</div>{% endif %}<div>{{ text }}</div></div>
+  <button type="button" class="icon-btn" data-dismiss aria-label="{% translate 'Dismiss' %}">{% icon "x" %}</button>
+</div>

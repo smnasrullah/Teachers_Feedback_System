@@ -1,0 +1,6 @@
+{# Params: title, text, icon, action_label, action_url #}
+{% load ui %}
+<div class="empty"><span class="empty-ico">{% icon icon|default:"inbox" "ico-lg" %}</span>
+  <h3>{{ title }}</h3>{% if text %}<p>{{ text }}</p>{% endif %}
+  {% if action_url %}<a class="btn btn-primary" href="{{ action_url }}">{{ action_label }}</a>{% endif %}
+</div>

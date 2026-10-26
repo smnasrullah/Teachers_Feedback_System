@@ -1,0 +1,10 @@
+{# Desktop role sidebar. items: [{label,url,icon,current}] or [{group}] headings. #}
+{% load i18n ui %}
+<aside class="sidebar" aria-label="{% translate 'Main navigation' %}">
+  <nav>
+    {% for item in items %}
+      {% if item.group %}<p class="side-group">{{ item.group }}</p>
+      {% else %}<a class="side-link" href="{{ item.url }}"{% if item.current %} aria-current="page"{% endif %}>{% if item.icon %}{% icon item.icon %}{% endif %}{{ item.label }}</a>{% endif %}
+    {% endfor %}
+  </nav>
+</aside>

@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block body %}
+{% include "components/navbar.html" with user_name=request.user.get_username|default:"" %}
+<main id="main" tabindex="-1">{% block content %}{% endblock %}</main>
+{% include "components/footer.html" %}
+{% endblock %}

@@ -1,0 +1,41 @@
+{% load i18n ui %}
+{# Params: user_name (empty = signed out), user_menu [{label,url,icon}], logout_url, notifications [{text,url}], unread_count, static_nav #}
+<header class="nav{% if static_nav %} nav-static{% endif %}"><div class="wrap">
+  {% include "components/logo.html" %}
+  <span class="flex-1"></span>
+  {% include "components/lang_toggle.html" %}
+  {% if user_name %}
+  <div class="menu-wrap">
+    <button type="button" class="icon-btn" data-toggle="#nav-notifications" aria-expanded="false" aria-controls="nav-notifications" aria-label="{% if unread_count %}{% blocktranslate %}Notifications, {{ unread_count }} unread{% endblocktranslate %}{% else %}{% translate 'Notifications' %}{% endif %}">
+      {% icon "bell" %}{% if unread_count %}<span class="dot"></span>{% endif %}
+    </button>
+    <div class="menu" id="nav-notifications" hidden>
+      <p class="menu-head">{% translate "Notifications" %}</p>
+      {% for note in notifications %}
+        <a class="menu-item" href="{{ note.url }}">{{ note.text }}</a>
+      {% empty %}
+        <p class="px-3 pb-3 text-sm text-muted">{% translate "You have no new notifications." %}</p>
+      {% endfor %}
+    </div>
+  </div>
+  {% include "components/theme_toggle.html" %}
+  <div class="menu-wrap">
+    <button type="button" class="avatar cursor-pointer" data-toggle="#nav-user" aria-expanded="false" aria-controls="nav-user" aria-label="{% blocktranslate %}Account menu for {{ user_name }}{% endblocktranslate %}">{{ user_name|first|upper }}</button>
+    <div class="menu" id="nav-user" hidden>
+      <p class="menu-head">{{ user_name }}</p>
+      {% for entry in user_menu %}
+        <a class="menu-item" href="{{ entry.url }}">{% if entry.icon %}{% icon entry.icon %}{% endif %}{{ entry.label }}</a>
+      {% endfor %}
+      {% if logout_url %}
+      <form action="{{ logout_url }}" method="post" class="m-0">{% csrf_token %}
+        <button type="submit" class="menu-item">{% icon "logout" %}{% translate "Log out" %}</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  {% else %}
+  {% include "components/theme_toggle.html" %}
+  {% url 'accounts:login' as login_url %}
+  {% if login_url %}<a class="btn btn-primary" href="{{ login_url }}">{% translate "Log in" %}</a>{% endif %}
+  {% endif %}
+</div></header>

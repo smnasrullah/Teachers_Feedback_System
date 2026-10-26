@@ -1,0 +1,8 @@
+{# Params: id, name, label, options [(value, text)], value, hint, error, required, disabled #}
+<div class="field">
+  {% include "components/field_head.html" %}
+  <select class="select" id="{{ id }}" name="{{ name }}"{% if required %} required{% endif %}{% if disabled %} disabled{% endif %}{% if error %} aria-invalid="true"{% endif %}{% if hint or error %} aria-describedby="{% if hint %}{{ id }}-hint {% endif %}{% if error %}{{ id }}-error{% endif %}"{% endif %}>
+    {% for option_value, option_text in options %}<option value="{{ option_value }}"{% if option_value == value %} selected{% endif %}>{{ option_text }}</option>{% endfor %}
+  </select>
+  {% include "components/field_foot.html" %}
+</div>

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% comment %}
+Authenticated shell. Views provide `nav_items` (list of {label, url, icon, current} or {group}),
+optionally `user_menu`, `logout_url`, `notifications`, `unread_count`.
+{% endcomment %}
+{% block body %}
+{% include "components/navbar.html" with user_name=request.user.get_username|default:"" %}
+<div class="shell">
+  {% include "components/sidebar.html" with items=nav_items %}
+  <main id="main" class="main-pane" tabindex="-1">
+    {% block breadcrumb %}{% endblock %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% include "components/bottom_nav.html" with items=nav_items %}
+{% endblock %}

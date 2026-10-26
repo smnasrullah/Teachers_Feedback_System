@@ -1,0 +1,24 @@
+{# Mobile bottom bar (first 4 links) + "More" drawer with every entry. #}
+{% load i18n ui %}
+{% with links=items|nav_links %}
+<nav class="bottomnav" aria-label="{% translate 'Main navigation' %}">
+  {% for item in links|slice:":4" %}
+    <a href="{{ item.url }}"{% if item.current %} aria-current="page"{% endif %}>{% if item.icon %}{% icon item.icon "ico-lg" %}{% endif %}<span>{{ item.label }}</span></a>
+  {% endfor %}
+  {% if links|length > 4 %}
+  <button type="button" data-open="#nav-drawer" aria-haspopup="dialog">{% icon "more" "ico-lg" %}<span>{% translate "More" %}</span></button>
+  {% endif %}
+</nav>
+{% if links|length > 4 %}
+<dialog class="drawer" id="nav-drawer" aria-labelledby="nav-drawer-title">
+  <div class="card-head"><h2 class="text-xl" id="nav-drawer-title">{% translate "Menu" %}</h2>
+    <button type="button" class="icon-btn" data-close aria-label="{% translate 'Close' %}">{% icon "x" %}</button></div>
+  <nav aria-label="{% translate 'All sections' %}">
+    {% for item in items %}
+      {% if item.group %}<p class="side-group">{{ item.group }}</p>
+      {% else %}<a class="side-link" href="{{ item.url }}"{% if item.current %} aria-current="page"{% endif %}>{% if item.icon %}{% icon item.icon %}{% endif %}{{ item.label }}</a>{% endif %}
+    {% endfor %}
+  </nav>
+</dialog>
+{% endif %}
+{% endwith %}

@@ -1,0 +1,2 @@
+{# Params: value (0-100), label, tone (good|warn) #}
+<progress class="meter{% if tone %} meter-{{ tone }}{% endif %}" max="100" value="{{ value }}" aria-label="{{ label }}">{{ value }}%</progress>

@@ -1,0 +1,5 @@
+{# Params: chart_id, config {type, labels, datasets:[{label,data,color(token name)}]}, summary. The page must load vendor/chart.umd.min.js and js/charts.js. #}
+{% with data_id=chart_id|add:"-data" %}
+<div class="chart-box"><canvas id="{{ chart_id }}" data-chart="{{ data_id }}" role="img" aria-label="{{ summary }}">{{ summary }}</canvas></div>
+{{ config|json_script:data_id }}
+{% endwith %}

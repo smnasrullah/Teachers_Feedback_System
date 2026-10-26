@@ -1,0 +1,10 @@
+{# Ballot stub (signature element). Params: code, title, teacher, sealed, feedback_url #}
+{% load i18n ui %}
+<article class="stub{% if sealed %} stub-sealed{% endif %}">
+  <div class="stub-main"><p class="text-sm text-muted">{{ code }}</p><h3 class="text-lg">{{ title }}</h3>
+    <p class="mt-2 font-semibold">{{ teacher }}</p></div>
+  <div class="stub-tear">
+    {% if sealed %}<div class="seal" aria-hidden="true"><span>{% translate "Sealed" %}</span>{% icon "check" %}</div><span class="text-sm font-semibold text-success">{% translate "Submitted" %}</span>
+    {% else %}{% translate "Pending" as pending_label %}{% include "components/badge.html" with variant="pending" label=pending_label %}<a class="btn btn-primary" href="{{ feedback_url }}">{% translate "Give feedback" %}</a>{% endif %}
+  </div>
+</article>

@@ -1,0 +1,2 @@
+{# Params: label, variant (pending|done|closed|alert|info), icon (defaults per variant) #}
+{% load ui %}<span class="badge badge-{{ variant|default:'info' }}">{% if icon %}{% icon icon %}{% elif variant == 'pending' %}{% icon "clock" %}{% elif variant == 'done' %}{% icon "check" %}{% elif variant == 'closed' %}{% icon "lock" %}{% elif variant == 'alert' %}{% icon "alert" %}{% else %}{% icon "info" %}{% endif %}{{ label }}</span>

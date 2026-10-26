@@ -1,0 +1,11 @@
+{# Params: page_obj, query (extra query string without page, e.g. "q=abc&") #}
+{% load i18n ui %}
+{% if page_obj.paginator.num_pages > 1 %}
+<nav class="pagination" aria-label="{% translate 'Pagination' %}"><ul>
+  <li>{% if page_obj.has_previous %}<a class="page-link" href="?{{ query }}page={{ page_obj.previous_page_number }}" rel="prev">{% icon "chevron-left" %}<span class="hidden sm:inline">{% translate "Previous" %}</span><span class="sr-only sm:hidden">{% translate "Previous" %}</span></a>{% else %}<span class="page-link" aria-disabled="true">{% icon "chevron-left" %}<span class="hidden sm:inline">{% translate "Previous" %}</span><span class="sr-only sm:hidden">{% translate "Previous" %}</span></span>{% endif %}</li>
+  {% for number in page_obj|elided_pages %}
+    <li>{% if number is None %}<span class="page-gap" aria-hidden="true">…</span>{% elif number == page_obj.number %}<span class="page-link" aria-current="page"><span class="sr-only">{% translate "Page" %}</span> {{ number }}</span>{% else %}<a class="page-link" href="?{{ query }}page={{ number }}"><span class="sr-only">{% translate "Page" %}</span> {{ number }}</a>{% endif %}</li>
+  {% endfor %}
+  <li>{% if page_obj.has_next %}<a class="page-link" href="?{{ query }}page={{ page_obj.next_page_number }}" rel="next"><span class="hidden sm:inline">{% translate "Next" %}</span><span class="sr-only sm:hidden">{% translate "Next" %}</span>{% icon "chevron-right" %}</a>{% else %}<span class="page-link" aria-disabled="true"><span class="hidden sm:inline">{% translate "Next" %}</span><span class="sr-only sm:hidden">{% translate "Next" %}</span>{% icon "chevron-right" %}</span>{% endif %}</li>
+</ul></nav>
+{% endif %}
