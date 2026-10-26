@@ -1,0 +1,6 @@
+{% extends "errors/error.html" %}
+{% load i18n %}
+{% block error_title %}{% translate "Too many requests" %}{% endblock %}
+{% block error_code %}429{% endblock %}
+{% block error_heading %}{% translate "Please slow down" %}{% endblock %}
+{% block error_text %}{% translate "You tried this too many times in a short while. Wait a few minutes, then try again." %}{% endblock %}

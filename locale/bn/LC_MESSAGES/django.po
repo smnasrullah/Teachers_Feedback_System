@@ -352,3 +352,111 @@ msgstr "বাংলা"
 
 msgid "English"
 msgstr "ইংরেজি"
+
+msgid "Student"
+msgstr "শিক্ষার্থী"
+
+msgid "Admin"
+msgstr "অ্যাডমিন"
+
+msgid "You were signed out after a period of inactivity."
+msgstr "দীর্ঘক্ষণ নিষ্ক্রিয় থাকায় আপনাকে সাইন আউট করা হয়েছে।"
+
+msgid "Your session has expired. Please sign in again."
+msgstr "আপনার সেশনের মেয়াদ শেষ হয়েছে। অনুগ্রহ করে আবার সাইন ইন করুন।"
+
+msgid "You were signed out because your account signed in on another device."
+msgstr "আপনার অ্যাকাউন্ট অন্য একটি ডিভাইসে সাইন ইন করায় এখানে আপনাকে সাইন আউট করা হয়েছে।"
+
+msgid "Too many requests"
+msgstr "অনেক বেশি অনুরোধ"
+
+msgid "Please slow down"
+msgstr "অনুগ্রহ করে একটু ধীরে চেষ্টা করুন"
+
+msgid "You tried this too many times in a short while. Wait a few minutes, then try again."
+msgstr "অল্প সময়ের মধ্যে আপনি অনেকবার চেষ্টা করেছেন। কয়েক মিনিট অপেক্ষা করে আবার চেষ্টা করুন।"
+
+msgid "user"
+msgstr "ব্যবহারকারী"
+
+msgid "login id"
+msgstr "লগইন আইডি"
+
+msgid "active session"
+msgstr "সক্রিয় সেশন"
+
+msgid "active sessions"
+msgstr "সক্রিয় সেশনসমূহ"
+
+msgid "date"
+msgstr "তারিখ"
+
+msgid "actor id"
+msgstr "কর্তার আইডি"
+
+msgid "actor"
+msgstr "কর্তা"
+
+msgid "role"
+msgstr "ভূমিকা"
+
+msgid "action"
+msgstr "কাজ"
+
+msgid "object type"
+msgstr "বস্তুর ধরন"
+
+msgid "object id"
+msgstr "বস্তুর আইডি"
+
+msgid "department id"
+msgstr "বিভাগের আইডি"
+
+msgid "IP address"
+msgstr "আইপি ঠিকানা"
+
+msgid "user agent"
+msgstr "ব্রাউজার তথ্য"
+
+msgid "request id"
+msgstr "অনুরোধ আইডি"
+
+msgid "details"
+msgstr "বিস্তারিত"
+
+msgid "previous hash"
+msgstr "পূর্ববর্তী হ্যাশ"
+
+msgid "hash"
+msgstr "হ্যাশ"
+
+msgid "audit event"
+msgstr "অডিট ঘটনা"
+
+msgid "audit events"
+msgstr "অডিট ঘটনাসমূহ"
+
+msgid "Re-encrypt all encrypted columns with the first key in FIELD_ENCRYPTION_KEYS. Prepend the new key, run this, then remove the old key."
+msgstr "FIELD_ENCRYPTION_KEYS-এর প্রথম কী দিয়ে সব এনক্রিপ্ট করা কলাম পুনরায় এনক্রিপ্ট করে। নতুন কী তালিকার শুরুতে যোগ করুন, এটি চালান, তারপর পুরোনো কী সরান।"
+
+msgid "%(label)s: %(count)d rows re-encrypted"
+msgstr "%(label)s: %(count)d টি সারি পুনরায় এনক্রিপ্ট করা হয়েছে"
+
+msgid "Key rotation complete."
+msgstr "কী পরিবর্তন সম্পন্ন হয়েছে।"
+
+msgid "Verify that the audit log hash chain is intact."
+msgstr "অডিট লগের হ্যাশ চেইন অক্ষত আছে কি না যাচাই করে।"
+
+msgid "Audit chain intact: %(count)d events verified."
+msgstr "অডিট চেইন অক্ষত: %(count)d টি ঘটনা যাচাই করা হয়েছে।"
+
+msgid "it does not link to the previous event (missing or reordered rows)"
+msgstr "এটি আগের ঘটনার সাথে যুক্ত নয় (সারি অনুপস্থিত বা ক্রম পরিবর্তিত)"
+
+msgid "its content does not match its hash (row was altered)"
+msgstr "এর বিষয়বস্তু হ্যাশের সাথে মেলে না (সারি পরিবর্তন করা হয়েছে)"
+
+msgid "Audit chain broken at event %(id)d: %(reason)s. %(count)d earlier events intact."
+msgstr "%(id)d নম্বর ঘটনায় অডিট চেইন ভাঙা: %(reason)s। এর আগের %(count)d টি ঘটনা অক্ষত।"
