@@ -1,0 +1,42 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Moderation" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-4 max-w-3xl">
+  <div>
+    <h1 class="text-2xl">{% translate "Moderation" %}</h1>
+    <p class="text-muted">{% blocktranslate count n=queue_size %}{{ n }} comment to review{% plural %}{{ n }} comments to review{% endblocktranslate %}</p>
+  </div>
+  <p class="callout" role="note">{% icon "lock" %}<span>{% translate "Only the cleaned text is shown. Nobody can see who wrote a comment, for which course or when. You can approve or hide a comment, never edit it." %}</span></p>
+  <nav class="flex flex-wrap gap-2" aria-label="{% translate 'Comment lists' %}">
+    {% for value, label in tabs %}
+    <a class="btn {% if value == tab %}btn-primary{% else %}btn-ghost{% endif %}" href="?view={{ value }}"{% if value == tab %} aria-current="page"{% endif %}>{{ label }}</a>
+    {% endfor %}
+  </nav>
+  {% if page_obj.object_list %}
+  <ul class="grid gap-3">
+    {% for answer in page_obj %}
+    <li class="card grid gap-2">
+      <span class="field-hint">{{ answer.question|localized:"text" }}</span>
+      <p>{{ answer.encrypted_text }}</p>
+      <div class="flex flex-wrap items-center gap-2">
+        {% if answer.moderation == "reported" %}{% translate "Reported by a teacher" as source_label %}{% include "components/badge.html" with variant="pending" icon="flag" label=source_label %}
+        {% elif answer.flagged %}{% translate "Cleaned by the filter" as source_label %}{% include "components/badge.html" with variant="info" icon="shield" label=source_label %}{% endif %}
+        {% if answer.moderation == "approved" %}{% translate "Approved" as state_label %}{% include "components/badge.html" with variant="done" icon="check" label=state_label %}
+        {% elif answer.moderation == "hidden" %}{% translate "Hidden" as state_label %}{% include "components/badge.html" with variant="alert" icon="eye" label=state_label %}{% endif %}
+        <form method="post" action="{% url 'feedback:moderation_decide' answer.pk %}" class="flex flex-wrap gap-2 ml-auto">
+          {% csrf_token %}
+          <input type="hidden" name="view" value="{{ tab }}">
+          {% if answer.moderation != "approved" %}<button type="submit" class="btn btn-ghost" name="decision" value="approve">{% icon "check" %}{% translate "Approve" %}</button>{% endif %}
+          {% if answer.moderation != "hidden" %}<button type="submit" class="btn btn-ghost" name="decision" value="hide">{% icon "eye" %}{% translate "Hide" %}</button>{% endif %}
+        </form>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    {% translate "Nothing here" as empty_title %}{% translate "There are no comments in this list." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="flag" %}
+  {% endif %}
+  {% include "components/pagination.html" with page_obj=page_obj query=query %}
+</div>
+{% endblock %}

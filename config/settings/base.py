@@ -208,6 +208,16 @@ SECOND_FACTOR_PENDING_SECONDS = 10 * 60
 # Results and comment lists stay hidden below this many responses (never fewer than 3).
 MIN_RESPONSES = env.int("MIN_RESPONSES", default=5)
 
+# When teachers and heads of department may see a round's results: "after_close" (the default,
+# once the round has closed) or "held" (not at all until the Admin switches back). Never earlier.
+RESULTS_VISIBLE = env("RESULTS_VISIBLE", default="after_close")
+
+# Unfinished feedback drafts are deleted this many days after the last save.
+DRAFT_RETENTION_DAYS = env.int("DRAFT_RETENTION_DAYS", default=30)
+
+# Hours before a round closes at which students with unsubmitted forms are reminded.
+REMINDER_HOURS_BEFORE_CLOSE = env.list("REMINDER_HOURS_BEFORE_CLOSE", cast=int, default=[48, 24])
+
 # A course average below this raises an alert card on the head of department's overview.
 LOW_RATING_THRESHOLD = env.float("LOW_RATING_THRESHOLD", default=3.5)
 

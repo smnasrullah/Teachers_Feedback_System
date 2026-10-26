@@ -17,9 +17,9 @@ import unicodedata
 from dataclasses import dataclass
 from enum import StrEnum
 
-from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
+from apps.core.services import system_settings
 from apps.feedback.services import wordlist
 from apps.feedback.services.moderation import get_backend
 
@@ -171,7 +171,7 @@ def _merge(spans: list[tuple[int, int]]) -> list[tuple[int, int]]:
 
 def _cut(text: str, spans: list[tuple[int, int]]) -> str:
     """Remove (or, with ``PROFANITY_ACTION=mask``, star out) each span, last first."""
-    mask = settings.PROFANITY_ACTION == "mask"
+    mask = system_settings.get("PROFANITY_ACTION") == "mask"
     for start, end in reversed(spans):
         text = text[:start] + (MASK_CHAR * (end - start) if mask else "") + text[end:]
     return text

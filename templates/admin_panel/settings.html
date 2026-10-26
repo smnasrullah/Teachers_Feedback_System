@@ -1,0 +1,20 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "System settings" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <header class="grid gap-2">
+    <h1>{% translate "System settings" %}</h1>
+    <p>{% translate "These values take effect at once. Every change is written to the audit log with the old and the new value." %}</p>
+  </header>
+  <form method="post" novalidate class="card grid gap-4">
+    {% csrf_token %}
+    {% include "components/form_errors.html" with form=form %}
+    {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-primary">{% translate "Save" %}</button>
+      <a class="btn btn-ghost" href="{% url 'auditlog:log' %}?action=settings.changed">{% icon "shield" %}{% translate "See changes in the audit log" %}</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

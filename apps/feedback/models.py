@@ -286,6 +286,26 @@ class FeedbackResponse(models.Model):
         return f"FeedbackResponse({self.pk})"
 
 
+class ModerationStatus(models.TextChoices):
+    UNREVIEWED = "unreviewed", _("Not reviewed")
+    REPORTED = "reported", _("Reported by a teacher")
+    APPROVED = "approved", _("Approved")
+    HIDDEN = "hidden", _("Hidden")
+
+
+class AnswerQuerySet(models.QuerySet):
+    def shown(self):
+        """Answers the Admin has not hidden; every reader of comments goes through this."""
+        return self.exclude(moderation=ModerationStatus.HIDDEN)
+
+    def awaiting_review(self):
+        """Comments the filter cleaned or a teacher reported, that no Admin has decided on."""
+        return self.filter(
+            models.Q(flagged=True, moderation=ModerationStatus.UNREVIEWED)
+            | models.Q(moderation=ModerationStatus.REPORTED)
+        )
+
+
 class Answer(models.Model):
     """The answer to one question inside an anonymous response. Comment text is encrypted
     with a timeless token so the ciphertext cannot date it either."""
@@ -308,6 +328,15 @@ class Answer(models.Model):
         default=False,
         help_text=_("The filter found abusive words in the comment and removed them."),
     )
+    moderation = models.CharField(
+        _("moderation"),
+        max_length=16,
+        choices=ModerationStatus.choices,
+        default=ModerationStatus.UNREVIEWED,
+        help_text=_("An Admin can hide a comment or approve it; the text is never edited."),
+    )
+
+    objects = AnswerQuerySet.as_manager()
 
     class Meta:
         verbose_name = _("answer")

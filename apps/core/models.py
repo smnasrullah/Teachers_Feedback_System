@@ -26,3 +26,23 @@ class ActiveSession(models.Model):
 
     def __str__(self):
         return f"ActiveSession({self.user_id})"
+
+
+class SystemSetting(models.Model):
+    """One value the Admin changed from its default in ``settings``.
+
+    Only overrides are stored; ``apps.core.services.system_settings`` knows the keys, their
+    limits and their defaults, and is the only code that reads or writes this table.
+    """
+
+    key = models.CharField(_("setting"), max_length=64, unique=True)
+    value = models.JSONField(_("value"))
+    updated_at = models.DateTimeField(_("updated at"), auto_now=True)
+
+    class Meta:
+        ordering = ["key"]
+        verbose_name = _("system setting")
+        verbose_name_plural = _("system settings")
+
+    def __str__(self):
+        return self.key

@@ -5,11 +5,11 @@ Querysets carry the rule too (``with_visible_ids``), so a hidden value is never 
 read from the database, let alone rendered.
 """
 
-from django.conf import settings
 from django.db.models import BooleanField, Case, F, Q, Value, When
 
 from apps.core.encryption import EncryptedCharField
 from apps.core.permissions import HOD, Role, has_role
+from apps.core.services import system_settings
 
 MASK = "••••••"
 
@@ -35,7 +35,10 @@ def visible_student_id(viewer, student_profile) -> str | None:
 
 def own_id_for_display(viewer, student_profile) -> str | None:
     """A student's own ID for their own pages: only when ``SHOW_OWN_ID_TO_STUDENT`` is on."""
-    if not settings.SHOW_OWN_ID_TO_STUDENT or student_profile.registry.claimed_by_id != viewer.pk:
+    if (
+        not system_settings.get("SHOW_OWN_ID_TO_STUDENT")
+        or student_profile.registry.claimed_by_id != viewer.pk
+    ):
         return None
     return student_profile.registry.external_id
 

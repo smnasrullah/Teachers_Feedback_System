@@ -47,7 +47,12 @@ urlpatterns = [
         filter_views.filter_term_delete,
         name="filter_term_delete",
     ),
-    path("manage/flagged-comments/", filter_views.flagged_list, name="flagged"),
+    path("manage/moderation/", filter_views.moderation_queue, name="moderation"),
+    path(
+        "manage/moderation/<uuid:pk>/",
+        filter_views.moderation_decide,
+        name="moderation_decide",
+    ),
     path("manage/feedback-rounds/", window_views.window_list, name="windows"),
     path("manage/feedback-rounds/new/", window_views.window_create, name="window_create"),
     path("manage/feedback-rounds/<int:pk>/", window_views.window_edit, name="window_edit"),

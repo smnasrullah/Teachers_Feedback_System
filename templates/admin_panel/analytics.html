@@ -1,0 +1,105 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n static ui %}
+{% block title %}{% translate "University analytics" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block head %}{% if report.trend or distribution_chart or department_chart %}<script src="{% static 'vendor/chart.umd.min.js' %}" nonce="{{ csp_nonce }}" defer></script><script src="{% static 'js/charts.js' %}" nonce="{{ csp_nonce }}" defer></script>{% endif %}{% endblock %}
+{% block content %}
+<div class="grid gap-4">
+  <div>
+    <h1 class="text-2xl">{% translate "University analytics" %}</h1>
+    <p class="text-muted">{% if window %}{{ window.semester.name }}, {{ window.name }}{% endif %}</p>
+  </div>
+
+  <form method="get" class="card flex flex-wrap items-end gap-3" aria-label="{% translate 'Filter the analytics' %}">
+    {% include "components/form_errors.html" with form=form %}
+    {% for field in form %}
+    <div class="field">
+      <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% for error in field.errors %}<p class="field-error" role="alert">{{ error }}</p>{% endfor %}
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">{% translate "Show" %}</button>
+    <a class="btn btn-ghost" href="{% url 'reports:analytics' %}">{% translate "Clear" %}</a>
+  </form>
+
+  {% if not report %}
+  <div class="card">{% translate "No feedback round yet" as empty_title %}{% translate "The analytics appear once a feedback round has started." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="calendar" %}</div>
+  {% else %}
+  <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="{% translate 'Summary' %}">
+    {% translate "Courses in this view" as courses_label %}{% include "components/stat_tile.html" with label=courses_label value=report.courses icon="book" %}
+    {% if round_open %}
+    {% translate "Round closes in" as closes_label %}{% include "components/stat_tile.html" with label=closes_label value=closes_at|timeuntil icon="clock" %}
+    {% else %}
+    {% translate "Round" as closes_label %}{% translate "Closed" as closed_value %}{% blocktranslate with when=closes_at|date:"j M Y" asvar closed_note %}Closed on {{ when }}{% endblocktranslate %}{% include "components/stat_tile.html" with label=closes_label value=closed_value delta=closed_note icon="lock" %}
+    {% endif %}
+    {% translate "Participation" as rate_label %}
+    {% if report.rate.percent is not None %}
+    {% blocktranslate with submitted=report.rate.submitted enrolled=report.rate.enrolled asvar rate_note %}{{ submitted }} of {{ enrolled }} forms submitted{% endblocktranslate %}
+    {% include "components/stat_tile.html" with label=rate_label value=report.rate.percent|floatformat:0|add:"%" delta=rate_note icon="users" %}
+    {% else %}
+    {% translate "Not shown yet" as hidden_value %}{% include "components/stat_tile.html" with label=rate_label value=hidden_value icon="lock" %}
+    {% endif %}
+  </section>
+  {% if not report.released %}<p class="callout" role="status">{% icon "lock" %}<span>{% translate "Results are released after the round closes." %}</span></p>{% endif %}
+
+  <div class="grid gap-4 lg:grid-cols-2">
+    <section class="card grid gap-3" aria-labelledby="dist-title">
+      <h2 id="dist-title" class="text-xl">{% translate "Rating distribution" %}</h2>
+      {% if distribution_chart %}
+      {% translate "Share of answers on each point of the 1 to 5 scale" as dist_summary %}
+      {% include "components/chart.html" with chart_id="distribution" config=distribution_chart summary=dist_summary %}
+      {% else %}
+      <p class="text-sm text-muted">{% if report.distribution.message %}{{ report.distribution.message }}{% else %}{% translate "There are no ratings." %}{% endif %}</p>
+      {% endif %}
+    </section>
+    <section class="card grid gap-3" aria-labelledby="trend-title">
+      <h2 id="trend-title" class="text-xl">{% translate "Average rating by round" %}</h2>
+      {% if report.trend %}
+      {% include "components/chart.html" with chart_id="trend" config=report.trend summary=report.trend_summary %}
+      {% else %}
+      <p class="text-sm text-muted">{% translate "The trend appears once two rounds have results." %}</p>
+      {% endif %}
+    </section>
+  </div>
+
+  <section class="card grid gap-3" aria-labelledby="dept-title">
+    <h2 id="dept-title" class="text-xl">{% translate "Department comparison" %}</h2>
+    {% if report.departments %}
+    {% if department_chart %}{% translate "Average rating of each department" as dept_summary %}{% include "components/chart.html" with chart_id="departments" config=department_chart summary=dept_summary %}{% endif %}
+    <table class="data-table" role="table">
+      <caption class="sr-only">{% translate "Participation and average rating by department" %}</caption>
+      <thead role="rowgroup"><tr role="row">
+        <th scope="col" role="columnheader">{% translate "Department" %}</th>
+        <th scope="col" role="columnheader" class="cell-num">{% translate "Courses" %}</th>
+        <th scope="col" role="columnheader" class="cell-num">{% translate "Participation" %}</th>
+        <th scope="col" role="columnheader" class="cell-num">{% translate "Average" %}</th>
+      </tr></thead>
+      <tbody role="rowgroup">
+        {% for row in report.departments %}
+        <tr role="row">
+          <td role="cell" data-label="{% translate 'Department' %}">{{ row.department|localized:"name" }}</td>
+          <td role="cell" data-label="{% translate 'Courses' %}" class="cell-num">{{ row.courses }}</td>
+          <td role="cell" data-label="{% translate 'Participation' %}" class="cell-num">{% if row.rate.percent is not None %}{{ row.rate.percent|floatformat:0 }}%{% else %}–{% endif %}</td>
+          <td role="cell" data-label="{% translate 'Average' %}" class="cell-num">{% if row.average is not None %}{{ row.average|floatformat:1 }}{% else %}–{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="text-sm text-muted">{% translate "No courses match these filters." %}</p>
+    {% endif %}
+  </section>
+
+  <div class="grid gap-4 lg:grid-cols-2">
+    <section class="card grid gap-3" aria-labelledby="top-title">
+      <h2 id="top-title" class="text-xl">{% translate "Top courses" %}</h2>
+      {% include "admin_panel/_course_list.html" with rows=report.top window=window %}
+    </section>
+    <section class="card grid gap-3" aria-labelledby="bottom-title">
+      <h2 id="bottom-title" class="text-xl">{% translate "Courses needing attention" %}</h2>
+      {% include "admin_panel/_course_list.html" with rows=report.bottom window=window %}
+    </section>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

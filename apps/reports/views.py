@@ -18,6 +18,7 @@ from apps.academics.models import CourseOffering
 from apps.core.permissions import HOD, Role, has_role, role_required
 from apps.core.services.navigation import user_nav_items
 from apps.feedback.models import FeedbackWindow, Question, QuestionType
+from apps.feedback.services import review
 from apps.reports.forms import ActionNoteForm
 from apps.reports.services import teacher
 from apps.reports.services.access import access_for
@@ -103,7 +104,7 @@ def course(request, offering_id, window_id):
 @role_required(*READERS)
 def comments(request, offering_id, window_id, question_id):
     """One question's comment list: a fragment for HTMX, the whole page otherwise."""
-    offering, window, _access = _load(request, offering_id, window_id)
+    offering, window, access = _load(request, offering_id, window_id)
     question = get_object_or_404(Question, pk=question_id, question_type=QuestionType.TEXT)
     if not request.headers.get("HX-Request"):
         query = request.GET.copy()
@@ -115,7 +116,12 @@ def comments(request, offering_id, window_id, question_id):
     return render(
         request,
         "reports/_comments.html",
-        {"panel": panel, "offering": offering, "window": window},
+        {
+            "panel": panel,
+            "offering": offering,
+            "window": window,
+            "can_write_note": access.can_write_note,
+        },
     )
 
 
@@ -142,3 +148,20 @@ def save_note(request, offering_id, window_id):
     else:
         messages.error(request, _("The note could not be saved. It may be too long."))
     return redirect(f"{_course_url(offering, window)}#action-taken")
+
+
+@require_POST
+@role_required(Role.TEACHER)
+def report_comment(request, offering_id, window_id):
+    """Send one comment of the teacher's own course to the Admin's moderation queue."""
+    offering, window, access = _load(request, offering_id, window_id)
+    if not access.can_write_note:
+        raise PermissionDenied
+    reported = review.report(
+        request.POST.get("comment", ""), offering, window, actor=request.user, request=request
+    )
+    if reported:
+        messages.success(request, _("The comment was sent to the administrator for review."))
+    else:
+        messages.info(request, _("This comment has already been reported or reviewed."))
+    return redirect(_course_url(offering, window))

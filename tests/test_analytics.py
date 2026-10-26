@@ -583,6 +583,7 @@ class TestQueries:
                 student_profile=student, offering=setup.offering, window=setup.window
             )
         window, offering = setup.window, setup.offering
+        anonymity.min_responses()  # loads the cached system settings, which are not under test
         counted = [
             (lambda: analytics.question_stats(window, offering), 3),
             (lambda: analytics.response_rate(window, offering), 2),

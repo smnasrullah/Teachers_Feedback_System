@@ -442,17 +442,17 @@ class TestAdminScreens:
 
     def test_flagged_comments_show_cleaned_text_only(self, admin_client, form):
         submit(form, required="Good but he is an idiot", optional="Fine")
-        page = admin_client.get(reverse("feedback:flagged")).content.decode()
+        page = admin_client.get(reverse("feedback:moderation")).content.decode()
         assert "Good but he is an" in page
         assert "idiot" not in page
         assert "Fine" not in page
         assert form["offering"].course.title not in page
 
     def test_only_the_admin_may_open_the_screens(self, client):
-        for name in ("feedback:filter_terms", "feedback:flagged"):
+        for name in ("feedback:filter_terms", "feedback:moderation"):
             assert client.get(reverse(name)).status_code in (302, 403, 404)
         sign_in(client, make_admin())
-        assert client.get(reverse("feedback:flagged")).status_code == 200
+        assert client.get(reverse("feedback:moderation")).status_code == 200
 
 
 def test_normalise_term_rejects_anything_but_one_word():

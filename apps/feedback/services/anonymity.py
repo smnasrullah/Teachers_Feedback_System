@@ -7,20 +7,21 @@ stable order derived from a server secret, never in the order they were written.
 
 from operator import attrgetter
 
-from django.conf import settings
 from django.utils import timezone
 from django.utils.crypto import salted_hmac
 
+from apps.core.services import system_settings
 from apps.feedback.models import Answer, FeedbackResponse
 
-# Below this many responses a single answer can be traced back by elimination.
-MIN_RESPONSES_FLOOR = 3
+MIN_RESPONSES_FLOOR = system_settings.MIN_RESPONSES_FLOOR
 COMMENT_ORDER_SALT = "apps.feedback.comment_order"
+COMMENT_HANDLE_SALT = "apps.feedback.comment_token"
+COMMENT_TOKEN_LENGTH = 32
 
 
 def min_responses() -> int:
     """The configured ``MIN_RESPONSES``, never below the floor."""
-    return max(MIN_RESPONSES_FLOOR, settings.MIN_RESPONSES)
+    return max(MIN_RESPONSES_FLOOR, system_settings.get("MIN_RESPONSES"))
 
 
 def enough_responses(count: int) -> bool:
@@ -28,8 +29,19 @@ def enough_responses(count: int) -> bool:
 
 
 def results_visible(window, now=None) -> bool:
-    """Results of ``window`` reach teachers and HODs only once it has closed."""
+    """Results of ``window`` reach teachers and HODs only once it has closed (and never while
+    the Admin holds them back)."""
+    if system_settings.get("RESULTS_VISIBLE") != "after_close":
+        return False
     return window.has_closed(now or timezone.now())
+
+
+def comment_token(answer_id, offering, window) -> str:
+    """An opaque handle for one comment on a page, so a teacher can report it without the
+    page carrying the answer's own id. It is not the id and cannot be turned back into it."""
+    return salted_hmac(COMMENT_HANDLE_SALT, f"{offering.pk}:{window.pk}:{answer_id}").hexdigest()[
+        :COMMENT_TOKEN_LENGTH
+    ]
 
 
 def stable_shuffle(items, *, offering, window, key=attrgetter("pk")) -> list:
@@ -53,12 +65,16 @@ def comments(offering, window, question, *, now=None) -> list[str] | None:
         FeedbackResponse.objects.filter(offering=offering, window=window).count()
     ):
         return None
-    answers = Answer.objects.filter(
-        response__offering=offering,
-        response__window=window,
-        question=question,
-        encrypted_text__isnull=False,
-    ).only("id", "encrypted_text")
+    answers = (
+        Answer.objects.filter(
+            response__offering=offering,
+            response__window=window,
+            question=question,
+            encrypted_text__isnull=False,
+        )
+        .shown()
+        .only("id", "encrypted_text")
+    )
     return [
         answer.encrypted_text
         for answer in stable_shuffle(answers, offering=offering, window=window)

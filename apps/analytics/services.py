@@ -158,6 +158,7 @@ class CloudWord:
 class Comment:
     text: str
     sentiment: Sentiment
+    token: str = ""
 
 
 @dataclass(frozen=True)
@@ -179,7 +180,7 @@ def offering_ids(offerings) -> tuple[int, ...]:
 
 def _not_released(window, viewer, live, now) -> InsufficientData | None:
     """``None`` when the caller may see results of ``window`` at all."""
-    if window.has_closed(now or timezone.now()):
+    if anonymity.results_visible(window, now):
         return None
     if live and has_role(viewer, Role.ADMIN):
         return None
@@ -347,20 +348,30 @@ def response_rate(
 
 
 def trend(
-    *, teacher=None, course=None, department=None, viewer=None, live=False, now=None
+    *,
+    teacher=None,
+    course=None,
+    department=None,
+    level_term=None,
+    university=False,
+    viewer=None,
+    live=False,
+    now=None,
 ) -> list[TrendPoint] | InsufficientData:
-    """Mean score of the offerings of a teacher, course or department, round by round, oldest
-    first. Rounds that are not released or have too few responses are left out."""
+    """Mean score of the offerings of a teacher, course, department or level/term (or of the
+    whole ``university``), round by round, oldest first. Rounds that are not released or have
+    too few responses are left out."""
     scope = Q()
     for field, value in (
         ("teacher", teacher),
         ("course", course),
         ("course__department", department),
+        ("course__level_term", level_term),
     ):
         if value is not None:
             scope &= Q(**{field: value})
-    if not scope:
-        raise ValueError("trend() needs a teacher, a course or a department.")
+    if not scope and not university:
+        raise ValueError("trend() needs a teacher, a course, a department or university=True.")
     now = now or timezone.now()
     candidates = (
         FeedbackWindow.objects.filter(
@@ -408,6 +419,38 @@ def trend(
 
     points = _cached(set(windows), "trend", repr(scope), compute)
     return points or _too_few()
+
+
+def rating_distribution(
+    window, offerings, *, viewer=None, live=False, now=None
+) -> tuple[Bucket, ...] | InsufficientData:
+    """How many rating and agreement answers fell on each point of the scale, over all the
+    questions of the slice. Needs the threshold in responses."""
+    if refusal := _not_released(window, viewer, live, now):
+        return refusal
+    ids = offering_ids(offerings)
+
+    def compute():
+        if not _enough(_response_count(window, ids)):
+            return _too_few()
+        rows = (
+            Answer.objects.filter(
+                response__window=window,
+                response__offering_id__in=ids,
+                question__question_type__in=RATED_TYPES,
+                int_value__isnull=False,
+            )
+            .values("int_value")
+            .annotate(n=Count("pk"))
+        )
+        counts = {row["int_value"]: row["n"] for row in rows}
+        total = sum(counts.values())
+        return tuple(
+            Bucket(value, counts.get(value, 0), _percent(counts.get(value, 0), total))
+            for value in range(SCALE_MIN, SCALE_MAX + 1)
+        )
+
+    return _cached({window.pk}, "distribution", (window.pk, ids), compute)
 
 
 def department_average(
@@ -521,7 +564,7 @@ def _texts(window, ids, question=None) -> list[str]:
         response__offering_id__in=ids,
         question__question_type=QuestionType.TEXT,
         encrypted_text__isnull=False,
-    )
+    ).shown()
     if question is not None:
         answers = answers.filter(question=question)
     return [text for text in answers.values_list("encrypted_text", flat=True) if text.strip()]
@@ -603,13 +646,21 @@ def comment_list(
         return refusal
     if not _enough(_response_count(window, offering_ids(offering))):
         return _too_few()
-    answers = Answer.objects.filter(
-        response__window=window,
-        response__offering=offering,
-        question=question,
-        encrypted_text__isnull=False,
-    ).only("id", "encrypted_text")
+    answers = (
+        Answer.objects.filter(
+            response__window=window,
+            response__offering=offering,
+            question=question,
+            encrypted_text__isnull=False,
+        )
+        .shown()
+        .only("id", "encrypted_text")
+    )
     return [
-        Comment(answer.encrypted_text, sentiment_of(answer.encrypted_text))
+        Comment(
+            answer.encrypted_text,
+            sentiment_of(answer.encrypted_text),
+            anonymity.comment_token(answer.pk, offering, window),
+        )
         for answer in anonymity.stable_shuffle(answers, offering=offering, window=window)
     ]

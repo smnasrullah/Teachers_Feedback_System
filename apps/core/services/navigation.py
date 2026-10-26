@@ -10,6 +10,12 @@ from apps.core.permissions import Role
 def admin_nav_items(current: str = "") -> list[dict]:
     """Admin navigation; ``current`` is the ``key`` of the active entry."""
     entries = [
+        {
+            "key": "dashboard",
+            "label": _("Dashboard"),
+            "url": reverse("accounts:dashboard_admin"),
+            "icon": "home",
+        },
         {"group": _("People")},
         {
             "key": "registry",
@@ -97,9 +103,9 @@ def admin_nav_items(current: str = "") -> list[dict]:
             "icon": "settings",
         },
         {
-            "key": "flagged",
-            "label": _("Flagged comments"),
-            "url": reverse("feedback:flagged"),
+            "key": "moderation",
+            "label": _("Moderation"),
+            "url": reverse("feedback:moderation"),
             "icon": "flag",
         },
         {
@@ -108,6 +114,12 @@ def admin_nav_items(current: str = "") -> list[dict]:
             "url": reverse("feedback:windows"),
             "icon": "calendar",
         },
+        {
+            "key": "analytics",
+            "label": _("University analytics"),
+            "url": reverse("reports:analytics"),
+            "icon": "chart",
+        },
         {"group": _("Data")},
         {
             "key": "import",
@@ -115,20 +127,38 @@ def admin_nav_items(current: str = "") -> list[dict]:
             "url": reverse("academics:import_index"),
             "icon": "list",
         },
+        {"group": _("System")},
+        {
+            "key": "audit",
+            "label": _("Audit log"),
+            "url": reverse("auditlog:log"),
+            "icon": "shield",
+        },
+        {
+            "key": "settings",
+            "label": _("System settings"),
+            "url": reverse("core:settings"),
+            "icon": "settings",
+        },
     ]
     return [{**entry, "current": entry.get("key") == current} for entry in entries]
 
 
 def user_nav_items(user, current: str = "") -> list[dict]:
     """Navigation for any signed-in role: its dashboard, the Admin screens, and the account."""
-    entries = [
-        {
-            "key": "dashboard",
-            "label": _("Dashboard"),
-            "url": reverse("accounts:dashboard"),
-            "icon": "home",
-        }
-    ]
+    is_admin = getattr(user, "role", None) == Role.ADMIN
+    entries = (
+        []
+        if is_admin
+        else [
+            {
+                "key": "dashboard",
+                "label": _("Dashboard"),
+                "url": reverse("accounts:dashboard"),
+                "icon": "home",
+            }
+        ]
+    )
     if getattr(user, "role", None) == Role.TEACHER:
         entries.append(
             {
@@ -153,7 +183,7 @@ def user_nav_items(user, current: str = "") -> list[dict]:
                 "icon": "shield",
             },
         ]
-    if getattr(user, "role", None) == Role.ADMIN:
+    if is_admin:
         entries += admin_nav_items()
     entries += [
         {"group": _("Account")},

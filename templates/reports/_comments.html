@@ -41,6 +41,13 @@
         {% if comment.sentiment == "positive" %}<span class="tag tag-positive">{% icon "smile" %}{% translate "Positive" %}</span>
         {% elif comment.sentiment == "negative" %}<span class="tag tag-negative">{% icon "frown" %}{% translate "Needs work" %}</span>
         {% else %}<span class="tag tag-neutral">{% icon "meh" %}{% translate "Neutral" %}</span>{% endif %}
+        {% if can_write_note and not printing and comment.token %}
+        <form method="post" action="{% url 'reports:report_comment' offering.pk window.pk %}" class="no-print">
+          {% csrf_token %}
+          <input type="hidden" name="comment" value="{{ comment.token }}">
+          <button type="submit" class="btn btn-ghost">{% icon "flag" %}{% translate "Report this comment" %}</button>
+        </form>
+        {% endif %}
       </div>
     </div>
     {% endfor %}

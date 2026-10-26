@@ -1,0 +1,122 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n static ui %}
+{% block title %}{% translate "Dashboard" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block head %}{% if home.trend or home.distribution %}<script src="{% static 'vendor/chart.umd.min.js' %}" nonce="{{ csp_nonce }}" defer></script><script src="{% static 'js/charts.js' %}" nonce="{{ csp_nonce }}" defer></script>{% endif %}{% endblock %}
+{% block content %}
+<div class="grid gap-4">
+  <div class="flex flex-wrap items-end gap-3">
+    <div class="flex-1">
+      <h1 class="text-2xl">{% translate "Dashboard" %}</h1>
+      <p class="text-muted">{% if home.window %}{{ home.window.semester.name }}, {{ home.window.name }}{% else %}{% translate "No feedback round has started yet." %}{% endif %}</p>
+    </div>
+    {% translate "Scope: all departments" as scope_label %}{% include "components/badge.html" with variant="info" icon="eye" label=scope_label %}
+  </div>
+
+  <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="{% translate 'Summary' %}">
+    {% blocktranslate with students=home.people.students teachers=home.people.teachers asvar people_note %}{{ students }} students, {{ teachers }} teachers{% endblocktranslate %}
+    {% translate "Registered users" as users_label %}{% include "components/stat_tile.html" with label=users_label value=home.people.total delta=people_note icon="users" %}
+    {% if home.open_now %}
+    {% translate "Round closes in" as closes_label %}{% include "components/stat_tile.html" with label=closes_label value=home.window.closes_at|timeuntil delta=home.window.name icon="clock" %}
+    {% elif home.window %}
+    {% translate "Latest round" as closes_label %}{% translate "Closed" as closed_value %}{% blocktranslate with when=home.window.closes_at|date:"j M Y" asvar closed_note %}Closed on {{ when }}{% endblocktranslate %}{% include "components/stat_tile.html" with label=closes_label value=closed_value delta=closed_note icon="lock" %}
+    {% else %}
+    {% translate "Round" as closes_label %}{% translate "None yet" as closed_value %}{% include "components/stat_tile.html" with label=closes_label value=closed_value icon="calendar" %}
+    {% endif %}
+    {% translate "Participation" as rate_label %}
+    {% if home.rate.percent is not None %}
+    {% blocktranslate with submitted=home.rate.submitted enrolled=home.rate.enrolled asvar rate_note %}{{ submitted }} of {{ enrolled }} forms submitted{% endblocktranslate %}
+    {% include "components/stat_tile.html" with label=rate_label value=home.rate.percent|floatformat:0|add:"%" delta=rate_note icon="check" %}
+    {% else %}
+    {% translate "Not shown yet" as hidden_value %}{% include "components/stat_tile.html" with label=rate_label value=hidden_value icon="lock" %}
+    {% endif %}
+    <div class="card stat-tile">
+      <div class="stat-label">{% icon "flag" %}<span>{% translate "Comments to review" %}</span></div>
+      <div class="stat-value num">{{ home.queue_size }}</div>
+      <div class="stat-delta"><a href="{% url 'feedback:moderation' %}">{% translate "Open moderation queue" %}</a></div>
+    </div>
+  </section>
+
+  <nav class="flex flex-wrap gap-3" aria-label="{% translate 'Quick actions' %}">
+    <a class="btn btn-ghost" href="{% url 'academics:import_index' %}">{% icon "upload" %}{% translate "Import students" %}</a>
+    <a class="btn btn-ghost" href="{% url 'feedback:window_create' %}">{% icon "play" %}{% translate "Open a round" %}</a>
+    <a class="btn btn-ghost" href="{% url 'academics:promotion' %}">{% icon "award" %}{% translate "Promote students" %}</a>
+    <a class="btn btn-ghost" href="{% url 'feedback:questions' %}">{% icon "edit" %}{% translate "Edit questions" %}</a>
+    <a class="btn btn-ghost" href="{% url 'reports:analytics' %}">{% icon "chart" %}{% translate "University analytics" %}</a>
+  </nav>
+
+  <div class="grid gap-4 lg:grid-cols-2">
+    <section class="card grid gap-3" aria-labelledby="part-title">
+      <h2 id="part-title" class="text-xl">{% translate "Participation by department" %}</h2>
+      {% if home.departments %}
+      <ul class="grid gap-3">
+        {% for row in home.departments %}
+        <li class="grid grid-cols-[6rem_1fr_3rem] items-center gap-3">
+          <span>{{ row.department.code }}</span>
+          {% blocktranslate with name=row.department.code value=row.percent|floatformat:0 asvar meter_label %}{{ name }}: participation {{ value }} percent{% endblocktranslate %}
+          {% include "components/meter.html" with value=row.percent label=meter_label tone=row.tone %}
+          <b class="num">{{ row.percent|floatformat:0 }}%</b>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="text-sm text-muted">{% translate "Department figures appear once enough forms have been submitted." %}</p>
+      {% endif %}
+    </section>
+
+    <section class="card grid gap-3" aria-labelledby="recent-title">
+      <h2 id="recent-title" class="text-xl">{% translate "Recent activity" %}</h2>
+      {% if home.events %}
+      <ul class="grid gap-2">
+        {% for event in home.events %}
+        <li class="flex items-baseline justify-between gap-3">
+          <span>{{ event.action }}{% if event.actor_username %} <span class="text-sm text-muted">· {{ event.actor_username }}</span>{% endif %}</span>
+          <span class="text-sm text-muted num">{{ event.created_at|date:"j M, H:i" }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="text-sm text-muted">{% translate "Nothing recorded yet." %}</p>
+      {% endif %}
+      <a href="{% url 'auditlog:log' %}">{% translate "Open the audit log" %}</a>
+    </section>
+  </div>
+
+  <div class="grid gap-4 lg:grid-cols-2">
+    <section class="card grid gap-3" aria-labelledby="trend-title">
+      <h2 id="trend-title" class="text-xl">{% translate "Average rating by round" %}</h2>
+      {% if home.trend %}
+      {% include "components/chart.html" with chart_id="trend" config=home.trend summary=home.trend_summary %}
+      {% else %}
+      <p class="text-sm text-muted">{% translate "The trend appears once two rounds have results." %}</p>
+      {% endif %}
+    </section>
+    <section class="card grid gap-3" aria-labelledby="dist-title">
+      <h2 id="dist-title" class="text-xl">{% translate "Rating distribution" %}</h2>
+      {% if home.distribution %}
+      {% translate "Share of answers on each point of the 1 to 5 scale" as dist_summary %}
+      {% include "components/chart.html" with chart_id="distribution" config=home.distribution summary=dist_summary %}
+      {% else %}
+      <p class="text-sm text-muted">{% translate "The distribution appears once a round has closed with enough responses." %}</p>
+      {% endif %}
+    </section>
+  </div>
+
+  <section class="card grid gap-3" id="mod" aria-labelledby="mod-title">
+    <h2 id="mod-title" class="text-xl">{% translate "Moderation queue" %}</h2>
+    <p class="text-sm text-muted">{% translate "Only cleaned text is shown. Nobody can see who wrote a comment." %}</p>
+    {% if home.queue_preview %}
+    <ul class="grid gap-3">
+      {% for answer in home.queue_preview %}
+      <li class="grid gap-1">
+        <p>{{ answer.encrypted_text }}</p>
+        <p class="text-sm text-muted">{% if answer.moderation == "reported" %}{% translate "Reported by a teacher" %}{% else %}{% translate "Cleaned by the filter" %}{% endif %}</p>
+      </li>
+      {% endfor %}
+    </ul>
+    <a href="{% url 'feedback:moderation' %}">{% translate "Review all comments" %}</a>
+    {% else %}
+    <p class="text-sm text-muted">{% translate "No comment is waiting for review." %}</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

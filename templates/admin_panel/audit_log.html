@@ -1,0 +1,83 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Audit log" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-4">
+  <div class="flex flex-wrap items-end gap-3">
+    <div class="flex-1">
+      <h1 class="text-2xl">{% translate "Audit log" %}</h1>
+      <p class="text-muted">{% translate "Every row is chained to the one before it, so a changed or removed row can be found." %}</p>
+    </div>
+    <form method="post" action="{% url 'auditlog:verify' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-ghost">{% icon "shield" %}{% translate "Verify the chain" %}</button>
+    </form>
+    <a class="btn btn-ghost" href="{% url 'auditlog:export' %}{% if export_query %}?{{ export_query }}{% endif %}">{% icon "file" %}{% translate "Export CSV" %}</a>
+  </div>
+  <form method="get" class="card flex flex-wrap items-end gap-3" aria-label="{% translate 'Filter the log' %}">
+    {% include "components/form_errors.html" with form=form %}
+    <div class="field">
+      <label class="field-label" for="{{ form.actor.id_for_label }}">{{ form.actor.label }}</label>
+      {{ form.actor }}
+    </div>
+    <div class="field">
+      <label class="field-label" for="action">{{ form.action.label }}</label>
+      <select class="select" id="action" name="action">
+        <option value="">{% translate "All actions" %}</option>
+        {% for option in actions %}<option value="{{ option }}"{% if option == form.action.value %} selected{% endif %}>{{ option }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label" for="object_type">{{ form.object_type.label }}</label>
+      <select class="select" id="object_type" name="object_type">
+        <option value="">{% translate "All objects" %}</option>
+        {% for option in object_types %}<option value="{{ option }}"{% if option == form.object_type.value %} selected{% endif %}>{{ option }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label" for="{{ form.object_id.id_for_label }}">{{ form.object_id.label }}</label>
+      {{ form.object_id }}
+    </div>
+    <div class="field">
+      <label class="field-label" for="{{ form.date_from.id_for_label }}">{{ form.date_from.label }}</label>
+      {{ form.date_from }}
+      {% for error in form.date_from.errors %}<p class="field-error" role="alert">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="field">
+      <label class="field-label" for="{{ form.date_to.id_for_label }}">{{ form.date_to.label }}</label>
+      {{ form.date_to }}
+      {% for error in form.date_to.errors %}<p class="field-error" role="alert">{{ error }}</p>{% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">{% translate "Filter" %}</button>
+    <a class="btn btn-ghost" href="{% url 'auditlog:log' %}">{% translate "Clear" %}</a>
+  </form>
+  <section class="card grid gap-3">
+    {% if page_obj.object_list %}
+    <table class="data-table" role="table">
+      <caption class="sr-only">{% translate "Audit events, newest first" %}</caption>
+      <thead role="rowgroup"><tr role="row">
+        <th scope="col" role="columnheader">{% translate "Date" %}</th>
+        <th scope="col" role="columnheader">{% translate "Who" %}</th>
+        <th scope="col" role="columnheader">{% translate "Action" %}</th>
+        <th scope="col" role="columnheader">{% translate "Object" %}</th>
+        <th scope="col" role="columnheader">{% translate "Details" %}</th>
+      </tr></thead>
+      <tbody role="rowgroup">
+        {% for event in page_obj.object_list %}
+        <tr role="row">
+          <td role="cell" data-label="{% translate 'Date' %}" class="num">{{ event.created_at|date:"j M Y, H:i" }}</td>
+          <td role="cell" data-label="{% translate 'Who' %}">{{ event.actor_username|default:"—" }}{% if event.actor_role %} <span class="text-sm text-muted">({{ event.actor_role }})</span>{% endif %}</td>
+          <td role="cell" data-label="{% translate 'Action' %}">{{ event.action }}</td>
+          <td role="cell" data-label="{% translate 'Object' %}">{% if event.object_type %}{{ event.object_type }} <span class="text-sm text-muted">{{ event.object_id }}</span>{% else %}—{% endif %}</td>
+          <td role="cell" data-label="{% translate 'Details' %}" class="text-sm">{% for key, value in event.metadata.items %}{{ key }}: {{ value }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% include "components/pagination.html" with page_obj=page_obj query=page_query %}
+    {% else %}
+    {% translate "Nothing recorded" as empty_title %}{% translate "No events match these filters." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="shield" %}
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

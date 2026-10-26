@@ -3780,3 +3780,359 @@ msgid "%(n)s student of another department has not submitted. Their IDs are show
 msgid_plural "%(n)s students of other departments have not submitted. Their IDs are shown to their own heads of department only."
 msgstr[0] "অন্য বিভাগের %(n)s জন শিক্ষার্থী এখনও জমা দেননি। তাদের আইডি শুধু তাদের নিজ বিভাগের প্রধান দেখতে পান।"
 msgstr[1] "অন্য বিভাগের %(n)s জন শিক্ষার্থী এখনও জমা দেননি। তাদের আইডি শুধু তাদের নিজ বিভাগের প্রধান দেখতে পান।"
+
+msgid "setting"
+msgstr "সেটিং"
+
+msgid "value"
+msgstr "মান"
+
+msgid "system setting"
+msgstr "সিস্টেম সেটিং"
+
+msgid "system settings"
+msgstr "সিস্টেম সেটিংস"
+
+msgid "Moderation"
+msgstr "মডারেশন"
+
+msgid "University analytics"
+msgstr "বিশ্ববিদ্যালয়ের বিশ্লেষণ"
+
+msgid "System"
+msgstr "সিস্টেম"
+
+msgid "Audit log"
+msgstr "অডিট লগ"
+
+msgid "System settings"
+msgstr "সিস্টেম সেটিংস"
+
+msgid "To review"
+msgstr "পর্যালোচনার অপেক্ষায়"
+
+msgid "Approved"
+msgstr "অনুমোদিত"
+
+msgid "Hidden"
+msgstr "লুকানো"
+
+msgid "The comment was approved."
+msgstr "মন্তব্যটি অনুমোদন করা হয়েছে।"
+
+msgid "The comment was hidden."
+msgstr "মন্তব্যটি লুকানো হয়েছে।"
+
+msgid "Not reviewed"
+msgstr "পর্যালোচনা হয়নি"
+
+msgid "Reported by a teacher"
+msgstr "শিক্ষক রিপোর্ট করেছেন"
+
+msgid "moderation"
+msgstr "মডারেশন"
+
+msgid "An Admin can hide a comment or approve it; the text is never edited."
+msgstr "অ্যাডমিন মন্তব্য লুকাতে বা অনুমোদন করতে পারেন; লেখা কখনও সম্পাদনা করা হয় না।"
+
+msgid "All semesters"
+msgstr "সব সেমিস্টার"
+
+msgid "Latest round"
+msgstr "সর্বশেষ রাউন্ড"
+
+msgid "This round belongs to another semester."
+msgstr "এই রাউন্ডটি অন্য সেমিস্টারের।"
+
+msgid "The comment was sent to the administrator for review."
+msgstr "মন্তব্যটি পর্যালোচনার জন্য অ্যাডমিনের কাছে পাঠানো হয়েছে।"
+
+msgid "This comment has already been reported or reviewed."
+msgstr "এই মন্তব্য আগেই রিপোর্ট বা পর্যালোচনা করা হয়েছে।"
+
+msgid "Report this comment"
+msgstr "এই মন্তব্য রিপোর্ট করুন"
+
+msgid "Actor"
+msgstr "কর্মকর্তা"
+
+msgid "Object type"
+msgstr "অবজেক্টের ধরন"
+
+msgid "Object id"
+msgstr "অবজেক্ট আইডি"
+
+msgid "From"
+msgstr "থেকে"
+
+msgid "To"
+msgstr "পর্যন্ত"
+
+msgid "The end date cannot be before the start date."
+msgstr "শেষের তারিখ শুরুর তারিখের আগে হতে পারে না।"
+
+msgid "Too many checks at once. Wait a moment."
+msgstr "একসঙ্গে অনেক যাচাই হয়েছে। একটু অপেক্ষা করুন।"
+
+msgid "The audit trail is intact: %(count)s events checked."
+msgstr "অডিট ট্রেইল অক্ষত আছে: %(count)s টি ঘটনা যাচাই করা হয়েছে।"
+
+msgid "The audit trail was changed: event %(id)s no longer matches its record."
+msgstr "অডিট ট্রেইল পরিবর্তন করা হয়েছে: ঘটনা %(id)s আর তার রেকর্ডের সঙ্গে মেলে না।"
+
+msgid "Settings saved."
+msgstr "সেটিংস সংরক্ষণ করা হয়েছে।"
+
+msgid "Nothing was changed."
+msgstr "কিছুই পরিবর্তন হয়নি।"
+
+msgid "%(label)s cannot be below %(minimum)s."
+msgstr "%(label)s %(minimum)s এর নিচে হতে পারে না।"
+
+msgid "%(label)s cannot be above %(maximum)s."
+msgstr "%(label)s %(maximum)s এর বেশি হতে পারে না।"
+
+msgid "Enter a whole number."
+msgstr "একটি পূর্ণসংখ্যা লিখুন।"
+
+msgid "Enter a number."
+msgstr "একটি সংখ্যা লিখুন।"
+
+msgid "Choose yes or no."
+msgstr "হ্যাঁ বা না বেছে নিন।"
+
+msgid "Choose one of the listed options."
+msgstr "তালিকার একটি বিকল্প বেছে নিন।"
+
+msgid "Use at most %(count)s reminders."
+msgstr "সর্বোচ্চ %(count)s টি রিমাইন্ডার দিন।"
+
+msgid "Minimum responses"
+msgstr "ন্যূনতম মতামত"
+
+msgid "Results and comments stay hidden below this many responses. It can never be lower than 3."
+msgstr "এর চেয়ে কম মতামত থাকলে ফলাফল ও মন্তব্য লুকানো থাকে। এটি কখনও ৩ এর নিচে হতে পারে না।"
+
+msgid "Low rating alert"
+msgstr "কম রেটিংয়ের সতর্কতা"
+
+msgid "A course average below this raises an alert for the head of department."
+msgstr "কোনো কোর্সের গড় এর নিচে হলে বিভাগীয় প্রধানের জন্য সতর্কতা দেখানো হয়।"
+
+msgid "Show students their own ID"
+msgstr "শিক্ষার্থীকে তার নিজের আইডি দেখান"
+
+msgid "Off: a student never sees their student ID on their own pages."
+msgstr "বন্ধ থাকলে শিক্ষার্থী নিজের পাতায় নিজের আইডি দেখতে পায় না।"
+
+msgid "Abusive words in comments"
+msgstr "মন্তব্যের আপত্তিকর শব্দ"
+
+msgid "What the comment filter does with them."
+msgstr "মন্তব্যের ফিল্টার সেগুলোর সঙ্গে কী করবে।"
+
+msgid "Remove them"
+msgstr "মুছে ফেলুন"
+
+msgid "Replace them with asterisks"
+msgstr "তারকাচিহ্ন দিয়ে ঢেকে দিন"
+
+msgid "Results for teachers and heads"
+msgstr "শিক্ষক ও প্রধানদের জন্য ফলাফল"
+
+msgid "Results are never shown before a round closes; holding them delays that further."
+msgstr "রাউন্ড শেষ হওয়ার আগে ফলাফল কখনও দেখানো হয় না; আটকে রাখলে তা আরও পিছিয়ে যায়।"
+
+msgid "Show once the round has closed"
+msgstr "রাউন্ড শেষ হলে দেখান"
+
+msgid "Hold back for now"
+msgstr "আপাতত আটকে রাখুন"
+
+msgid "Keep unfinished drafts for (days)"
+msgstr "অসম্পূর্ণ খসড়া রাখার সময় (দিন)"
+
+msgid "Drafts are deleted this long after the last save."
+msgstr "শেষ সংরক্ষণের এত দিন পর খসড়া মুছে ফেলা হয়।"
+
+msgid "Reminder schedule (hours before a round closes)"
+msgstr "রিমাইন্ডারের সময়সূচি (রাউন্ড শেষ হওয়ার কত ঘণ্টা আগে)"
+
+msgid "Comma-separated, for example 48, 24. Leave empty for no automatic reminders."
+msgstr "কমা দিয়ে আলাদা করুন, যেমন ৪৮, ২৪। স্বয়ংক্রিয় রিমাইন্ডার না চাইলে ফাঁকা রাখুন।"
+
+msgid "Share of answers (%)"
+msgstr "উত্তরের অংশ (%)"
+
+msgid "No course has a result to show yet."
+msgstr "দেখানোর মতো ফলাফল এখনও কোনো কোর্সের নেই।"
+
+msgid "Clear"
+msgstr "মুছুন"
+
+msgid "The analytics appear once a feedback round has started."
+msgstr "মতামতের রাউন্ড শুরু হলে বিশ্লেষণ দেখা যাবে।"
+
+msgid "Courses in this view"
+msgstr "এই দৃশ্যের কোর্স"
+
+msgid "Round closes in"
+msgstr "রাউন্ড শেষ হতে বাকি"
+
+msgid "Participation"
+msgstr "অংশগ্রহণ"
+
+msgid "Rating distribution"
+msgstr "রেটিংয়ের বণ্টন"
+
+msgid "Share of answers on each point of the 1 to 5 scale"
+msgstr "১ থেকে ৫ স্কেলের প্রতিটি মানে উত্তরের অংশ"
+
+msgid "There are no ratings."
+msgstr "কোনো রেটিং নেই।"
+
+msgid "Average rating by round"
+msgstr "রাউন্ড অনুযায়ী গড় রেটিং"
+
+msgid "Department comparison"
+msgstr "বিভাগের তুলনা"
+
+msgid "Average rating of each department"
+msgstr "প্রতিটি বিভাগের গড় রেটিং"
+
+msgid "Participation and average rating by department"
+msgstr "বিভাগ অনুযায়ী অংশগ্রহণ ও গড় রেটিং"
+
+msgid "No courses match these filters."
+msgstr "এই ফিল্টারে কোনো কোর্স মেলেনি।"
+
+msgid "Top courses"
+msgstr "সেরা কোর্স"
+
+msgid "Courses needing attention"
+msgstr "মনোযোগ প্রয়োজন এমন কোর্স"
+
+msgid "%(submitted)s of %(enrolled)s forms submitted"
+msgstr "%(enrolled)s টির মধ্যে %(submitted)s টি ফর্ম জমা হয়েছে"
+
+msgid "Every row is chained to the one before it, so a changed or removed row can be found."
+msgstr "প্রতিটি সারি আগের সারির সঙ্গে শিকলে বাঁধা, তাই বদলানো বা মোছা সারি ধরা যায়।"
+
+msgid "Verify the chain"
+msgstr "শিকল যাচাই করুন"
+
+msgid "Export CSV"
+msgstr "CSV এক্সপোর্ট"
+
+msgid "All objects"
+msgstr "সব অবজেক্ট"
+
+msgid "Audit events, newest first"
+msgstr "অডিট ঘটনা, নতুন আগে"
+
+msgid "Details"
+msgstr "বিবরণ"
+
+msgid "No events match these filters."
+msgstr "এই ফিল্টারে কোনো ঘটনা মেলেনি।"
+
+msgid "No feedback round has started yet."
+msgstr "এখনও কোনো মতামত রাউন্ড শুরু হয়নি।"
+
+msgid "Scope: all departments"
+msgstr "পরিধি: সব বিভাগ"
+
+msgid "Registered users"
+msgstr "নিবন্ধিত ব্যবহারকারী"
+
+msgid "None yet"
+msgstr "এখনও নেই"
+
+msgid "Comments to review"
+msgstr "পর্যালোচনার মন্তব্য"
+
+msgid "Open moderation queue"
+msgstr "মডারেশন কিউ খুলুন"
+
+msgid "Import students"
+msgstr "শিক্ষার্থী ইমপোর্ট"
+
+msgid "Open a round"
+msgstr "রাউন্ড চালু করুন"
+
+msgid "Promote students"
+msgstr "শিক্ষার্থী প্রমোশন"
+
+msgid "Edit questions"
+msgstr "প্রশ্ন সম্পাদনা"
+
+msgid "Participation by department"
+msgstr "বিভাগ অনুযায়ী অংশগ্রহণ"
+
+msgid "Department figures appear once enough forms have been submitted."
+msgstr "যথেষ্ট ফর্ম জমা হলে বিভাগের হিসাব দেখা যাবে।"
+
+msgid "Recent activity"
+msgstr "সাম্প্রতিক কার্যক্রম"
+
+msgid "Nothing recorded yet."
+msgstr "এখনও কিছু রেকর্ড হয়নি।"
+
+msgid "Open the audit log"
+msgstr "অডিট লগ খুলুন"
+
+msgid "The distribution appears once a round has closed with enough responses."
+msgstr "যথেষ্ট মতামতসহ রাউন্ড শেষ হলে বণ্টন দেখা যাবে।"
+
+msgid "Moderation queue"
+msgstr "মডারেশন কিউ"
+
+msgid "Only cleaned text is shown. Nobody can see who wrote a comment."
+msgstr "শুধু পরিষ্কার করা লেখা দেখানো হয়। কে লিখেছেন তা কেউ দেখতে পারে না।"
+
+msgid "Cleaned by the filter"
+msgstr "ফিল্টার পরিষ্কার করেছে"
+
+msgid "Review all comments"
+msgstr "সব মন্তব্য পর্যালোচনা করুন"
+
+msgid "No comment is waiting for review."
+msgstr "কোনো মন্তব্য পর্যালোচনার অপেক্ষায় নেই।"
+
+msgid "%(students)s students, %(teachers)s teachers"
+msgstr "%(students)s জন শিক্ষার্থী, %(teachers)s জন শিক্ষক"
+
+msgid "%(name)s: participation %(value)s percent"
+msgstr "%(name)s: অংশগ্রহণ %(value)s শতাংশ"
+
+msgid "Only the cleaned text is shown. Nobody can see who wrote a comment, for which course or when. You can approve or hide a comment, never edit it."
+msgstr "শুধু পরিষ্কার করা লেখা দেখানো হয়। কে, কোন কোর্সের জন্য বা কখন লিখেছেন তা কেউ দেখতে পারে না। আপনি মন্তব্য অনুমোদন বা লুকাতে পারেন, কখনও সম্পাদনা করতে পারেন না।"
+
+msgid "Approve"
+msgstr "অনুমোদন"
+
+msgid "Hide"
+msgstr "লুকান"
+
+msgid "Nothing here"
+msgstr "এখানে কিছু নেই"
+
+msgid "There are no comments in this list."
+msgstr "এই তালিকায় কোনো মন্তব্য নেই।"
+
+msgid "Comment lists"
+msgstr "মন্তব্যের তালিকা"
+
+msgid "These values take effect at once. Every change is written to the audit log with the old and the new value."
+msgstr "এই মানগুলো সঙ্গে সঙ্গে কার্যকর হয়। প্রতিটি পরিবর্তন পুরোনো ও নতুন মানসহ অডিট লগে লেখা হয়।"
+
+msgid "See changes in the audit log"
+msgstr "অডিট লগে পরিবর্তনগুলো দেখুন"
+
+msgid "Filter the analytics"
+msgstr "বিশ্লেষণ ফিল্টার করুন"
+
+msgid "%(n)s comment to review"
+msgid_plural "%(n)s comments to review"
+msgstr[0] "%(n)s টি মন্তব্য পর্যালোচনার অপেক্ষায়"
+msgstr[1] "%(n)s টি মন্তব্য পর্যালোচনার অপেক্ষায়"

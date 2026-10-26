@@ -14,7 +14,6 @@ course are counted, never listed. Nothing in this module can reach who wrote an 
 import math
 from dataclasses import dataclass
 
-from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.db.models import Exists, OuterRef, Prefetch
@@ -28,6 +27,7 @@ from apps.analytics.services import InsufficientData
 from apps.auditlog.models import AuditEvent
 from apps.auditlog.services import audit
 from apps.core.permissions import Role
+from apps.core.services import system_settings
 from apps.core.services.localize import pick
 from apps.enrollment.models import Enrollment
 from apps.feedback.models import FeedbackWindow, SubmissionReceipt
@@ -117,9 +117,9 @@ def threshold_from(raw) -> float:
     try:
         value = float(raw)
     except (TypeError, ValueError):
-        return settings.LOW_RATING_THRESHOLD
+        return system_settings.get("LOW_RATING_THRESHOLD")
     if not math.isfinite(value):
-        return settings.LOW_RATING_THRESHOLD
+        return system_settings.get("LOW_RATING_THRESHOLD")
     return min(max(value, THRESHOLD_MIN), THRESHOLD_MAX)
 
 

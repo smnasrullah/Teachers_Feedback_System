@@ -1,0 +1,14 @@
+{# Params: rows (CourseSummary list), window #}
+{% load i18n %}
+{% if rows %}
+<ol class="grid gap-2">
+  {% for row in rows %}
+  <li class="flex items-baseline justify-between gap-3">
+    <span><a href="{% url 'reports:course' row.offering.pk window.pk %}">{{ row.offering.course.code }}{% if row.offering.section %} ({{ row.offering.section }}){% endif %}</a> <span class="text-sm text-muted">{{ row.offering.teacher.registry.full_name|default:"—" }} · {{ row.offering.course.department.code }}</span></span>
+    <b class="num">{{ row.average|floatformat:1 }}</b>
+  </li>
+  {% endfor %}
+</ol>
+{% else %}
+<p class="text-sm text-muted">{% translate "No course has a result to show yet." %}</p>
+{% endif %}

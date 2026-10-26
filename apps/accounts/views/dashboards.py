@@ -1,4 +1,4 @@
-"""Landing pages per role. Placeholders until each role's real dashboard is built."""
+"""Landing pages per role. The teacher page is still a placeholder."""
 
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
@@ -29,9 +29,3 @@ def dashboard(request):
 @role_required(Role.TEACHER)
 def dashboard_teacher(request):
     return _placeholder(request, _("Teacher dashboard"))
-
-
-@require_GET
-@role_required(Role.ADMIN)
-def dashboard_admin(request):
-    return _placeholder(request, _("Admin dashboard"))
