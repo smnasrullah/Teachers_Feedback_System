@@ -1,0 +1,32 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Question categories" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <h1>{% translate "Question categories" %}</h1>
+  <table class="data-table" role="table">
+    <caption class="sr-only">{% translate "Question categories" %}</caption>
+    <thead role="rowgroup"><tr role="row">
+      <th scope="col" role="columnheader" class="cell-num">{% translate "Order" %}</th>
+      <th scope="col" role="columnheader">{% translate "Name" %}</th>
+      <th scope="col" role="columnheader">{% translate "Name (Bangla)" %}</th>
+    </tr></thead>
+    <tbody role="rowgroup">
+    {% for category in categories %}
+      <tr role="row">
+        <td role="cell" data-label="{% translate 'Order' %}" class="cell-num">{{ category.order }}</td>
+        <td role="cell" data-label="{% translate 'Name' %}"><a href="{% url 'feedback:category_edit' category.pk %}">{{ category.name }}</a></td>
+        <td role="cell" data-label="{% translate 'Name (Bangla)' %}">{{ category.name_bn|default:"—" }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <form method="post" novalidate class="card grid gap-4">
+    <h2>{% translate "Add category" %}</h2>
+    {% csrf_token %}
+    {% include "components/form_errors.html" with form=form %}
+    {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div><button type="submit" class="btn btn-primary">{% translate "Save" %}</button></div>
+  </form>
+</div>
+{% endblock %}

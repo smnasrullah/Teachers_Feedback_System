@@ -1,0 +1,26 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Round preview" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <header class="grid gap-2">
+    <a class="btn btn-ghost w-fit" href="{% url 'feedback:windows' %}">{% icon "chevron-left" %}{% translate "Back to feedback rounds" %}</a>
+    <h1>{{ window.name }}</h1>
+    <p>{{ window.semester.name }} · {{ window.opens_at|date:"Y-m-d H:i" }} – {{ window.closes_at|date:"Y-m-d H:i" }} ·
+      {% if status == "open" %}{% translate "Open" %}{% elif status == "upcoming" %}{% translate "Upcoming" %}{% else %}{% translate "Closed" %}{% endif %}
+      {% if not window.is_active %}· {% translate "Inactive: students cannot submit" %}{% endif %}</p>
+    <p>{% blocktranslate count count=offering_count %}{{ count }} course offering is covered by this round.{% plural %}{{ count }} course offerings are covered by this round.{% endblocktranslate %}</p>
+  </header>
+  {% for label, form_questions in forms %}
+  <section class="card grid gap-3" aria-labelledby="preview-{{ forloop.counter }}">
+    <h2 id="preview-{{ forloop.counter }}">{% blocktranslate %}What students see: {{ label }}{% endblocktranslate %}</h2>
+    {% for question in form_questions %}
+    <p>{{ forloop.counter }}. {{ question.text }}{% if question.required %} <span class="req" aria-hidden="true">*</span><span class="sr-only">({% translate "required" %})</span>{% endif %}
+      <span class="field-hint">· {{ question.category|default:"—" }} · {{ question.get_question_type_display }}</span></p>
+    {% empty %}
+    <p>{% translate "No active questions apply." %}</p>
+    {% endfor %}
+  </section>
+  {% endfor %}
+</div>
+{% endblock %}

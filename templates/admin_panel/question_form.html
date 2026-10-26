@@ -1,0 +1,34 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% if question %}{% translate "Edit question" %}{% else %}{% translate "Add question" %}{% endif %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <header class="grid gap-2">
+    <a class="btn btn-ghost w-fit" href="{% url 'feedback:questions' %}">{% icon "chevron-left" %}{% translate "Back to questions" %}</a>
+    <h1>{% if question %}{% translate "Edit question" %}{% else %}{% translate "Add question" %}{% endif %}</h1>
+    {% if newer %}
+    <p role="status">{% icon "info" %} {% translate "A newer version of this question exists." %} <a href="{% url 'feedback:question_edit' newer.pk %}">{% translate "Open the newer version" %}</a></p>
+    {% elif answered %}
+    <p role="status">{% icon "info" %} {% translate "This question already has answers. Changing its text, type or options saves a new version and deactivates this one; the answers stay with the wording they were given for." %}</p>
+    {% endif %}
+  </header>
+
+  {% if newer %}
+  <div class="card grid gap-2">
+    <p><strong>{{ question.text }}</strong></p>
+    {% if question.text_bn %}<p lang="bn">{{ question.text_bn }}</p>{% endif %}
+    <p class="field-hint">{% blocktranslate with version=question.version %}Version {{ version }} · read-only{% endblocktranslate %}</p>
+  </div>
+  {% else %}
+  <form method="post" novalidate class="card grid gap-4">
+    {% csrf_token %}
+    {% include "components/form_errors.html" with form=form %}
+    {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-primary">{% translate "Save" %}</button>
+      <a class="btn btn-ghost" href="{% url 'feedback:questions' %}">{% translate "Cancel" %}</a>
+    </div>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

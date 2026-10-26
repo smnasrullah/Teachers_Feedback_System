@@ -1,0 +1,43 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Feedback rounds" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6">
+  <header class="flex flex-wrap items-center justify-between gap-3">
+    <h1>{% translate "Feedback rounds" %}</h1>
+    <a class="btn btn-primary" href="{% url 'feedback:window_create' %}">{% icon "edit" %}{% translate "Add feedback round" %}</a>
+  </header>
+  {% if rows %}
+  <table class="data-table" role="table">
+    <caption class="sr-only">{% translate "Feedback rounds" %}</caption>
+    <thead role="rowgroup"><tr role="row">
+      <th scope="col" role="columnheader">{% translate "Round" %}</th>
+      <th scope="col" role="columnheader">{% translate "Semester" %}</th>
+      <th scope="col" role="columnheader">{% translate "Opens at" %}</th>
+      <th scope="col" role="columnheader">{% translate "Closes at" %}</th>
+      <th scope="col" role="columnheader">{% translate "Status" %}</th>
+      <th scope="col" role="columnheader">{% translate "Active" %}</th>
+      <th scope="col" role="columnheader">{% translate "Scope" %}</th>
+      <th scope="col" role="columnheader"><span class="sr-only">{% translate "Actions" %}</span></th>
+    </tr></thead>
+    <tbody role="rowgroup">
+    {% for row in rows %}
+      <tr role="row">
+        <td role="cell" data-label="{% translate 'Round' %}"><a href="{% url 'feedback:window_edit' row.window.pk %}">{{ row.window.name }}</a></td>
+        <td role="cell" data-label="{% translate 'Semester' %}">{{ row.window.semester.name }}</td>
+        <td role="cell" data-label="{% translate 'Opens at' %}" class="cell-num">{{ row.window.opens_at|date:"Y-m-d H:i" }}</td>
+        <td role="cell" data-label="{% translate 'Closes at' %}" class="cell-num">{{ row.window.closes_at|date:"Y-m-d H:i" }}</td>
+        <td role="cell" data-label="{% translate 'Status' %}">{% if row.status == "open" %}{% translate "Open" as label %}{% include "components/badge.html" with variant="done" label=label %}{% elif row.status == "upcoming" %}{% translate "Upcoming" as label %}{% include "components/badge.html" with variant="pending" label=label %}{% else %}{% translate "Closed" as label %}{% include "components/badge.html" with variant="closed" label=label %}{% endif %}</td>
+        <td role="cell" data-label="{% translate 'Active' %}">{% if row.window.is_active %}{% translate "Yes" %}{% else %}{% translate "No" %}{% endif %}</td>
+        <td role="cell" data-label="{% translate 'Scope' %}">{% for department in row.window.departments.all %}{{ department.code }}{% if not forloop.last %}, {% endif %}{% empty %}{% translate "All departments" %}{% endfor %} · {% for level_term in row.window.level_terms.all %}{{ level_term.name }}{% if not forloop.last %}, {% endif %}{% empty %}{% translate "All levels/terms" %}{% endfor %}</td>
+        <td role="cell" data-label="{% translate 'Actions' %}"><a href="{% url 'feedback:window_edit' row.window.pk %}">{% translate "Edit" %}</a> · <a href="{% url 'feedback:window_preview' row.window.pk %}">{% translate "Preview" %}</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    {% include "components/empty_state.html" with title=_("No feedback rounds yet") text=_("Add a round to let students give feedback.") icon="calendar" %}
+  {% endif %}
+  {% include "components/pagination.html" with page_obj=page_obj query=query %}
+</div>
+{% endblock %}

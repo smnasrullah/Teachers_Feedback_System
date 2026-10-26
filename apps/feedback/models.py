@@ -33,12 +33,38 @@ class AppliesTo(models.TextChoices):
     LAB = CourseType.LAB.value, _("Lab courses")
 
 
+class WindowStatus(models.TextChoices):
+    UPCOMING = "upcoming", _("Upcoming")
+    OPEN = "open", _("Open")
+    CLOSED = "closed", _("Closed")
+
+
+class QuestionCategory(models.Model):
+    """A topic that groups questions (Teaching, Lab, ...); the admin can add more."""
+
+    name = models.CharField(_("name"), max_length=100, unique=True)
+    name_bn = models.CharField(_("name (Bangla)"), max_length=100, blank=True)
+    order = models.PositiveSmallIntegerField(_("order"), default=0)
+
+    class Meta:
+        ordering = ["order", "pk"]
+        verbose_name = _("question category")
+        verbose_name_plural = _("question categories")
+
+    def __str__(self):
+        return self.name
+
+
 class QuestionQuerySet(models.QuerySet):
+    def for_course_type(self, course_type):
+        """The active questions asked about courses of ``course_type``, in form order."""
+        return self.filter(is_active=True, applies_to__in=[AppliesTo.ALL, course_type]).order_by(
+            "order", "pk"
+        )
+
     def for_offering(self, offering):
         """The active questions asked about ``offering``, in form order."""
-        return self.filter(
-            is_active=True, applies_to__in=[AppliesTo.ALL, offering.course.course_type]
-        ).order_by("order", "pk")
+        return self.for_course_type(offering.course.course_type)
 
 
 class Question(models.Model):
@@ -47,6 +73,14 @@ class Question(models.Model):
 
     text = models.CharField(_("text"), max_length=500)
     text_bn = models.CharField(_("text (Bangla)"), max_length=500, blank=True)
+    category = models.ForeignKey(
+        QuestionCategory,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="questions",
+        verbose_name=_("category"),
+    )
     question_type = models.CharField(_("type"), max_length=16, choices=QuestionType.choices)
     options = models.JSONField(
         _("options"),
@@ -161,11 +195,17 @@ class FeedbackWindow(models.Model):
     def __str__(self):
         return self.name
 
+    def status(self, now) -> str:
+        """Upcoming, open or closed by the datetimes alone; ``is_active`` is separate."""
+        if now >= self.closes_at:
+            return WindowStatus.CLOSED
+        return WindowStatus.UPCOMING if now < self.opens_at else WindowStatus.OPEN
+
     def is_open(self, now) -> bool:
-        return self.is_active and self.opens_at <= now < self.closes_at
+        return self.is_active and self.status(now) == WindowStatus.OPEN
 
     def has_closed(self, now) -> bool:
-        return now >= self.closes_at
+        return self.status(now) == WindowStatus.CLOSED
 
     def covers(self, offering) -> bool:
         """Whether ``offering`` belongs to this round (semester and optional scope)."""

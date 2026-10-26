@@ -1,0 +1,61 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Questions" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6">
+  <header class="flex flex-wrap items-center justify-between gap-3">
+    <h1>{% translate "Questions" %}</h1>
+    <div class="flex flex-wrap gap-3">
+      <a class="btn btn-ghost" href="{% url 'feedback:question_reorder' %}">{% icon "list" %}{% translate "Reorder" %}</a>
+      <a class="btn btn-primary" href="{% url 'feedback:question_create' %}">{% icon "edit" %}{% translate "Add question" %}</a>
+    </div>
+  </header>
+
+  <form method="get" class="card grid gap-4 sm:grid-cols-2 lg:grid-cols-5" role="search" aria-label="{% translate 'Filter questions' %}">
+    {% for field in filter_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex items-end gap-3">
+      <button type="submit" class="btn btn-primary">{% icon "search" %}{% translate "Apply filters" %}</button>
+      <a class="btn btn-ghost" href="{% url 'feedback:questions' %}">{% translate "Reset" %}</a>
+    </div>
+  </form>
+
+  {% if page_obj %}
+  <table class="data-table" role="table">
+    <caption class="sr-only">{% translate "Questions" %}</caption>
+    <thead role="rowgroup"><tr role="row">
+      <th scope="col" role="columnheader" class="cell-num">{% translate "Order" %}</th>
+      <th scope="col" role="columnheader">{% translate "Question" %}</th>
+      <th scope="col" role="columnheader">{% translate "Category" %}</th>
+      <th scope="col" role="columnheader">{% translate "Type" %}</th>
+      <th scope="col" role="columnheader">{% translate "Applies to" %}</th>
+      <th scope="col" role="columnheader">{% translate "Required" %}</th>
+      <th scope="col" role="columnheader">{% translate "Status" %}</th>
+      <th scope="col" role="columnheader"><span class="sr-only">{% translate "Actions" %}</span></th>
+    </tr></thead>
+    <tbody role="rowgroup">
+    {% for question in page_obj %}
+      <tr role="row">
+        <td role="cell" data-label="{% translate 'Order' %}" class="cell-num">{{ question.order }}</td>
+        <td role="cell" data-label="{% translate 'Question' %}"><a href="{% url 'feedback:question_edit' question.pk %}">{{ question.text }}</a>{% if question.text_bn %}<br><span lang="bn">{{ question.text_bn }}</span>{% endif %}{% if question.version > 1 %} <span class="field-hint">v{{ question.version }}</span>{% endif %}</td>
+        <td role="cell" data-label="{% translate 'Category' %}">{{ question.category|default:"—" }}</td>
+        <td role="cell" data-label="{% translate 'Type' %}">{{ question.get_question_type_display }}</td>
+        <td role="cell" data-label="{% translate 'Applies to' %}">{{ question.get_applies_to_display }}</td>
+        <td role="cell" data-label="{% translate 'Required' %}">{% if question.required %}{% translate "Yes" %}{% else %}{% translate "No" %}{% endif %}</td>
+        <td role="cell" data-label="{% translate 'Status' %}">{% if question.is_active %}{% translate "Active" as label %}{% include "components/badge.html" with variant="done" label=label %}{% else %}{% translate "Inactive" as label %}{% include "components/badge.html" with variant="closed" label=label %}{% endif %}</td>
+        <td role="cell" data-label="{% translate 'Actions' %}">
+          <div class="flex flex-wrap gap-3">
+            <a href="{% url 'feedback:question_edit' question.pk %}">{% translate "Edit" %}</a>
+            <form method="post" action="{% url 'feedback:question_duplicate' question.pk %}">{% csrf_token %}<button type="submit" class="btn btn-ghost">{% translate "Duplicate" %}</button></form>
+            <form method="post" action="{% url 'feedback:question_toggle' question.pk %}">{% csrf_token %}<button type="submit" class="btn btn-ghost">{% if question.is_active %}{% translate "Deactivate" %}{% else %}{% translate "Activate" %}{% endif %}</button></form>
+          </div>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    {% include "components/empty_state.html" with title=_("Nothing found") text=_("Add a question, or change the filters.") icon="list" %}
+  {% endif %}
+  {% include "components/pagination.html" with page_obj=page_obj query=query %}
+</div>
+{% endblock %}

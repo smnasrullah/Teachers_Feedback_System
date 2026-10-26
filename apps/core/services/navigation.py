@@ -77,6 +77,25 @@ def admin_nav_items(current: str = "") -> list[dict]:
             "url": reverse("academics:promotion_rule"),
             "icon": "settings",
         },
+        {"group": _("Feedback")},
+        {
+            "key": "questions",
+            "label": _("Questions"),
+            "url": reverse("feedback:questions"),
+            "icon": "list",
+        },
+        {
+            "key": "categories",
+            "label": _("Question categories"),
+            "url": reverse("feedback:categories"),
+            "icon": "list",
+        },
+        {
+            "key": "windows",
+            "label": _("Feedback rounds"),
+            "url": reverse("feedback:windows"),
+            "icon": "calendar",
+        },
         {"group": _("Data")},
         {
             "key": "import",

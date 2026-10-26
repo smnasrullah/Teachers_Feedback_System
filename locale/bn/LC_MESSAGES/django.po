@@ -2736,3 +2736,245 @@ msgstr "উত্তর %(limit)d অক্ষরের মধ্যে রা�
 
 msgid "Nothing was left of this answer after it was cleaned. Please rewrite it."
 msgstr "পরিশোধনের পর এই উত্তরের কিছুই অবশিষ্ট থাকেনি। অনুগ্রহ করে আবার লিখুন।"
+
+msgid "Options (English)"
+msgstr "ইংরেজি বিকল্প"
+
+msgid "Choice questions only. One option per line."
+msgstr "শুধু পছন্দভিত্তিক প্রশ্নের জন্য। প্রতি লাইনে একটি বিকল্প।"
+
+msgid "Options (Bangla)"
+msgstr "বাংলা বিকল্প"
+
+msgid "Same order and count as the English options."
+msgstr "ইংরেজি বিকল্পের একই ক্রমে ও একই সংখ্যায়।"
+
+msgid "Category"
+msgstr "বিভাগ"
+
+msgid "Applies to"
+msgstr "প্রযোজ্য"
+
+msgid "Upcoming"
+msgstr "আসন্ন"
+
+msgid "Open"
+msgstr "চলমান"
+
+msgid "Closed"
+msgstr "সমাপ্ত"
+
+msgid "question category"
+msgstr "প্রশ্নের বিভাগ"
+
+msgid "question categories"
+msgstr "প্রশ্নের বিভাগসমূহ"
+
+msgid "category"
+msgstr "বিভাগ"
+
+msgid "The question has answers, so your changes were saved as version %(n)d."
+msgstr "প্রশ্নটির উত্তর রয়েছে, তাই আপনার পরিবর্তন %(n)d নম্বর সংস্করণ হিসেবে সংরক্ষিত হয়েছে।"
+
+msgid "The question was saved."
+msgstr "প্রশ্নটি সংরক্ষিত হয়েছে।"
+
+msgid "A copy was created. It is inactive until you activate it."
+msgstr "একটি অনুলিপি তৈরি হয়েছে। সক্রিয় না করা পর্যন্ত এটি নিষ্ক্রিয় থাকবে।"
+
+msgid "The question was updated."
+msgstr "প্রশ্নটি হালনাগাদ হয়েছে।"
+
+msgid "The order was saved."
+msgstr "ক্রম সংরক্ষিত হয়েছে।"
+
+msgid "The category was saved."
+msgstr "বিভাগটি সংরক্ষিত হয়েছে।"
+
+msgid "The feedback round was saved."
+msgstr "মূল্যায়ন পর্বটি সংরক্ষিত হয়েছে।"
+
+msgid "Give the same number of Bangla options as English options (or none)."
+msgstr "ইংরেজি বিকল্পের সমান সংখ্যক বাংলা বিকল্প দিন (অথবা একটিও নয়)।"
+
+msgid "A newer version of this question exists. Edit that one."
+msgstr "এই প্রশ্নের একটি নতুন সংস্করণ আছে। সেটি সম্পাদনা করুন।"
+
+msgid "This version was replaced by a newer one and cannot be activated."
+msgstr "এই সংস্করণটি নতুন সংস্করণ দিয়ে প্রতিস্থাপিত হয়েছে, তাই সক্রিয় করা যাবে না।"
+
+msgid "Expected %(want)d columns, found %(got)d."
+msgstr "%(want)d টি কলাম প্রত্যাশিত, পাওয়া গেছে %(got)d টি।"
+
+msgid "No question text."
+msgstr "প্রশ্নের লেখা নেই।"
+
+msgid "No category."
+msgstr "বিভাগ নেই।"
+
+msgid "Unknown type %(value)r."
+msgstr "অজানা ধরন %(value)r।"
+
+msgid "Required must be yes or no."
+msgstr "আবশ্যক ঘরে yes বা no লিখতে হবে।"
+
+msgid "Unknown applies value %(value)r."
+msgstr "প্রযোজ্যতার অজানা মান %(value)r।"
+
+msgid "A choice question needs at least two options."
+msgstr "পছন্দভিত্তিক প্রশ্নে অন্তত দুটি বিকল্প দরকার।"
+
+msgid "English and Bangla options differ in number."
+msgstr "ইংরেজি ও বাংলা বিকল্পের সংখ্যা আলাদা।"
+
+msgid "Empty row."
+msgstr "ফাঁকা সারি।"
+
+msgid "This round overlaps with %(names)s for the same courses."
+msgstr "এই পর্বটি একই কোর্সের জন্য %(names)s পর্বের সঙ্গে সময়ে মিলে যায়।"
+
+msgid "Load the question bank from a markdown file (safe to run again)."
+msgstr "মার্কডাউন ফাইল থেকে প্রশ্নভান্ডার লোড করুন (আবার চালানো নিরাপদ)।"
+
+msgid "Cannot read %(path)s: %(error)s"
+msgstr "%(path)s পড়া যায়নি: %(error)s"
+
+msgid "Questions: %(created)d created, %(updated)d updated, %(unchanged)d unchanged; %(categories)d new categories; %(placeholders)d placeholders."
+msgstr "প্রশ্ন: %(created)d টি নতুন, %(updated)d টি হালনাগাদ, %(unchanged)d টি অপরিবর্তিত; %(categories)d টি নতুন বিভাগ; %(placeholders)d টি নমুনা প্রশ্ন।"
+
+msgid "Skipped line %(line)d: %(reason)s"
+msgstr "লাইন %(line)d বাদ দেওয়া হয়েছে: %(reason)s"
+
+msgid "Feedback"
+msgstr "মূল্যায়ন"
+
+msgid "Questions"
+msgstr "প্রশ্ন"
+
+msgid "Question categories"
+msgstr "প্রশ্নের বিভাগ"
+
+msgid "Feedback rounds"
+msgstr "মূল্যায়ন পর্ব"
+
+msgid "Edit category"
+msgstr "বিভাগ সম্পাদনা"
+
+msgid "Back to categories"
+msgstr "বিভাগের তালিকায় ফিরুন"
+
+msgid "Add category"
+msgstr "বিভাগ যোগ করুন"
+
+msgid "Edit question"
+msgstr "প্রশ্ন সম্পাদনা"
+
+msgid "Add question"
+msgstr "প্রশ্ন যোগ করুন"
+
+msgid "Back to questions"
+msgstr "প্রশ্নের তালিকায় ফিরুন"
+
+msgid "A newer version of this question exists."
+msgstr "এই প্রশ্নের একটি নতুন সংস্করণ আছে।"
+
+msgid "Open the newer version"
+msgstr "নতুন সংস্করণ খুলুন"
+
+msgid "This question already has answers. Changing its text, type or options saves a new version and deactivates this one; the answers stay with the wording they were given for."
+msgstr "এই প্রশ্নের উত্তর ইতিমধ্যে এসেছে। এর লেখা, ধরন বা বিকল্প বদলালে নতুন সংস্করণ সংরক্ষিত হবে এবং এটি নিষ্ক্রিয় হবে; উত্তরগুলো যে শব্দে দেওয়া হয়েছিল সেই শব্দের সঙ্গেই থাকবে।"
+
+msgid "Version %(version)s · read-only"
+msgstr "সংস্করণ %(version)s · শুধু পড়া যাবে"
+
+msgid "Reorder"
+msgstr "ক্রম বদলান"
+
+msgid "Question"
+msgstr "প্রশ্ন"
+
+msgid "Required"
+msgstr "আবশ্যক"
+
+msgid "Inactive"
+msgstr "নিষ্ক্রিয়"
+
+msgid "Duplicate"
+msgstr "অনুলিপি করুন"
+
+msgid "Deactivate"
+msgstr "নিষ্ক্রিয় করুন"
+
+msgid "Activate"
+msgstr "সক্রিয় করুন"
+
+msgid "Add a question, or change the filters."
+msgstr "একটি প্রশ্ন যোগ করুন, অথবা ফিল্টার বদলান।"
+
+msgid "Filter questions"
+msgstr "প্রশ্ন ফিল্টার করুন"
+
+msgid "Reorder questions"
+msgstr "প্রশ্নের ক্রম বদলান"
+
+msgid "Drag a question to a new place, or type its position. Students see the questions in this order."
+msgstr "প্রশ্ন টেনে নতুন জায়গায় নিন, অথবা তার অবস্থান লিখুন। শিক্ষার্থীরা এই ক্রমেই প্রশ্ন দেখবে।"
+
+msgid "inactive"
+msgstr "নিষ্ক্রিয়"
+
+msgid "Save order"
+msgstr "ক্রম সংরক্ষণ করুন"
+
+msgid "Edit feedback round"
+msgstr "মূল্যায়ন পর্ব সম্পাদনা"
+
+msgid "Add feedback round"
+msgstr "মূল্যায়ন পর্ব যোগ করুন"
+
+msgid "Back to feedback rounds"
+msgstr "মূল্যায়ন পর্বের তালিকায় ফিরুন"
+
+msgid "Times are in Bangladesh time (Asia/Dhaka). A round is open from its opening time up to, but not including, its closing time."
+msgstr "সময় বাংলাদেশ সময়ে (Asia/Dhaka)। পর্ব খোলার সময় থেকে বন্ধের সময়ের ঠিক আগ পর্যন্ত চলমান থাকে।"
+
+msgid "This round has closed. Its times and scope can no longer be changed."
+msgstr "এই পর্ব সমাপ্ত হয়েছে। এর সময় ও পরিধি আর বদলানো যাবে না।"
+
+msgid "Round"
+msgstr "পর্ব"
+
+msgid "Opens at"
+msgstr "খোলার সময়"
+
+msgid "Closes at"
+msgstr "বন্ধের সময়"
+
+msgid "Scope"
+msgstr "পরিধি"
+
+msgid "All levels/terms"
+msgstr "সব লেভেল/টার্ম"
+
+msgid "No feedback rounds yet"
+msgstr "এখনো কোনো মূল্যায়ন পর্ব নেই"
+
+msgid "Add a round to let students give feedback."
+msgstr "শিক্ষার্থীদের মতামত দেওয়ার জন্য একটি পর্ব যোগ করুন।"
+
+msgid "Round preview"
+msgstr "পর্বের পূর্বরূপ"
+
+msgid "Inactive: students cannot submit"
+msgstr "নিষ্ক্রিয়: শিক্ষার্থীরা জমা দিতে পারবে না"
+
+msgid "No active questions apply."
+msgstr "কোনো সক্রিয় প্রশ্ন প্রযোজ্য নয়।"
+
+msgid "What students see: %(label)s"
+msgstr "শিক্ষার্থীরা যা দেখবে: %(label)s"
+
+msgid "%(count)s course offering is covered by this round."
+msgid_plural "%(count)s course offerings are covered by this round."
+msgstr[0] "এই পর্বে %(count)s টি কোর্স অফারিং অন্তর্ভুক্ত।"
+msgstr[1] "এই পর্বে %(count)s টি কোর্স অফারিং অন্তর্ভুক্ত।"

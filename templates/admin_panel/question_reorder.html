@@ -1,0 +1,29 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n static ui %}
+{% block title %}{% translate "Reorder questions" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block scripts %}<script src="{% static 'js/reorder.js' %}" nonce="{{ csp_nonce }}" defer></script>{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <header class="grid gap-2">
+    <a class="btn btn-ghost w-fit" href="{% url 'feedback:questions' %}">{% icon "chevron-left" %}{% translate "Back to questions" %}</a>
+    <h1>{% translate "Reorder questions" %}</h1>
+    <p>{% translate "Drag a question to a new place, or type its position. Students see the questions in this order." %}</p>
+  </header>
+  <form method="post" class="card grid gap-4">
+    {% csrf_token %}
+    <ol class="grid gap-2" data-reorder>
+      {% for question in questions %}
+      <li class="flex items-center gap-3" data-reorder-item draggable="true">
+        <span aria-hidden="true">⠿</span>
+        <label class="grow" for="order_{{ question.pk }}">{{ question.text }}{% if not question.is_active %} <span class="field-hint">({% translate "inactive" %})</span>{% endif %}</label>
+        <input class="input w-20" type="number" min="1" id="order_{{ question.pk }}" name="order_{{ question.pk }}" value="{{ forloop.counter }}" data-reorder-position>
+      </li>
+      {% endfor %}
+    </ol>
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-primary">{% translate "Save order" %}</button>
+      <a class="btn btn-ghost" href="{% url 'feedback:questions' %}">{% translate "Cancel" %}</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
