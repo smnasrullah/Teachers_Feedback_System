@@ -4,6 +4,7 @@
 {% block content %}
 <div class="wrap py-16">
   <div class="empty">
+    <div aria-hidden="true">{% block error_art %}{% include "components/illustrations/vignette_book.html" %}{% endblock %}</div>
     <p class="error-code num" aria-hidden="true">{% block error_code %}{% endblock %}</p>
     <h1>{% block error_heading %}{% endblock %}</h1>
     <p>{% block error_text %}{% endblock %}</p>

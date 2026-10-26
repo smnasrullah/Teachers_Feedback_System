@@ -82,6 +82,16 @@
   --overlay: rgb(15 23 42 / 0.55);
   --shadow: 0 4px 20px rgb(15 23 42 / 0.06);
   --shadow-pop: 0 20px 60px rgb(15 23 42 / 0.35);
+  --line: var(--text);
+  --line-wash: var(--primary-soft);
+  --band: #1e3a8a;
+  --band-2: #2548b0;
+  --on-band: #ffffff;
+  --on-band-muted: #c9d8fb;
+  --line-on-band: #dbe6ff;
+  --grid-line: var(--border);
+  --grid-line-on-band: rgb(255 255 255 / 0.16);
+  --shadow-lift: 0 24px 48px -24px rgb(15 23 42 / 0.28);
   color-scheme: light;
 }
 
@@ -113,6 +123,13 @@
   --overlay: rgb(0 0 0 / 0.65);
   --shadow: 0 4px 20px rgb(0 0 0 / 0.35);
   --shadow-pop: 0 20px 60px rgb(0 0 0 / 0.6);
+  --line: var(--primary);
+  --band: #172a63;
+  --band-2: #22388a;
+  --on-band: #f1f5f9;
+  --on-band-muted: #b9c8ec;
+  --line-on-band: #b9cffc;
+  --shadow-lift: 0 24px 48px -24px rgb(0 0 0 / 0.6);
   color-scheme: dark;
 }
 
@@ -137,6 +154,8 @@
   --color-danger-soft: var(--danger-soft);
   --color-star: var(--star);
   --color-focus: var(--focus);
+  --color-band: var(--band);
+  --color-on-band: var(--on-band);
 
   --radius-card: 16px;
   --radius-btn: 12px;

@@ -7,27 +7,24 @@
   {% include "components/lang_toggle.html" %}
   {% include "components/theme_toggle.html" %}
 </div></header>
-<main id="main" class="wrap py-8" tabindex="-1">
-  <div class="auth-shell">
-    <aside class="auth-brand" aria-label="{% translate 'Privacy promise' %}">
-      <div class="grid gap-3">
-        <span class="badge badge-info w-fit">{% icon "shield" %}{% translate "Anonymous by design" %}</span>
-        <h2 class="text-xl">{% translate "Private, honest course feedback" %}</h2>
-        <p class="text-sm text-muted">{% translate "Your feedback is anonymous. Teachers see only combined results, and only after the round closes." %}</p>
-        <ul class="checklist text-sm mt-2">
-          <li>{% icon "check" %}<span>{% translate "Answers are stored without your name or student ID." %}</span></li>
-          <li>{% icon "check" %}<span>{% translate "Each submitted course is stamped and sealed." %}</span></li>
-          <li>{% icon "check" %}<span>{% translate "Results unlock only when at least 5 students respond." %}</span></li>
-        </ul>
-      </div>
-      <div class="flex items-center gap-3 pt-4 border-t border-border">
-        <div class="seal" aria-hidden="true"><span>{% translate "Sealed" %}</span>{% icon "check" %}</div>
-        <p class="text-xs text-muted">{% translate "One account, one sealed ballot per course each round." %}</p>
-      </div>
-    </aside>
+<main id="main" class="auth-split" tabindex="-1">
+  <div class="auth-form">
     <div class="auth-card grid gap-4">
       {% block content %}{% endblock %}
     </div>
   </div>
+  <aside class="auth-brand on-band" aria-label="{% translate 'Privacy promise' %}">
+    <div class="grid gap-3">
+      <span class="badge badge-info w-fit">{% icon "shield" %}{% translate "Anonymous by design" %}</span>
+      <h2>{% translate "Private, honest course feedback" %}</h2>
+      <p class="text-sm brand-sub">{% translate "Your feedback is anonymous. Teachers see only combined results, and only after the round closes." %}</p>
+      <ul class="checklist text-sm mt-2">
+        <li>{% icon "check" %}<span>{% translate "Answers are stored without your name or student ID." %}</span></li>
+        <li>{% icon "check" %}<span>{% translate "Each submitted course is stamped and sealed." %}</span></li>
+        <li>{% icon "check" %}<span>{% translate "Results unlock only when at least 5 students respond." %}</span></li>
+      </ul>
+    </div>
+    <div class="auth-art">{% include "components/illustrations/campus_line.html" %}</div>
+  </aside>
 </main>
 {% endblock %}

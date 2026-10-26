@@ -3,6 +3,7 @@
 {% block title %}{% translate "Thank you" %} · {% translate "Teacher Feedback System" %}{% endblock %}
 {% block content %}
 <section class="max-w-2xl mx-auto w-full grid gap-5" aria-labelledby="thanks-title">
+  {% include "components/illustrations/vignette_ballot.html" %}
   <article class="stub stub-sealed">
     <div class="stub-main grid gap-2">
       <span class="badge badge-done w-fit">{% icon "shield" %}{% translate "Ballot sealed" %}</span>

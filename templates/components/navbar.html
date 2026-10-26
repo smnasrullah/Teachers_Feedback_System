@@ -1,8 +1,16 @@
 {% load i18n ui %}
-{# Params: user_name (empty = signed out), user_menu [{label,url,icon}], logout_url, static_nav. The bell fills itself over HTMX. #}
+{# Params: user_name (empty = signed out), user_menu [{label,url,icon}], logout_url, static_nav, anchors (landing section links). The bell fills itself over HTMX. #}
 <header class="nav{% if static_nav %} nav-static{% endif %}"><div class="wrap">
   {% include "components/logo.html" %}
   <span class="flex-1"></span>
+  {% if anchors %}
+  <nav class="nav-anchors" aria-label="{% translate 'On this page' %}">
+    <a href="#how">{% translate "How it works" %}</a>
+    <a href="#roles">{% translate "Who sees what" %}</a>
+    <a href="#preview">{% translate "Preview" %}</a>
+    <a href="#faq">{% translate "Questions" %}</a>
+  </nav>
+  {% endif %}
   {% include "components/lang_toggle.html" %}
   {% if user_name %}
   <div class="menu-wrap">

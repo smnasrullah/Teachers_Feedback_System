@@ -12,6 +12,8 @@
     font-size: var(--text-base);
     line-height: 1.6;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     overflow-wrap: break-word;
   }
   html[lang="bn"] body {
@@ -126,7 +128,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    min-height: 60px;
+    min-height: 56px;
   }
   .nav-static {
     position: static;
@@ -143,12 +145,13 @@
   .logo-mark {
     width: 32px;
     height: 32px;
-    border-radius: 10px;
+    border-radius: 999px 999px 6px 6px;
     background: var(--primary);
     color: var(--on-primary);
     display: grid;
-    place-items: center;
-    font-size: 15px;
+    place-items: end center;
+    padding-bottom: 4px;
+    font-size: 14px;
   }
   .logo-text {
     display: none;
@@ -315,14 +318,6 @@
     align-content: space-between;
     position: relative;
     overflow: hidden;
-  }
-  .stat-tile::before {
-    content: "";
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    width: 4px;
-    background: color-mix(in srgb, var(--primary) 75%, transparent);
   }
   .stat-tile .stat-head {
     display: flex;
@@ -788,21 +783,6 @@
     justify-items: center;
     gap: 10px;
   }
-  .empty-illust {
-    width: 112px;
-    height: 76px;
-    color: var(--primary);
-    margin-bottom: 4px;
-  }
-  .empty-ico {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: var(--primary-soft);
-    color: var(--primary);
-    display: grid;
-    place-items: center;
-  }
   .empty p {
     color: var(--muted);
     max-width: 48ch;
@@ -1237,10 +1217,14 @@
   }
 
   /* app shell: sidebar (desktop), bottom bar + drawer (mobile) */
+  body > main,
+  body > .shell {
+    flex: 1 0 auto;
+  }
   .shell {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    min-height: calc(100vh - 60px);
+    min-height: calc(100vh - 56px);
   }
   .shell > * {
     min-width: 0;
@@ -1272,8 +1256,10 @@
     background: var(--primary-soft);
   }
   .side-link[aria-current="page"] {
-    background: var(--primary);
-    color: var(--on-primary);
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-weight: 600;
+    box-shadow: inset 3px 0 0 var(--primary);
   }
   .side-group {
     margin: 16px 12px 6px;
@@ -1342,8 +1328,8 @@
     .sidebar {
       display: block;
       position: sticky;
-      top: 60px;
-      height: calc(100vh - 60px);
+      top: 56px;
+      height: calc(100vh - 56px);
       overflow: auto;
     }
     .bottomnav {
@@ -1355,103 +1341,9 @@
   }
 
   /* landing + public pages */
-  .hero {
-    display: grid;
-    gap: 32px;
-    padding-block: 44px;
-    align-items: center;
-  }
-  .hero h1 {
-    font-size: 34px;
-    letter-spacing: -0.02em;
-  }
   .lead {
     font-size: var(--text-xl);
     color: var(--muted);
-  }
-  .hero-stack {
-    position: relative;
-    padding: 20px 8px 8px;
-    display: grid;
-    align-items: center;
-  }
-  .hero-stub-back,
-  .hero-stub-mid {
-    position: absolute;
-    inset-inline: 12px;
-    top: 0;
-    height: 132px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-soft);
-    pointer-events: none;
-  }
-  .hero-stub-back {
-    transform: translateY(-10px) rotate(-3deg) scale(0.95);
-    opacity: 0.6;
-    background: var(--primary-soft);
-  }
-  .hero-stub-mid {
-    transform: translateY(-4px) rotate(2deg) scale(0.98);
-    opacity: 0.85;
-  }
-  .hero-stub-front {
-    position: relative;
-    z-index: 2;
-  }
-  .section {
-    padding-block: 40px;
-  }
-  .grid-cards {
-    display: grid;
-    gap: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  }
-  .grid-steps {
-    display: grid;
-    gap: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  }
-  .step-no {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    background: var(--primary);
-    color: var(--on-primary);
-    display: grid;
-    place-items: center;
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
-  .promise {
-    background: var(--primary-soft);
-    border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
-    border-radius: var(--radius-card);
-    padding: 28px 24px;
-    display: grid;
-    gap: 20px;
-  }
-  .role-matrix {
-    display: grid;
-    gap: 14px;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    margin-top: 4px;
-  }
-  .role-col {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-card);
-    padding: 16px;
-    display: grid;
-    gap: 10px;
-    align-content: start;
-  }
-  .role-col h3 {
-    font-size: var(--text-base);
-    display: flex;
-    align-items: center;
-    gap: 8px;
   }
   .checklist {
     list-style: none;
@@ -1499,6 +1391,11 @@
     padding: 0 16px 16px;
     color: var(--muted);
   }
+  .grid-cards {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
   .footer {
     border-top: 1px solid var(--border);
     background: var(--surface);
@@ -1506,37 +1403,13 @@
     color: var(--muted);
     font-size: var(--text-sm);
   }
-  .auth-shell {
-    width: 100%;
-    max-width: 920px;
-    margin-inline: auto;
-    display: grid;
-    gap: 20px;
-    grid-template-columns: minmax(0, 1fr);
-    align-items: stretch;
-  }
-  .auth-brand {
-    background: var(--primary-soft);
-    border: 1px solid color-mix(in srgb, var(--primary) 20%, var(--border));
-    border-radius: var(--radius-card);
-    padding: 24px;
-    display: grid;
-    gap: 16px;
-    align-content: space-between;
-    position: relative;
-    overflow: hidden;
-  }
-  .auth-card {
-    width: 100%;
-    max-width: 480px;
-    margin-inline: auto;
-  }
   .stepper {
     list-style: none;
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
     gap: 8px;
     position: relative;
   }
@@ -1641,23 +1514,6 @@
     color: var(--primary);
   }
   @media (min-width: 900px) {
-    .hero {
-      grid-template-columns: 1.2fr 1fr;
-      padding-block: 72px;
-    }
-    .hero h1 {
-      font-size: 46px;
-    }
-    .auth-shell {
-      grid-template-columns: 1fr 1.15fr;
-      gap: 28px;
-      align-items: start;
-    }
-    .auth-brand {
-      min-height: 100%;
-      padding: 32px;
-      border-inline-end: 2px dashed var(--border-input);
-    }
   }
 
   /* student dashboard, profile and feedback form */

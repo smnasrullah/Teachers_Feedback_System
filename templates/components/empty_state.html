@@ -1,17 +1,11 @@
-{# Params: title, text, icon, action_label, action_url #}
+{# Params: title, text, icon (picks the vignette), action_label, action_url #}
 {% load ui %}
 <div class="empty">
-  <svg class="empty-illust" viewBox="0 0 120 76" fill="none" aria-hidden="true">
-    <rect x="10" y="10" width="100" height="56" rx="10" stroke="currentColor" stroke-width="2" stroke-opacity="0.35"/>
-    <line x1="82" y1="12" x2="82" y2="64" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4" stroke-opacity="0.45"/>
-    <circle cx="82" cy="10" r="5" fill="var(--surface)" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.4"/>
-    <circle cx="82" cy="66" r="5" fill="var(--surface)" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.4"/>
-    <line x1="22" y1="26" x2="56" y2="26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.5"/>
-    <line x1="22" y1="38" x2="68" y2="38" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-opacity="0.3"/>
-    <line x1="22" y1="48" x2="46" y2="48" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-opacity="0.25"/>
-    <circle cx="96" cy="38" r="9" stroke="currentColor" stroke-width="2" stroke-opacity="0.5"/>
-  </svg>
-  <span class="empty-ico">{% icon icon|default:"inbox" "ico-lg" %}</span>
+  {% if icon == "calendar" %}{% include "components/illustrations/vignette_desk.html" %}
+  {% elif icon == "chart" %}{% include "components/illustrations/vignette_chart.html" %}
+  {% elif icon == "check" or icon == "flag" %}{% include "components/illustrations/vignette_ballot.html" %}
+  {% elif icon == "inbox" or icon == "send" or icon == "shield" %}{% include "components/illustrations/vignette_envelope.html" %}
+  {% else %}{% include "components/illustrations/vignette_book.html" %}{% endif %}
   <h3>{{ title }}</h3>{% if text %}<p>{{ text }}</p>{% endif %}
   {% if action_url %}<a class="btn btn-primary mt-1" href="{{ action_url }}">{{ action_label }}</a>{% endif %}
 </div>
