@@ -1,0 +1,59 @@
+{# Params: panel (CommentPanel), offering, window, printing. Swapped as a whole by HTMX; the form and the pager also work as plain links. #}
+{% load i18n ui %}
+<div id="c{{ panel.question.pk }}" class="grid gap-3">
+  {% if panel.notice and not panel.query.narrowed %}
+  <p class="callout" role="status">{% icon "lock" %}<span>{{ panel.notice }}</span></p>
+  {% else %}
+  {% url 'reports:course' offering.pk window.pk as course_url %}
+  {% url 'reports:comments' offering.pk window.pk panel.question.pk as comments_url %}
+  {% if not printing %}
+  <form class="comment-search no-print" method="get" action="{{ course_url }}#q{{ panel.question.pk }}"
+        hx-get="{{ comments_url }}" hx-target="#c{{ panel.question.pk }}" hx-swap="outerHTML"
+        hx-trigger="submit, change from:find select, input changed delay:400ms from:find input[type=search]">
+    <input type="hidden" name="question" value="{{ panel.question.pk }}">
+    <div class="field">
+      <label class="field-label" for="s{{ panel.question.pk }}">{% translate "Search comments" %}</label>
+      <input class="input" type="search" id="s{{ panel.question.pk }}" name="q" value="{{ panel.query.search }}" maxlength="100" autocomplete="off">
+    </div>
+    <div class="field">
+      <label class="field-label" for="t{{ panel.question.pk }}">{% translate "Show" %}</label>
+      <select class="select" id="t{{ panel.question.pk }}" name="tag">
+        <option value=""{% if not panel.query.tag %} selected{% endif %}>{% blocktranslate with n=panel.total %}All ({{ n }}){% endblocktranslate %}</option>
+        <option value="positive"{% if panel.query.tag == "positive" %} selected{% endif %}>{% translate "Positive" %}</option>
+        <option value="neutral"{% if panel.query.tag == "neutral" %} selected{% endif %}>{% translate "Neutral" %}</option>
+        <option value="negative"{% if panel.query.tag == "negative" %} selected{% endif %}>{% translate "Needs work" %}</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-ghost">{% icon "search" %}{% translate "Search" %}</button>
+  </form>
+  {% endif %}
+  <p class="text-sm text-muted flex gap-2 items-start">{% icon "eye" %}<span>{% translate "Comments appear in a shuffled order and never show who wrote them or when." %} {% translate "Tags are approximate: they come from word lists, not from a person." %}</span></p>
+  {% if panel.notice %}
+  <p class="callout" role="status">{% icon "lock" %}<span>{{ panel.notice }}</span></p>
+  {% elif not panel.comments %}
+  <p class="text-muted">{% if panel.query.narrowed %}{% translate "No comments match." %}{% else %}{% translate "There are no comments." %}{% endif %}</p>
+  {% else %}
+  <div>
+    {% for comment in panel.comments %}
+    <div class="comment">
+      <p>{{ comment.text }}</p>
+      <div>
+        {% if comment.sentiment == "positive" %}<span class="tag tag-positive">{% icon "smile" %}{% translate "Positive" %}</span>
+        {% elif comment.sentiment == "negative" %}<span class="tag tag-negative">{% icon "frown" %}{% translate "Needs work" %}</span>
+        {% else %}<span class="tag tag-neutral">{% icon "meh" %}{% translate "Neutral" %}</span>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% if panel.page and not printing %}
+  <nav class="flex items-center justify-between gap-3 no-print" aria-label="{% translate 'Pagination' %}">
+    <span class="text-sm text-muted">{% blocktranslate with first=panel.page.start_index last=panel.page.end_index total=panel.page.paginator.count %}Showing {{ first }}-{{ last }} of {{ total }}{% endblocktranslate %}</span>
+    <span class="flex gap-2">
+      {% if panel.previous_query %}<a class="btn btn-ghost" rel="prev" href="{{ course_url }}?question={{ panel.question.pk }}&amp;{{ panel.previous_query }}#q{{ panel.question.pk }}" hx-get="{{ comments_url }}?{{ panel.previous_query }}" hx-target="#c{{ panel.question.pk }}" hx-swap="outerHTML">{% icon "chevron-left" %}{% translate "Previous" %}</a>{% endif %}
+      {% if panel.next_query %}<a class="btn btn-ghost" rel="next" href="{{ course_url }}?question={{ panel.question.pk }}&amp;{{ panel.next_query }}#q{{ panel.question.pk }}" hx-get="{{ comments_url }}?{{ panel.next_query }}" hx-target="#c{{ panel.question.pk }}" hx-swap="outerHTML">{% translate "Next" %}{% icon "chevron-right" %}</a>{% endif %}
+    </span>
+  </nav>
+  {% endif %}
+  {% endif %}
+  {% endif %}
+</div>

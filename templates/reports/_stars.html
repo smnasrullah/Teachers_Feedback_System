@@ -1,0 +1,8 @@
+{# Params: value (average, 0-5), label. Server-rendered SVG: filled stars are the rounded value; the number is always shown beside it. #}
+<svg class="stars" viewBox="0 0 120 24" role="img" aria-label="{{ label }}">
+  <use href="#i-star" x="0" width="24" height="24" class="{% if value >= 0.5 %}on{% else %}off{% endif %}"/>
+  <use href="#i-star" x="24" width="24" height="24" class="{% if value >= 1.5 %}on{% else %}off{% endif %}"/>
+  <use href="#i-star" x="48" width="24" height="24" class="{% if value >= 2.5 %}on{% else %}off{% endif %}"/>
+  <use href="#i-star" x="72" width="24" height="24" class="{% if value >= 3.5 %}on{% else %}off{% endif %}"/>
+  <use href="#i-star" x="96" width="24" height="24" class="{% if value >= 4.5 %}on{% else %}off{% endif %}"/>
+</svg>

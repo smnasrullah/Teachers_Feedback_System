@@ -129,6 +129,15 @@ def user_nav_items(user, current: str = "") -> list[dict]:
             "icon": "home",
         }
     ]
+    if getattr(user, "role", None) == Role.TEACHER:
+        entries.append(
+            {
+                "key": "courses",
+                "label": _("My courses"),
+                "url": reverse("reports:overview"),
+                "icon": "book",
+            }
+        )
     if getattr(user, "role", None) == Role.ADMIN:
         entries += admin_nav_items()
     entries += [

@@ -1,0 +1,53 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "My courses" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-4">
+  <div class="flex flex-wrap items-end gap-3">
+    <h1 class="flex-1 text-2xl">{% translate "My courses" %}</h1>
+    {% if rounds %}
+    <form method="get" class="flex items-end gap-2">
+      <div class="field">
+        <label class="field-label" for="round">{% translate "Round" %}</label>
+        <select class="select" id="round" name="round">
+          {% for option in rounds %}<option value="{{ option.pk }}"{% if option.pk == window.pk %} selected{% endif %}>{{ option.semester.name }} · {{ option.name }}</option>{% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-ghost">{% translate "Show" %}</button>
+    </form>
+    {% endif %}
+  </div>
+  {% if not window %}
+  <div class="card">{% translate "No feedback round yet" as empty_title %}{% translate "Your courses appear here once a feedback round has started for them." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="calendar" %}</div>
+  {% elif not summaries %}
+  <div class="card">{% translate "No courses in this round" as empty_title %}{% translate "You teach no course that this round covers." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="book" %}</div>
+  {% else %}
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+    {% for summary in summaries %}
+    <article class="card course-card">
+      <div>
+        <h2 class="text-lg"><a class="stretched" href="{% url 'reports:course' summary.offering.pk window.pk %}">{{ summary.offering.course|localized:"title" }}</a></h2>
+        <p class="text-sm text-muted">{{ summary.offering.course.code }}{% if summary.offering.section %}, {% blocktranslate with section=summary.offering.section %}section {{ section }}{% endblocktranslate %}{% endif %}</p>
+      </div>
+      {% if summary.rate %}
+      <div class="flex items-center gap-4">
+        {% if summary.average is not None %}
+        <div>
+          <div class="big num">{{ summary.average|floatformat:1 }}</div>
+          <div class="text-sm text-muted">{% translate "average rating" %}</div>
+        </div>
+        {% endif %}
+        <div class="text-sm">
+          <div class="num">{% blocktranslate with submitted=summary.rate.submitted enrolled=summary.rate.enrolled percent=summary.rate.percent|floatformat:0 %}{{ submitted }} of {{ enrolled }} responded ({{ percent }}%){% endblocktranslate %}</div>
+          <div class="text-muted">{% blocktranslate count n=summary.pending %}{{ n }} not yet responded{% plural %}{{ n }} not yet responded{% endblocktranslate %}</div>
+        </div>
+      </div>
+      {% else %}
+      <p class="callout" role="status">{% icon "lock" %}<span>{{ summary.notice }}</span></p>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -437,6 +437,41 @@ def department_average(
     return _cached({window.pk}, "department", (window.pk, department.pk), compute)
 
 
+def department_category_scores(
+    window, department, *, viewer=None, live=False, now=None
+) -> dict[int, float] | InsufficientData:
+    """Mean score per question category across a department, for comparison with one course.
+    The same floor as ``department_average`` applies, and a category needs the threshold in
+    answers on its own; a category below it is left out."""
+    if refusal := _not_released(window, viewer, live, now):
+        return refusal
+
+    def compute():
+        size = FeedbackResponse.objects.filter(
+            window=window, offering__course__department=department
+        ).aggregate(n=Count("pk"), teachers=Count("offering__teacher", distinct=True))
+        if not _enough(size["n"]) or size["teachers"] < MIN_DEPARTMENT_TEACHERS:
+            return _too_few()
+        rows = (
+            Answer.objects.filter(
+                response__window=window,
+                response__offering__course__department=department,
+                int_value__isnull=False,
+                question__question_type__in=RATED_TYPES,
+                question__category__isnull=False,
+            )
+            .values("question__category_id")
+            .annotate(average=Avg("int_value"), n=Count("pk"))
+        )
+        return {
+            row["question__category_id"]: round(row["average"], 2)
+            for row in rows
+            if _enough(row["n"])
+        }
+
+    return _cached({window.pk}, "department-categories", (window.pk, department.pk), compute)
+
+
 # --- comments ---------------------------------------------------------------------------------
 
 

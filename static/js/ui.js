@@ -43,6 +43,11 @@
 
   document.addEventListener("click", function (event) {
     var target = event.target;
+    if (target.closest("[data-print]")) {
+      window.print();
+      return;
+    }
+
     var themeBtn = target.closest("[data-theme-toggle]");
     if (themeBtn) {
       var dark = !root.classList.contains("dark");

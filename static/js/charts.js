@@ -39,6 +39,9 @@
     } else if (!round) {
       options.scales = { x: scale, y: Object.assign({ beginAtZero: true }, scale) };
     }
+    if (data.scale && options.scales) {
+      Object.assign(options.scales[radial ? "r" : "y"], data.scale);
+    }
     charts.push(
       new Chart(canvas, {
         type: data.type,

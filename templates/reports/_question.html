@@ -1,0 +1,29 @@
+{# Params: block (QuestionBlock), report, printing. One question: rating = average, stars and distribution; choice = percentage bars; text = the comment panel. #}
+{% load i18n ui %}
+<article class="card qcard" id="q{{ block.question.pk }}" aria-labelledby="qt{{ block.question.pk }}">
+  <header class="qcard-head">
+    <span class="qno" aria-hidden="true">{{ block.number }}</span>
+    <div>
+      {% if block.question.category %}<div class="qcat">{{ block.question.category|localized:"name" }}</div>{% endif %}
+      <h3 id="qt{{ block.question.pk }}" class="text-lg"><span class="sr-only">{% blocktranslate with n=block.number %}Question {{ n }}:{% endblocktranslate %}</span> {{ block.question|localized:"text" }}</h3>
+    </div>
+  </header>
+  {% if block.notice %}
+  <p class="callout" role="status">{% icon "lock" %}<span>{{ block.notice }}</span></p>
+  {% elif block.kind == "text" %}
+  {% include "reports/_comments.html" with panel=block.panel offering=report.offering window=report.window %}
+  {% elif block.average is not None %}
+  <div class="avg-block">
+    <div class="big num">{{ block.average|floatformat:1 }}</div>
+    <div>
+      {% blocktranslate with value=block.average|floatformat:1 asvar stars_label %}{{ value }} out of 5{% endblocktranslate %}
+      {% include "reports/_stars.html" with value=block.average label=stars_label %}
+      <div class="text-sm text-muted">{% blocktranslate count n=block.count %}{{ n }} response{% plural %}{{ n }} responses{% endblocktranslate %}</div>
+    </div>
+  </div>
+  {% include "reports/_bars.html" with rows=block.rows stars=True %}
+  {% else %}
+  {% include "reports/_bars.html" with rows=block.rows %}
+  <p class="text-sm text-muted">{% blocktranslate count n=block.count %}{{ n }} response{% plural %}{{ n }} responses{% endblocktranslate %}</p>
+  {% endif %}
+</article>

@@ -1,0 +1,23 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n static ui %}
+{% block title %}{{ report.offering.course.code }} · {% translate "Course report" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block head %}{% if report.radar or report.trend %}<script src="{% static 'vendor/chart.umd.min.js' %}" nonce="{{ csp_nonce }}" defer></script><script src="{% static 'js/charts.js' %}" nonce="{{ csp_nonce }}" defer></script>{% endif %}{% endblock %}
+{% block breadcrumb %}{% include "components/breadcrumb.html" with crumbs=crumbs %}{% endblock %}
+{% block content %}
+{% include "reports/_header.html" %}
+{% if report.blocks %}
+<div class="report-grid">
+  <div class="grid gap-4 content-start">
+    <div class="flex flex-wrap items-center gap-3">
+      <h2 class="flex-1 text-xl">{% translate "Answers, question by question" %}</h2>
+      <a class="btn btn-ghost no-print" href="{% url 'reports:print' report.offering.pk report.window.pk %}">{% icon "print" %}{% translate "Print view" %}</a>
+    </div>
+    {% for block in report.blocks %}{% include "reports/_question.html" %}{% endfor %}
+  </div>
+  <aside class="grid gap-4 content-start" aria-label="{% translate 'Summary' %}">
+    {% include "reports/_extras.html" %}
+    {% include "reports/_note.html" %}
+  </aside>
+</div>
+{% endif %}
+{% endblock %}

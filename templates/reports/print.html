@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n static ui %}
+{% block title %}{{ report.offering.course.code }} · {% translate "Course report" %}{% endblock %}
+{% block head %}{% if report.radar or report.trend %}<script src="{% static 'vendor/chart.umd.min.js' %}" nonce="{{ csp_nonce }}" defer></script><script src="{% static 'js/charts.js' %}" nonce="{{ csp_nonce }}" defer></script>{% endif %}{% endblock %}
+{% block body %}
+<main id="main" class="wrap grid gap-4 py-6" tabindex="-1">
+  <div class="flex flex-wrap gap-3 no-print">
+    <a class="btn btn-ghost" href="{% url 'reports:course' report.offering.pk report.window.pk %}">{% icon "chevron-left" %}{% translate "Back to the report" %}</a>
+    <button type="button" class="btn btn-primary" data-print>{% icon "print" %}{% translate "Print or save as PDF" %}</button>
+  </div>
+  {% include "reports/_header.html" %}
+  {% for block in report.blocks %}{% include "reports/_question.html" with printing=True %}{% endfor %}
+  {% include "reports/_extras.html" %}
+  {% include "reports/_note.html" %}
+</main>
+{% endblock %}

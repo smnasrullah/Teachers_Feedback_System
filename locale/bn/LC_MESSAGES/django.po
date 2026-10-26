@@ -425,8 +425,12 @@ msgstr "দীর্ঘক্ষণ নিষ্ক্রিয় থাকা�
 msgid "Your session has expired. Please sign in again."
 msgstr "আপনার সেশনের মেয়াদ শেষ হয়েছে। অনুগ্রহ করে আবার সাইন ইন করুন।"
 
-msgid "You were signed out because your account signed in on another device. If that was not you, sign in again and change your password."
-msgstr "আপনার অ্যাকাউন্ট অন্য একটি ডিভাইসে সাইন ইন করায় আপনাকে সাইন আউট করা হয়েছে। সেটি আপনি না হলে আবার সাইন ইন করে পাসওয়ার্ড বদলান।"
+msgid ""
+"You were signed out because your account signed in on another device. If "
+"that was not you, sign in again and change your password."
+msgstr ""
+"আপনার অ্যাকাউন্ট অন্য একটি ডিভাইসে সাইন ইন করায় আপনাকে সাইন আউট করা হয়েছে।"
+" সেটি আপনি না হলে আবার সাইন ইন করে পাসওয়ার্ড বদলান।"
 
 msgid "Too many requests"
 msgstr "অনেক বেশি অনুরোধ"
@@ -2706,7 +2710,9 @@ msgstr "এই কোর্সটি এই মতামত রাউন্ড�
 msgid "You are not enrolled in this course."
 msgstr "আপনি এই কোর্সে নিবন্ধিত নন।"
 
-msgid "The questions changed after this form was opened. Reload the page and answer again."
+msgid ""
+"The questions changed after this form was opened. Reload the page and answer"
+" again."
 msgstr "ফর্মটি খোলার পর প্রশ্ন বদলেছে। পাতাটি আবার লোড করে উত্তর দিন।"
 
 msgid "This question needs an answer."
@@ -2732,7 +2738,8 @@ msgstr "লেখা লিখুন।"
 msgid "Keep the answer under %(limit)d characters."
 msgstr "উত্তর %(limit)d অক্ষরের মধ্যে রাখুন।"
 
-msgid "Nothing was left of this answer after it was cleaned. Please rewrite it."
+msgid ""
+"Nothing was left of this answer after it was cleaned. Please rewrite it."
 msgstr "পরিশোধনের পর এই উত্তরের কিছুই অবশিষ্ট থাকেনি। অনুগ্রহ করে আবার লিখুন।"
 
 msgid "Options (English)"
@@ -2772,13 +2779,16 @@ msgid "category"
 msgstr "বিভাগ"
 
 msgid "The question has answers, so your changes were saved as version %(n)d."
-msgstr "প্রশ্নটির উত্তর রয়েছে, তাই আপনার পরিবর্তন %(n)d নম্বর সংস্করণ হিসেবে সংরক্ষিত হয়েছে।"
+msgstr ""
+"প্রশ্নটির উত্তর রয়েছে, তাই আপনার পরিবর্তন %(n)d নম্বর সংস্করণ হিসেবে "
+"সংরক্ষিত হয়েছে।"
 
 msgid "The question was saved."
 msgstr "প্রশ্নটি সংরক্ষিত হয়েছে।"
 
 msgid "A copy was created. It is inactive until you activate it."
-msgstr "একটি অনুলিপি তৈরি হয়েছে। সক্রিয় না করা পর্যন্ত এটি নিষ্ক্রিয় থাকবে।"
+msgstr ""
+"একটি অনুলিপি তৈরি হয়েছে। সক্রিয় না করা পর্যন্ত এটি নিষ্ক্রিয় থাকবে।"
 
 msgid "The question was updated."
 msgstr "প্রশ্নটি হালনাগাদ হয়েছে।"
@@ -2799,7 +2809,9 @@ msgid "A newer version of this question exists. Edit that one."
 msgstr "এই প্রশ্নের একটি নতুন সংস্করণ আছে। সেটি সম্পাদনা করুন।"
 
 msgid "This version was replaced by a newer one and cannot be activated."
-msgstr "এই সংস্করণটি নতুন সংস্করণ দিয়ে প্রতিস্থাপিত হয়েছে, তাই সক্রিয় করা যাবে না।"
+msgstr ""
+"এই সংস্করণটি নতুন সংস্করণ দিয়ে প্রতিস্থাপিত হয়েছে, তাই সক্রিয় করা যাবে "
+"না।"
 
 msgid "Expected %(want)d columns, found %(got)d."
 msgstr "%(want)d টি কলাম প্রত্যাশিত, পাওয়া গেছে %(got)d টি।"
@@ -2837,8 +2849,12 @@ msgstr "মার্কডাউন ফাইল থেকে প্রশ্ন
 msgid "Cannot read %(path)s: %(error)s"
 msgstr "%(path)s পড়া যায়নি: %(error)s"
 
-msgid "Questions: %(created)d created, %(updated)d updated, %(unchanged)d unchanged; %(categories)d new categories; %(placeholders)d placeholders."
-msgstr "প্রশ্ন: %(created)d টি নতুন, %(updated)d টি হালনাগাদ, %(unchanged)d টি অপরিবর্তিত; %(categories)d টি নতুন বিভাগ; %(placeholders)d টি নমুনা প্রশ্ন।"
+msgid ""
+"Questions: %(created)d created, %(updated)d updated, %(unchanged)d "
+"unchanged; %(categories)d new categories; %(placeholders)d placeholders."
+msgstr ""
+"প্রশ্ন: %(created)d টি নতুন, %(updated)d টি হালনাগাদ, %(unchanged)d টি "
+"অপরিবর্তিত; %(categories)d টি নতুন বিভাগ; %(placeholders)d টি নমুনা প্রশ্ন।"
 
 msgid "Skipped line %(line)d: %(reason)s"
 msgstr "লাইন %(line)d বাদ দেওয়া হয়েছে: %(reason)s"
@@ -2879,8 +2895,14 @@ msgstr "এই প্রশ্নের একটি নতুন সংস্�
 msgid "Open the newer version"
 msgstr "নতুন সংস্করণ খুলুন"
 
-msgid "This question already has answers. Changing its text, type or options saves a new version and deactivates this one; the answers stay with the wording they were given for."
-msgstr "এই প্রশ্নের উত্তর ইতিমধ্যে এসেছে। এর লেখা, ধরন বা বিকল্প বদলালে নতুন সংস্করণ সংরক্ষিত হবে এবং এটি নিষ্ক্রিয় হবে; উত্তরগুলো যে শব্দে দেওয়া হয়েছিল সেই শব্দের সঙ্গেই থাকবে।"
+msgid ""
+"This question already has answers. Changing its text, type or options saves "
+"a new version and deactivates this one; the answers stay with the wording "
+"they were given for."
+msgstr ""
+"এই প্রশ্নের উত্তর ইতিমধ্যে এসেছে। এর লেখা, ধরন বা বিকল্প বদলালে নতুন সংস্করণ"
+" সংরক্ষিত হবে এবং এটি নিষ্ক্রিয় হবে; উত্তরগুলো যে শব্দে দেওয়া হয়েছিল সেই "
+"শব্দের সঙ্গেই থাকবে।"
 
 msgid "Version %(version)s · read-only"
 msgstr "সংস্করণ %(version)s · শুধু পড়া যাবে"
@@ -2915,8 +2937,12 @@ msgstr "প্রশ্ন ফিল্টার করুন"
 msgid "Reorder questions"
 msgstr "প্রশ্নের ক্রম বদলান"
 
-msgid "Drag a question to a new place, or type its position. Students see the questions in this order."
-msgstr "প্রশ্ন টেনে নতুন জায়গায় নিন, অথবা তার অবস্থান লিখুন। শিক্ষার্থীরা এই ক্রমেই প্রশ্ন দেখবে।"
+msgid ""
+"Drag a question to a new place, or type its position. Students see the "
+"questions in this order."
+msgstr ""
+"প্রশ্ন টেনে নতুন জায়গায় নিন, অথবা তার অবস্থান লিখুন। শিক্ষার্থীরা এই "
+"ক্রমেই প্রশ্ন দেখবে।"
 
 msgid "inactive"
 msgstr "নিষ্ক্রিয়"
@@ -2933,8 +2959,12 @@ msgstr "মূল্যায়ন পর্ব যোগ করুন"
 msgid "Back to feedback rounds"
 msgstr "মূল্যায়ন পর্বের তালিকায় ফিরুন"
 
-msgid "Times are in Bangladesh time (Asia/Dhaka). A round is open from its opening time up to, but not including, its closing time."
-msgstr "সময় বাংলাদেশ সময়ে (Asia/Dhaka)। পর্ব খোলার সময় থেকে বন্ধের সময়ের ঠিক আগ পর্যন্ত চলমান থাকে।"
+msgid ""
+"Times are in Bangladesh time (Asia/Dhaka). A round is open from its opening "
+"time up to, but not including, its closing time."
+msgstr ""
+"সময় বাংলাদেশ সময়ে (Asia/Dhaka)। পর্ব খোলার সময় থেকে বন্ধের সময়ের ঠিক আগ "
+"পর্যন্ত চলমান থাকে।"
 
 msgid "This round has closed. Its times and scope can no longer be changed."
 msgstr "এই পর্ব সমাপ্ত হয়েছে। এর সময় ও পরিধি আর বদলানো যাবে না।"
@@ -2977,8 +3007,10 @@ msgid_plural "%(count)s course offerings are covered by this round."
 msgstr[0] "এই পর্বে %(count)s টি কোর্স অফারিং অন্তর্ভুক্ত।"
 msgstr[1] "এই পর্বে %(count)s টি কোর্স অফারিং অন্তর্ভুক্ত।"
 
-msgid "Placeholders: %(removed)d removed, %(kept)d kept because they have answers."
-msgstr "নমুনা প্রশ্ন: %(removed)d টি মুছেছে, উত্তর থাকায় %(kept)d টি রয়ে গেছে।"
+msgid ""
+"Placeholders: %(removed)d removed, %(kept)d kept because they have answers."
+msgstr ""
+"নমুনা প্রশ্ন: %(removed)d টি মুছেছে, উত্তর থাকায় %(kept)d টি রয়ে গেছে।"
 
 msgid "The answer is empty."
 msgstr "উত্তরটি ফাঁকা।"
@@ -2986,8 +3018,11 @@ msgstr "উত্তরটি ফাঁকা।"
 msgid "Abusive words are not allowed."
 msgstr "গালিগালাজ বা অশ্লীল শব্দ অনুমোদিত নয়।"
 
-msgid "Phone numbers, e-mail addresses, links and ID numbers are removed from answers."
-msgstr "ফোন নম্বর, ই-মেইল ঠিকানা, লিংক ও আইডি নম্বর উত্তর থেকে বাদ দেওয়া হয়।"
+msgid ""
+"Phone numbers, e-mail addresses, links and ID numbers are removed from "
+"answers."
+msgstr ""
+"ফোন নম্বর, ই-মেইল ঠিকানা, লিংক ও আইডি নম্বর উত্তর থেকে বাদ দেওয়া হয়।"
 
 msgid "The answer looks like random characters or has no words."
 msgstr "উত্তরটি এলোমেলো অক্ষরের মতো দেখাচ্ছে বা এতে কোনো শব্দ নেই।"
@@ -3040,8 +3075,12 @@ msgstr "ফিল্টার শব্দ"
 msgid "Flagged comments"
 msgstr "চিহ্নিত মন্তব্য"
 
-msgid "Comments are checked word by word. Words you add here extend the built-in lists. An allowed word is never removed, even when a list contains it."
-msgstr "মন্তব্য শব্দ ধরে ধরে যাচাই হয়। এখানে যোগ করা শব্দ অন্তর্নির্মিত তালিকা বাড়ায়। অনুমোদিত শব্দ কোনো তালিকায় থাকলেও কখনো বাদ যায় না।"
+msgid ""
+"Comments are checked word by word. Words you add here extend the built-in "
+"lists. An allowed word is never removed, even when a list contains it."
+msgstr ""
+"মন্তব্য শব্দ ধরে ধরে যাচাই হয়। এখানে যোগ করা শব্দ অন্তর্নির্মিত তালিকা "
+"বাড়ায়। অনুমোদিত শব্দ কোনো তালিকায় থাকলেও কখনো বাদ যায় না।"
 
 msgid "Add a word"
 msgstr "শব্দ যোগ করুন"
@@ -3055,8 +3094,12 @@ msgstr "শব্দ"
 msgid "Nothing added yet."
 msgstr "এখনো কিছু যোগ করা হয়নি।"
 
-msgid "These comments contained abusive words. Only the cleaned text is kept and shown, without course, round or time."
-msgstr "এই মন্তব্যগুলোতে গালিগালাজ ছিল। শুধু পরিষ্কার করা লেখা রাখা ও দেখানো হয়, কোর্স, পর্ব বা সময় ছাড়া।"
+msgid ""
+"These comments contained abusive words. Only the cleaned text is kept and "
+"shown, without course, round or time."
+msgstr ""
+"এই মন্তব্যগুলোতে গালিগালাজ ছিল। শুধু পরিষ্কার করা লেখা রাখা ও দেখানো হয়, "
+"কোর্স, পর্ব বা সময় ছাড়া।"
 
 msgid "Nothing flagged"
 msgstr "কিছু চিহ্নিত হয়নি"
@@ -3097,8 +3140,12 @@ msgstr "এই সেমিস্টারের জন্য এখনও ক�
 msgid "Your feedback is anonymous"
 msgstr "আপনার মতামত বেনামি"
 
-msgid "Teachers see only combined results, and only after the round closes. Nobody can see who wrote what."
-msgstr "শিক্ষকরা শুধু সম্মিলিত ফলাফল দেখেন, তাও রাউন্ড শেষ হওয়ার পর। কে কী লিখেছেন তা কেউ দেখতে পারে না।"
+msgid ""
+"Teachers see only combined results, and only after the round closes. Nobody "
+"can see who wrote what."
+msgstr ""
+"শিক্ষকরা শুধু সম্মিলিত ফলাফল দেখেন, তাও রাউন্ড শেষ হওয়ার পর। কে কী লিখেছেন "
+"তা কেউ দেখতে পারে না।"
 
 msgid "Your courses this semester"
 msgstr "এই সেমিস্টারে আপনার কোর্স"
@@ -3112,11 +3159,21 @@ msgstr "বিশ্ববিদ্যালয় সেমিস্টার �
 msgid "You are not enrolled in any course this semester"
 msgstr "এই সেমিস্টারে আপনি কোনো কোর্সে নথিভুক্ত নন"
 
-msgid "If this looks wrong, please contact your department office. They enroll students in courses."
-msgstr "এটি ভুল মনে হলে অনুগ্রহ করে আপনার বিভাগীয় অফিসের সাথে যোগাযোগ করুন। তারাই শিক্ষার্থীদের কোর্সে নথিভুক্ত করে।"
+msgid ""
+"If this looks wrong, please contact your department office. They enroll "
+"students in courses."
+msgstr ""
+"এটি ভুল মনে হলে অনুগ্রহ করে আপনার বিভাগীয় অফিসের সাথে যোগাযোগ করুন। তারাই "
+"শিক্ষার্থীদের কোর্সে নথিভুক্ত করে।"
 
-msgid "Your account was signed in on another device (since %(when)s). We signed that device out. If that was not you, <a href=\"%(password_url)s\">change your password</a> now."
-msgstr "আপনার অ্যাকাউন্টে অন্য একটি ডিভাইসে সাইন ইন ছিল (%(when)s থেকে)। আমরা সেই ডিভাইস সাইন আউট করে দিয়েছি। সেটি আপনি না হলে এখনই <a href=\"%(password_url)s\">পাসওয়ার্ড বদলান</a>।"
+msgid ""
+"Your account was signed in on another device (since %(when)s). We signed "
+"that device out. If that was not you, <a href=\"%(password_url)s\">change "
+"your password</a> now."
+msgstr ""
+"আপনার অ্যাকাউন্টে অন্য একটি ডিভাইসে সাইন ইন ছিল (%(when)s থেকে)। আমরা সেই "
+"ডিভাইস সাইন আউট করে দিয়েছি। সেটি আপনি না হলে এখনই <a "
+"href=\"%(password_url)s\">পাসওয়ার্ড বদলান</a>।"
 
 msgid "Closed on %(when)s"
 msgstr "%(when)s তারিখে শেষ হয়েছে"
@@ -3142,7 +3199,8 @@ msgstr "%(when)s খুলবে"
 msgid "optional"
 msgstr "ঐচ্ছিক"
 
-msgid "Be specific and respectful. Do not write names, phone numbers or ID numbers."
+msgid ""
+"Be specific and respectful. Do not write names, phone numbers or ID numbers."
 msgstr "নির্দিষ্ট ও ভদ্রভাবে লিখুন। নাম, ফোন নম্বর বা আইডি নম্বর লিখবেন না।"
 
 msgid "Please answer this question."
@@ -3157,11 +3215,21 @@ msgstr "বেনামি"
 msgid "Required questions answered"
 msgstr "আবশ্যিক প্রশ্নের উত্তর দেওয়া হয়েছে"
 
-msgid "Do not write your name or personal details. Offensive words are removed automatically."
-msgstr "নিজের নাম বা ব্যক্তিগত তথ্য লিখবেন না। আপত্তিকর শব্দ স্বয়ংক্রিয়ভাবে মুছে ফেলা হয়।"
+msgid ""
+"Do not write your name or personal details. Offensive words are removed "
+"automatically."
+msgstr ""
+"নিজের নাম বা ব্যক্তিগত তথ্য লিখবেন না। আপত্তিকর শব্দ স্বয়ংক্রিয়ভাবে মুছে "
+"ফেলা হয়।"
 
-msgid "Your answers are saved as a draft while you work. Only one device can be signed in: signing in elsewhere ends this session, and your saved draft is waiting for you."
-msgstr "আপনি লেখার সময় উত্তরগুলো খসড়া হিসেবে সংরক্ষিত হয়। একসাথে একটি ডিভাইসেই সাইন ইন থাকা যায়: অন্য কোথাও সাইন ইন করলে এই সেশন শেষ হয়ে যাবে, আর আপনার সংরক্ষিত খসড়া অপেক্ষায় থাকবে।"
+msgid ""
+"Your answers are saved as a draft while you work. Only one device can be "
+"signed in: signing in elsewhere ends this session, and your saved draft is "
+"waiting for you."
+msgstr ""
+"আপনি লেখার সময় উত্তরগুলো খসড়া হিসেবে সংরক্ষিত হয়। একসাথে একটি ডিভাইসেই "
+"সাইন ইন থাকা যায়: অন্য কোথাও সাইন ইন করলে এই সেশন শেষ হয়ে যাবে, আর আপনার "
+"সংরক্ষিত খসড়া অপেক্ষায় থাকবে।"
 
 msgid "Please answer the {count} highlighted questions before you submit."
 msgstr "জমা দেওয়ার আগে চিহ্নিত {count}টি প্রশ্নের উত্তর দিন।"
@@ -3194,19 +3262,29 @@ msgid "Submit feedback"
 msgstr "মতামত জমা দিন"
 
 msgid "<span class=\"num\" data-answered>0</span> of %(total)s required answered"
-msgstr "<span class=\"num\" data-answered>0</span> / %(total)sটি আবশ্যিক প্রশ্নের উত্তর দেওয়া হয়েছে"
+msgstr ""
+"<span class=\"num\" data-answered>0</span> / %(total)sটি আবশ্যিক প্রশ্নের "
+"উত্তর দেওয়া হয়েছে"
 
 msgid "Feedback for %(name)s"
 msgstr "%(name)s-এর জন্য মতামত"
 
-msgid "%(round)s, %(semester)s. Questions marked required must be answered. You can give feedback once for this course in this round."
-msgstr "%(round)s, %(semester)s। আবশ্যিক চিহ্নিত প্রশ্নের উত্তর দিতে হবে। এই রাউন্ডে এই কোর্সের জন্য একবারই মতামত দেওয়া যায়।"
+msgid ""
+"%(round)s, %(semester)s. Questions marked required must be answered. You can"
+" give feedback once for this course in this round."
+msgstr ""
+"%(round)s, %(semester)s। আবশ্যিক চিহ্নিত প্রশ্নের উত্তর দিতে হবে। এই রাউন্ডে"
+" এই কোর্সের জন্য একবারই মতামত দেওয়া যায়।"
 
 msgid "You have already given feedback"
 msgstr "আপনি ইতোমধ্যে মতামত দিয়েছেন"
 
-msgid "Thank you. Feedback for a course can be given once in a round, and it cannot be changed afterwards."
-msgstr "ধন্যবাদ। একটি রাউন্ডে কোর্সের জন্য একবারই মতামত দেওয়া যায় এবং পরে তা বদলানো যায় না।"
+msgid ""
+"Thank you. Feedback for a course can be given once in a round, and it cannot"
+" be changed afterwards."
+msgstr ""
+"ধন্যবাদ। একটি রাউন্ডে কোর্সের জন্য একবারই মতামত দেওয়া যায় এবং পরে তা "
+"বদলানো যায় না।"
 
 msgid "This round has not opened yet"
 msgstr "এই রাউন্ড এখনও শুরু হয়নি"
@@ -3250,8 +3328,12 @@ msgstr "ঠিক আছে।"
 msgid "My profile"
 msgstr "আমার প্রোফাইল"
 
-msgid "Only these details can be changed here. Your department, batch and level are set by the university."
-msgstr "এখানে শুধু এই তথ্যগুলো বদলানো যায়। আপনার বিভাগ, ব্যাচ ও লেভেল বিশ্ববিদ্যালয় নির্ধারণ করে।"
+msgid ""
+"Only these details can be changed here. Your department, batch and level are"
+" set by the university."
+msgstr ""
+"এখানে শুধু এই তথ্যগুলো বদলানো যায়। আপনার বিভাগ, ব্যাচ ও লেভেল "
+"বিশ্ববিদ্যালয় নির্ধারণ করে।"
 
 msgid "Save profile"
 msgstr "প্রোফাইল সংরক্ষণ করুন"
@@ -3265,11 +3347,17 @@ msgstr "প্রোফাইল সম্পাদনা"
 msgid "The password is not correct. Your answers are still here."
 msgstr "পাসওয়ার্ড সঠিক নয়। আপনার উত্তরগুলো এখানেই আছে।"
 
-msgid "Too many wrong passwords. Please wait a few minutes before you try again."
-msgstr "অনেকবার ভুল পাসওয়ার্ড দেওয়া হয়েছে। অনুগ্রহ করে কয়েক মিনিট অপেক্ষা করে আবার চেষ্টা করুন।"
+msgid ""
+"Too many wrong passwords. Please wait a few minutes before you try again."
+msgstr ""
+"অনেকবার ভুল পাসওয়ার্ড দেওয়া হয়েছে। অনুগ্রহ করে কয়েক মিনিট অপেক্ষা করে "
+"আবার চেষ্টা করুন।"
 
-msgid "The questions changed while you were answering. Please check your answers."
-msgstr "আপনি উত্তর দেওয়ার সময় প্রশ্নগুলো বদলে গেছে। অনুগ্রহ করে উত্তরগুলো দেখে নিন।"
+msgid ""
+"The questions changed while you were answering. Please check your answers."
+msgstr ""
+"আপনি উত্তর দেওয়ার সময় প্রশ্নগুলো বদলে গেছে। অনুগ্রহ করে উত্তরগুলো দেখে "
+"নিন।"
 
 msgid "Saving too often. Wait a moment."
 msgstr "খুব ঘন ঘন সংরক্ষণ হচ্ছে। একটু অপেক্ষা করুন।"
@@ -3340,3 +3428,175 @@ msgstr "এটি দেখানোর মতো যথেষ্ট সাড�
 
 msgid "Results are released after the round closes."
 msgstr "রাউন্ড শেষ হওয়ার পর ফলাফল প্রকাশ করা হবে।"
+
+msgid "Course report"
+msgstr "কোর্স রিপোর্ট"
+
+msgid "Answers, question by question"
+msgstr "প্রশ্ন অনুযায়ী উত্তর"
+
+msgid "Print view"
+msgstr "প্রিন্ট ভিউ"
+
+msgid "No feedback round yet"
+msgstr "এখনও কোনো মতামত রাউন্ড নেই"
+
+msgid "Your courses appear here once a feedback round has started for them."
+msgstr "আপনার কোর্সের জন্য মতামত রাউন্ড শুরু হলে কোর্সগুলো এখানে দেখা যাবে।"
+
+msgid "No courses in this round"
+msgstr "এই রাউন্ডে কোনো কোর্স নেই"
+
+msgid "You teach no course that this round covers."
+msgstr "এই রাউন্ডের আওতায় আপনার কোনো কোর্স নেই।"
+
+msgid "average rating"
+msgstr "গড় রেটিং"
+
+msgid "section %(section)s"
+msgstr "সেকশন %(section)s"
+
+msgid "%(submitted)s of %(enrolled)s responded (%(percent)s%%)"
+msgstr ""
+"%(enrolled)s জনের মধ্যে %(submitted)s জন উত্তর দিয়েছেন (%(percent)s%%)"
+
+msgid "Back to the report"
+msgstr "রিপোর্টে ফিরে যান"
+
+msgid "Print or save as PDF"
+msgstr "প্রিন্ট বা পিডিএফ সংরক্ষণ"
+
+msgid "%(n)s star"
+msgstr "%(n)s তারা"
+
+msgid "Search comments"
+msgstr "মন্তব্য খুঁজুন"
+
+msgid "Positive"
+msgstr "ইতিবাচক"
+
+msgid "Needs work"
+msgstr "উন্নতি দরকার"
+
+msgid ""
+"Comments appear in a shuffled order and never show who wrote them or when."
+msgstr "মন্তব্য এলোমেলো ক্রমে দেখানো হয়; কে কখন লিখেছেন তা দেখা যায় না।"
+
+msgid "Tags are approximate: they come from word lists, not from a person."
+msgstr "ট্যাগ আনুমানিক: এগুলো শব্দতালিকা থেকে আসে, কোনো ব্যক্তি দেননি।"
+
+msgid "No comments match."
+msgstr "কোনো মন্তব্য মেলেনি।"
+
+msgid "There are no comments."
+msgstr "কোনো মন্তব্য নেই।"
+
+msgid "All (%(n)s)"
+msgstr "সব (%(n)s)"
+
+msgid "Showing %(first)s-%(last)s of %(total)s"
+msgstr "%(total)sটির মধ্যে %(first)s-%(last)s দেখানো হচ্ছে"
+
+msgid "Scores by category"
+msgstr "বিভাগ অনুযায়ী স্কোর"
+
+msgid "Category scores"
+msgstr "বিভাগের স্কোর"
+
+msgid "Average by round"
+msgstr "রাউন্ড অনুযায়ী গড়"
+
+msgid "The trend appears once two rounds of this course have results."
+msgstr "এই কোর্সের দুটি রাউন্ডের ফলাফল হলে ধারা দেখা যাবে।"
+
+msgid "Strengths and places to improve"
+msgstr "শক্তির জায়গা ও উন্নতির জায়গা"
+
+msgid "Strengths"
+msgstr "শক্তির জায়গা"
+
+msgid "Nothing stands out yet."
+msgstr "এখনও আলাদা করে কিছু চোখে পড়ছে না।"
+
+msgid "To improve"
+msgstr "উন্নতির জায়গা"
+
+msgid "Nothing needs attention right now."
+msgstr "এখন মনোযোগ দরকার এমন কিছু নেই।"
+
+msgid "Department average"
+msgstr "বিভাগের গড়"
+
+msgid "all courses and teachers of the department, combined"
+msgstr "বিভাগের সব কোর্স ও শিক্ষক মিলিয়ে"
+
+msgid ""
+"The department average appears once enough teachers of the department have "
+"results."
+msgstr "বিভাগের যথেষ্ট সংখ্যক শিক্ষকের ফলাফল হলে বিভাগের গড় দেখা যাবে।"
+
+msgid "Words that come up most"
+msgstr "যে শব্দগুলো সবচেয়ে বেশি এসেছে"
+
+msgid "(department %(value)s)"
+msgstr "(বিভাগ %(value)s)"
+
+msgid "above the department average of %(value)s"
+msgstr "বিভাগের গড় %(value)s এর ওপরে"
+
+msgid "below the department average of %(value)s"
+msgstr "বিভাগের গড় %(value)s এর নিচে"
+
+msgid "overall average"
+msgstr "সামগ্রিক গড়"
+
+msgid "Round closed on %(when)s. Results are open."
+msgstr "%(when)s তারিখে রাউন্ড শেষ। ফলাফল উন্মুক্ত।"
+
+msgid "Response rate %(percent)s%%"
+msgstr "উত্তরের হার %(percent)s%%"
+
+msgid "Action taken"
+msgstr "গৃহীত পদক্ষেপ"
+
+msgid "Save note"
+msgstr "নোট সংরক্ষণ"
+
+msgid "Question %(n)s:"
+msgstr "প্রশ্ন %(n)s:"
+
+msgid "Visible to your head of department."
+msgstr "আপনার বিভাগীয় প্রধান এটি দেখতে পাবেন।"
+
+msgid "action taken"
+msgstr "গৃহীত পদক্ষেপ"
+
+msgid "action note"
+msgstr "পদক্ষেপের নোট"
+
+msgid "action notes"
+msgstr "পদক্ষেপের নোট"
+
+msgid "Your note was saved."
+msgstr "আপনার নোট সংরক্ষিত হয়েছে।"
+
+msgid "The note could not be saved. It may be too long."
+msgstr "নোটটি সংরক্ষণ করা যায়নি। এটি হয়তো খুব বড়।"
+
+msgid "This course"
+msgstr "এই কোর্স"
+
+msgid "%(n)s not yet responded"
+msgid_plural "%(n)s not yet responded"
+msgstr[0] "%(n)s জন এখনও উত্তর দেননি"
+msgstr[1] "%(n)s জন এখনও উত্তর দেননি"
+
+msgid "%(n)s student has not responded"
+msgid_plural "%(n)s students have not responded"
+msgstr[0] "%(n)s জন শিক্ষার্থী এখনও উত্তর দেননি"
+msgstr[1] "%(n)s জন শিক্ষার্থী এখনও উত্তর দেননি"
+
+msgid "%(n)s response"
+msgid_plural "%(n)s responses"
+msgstr[0] "%(n)s জন উত্তর দিয়েছেন"
+msgstr[1] "%(n)s জন উত্তর দিয়েছেন"

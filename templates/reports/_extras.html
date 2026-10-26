@@ -1,0 +1,55 @@
+{# Params: report. Category radar, round trend, strengths and improvements, department average, word cloud. #}
+{% load i18n ui %}
+{% if report.radar %}
+<section class="card grid gap-3" aria-labelledby="radar-title">
+  <h3 id="radar-title" class="text-lg">{% translate "Scores by category" %}</h3>
+  {% include "components/chart.html" with chart_id="radar" config=report.radar summary=report.radar_summary %}
+</section>
+{% endif %}
+{% if report.categories %}
+<section class="card grid gap-3" aria-labelledby="categories-title">
+  <h3 id="categories-title" class="text-lg">{% translate "Category scores" %}</h3>
+  <ul class="dist">
+    {% for row in report.categories %}
+    <li class="flex justify-between gap-3"><span>{{ row.name }}</span><span class="num">{{ row.score|floatformat:1 }}{% if row.department is not None %} <span class="text-sm text-muted">{% blocktranslate with value=row.department|floatformat:1 %}(department {{ value }}){% endblocktranslate %}</span>{% endif %}</span></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+<section class="card grid gap-3" aria-labelledby="trend-title">
+  <h3 id="trend-title" class="text-lg">{% translate "Average by round" %}</h3>
+  {% if report.trend %}
+  {% include "components/chart.html" with chart_id="trend" config=report.trend summary=report.trend_summary %}
+  {% else %}
+  <p class="text-sm text-muted">{% translate "The trend appears once two rounds of this course have results." %}</p>
+  {% endif %}
+</section>
+{% if report.categories %}
+<section class="card grid gap-4" aria-labelledby="insights-title">
+  <h3 id="insights-title" class="sr-only">{% translate "Strengths and places to improve" %}</h3>
+  <div class="grid gap-2">
+    {% translate "Strengths" as strengths_label %}{% include "components/badge.html" with variant="done" label=strengths_label %}
+    {% if report.strengths %}<ul class="text-sm">{% for row in report.strengths %}<li>{{ row.name }} <span class="num">{{ row.score|floatformat:1 }}</span>{% if row.department is not None %}, {% blocktranslate with value=row.department|floatformat:1 %}above the department average of {{ value }}{% endblocktranslate %}{% endif %}</li>{% endfor %}</ul>
+    {% else %}<p class="text-sm text-muted">{% translate "Nothing stands out yet." %}</p>{% endif %}
+  </div>
+  <div class="grid gap-2">
+    {% translate "To improve" as improve_label %}{% include "components/badge.html" with variant="pending" label=improve_label icon="alert" %}
+    {% if report.improve %}<ul class="text-sm">{% for row in report.improve %}<li>{{ row.name }} <span class="num">{{ row.score|floatformat:1 }}</span>{% if row.department is not None %}, {% blocktranslate with value=row.department|floatformat:1 %}below the department average of {{ value }}{% endblocktranslate %}{% endif %}</li>{% endfor %}</ul>
+    {% else %}<p class="text-sm text-muted">{% translate "Nothing needs attention right now." %}</p>{% endif %}
+  </div>
+</section>
+{% endif %}
+<section class="card grid gap-2" aria-labelledby="department-title">
+  <h3 id="department-title" class="text-lg">{% translate "Department average" %}</h3>
+  {% if report.department_average is not None %}
+  <p><span class="big num">{{ report.department_average|floatformat:1 }}</span> <span class="text-sm text-muted">{% translate "all courses and teachers of the department, combined" %}</span></p>
+  {% else %}
+  <p class="text-sm text-muted">{% translate "The department average appears once enough teachers of the department have results." %}</p>
+  {% endif %}
+</section>
+{% if report.cloud %}
+<section class="card grid gap-3" aria-labelledby="cloud-title">
+  <h3 id="cloud-title" class="text-lg">{% translate "Words that come up most" %}</h3>
+  <ul class="cloud">{% for word in report.cloud %}<li class="cloud-{{ word.weight }}">{{ word.word }}<span class="sr-only"> ({{ word.count }})</span></li>{% endfor %}</ul>
+</section>
+{% endif %}

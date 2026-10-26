@@ -1,0 +1,16 @@
+{# Params: report, note_form, can_write_note. The teacher writes the note, the head of department reads it. #}
+{% load i18n ui %}
+{% if report.summary.released and can_write_note or report.note %}
+<section class="card grid gap-3" id="action-taken" aria-labelledby="note-title">
+  <h3 id="note-title" class="text-lg">{% translate "Action taken" %}</h3>
+  {% if can_write_note %}
+  <form method="post" action="{% url 'reports:note' report.offering.pk report.window.pk %}" class="grid gap-3">
+    {% csrf_token %}
+    {% include "components/form_field.html" with field=note_form.text %}
+    <div class="flex justify-end"><button type="submit" class="btn btn-primary">{% translate "Save note" %}</button></div>
+  </form>
+  {% else %}
+  <p class="whitespace-pre-line">{{ report.note.text }}</p>
+  {% endif %}
+</section>
+{% endif %}

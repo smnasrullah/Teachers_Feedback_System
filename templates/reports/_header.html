@@ -1,0 +1,41 @@
+{# Params: report. Course, round, overall average and response rate. #}
+{% load i18n ui %}
+{% with summary=report.summary offering=report.offering window=report.window %}
+<section class="card report-head" aria-labelledby="course-title">
+  <div class="grid gap-3">
+    <div>
+      <h1 id="course-title" class="text-2xl">{{ offering.course|localized:"title" }}</h1>
+      <p class="text-muted">{{ offering.course.code }}{% if offering.section %}, {% blocktranslate with section=offering.section %}section {{ section }}{% endblocktranslate %}{% endif %}, {{ offering.semester.name }}, {{ window.name }}</p>
+    </div>
+    <div>
+      {% if summary.released %}
+      {% blocktranslate with when=window.closes_at|date:"j M Y" asvar closed_label %}Round closed on {{ when }}. Results are open.{% endblocktranslate %}
+      {% include "components/badge.html" with variant="done" label=closed_label %}
+      {% else %}
+      {% translate "Results are released after the round closes." as waiting_label %}
+      {% include "components/badge.html" with variant="pending" label=waiting_label %}
+      {% endif %}
+    </div>
+  </div>
+  {% if summary.rate %}
+  <div class="flex flex-wrap items-center gap-6">
+    {% if summary.average is not None %}
+    <div>
+      <div class="big num">{{ summary.average|floatformat:1 }}</div>
+      {% blocktranslate with value=summary.average|floatformat:1 asvar stars_label %}{{ value }} out of 5{% endblocktranslate %}
+      {% include "reports/_stars.html" with value=summary.average label=stars_label %}
+      <div class="text-sm text-muted">{% translate "overall average" %}</div>
+    </div>
+    {% endif %}
+    {% include "components/progress_ring.html" with done=summary.rate.submitted total=summary.rate.enrolled %}
+    <div class="text-sm text-muted">
+      <div>{% blocktranslate with percent=summary.rate.percent|floatformat:0 %}Response rate {{ percent }}%{% endblocktranslate %}</div>
+      <div>{% blocktranslate count n=summary.pending %}{{ n }} student has not responded{% plural %}{{ n }} students have not responded{% endblocktranslate %}</div>
+    </div>
+  </div>
+  {% endif %}
+</section>
+{% if not summary.rate %}
+<p class="callout" role="status">{% icon "lock" %}<span>{{ summary.notice }}</span></p>
+{% endif %}
+{% endwith %}
