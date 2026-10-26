@@ -1,0 +1,53 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Enrollments" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6">
+  <h1>{% translate "Enrollments" %}</h1>
+
+  <form method="post" novalidate class="card grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-labelledby="enroll-title">
+    {% csrf_token %}
+    <h2 id="enroll-title" class="text-lg sm:col-span-2 lg:col-span-4">{% translate "Enroll one student" %}</h2>
+    <div class="sm:col-span-2 lg:col-span-4">{% include "components/form_errors.html" with form=form %}</div>
+    {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex items-end"><button type="submit" class="btn btn-primary">{% translate "Enroll" %}</button></div>
+  </form>
+
+  <form method="get" class="card grid gap-4 sm:grid-cols-2 lg:grid-cols-4" role="search" aria-label="{% translate 'Filter enrollments' %}">
+    {% for field in filter_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex items-end gap-3">
+      <button type="submit" class="btn btn-primary">{% icon "search" %}{% translate "Apply filters" %}</button>
+      <a class="btn btn-ghost" href="{% url 'enrollment:list' %}">{% translate "Reset" %}</a>
+    </div>
+  </form>
+
+  {% if rows %}
+  <table class="data-table" role="table">
+    <caption class="sr-only">{% translate "Enrollments" %}</caption>
+    <thead role="rowgroup"><tr role="row">
+      <th scope="col" role="columnheader">{% translate "Student ID" %}</th>
+      <th scope="col" role="columnheader">{% translate "Full name" %}</th>
+      <th scope="col" role="columnheader">{% translate "Course" %}</th>
+      <th scope="col" role="columnheader">{% translate "Section" %}</th>
+      <th scope="col" role="columnheader">{% translate "Status" %}</th>
+      <th scope="col" role="columnheader"><span class="sr-only">{% translate "Actions" %}</span></th>
+    </tr></thead>
+    <tbody role="rowgroup">
+    {% for row in rows %}
+      <tr role="row">
+        <td role="cell" data-label="{% translate 'Student ID' %}" class="num">{{ row.student_id|default:"—" }}</td>
+        <td role="cell" data-label="{% translate 'Full name' %}">{{ row.full_name|default:"—" }}</td>
+        <td role="cell" data-label="{% translate 'Course' %}">{{ row.enrollment.offering.course.code }} {{ row.enrollment.offering.course.title }}</td>
+        <td role="cell" data-label="{% translate 'Section' %}">{{ row.enrollment.offering.section|default:"—" }}</td>
+        <td role="cell" data-label="{% translate 'Status' %}">{{ row.enrollment.get_status_display }}</td>
+        <td role="cell" data-label="{% translate 'Actions' %}"><a href="{% url 'enrollment:remove' row.enrollment.pk %}">{% translate "Remove" %}</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    {% include "components/empty_state.html" with title=_("No enrollments") text=_("Enroll students, or change the filters.") icon="list" %}
+  {% endif %}
+  {% include "components/pagination.html" with page_obj=page_obj query=query %}
+</div>
+{% endblock %}

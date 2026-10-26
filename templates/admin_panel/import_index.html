@@ -1,0 +1,23 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "CSV import" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6">
+  <header class="grid gap-2">
+    <h1>{% translate "CSV import" %}</h1>
+    <p>{% translate "Download a template, fill it in, then upload it. You see a preview with every row error before anything is saved, and a file is imported completely or not at all." %}</p>
+  </header>
+  <ul class="grid gap-4 sm:grid-cols-2">
+    {% for kind in kinds %}
+    <li class="card grid gap-3">
+      <h2 class="text-lg">{{ kind.title }}</h2>
+      <p>{{ kind.summary }}</p>
+      <div class="flex flex-wrap gap-3">
+        <a class="btn btn-primary" href="{% url 'academics:import_upload' kind.key %}">{% icon "edit" %}{% translate "Upload file" %}</a>
+        <a class="btn btn-ghost" href="{% url 'academics:import_template' kind.key %}">{% translate "Download template" %}</a>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

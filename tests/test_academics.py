@@ -9,6 +9,7 @@ from apps.academics.models import Course, CourseOffering, Department, Semester
 from apps.academics.screens import SCREENS
 from apps.academics.selectors import get_current_courses
 from apps.auditlog.models import AuditEvent
+from apps.enrollment.models import Enrollment
 from tests.factories import (
     BatchFactory,
     DepartmentFactory,
@@ -372,22 +373,31 @@ class TestQueryCounts:
 
 
 class TestCurrentCourses:
-    def test_returns_current_semester_courses_for_the_students_level(self):
+    def test_returns_only_enrolled_offerings_of_the_current_semester(self):
         student = make_student()
         department = student.program.department
         current, past = make_semester("Now", current=True), make_semester("Past")
-        mine = make_course(department, "CSE101", level_term=student.level_term)
-        other_level = make_course(department, "CSE201")
-        other_department = make_course(level_term=student.level_term)
-        wanted = make_offering(mine, current)
-        make_offering(mine, past)
-        make_offering(other_level, current)
-        make_offering(other_department, current)
+        course = make_course(department, "CSE101", level_term=student.level_term)
+        wanted = make_offering(course, current)
+        old = make_offering(course, past)
+        not_enrolled = make_offering(make_course(department, "CSE201"), current)
+        for offering in (wanted, old):
+            Enrollment.objects.create(student_profile=student, offering=offering)
+        Enrollment.objects.create(student_profile=make_student(), offering=not_enrolled)
         assert get_current_courses(student) == [wanted]
+
+    def test_curriculum_alone_does_not_enroll(self):
+        student = make_student()
+        current = make_semester("Now", current=True)
+        make_offering(
+            make_course(student.program.department, level_term=student.level_term), current
+        )
+        assert get_current_courses(student) == []
 
     def test_no_current_semester_means_no_courses(self):
         student = make_student()
-        make_offering(make_course(student.program.department, level_term=student.level_term))
+        offering = make_offering(make_course(student.program.department))
+        Enrollment.objects.create(student_profile=student, offering=offering)
         assert get_current_courses(student) == []
 
     def test_query_count_is_constant(self, django_assert_num_queries):
@@ -395,7 +405,8 @@ class TestCurrentCourses:
         department = student.program.department
         current = make_semester("Now", current=True)
         for n in range(3):
-            make_offering(make_course(department, f"C{n}", level_term=student.level_term), current)
+            offering = make_offering(make_course(department, f"C{n}"), current)
+            Enrollment.objects.create(student_profile=student, offering=offering)
         with django_assert_num_queries(1):
             titles = [
                 (offering.course.title, offering.teacher.registry.full_name)

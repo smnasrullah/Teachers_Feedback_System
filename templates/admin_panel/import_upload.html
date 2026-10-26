@@ -1,0 +1,28 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{{ importer.title }} · {% translate "CSV import" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <header class="grid gap-2">
+    <a class="btn btn-ghost w-fit" href="{% url 'academics:import_index' %}">{% icon "chevron-left" %}{% translate "Back to CSV import" %}</a>
+    <h1>{% blocktranslate with what=importer.title %}Import: {{ what }}{% endblocktranslate %}</h1>
+    <p>{{ importer.summary }}</p>
+  </header>
+  <section class="card grid gap-2" aria-labelledby="columns-title">
+    <h2 id="columns-title" class="text-lg">{% translate "Columns" %}</h2>
+    <p>{% translate "Required:" %} <span class="num">{{ importer.required|join:", " }}</span></p>
+    {% if importer.optional %}<p>{% translate "Optional:" %} <span class="num">{{ importer.optional|join:", " }}</span></p>{% endif %}
+    <p class="field-hint">{% translate "The header row must match exactly. Existing records are never changed: rows that already exist are reported as errors. Cells that start with = + - or @ lose that character." %}</p>
+    <a class="btn btn-ghost w-fit" href="{% url 'academics:import_template' importer.key %}">{% translate "Download template" %}</a>
+  </section>
+  <form method="post" enctype="multipart/form-data" novalidate class="card grid gap-4">
+    {% csrf_token %}
+    {% include "components/form_errors.html" with form=form %}
+    {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-primary">{% translate "Check file" %}</button>
+      <a class="btn btn-ghost" href="{% url 'academics:import_index' %}">{% translate "Cancel" %}</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

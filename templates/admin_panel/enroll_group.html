@@ -1,0 +1,24 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Enroll by level/term" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <header class="grid gap-2">
+    <h1>{% translate "Enroll by level/term" %}</h1>
+    <p>{% translate "Enrolls every active student of a program at a level/term in all compulsory offerings of that program and level/term in the current semester. Electives are enrolled one student at a time. Offerings with a section take only students of that section." %}</p>
+  </header>
+  <form method="get" class="card grid gap-4 sm:grid-cols-2">
+    {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex items-end"><button type="submit" class="btn btn-primary">{% translate "Preview" %}</button></div>
+  </form>
+  {% if plan %}
+  <form method="post" class="card grid gap-4">
+    {% csrf_token %}
+    <input type="hidden" name="program" value="{{ form.cleaned_data.program.pk }}">
+    <input type="hidden" name="level_term" value="{{ form.cleaned_data.level_term.pk }}">
+    <p>{% blocktranslate with students=plan.students offerings=plan.offerings new=plan.new|length %}{{ students }} students × {{ offerings }} offerings: {{ new }} new enrollments will be created. Existing enrollments are left as they are.{% endblocktranslate %}</p>
+    <div><button type="submit" class="btn btn-primary"{% if not plan.new %} disabled{% endif %}>{% translate "Enroll now" %}</button></div>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

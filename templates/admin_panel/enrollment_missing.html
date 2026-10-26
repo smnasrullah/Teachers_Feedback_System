@@ -1,0 +1,46 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Missing enrollment" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6">
+  <header class="grid gap-2">
+    <h1>{% translate "Students missing enrollment" %}</h1>
+    <p>{% translate "Active students with no enrollment in the current semester." %}</p>
+  </header>
+  <form method="get" class="card grid gap-4 sm:grid-cols-2 lg:grid-cols-4" role="search" aria-label="{% translate 'Filter students' %}">
+    {% for field in filter_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex items-end gap-3">
+      <button type="submit" class="btn btn-primary">{% icon "search" %}{% translate "Apply filters" %}</button>
+      <a class="btn btn-ghost" href="{% url 'enrollment:missing' %}">{% translate "Reset" %}</a>
+    </div>
+  </form>
+  {% if page_obj.object_list %}
+  <table class="data-table" role="table">
+    <caption class="sr-only">{% translate "Students missing enrollment" %}</caption>
+    <thead role="rowgroup"><tr role="row">
+      <th scope="col" role="columnheader">{% translate "Student ID" %}</th>
+      <th scope="col" role="columnheader">{% translate "Full name" %}</th>
+      <th scope="col" role="columnheader">{% translate "Department" %}</th>
+      <th scope="col" role="columnheader">{% translate "Program" %}</th>
+      <th scope="col" role="columnheader">{% translate "Level/term" %}</th>
+      <th scope="col" role="columnheader">{% translate "Section" %}</th>
+    </tr></thead>
+    <tbody role="rowgroup">
+    {% for student in page_obj %}
+      <tr role="row">
+        <td role="cell" data-label="{% translate 'Student ID' %}" class="num">{{ student.visible_student_id|default:"—" }}</td>
+        <td role="cell" data-label="{% translate 'Full name' %}">{{ student.visible_full_name|default:"—" }}</td>
+        <td role="cell" data-label="{% translate 'Department' %}">{{ student.program.department.code }}</td>
+        <td role="cell" data-label="{% translate 'Program' %}">{{ student.program.code }}</td>
+        <td role="cell" data-label="{% translate 'Level/term' %}">{{ student.level_term.name }}</td>
+        <td role="cell" data-label="{% translate 'Section' %}">{{ student.section|default:"—" }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    {% include "components/empty_state.html" with title=_("Everyone is enrolled") text=_("No active student is missing an enrollment.") icon="users" %}
+  {% endif %}
+  {% include "components/pagination.html" with page_obj=page_obj query=query %}
+</div>
+{% endblock %}

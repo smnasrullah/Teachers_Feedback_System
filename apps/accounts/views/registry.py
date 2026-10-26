@@ -111,7 +111,7 @@ def registry_edit(request, pk):
     return _entry_page(request, registry.id_type, registry)
 
 
-def _codes_csv(issued) -> HttpResponse:
+def codes_csv_response(issued) -> HttpResponse:
     """The only place plaintext codes exist: this response. Nothing is kept afterwards."""
     stamp = timezone.localtime().strftime("%Y%m%d-%H%M")
     response = HttpResponse(content_type="text/csv; charset=utf-8")
@@ -155,7 +155,7 @@ def registry_bulk(request):
                 request=request,
             )
             if issued:
-                return _codes_csv(issued)
+                return codes_csv_response(issued)
             messages.warning(request, _("Only unclaimed entries can receive an activation code."))
         elif action == BulkActionForm.ACTION_REVOKE:
             count = registry_service.revoke(entries, actor=request.user, request=request)

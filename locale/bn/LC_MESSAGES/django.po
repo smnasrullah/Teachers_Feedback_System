@@ -1725,3 +1725,394 @@ msgstr "কিছু পাওয়া যায়নি"
 
 msgid "Add a record, or change the filters."
 msgstr "একটি রেকর্ড যোগ করুন, অথবা ফিল্টার বদলান।"
+
+msgid "This value is required."
+msgstr "এই মানটি আবশ্যক।"
+
+msgid "At most %(max)d characters are allowed."
+msgstr "সর্বোচ্চ %(max)d অক্ষর অনুমোদিত।"
+
+msgid "Use yes or no."
+msgstr "yes বা no লিখুন।"
+
+msgid "Unknown department “%(value)s”."
+msgstr "অজানা বিভাগ “%(value)s”।"
+
+msgid "Unknown program “%(value)s” in this department."
+msgstr "এই বিভাগে “%(value)s” নামে কোনো প্রোগ্রাম নেই।"
+
+msgid "Unknown level/term “%(value)s”."
+msgstr "অজানা লেভেল/টার্ম “%(value)s”।"
+
+msgid "More than one level/term is named “%(value)s”."
+msgstr "একাধিক লেভেল/টার্মের নাম “%(value)s”।"
+
+msgid "Unknown batch “%(value)s” in this program."
+msgstr "এই প্রোগ্রামে “%(value)s” নামে কোনো ব্যাচ নেই।"
+
+msgid "Unknown semester “%(value)s”."
+msgstr "অজানা সেমিস্টার “%(value)s”।"
+
+msgid "Unknown course “%(value)s” in this department."
+msgstr "এই বিভাগে “%(value)s” নামে কোনো কোর্স নেই।"
+
+msgid "Student IDs"
+msgstr "শিক্ষার্থীর আইডি"
+
+msgid "Teacher IDs"
+msgstr "শিক্ষকের আইডি"
+
+msgid ""
+"Pre-registers students (registry entry and profile) so they can sign up and "
+"be enrolled."
+msgstr ""
+"শিক্ষার্থীদের (রেজিস্ট্রি এন্ট্রি ও প্রোফাইল) আগেভাগে নিবন্ধন করে, যাতে তারা"
+" সাইন আপ করতে ও ভর্তি হতে পারে।"
+
+msgid ""
+"Pre-registers teachers (registry entry and profile) so they can sign up and "
+"be assigned."
+msgstr ""
+"শিক্ষকদের (রেজিস্ট্রি এন্ট্রি ও প্রোফাইল) আগেভাগে নিবন্ধন করে, যাতে তারা "
+"সাইন আপ করতে ও কোর্স পেতে পারে।"
+
+msgid "Adds courses to the curriculum."
+msgstr "পাঠ্যক্রমে কোর্স যোগ করে।"
+
+msgid "Offers courses in a semester with the teacher who takes them."
+msgstr "সেমিস্টারে কোর্স ও তার শিক্ষক নির্ধারণ করে অফার করে।"
+
+msgid "Enrolls students in course offerings (regular or retake)."
+msgstr "শিক্ষার্থীদের কোর্স অফারিংয়ে (নিয়মিত বা রিটেক) ভর্তি করে।"
+
+msgid "Enter a number such as 3 or 1.5."
+msgstr "৩ বা ১.৫-এর মতো একটি সংখ্যা লিখুন।"
+
+msgid "The credit must be above zero, below 100, with one decimal at most."
+msgstr ""
+"ক্রেডিট শূন্যের বেশি ও ১০০-এর কম হতে হবে, দশমিকের পরে একটির বেশি অঙ্ক নয়।"
+
+msgid "Use theory or lab."
+msgstr "theory বা lab লিখুন।"
+
+msgid "No registered teacher has this ID."
+msgstr "এই আইডির কোনো নিবন্ধিত শিক্ষক নেই।"
+
+msgid "No registered student has this ID."
+msgstr "এই আইডির কোনো নিবন্ধিত শিক্ষার্থী নেই।"
+
+msgid "This course is not offered like this."
+msgstr "এই কোর্স এভাবে অফার করা হয়নি।"
+
+msgid "This student is listed for this offering twice."
+msgstr "এই শিক্ষার্থী এই অফারিংয়ের জন্য দুইবার তালিকাভুক্ত।"
+
+msgid "Use regular or retake."
+msgstr "regular বা retake লিখুন।"
+
+msgid "This student is already enrolled in this offering."
+msgstr "এই শিক্ষার্থী ইতিমধ্যে এই অফারিংয়ে ভর্তি আছে।"
+
+msgid "The file is too large. The limit is %(mb)d MB."
+msgstr "ফাইলটি অনেক বড়। সীমা %(mb)d এমবি।"
+
+msgid "The file must be saved as UTF-8 (in Excel: “CSV UTF-8”)."
+msgstr "ফাইলটি UTF-8 হিসেবে সংরক্ষণ করতে হবে (এক্সেলে: “CSV UTF-8”)।"
+
+msgid "The file is not a text CSV file."
+msgstr "ফাইলটি টেক্সট CSV ফাইল নয়।"
+
+msgid "missing: %(names)s"
+msgstr "নেই: %(names)s"
+
+msgid "not allowed: %(names)s"
+msgstr "অনুমোদিত নয়: %(names)s"
+
+msgid "repeated: %(names)s"
+msgstr "পুনরাবৃত্ত: %(names)s"
+
+msgid "The header row does not match the template (%(problems)s)."
+msgstr "হেডার সারি টেমপ্লেটের সাথে মেলে না (%(problems)s)।"
+
+msgid "The file is empty."
+msgstr "ফাইলটি খালি।"
+
+msgid "The file has more than %(max)d rows."
+msgstr "ফাইলে %(max)d-এর বেশি সারি আছে।"
+
+msgid "The row has more cells than the header."
+msgstr "সারিতে হেডারের চেয়ে বেশি ঘর আছে।"
+
+msgid "The file is not a valid CSV file."
+msgstr "ফাইলটি বৈধ CSV ফাইল নয়।"
+
+msgid ""
+"The data changed while the file was being imported. Nothing was saved; try "
+"again."
+msgstr ""
+"ফাইল ইম্পোর্টের সময় ডেটা বদলে গেছে। কিছুই সংরক্ষিত হয়নি; আবার চেষ্টা করুন।"
+
+msgid "There is no current semester."
+msgstr "বর্তমান কোনো সেমিস্টার নেই।"
+
+msgid "student"
+msgstr "শিক্ষার্থী"
+
+msgid "enrollment"
+msgstr "ভর্তি"
+
+msgid "enrollments"
+msgstr "ভর্তি"
+
+msgid "Regular"
+msgstr "নিয়মিত"
+
+msgid "Retake"
+msgstr "রিটেক"
+
+msgid "Some offerings or teachers no longer exist."
+msgstr "কিছু অফারিং বা শিক্ষক আর নেই।"
+
+msgid "The preview expired. Upload the file again."
+msgstr "প্রিভিউয়ের সময় শেষ। ফাইলটি আবার আপলোড করুন।"
+
+msgid "The data changed after the preview. Upload the file again."
+msgstr "প্রিভিউয়ের পর ডেটা বদলে গেছে। ফাইলটি আবার আপলোড করুন।"
+
+msgid "The student was enrolled."
+msgstr "শিক্ষার্থীকে ভর্তি করা হয়েছে।"
+
+msgid "The enrollment was removed."
+msgstr "ভর্তি বাতিল করা হয়েছে।"
+
+msgid "CSV file"
+msgstr "CSV ফাইল"
+
+msgid "UTF-8 (a BOM from Excel is fine), up to 5 MB and 10,000 rows."
+msgstr "UTF-8 (এক্সেলের BOM চলবে), সর্বোচ্চ ৫ এমবি ও ১০,০০০ সারি।"
+
+msgid "Codes are shown only once, in a downloaded CSV file, after the import."
+msgstr "কোড ইম্পোর্টের পর শুধু একবার, ডাউনলোড করা CSV ফাইলে দেখানো হয়।"
+
+msgid "Student ID"
+msgstr "শিক্ষার্থীর আইডি"
+
+msgid "Course offering"
+msgstr "কোর্স অফারিং"
+
+msgid "Offerings of the current semester."
+msgstr "বর্তমান সেমিস্টারের অফারিং।"
+
+msgid "Assign teachers"
+msgstr "শিক্ষক নিয়োগ"
+
+msgid "Enrollment"
+msgstr "ভর্তি"
+
+msgid "Enroll by level/term"
+msgstr "লেভেল/টার্ম অনুযায়ী ভর্তি"
+
+msgid "Enrollments"
+msgstr "ভর্তিসমূহ"
+
+msgid "Missing enrollment"
+msgstr "ভর্তি বাকি"
+
+msgid "Data"
+msgstr "ডেটা"
+
+msgid "CSV import"
+msgstr "CSV ইম্পোর্ট"
+
+msgid ""
+"Download a template, fill it in, then upload it. You see a preview with "
+"every row error before anything is saved, and a file is imported completely "
+"or not at all."
+msgstr ""
+"একটি টেমপ্লেট ডাউনলোড করে পূরণ করুন, তারপর আপলোড করুন। কিছু সংরক্ষণের আগে "
+"প্রতিটি সারির ত্রুটিসহ প্রিভিউ দেখানো হয়, এবং ফাইল হয় পুরোটা ইম্পোর্ট হয়,"
+" নয়তো একেবারেই হয় না।"
+
+msgid "Upload file"
+msgstr "ফাইল আপলোড"
+
+msgid "Download template"
+msgstr "টেমপ্লেট ডাউনলোড"
+
+msgid "Back to CSV import"
+msgstr "CSV ইম্পোর্টে ফিরুন"
+
+msgid "Import: %(what)s"
+msgstr "ইম্পোর্ট: %(what)s"
+
+msgid "Columns"
+msgstr "কলাম"
+
+msgid "Required:"
+msgstr "আবশ্যক:"
+
+msgid "Optional:"
+msgstr "ঐচ্ছিক:"
+
+msgid ""
+"The header row must match exactly. Existing records are never changed: rows "
+"that already exist are reported as errors. Cells that start with = + - or @ "
+"lose that character."
+msgstr ""
+"হেডার সারি হুবহু মিলতে হবে। বিদ্যমান রেকর্ড কখনো বদলানো হয় না: যে সারি আগে "
+"থেকেই আছে তা ত্রুটি হিসেবে দেখানো হয়। যে ঘর = + - বা @ দিয়ে শুরু হয়, সেই "
+"চিহ্নটি বাদ যায়।"
+
+msgid "Check file"
+msgstr "ফাইল যাচাই"
+
+msgid "Import preview"
+msgstr "ইম্পোর্ট প্রিভিউ"
+
+msgid "Preview: %(what)s"
+msgstr "প্রিভিউ: %(what)s"
+
+msgid "%(rows)s data rows were read. Nothing has been saved yet."
+msgstr "%(rows)s টি ডেটা সারি পড়া হয়েছে। এখনো কিছু সংরক্ষিত হয়নি।"
+
+msgid "%(count)s cells started with = + - or @; that character was removed."
+msgstr ""
+"%(count)s টি ঘর = + - বা @ দিয়ে শুরু হয়েছিল; সেই চিহ্ন বাদ দেওয়া হয়েছে।"
+
+msgid "All rows are valid. Importing will create %(count)s records."
+msgstr "সব সারি বৈধ। ইম্পোর্টে %(count)s টি রেকর্ড তৈরি হবে।"
+
+msgid "Import now"
+msgstr "এখনই ইম্পোর্ট করুন"
+
+msgid ""
+"%(count)s rows have errors. Fix the file and upload it again; nothing is "
+"imported until every row is valid."
+msgstr ""
+"%(count)s টি সারিতে ত্রুটি আছে। ফাইল ঠিক করে আবার আপলোড করুন; প্রতিটি সারি "
+"বৈধ না হওয়া পর্যন্ত কিছুই ইম্পোর্ট হবে না।"
+
+msgid "Row errors"
+msgstr "সারির ত্রুটি"
+
+msgid "Line"
+msgstr "লাইন"
+
+msgid "Column"
+msgstr "কলাম"
+
+msgid "Problem"
+msgstr "সমস্যা"
+
+msgid "Showing the first %(shown)s of %(total)s errors."
+msgstr "%(total)s টি ত্রুটির প্রথম %(shown)s টি দেখানো হচ্ছে।"
+
+msgid "Upload another file"
+msgstr "আরেকটি ফাইল আপলোড করুন"
+
+msgid ""
+"Change the teacher of several offerings, then save this page. Only the "
+"offerings shown here are saved."
+msgstr ""
+"একাধিক অফারিংয়ের শিক্ষক বদলে এই পাতা সংরক্ষণ করুন। শুধু এখানে দেখানো "
+"অফারিংগুলো সংরক্ষিত হয়।"
+
+msgid "Filter offerings"
+msgstr "অফারিং ফিল্টার করুন"
+
+msgid "Offerings of %(name)s"
+msgstr "%(name)s-এর অফারিং"
+
+msgid "Teacher for %(course)s"
+msgstr "%(course)s-এর শিক্ষক"
+
+msgid "Save assignments"
+msgstr "নিয়োগ সংরক্ষণ"
+
+msgid "No offerings"
+msgstr "কোনো অফারিং নেই"
+
+msgid "Add course offerings or change the filters."
+msgstr "কোর্স অফারিং যোগ করুন, অথবা ফিল্টার বদলান।"
+
+msgid ""
+"Enrolls every active student of a program at a level/term in all compulsory "
+"offerings of that program and level/term in the current semester. Electives "
+"are enrolled one student at a time. Offerings with a section take only "
+"students of that section."
+msgstr ""
+"বর্তমান সেমিস্টারে কোনো প্রোগ্রামের নির্দিষ্ট লেভেল/টার্মের প্রতিটি সক্রিয় "
+"শিক্ষার্থীকে সেই প্রোগ্রাম ও লেভেল/টার্মের সব আবশ্যিক অফারিংয়ে ভর্তি করে। "
+"ঐচ্ছিক কোর্সে একজন একজন করে ভর্তি করতে হয়। সেকশনযুক্ত অফারিংয়ে শুধু সেই "
+"সেকশনের শিক্ষার্থীরা ভর্তি হয়।"
+
+msgid "Preview"
+msgstr "প্রিভিউ"
+
+msgid ""
+"%(students)s students × %(offerings)s offerings: %(new)s new enrollments "
+"will be created. Existing enrollments are left as they are."
+msgstr ""
+"%(students)s জন শিক্ষার্থী × %(offerings)s টি অফারিং: %(new)s টি নতুন ভর্তি "
+"তৈরি হবে। বিদ্যমান ভর্তি যেমন আছে তেমনই থাকবে।"
+
+msgid "Enroll now"
+msgstr "এখনই ভর্তি করুন"
+
+msgid "Enroll one student"
+msgstr "একজন শিক্ষার্থীকে ভর্তি করুন"
+
+msgid "Enroll"
+msgstr "ভর্তি করুন"
+
+msgid "Filter enrollments"
+msgstr "ভর্তি ফিল্টার করুন"
+
+msgid "Remove"
+msgstr "সরান"
+
+msgid "No enrollments"
+msgstr "কোনো ভর্তি নেই"
+
+msgid "Enroll students, or change the filters."
+msgstr "শিক্ষার্থীদের ভর্তি করুন, অথবা ফিল্টার বদলান।"
+
+msgid "Remove enrollment"
+msgstr "ভর্তি বাতিল"
+
+msgid ""
+"Remove student %(student)s from %(course)s? The student will no longer see "
+"this course."
+msgstr ""
+"শিক্ষার্থী %(student)s-কে %(course)s থেকে সরাবেন? শিক্ষার্থী আর এই কোর্স "
+"দেখতে পাবে না।"
+
+msgid "Students missing enrollment"
+msgstr "ভর্তি বাকি শিক্ষার্থী"
+
+msgid "Active students with no enrollment in the current semester."
+msgstr "বর্তমান সেমিস্টারে কোনো ভর্তি নেই এমন সক্রিয় শিক্ষার্থী।"
+
+msgid "Filter students"
+msgstr "শিক্ষার্থী ফিল্টার করুন"
+
+msgid "Everyone is enrolled"
+msgstr "সবাই ভর্তি আছে"
+
+msgid "No active student is missing an enrollment."
+msgstr "কোনো সক্রিয় শিক্ষার্থীর ভর্তি বাকি নেই।"
+
+msgid "%(count)d record was imported."
+msgid_plural "%(count)d records were imported."
+msgstr[0] "%(count)d টি রেকর্ড ইম্পোর্ট করা হয়েছে।"
+msgstr[1] "%(count)d টি রেকর্ড ইম্পোর্ট করা হয়েছে।"
+
+msgid "%(count)d assignment was changed."
+msgid_plural "%(count)d assignments were changed."
+msgstr[0] "%(count)d টি নিয়োগ বদলানো হয়েছে।"
+msgstr[1] "%(count)d টি নিয়োগ বদলানো হয়েছে।"
+
+msgid "%(count)d enrollment was created."
+msgid_plural "%(count)d enrollments were created."
+msgstr[0] "%(count)d টি ভর্তি তৈরি হয়েছে।"
+msgstr[1] "%(count)d টি ভর্তি তৈরি হয়েছে।"

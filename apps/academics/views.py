@@ -3,17 +3,24 @@
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
-from django.http import Http404
+from django.http import Http404, QueryDict
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils.translation import gettext as _
+from django.utils.translation import ngettext
 from django.views.decorators.http import require_GET, require_http_methods
 
+from apps.academics.forms import AssignFilterForm
+from apps.academics.models import CourseOffering, Semester
 from apps.academics.screens import SCREENS, Screen
-from apps.academics.services import catalog
+from apps.academics.services import assignments, catalog
+from apps.accounts.models import TeacherProfile
 from apps.core.permissions import Role, role_required
 from apps.core.services.navigation import admin_nav_items
 
 PAGE_SIZE = 50
+ASSIGN_PAGE_SIZE = 25
+TEACHER_FIELD = "teacher_"
 
 
 def _screen(entity: str) -> Screen:
@@ -104,4 +111,80 @@ def entity_delete(request, entity, pk):
         request,
         "admin_panel/academics_delete.html",
         {"nav_items": admin_nav_items(f"academics-{screen.key}"), "screen": screen, "obj": obj},
+    )
+
+
+def _assign_url(query: str = "") -> str:
+    encoded = QueryDict(query).urlencode()
+    return reverse("academics:assign_teachers") + (f"?{encoded}" if encoded else "")
+
+
+def _teacher_choices() -> list[tuple[int, str]]:
+    teachers = TeacherProfile.objects.select_related("registry")
+    return sorted(
+        (
+            (teacher.pk, f"{teacher.registry.external_id} · {teacher.registry.full_name or '—'}")
+            for teacher in teachers
+        ),
+        key=lambda choice: choice[1],
+    )
+
+
+def _assign_post(request):
+    changes = {
+        int(name.removeprefix(TEACHER_FIELD)): int(value)
+        for name, value in request.POST.items()
+        if name.startswith(TEACHER_FIELD)
+        and name.removeprefix(TEACHER_FIELD).isdigit()
+        and value.isdigit()
+    }
+    try:
+        count = assignments.assign_teachers(changes, actor=request.user, request=request)
+    except ValidationError as error:
+        messages.error(request, error.messages[0])
+    else:
+        messages.success(
+            request,
+            ngettext(
+                "%(count)d assignment was changed.",
+                "%(count)d assignments were changed.",
+                count,
+            )
+            % {"count": count},
+        )
+    return redirect(_assign_url(request.POST.get("return_query", "")))
+
+
+@require_http_methods(["GET", "POST"])
+@role_required(Role.ADMIN)
+def assign_teachers(request):
+    if request.method == "POST":
+        return _assign_post(request)
+    form = AssignFilterForm(request.GET)
+    valid = form.is_valid()
+    semester = (valid and form.cleaned_data["semester"]) or (
+        Semester.objects.filter(is_current=True).first() or Semester.objects.first()
+    )
+    offerings = CourseOffering.objects.select_related("course__department").filter(
+        semester=semester
+    )
+    if valid and form.cleaned_data["department"]:
+        offerings = offerings.filter(course__department=form.cleaned_data["department"])
+    page_obj = Paginator(offerings if valid else offerings.none(), ASSIGN_PAGE_SIZE).get_page(
+        request.GET.get("page")
+    )
+    params = request.GET.copy()
+    params.pop("page", None)
+    return render(
+        request,
+        "admin_panel/assign_teachers.html",
+        {
+            "nav_items": admin_nav_items("assign"),
+            "filter_form": form,
+            "semester": semester,
+            "page_obj": page_obj,
+            "teachers": _teacher_choices(),
+            "return_query": request.GET.urlencode(),
+            "query": f"{params.urlencode()}&" if params else "",
+        },
     )

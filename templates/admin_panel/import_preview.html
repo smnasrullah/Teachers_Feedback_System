@@ -1,0 +1,45 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Import preview" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6">
+  <header class="grid gap-2">
+    <h1>{% blocktranslate with what=importer.title %}Preview: {{ what }}{% endblocktranslate %}</h1>
+    <p>{% blocktranslate with rows=result.total %}{{ rows }} data rows were read. Nothing has been saved yet.{% endblocktranslate %}</p>
+    {% if result.sanitized %}<p class="field-hint">{% blocktranslate with count=result.sanitized %}{{ count }} cells started with = + - or @; that character was removed.{% endblocktranslate %}</p>{% endif %}
+  </header>
+
+  {% if result.ok %}
+  <form method="post" action="{% url 'academics:import_apply' importer.key %}" class="card grid gap-4">
+    {% csrf_token %}
+    <input type="hidden" name="token" value="{{ token }}">
+    <p>{% blocktranslate with count=result.created %}All rows are valid. Importing will create {{ count }} records.{% endblocktranslate %}</p>
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-primary">{% translate "Import now" %}</button>
+      <a class="btn btn-ghost" href="{% url 'academics:import_upload' importer.key %}">{% translate "Cancel" %}</a>
+    </div>
+  </form>
+  {% else %}
+  <div class="field-error" role="alert">{% icon "alert-circle" %}<span>{% blocktranslate with count=result.error_count %}{{ count }} rows have errors. Fix the file and upload it again; nothing is imported until every row is valid.{% endblocktranslate %}</span></div>
+  <table class="data-table" role="table">
+    <caption class="sr-only">{% translate "Row errors" %}</caption>
+    <thead role="rowgroup"><tr role="row">
+      <th scope="col" role="columnheader" class="cell-num">{% translate "Line" %}</th>
+      <th scope="col" role="columnheader">{% translate "Column" %}</th>
+      <th scope="col" role="columnheader">{% translate "Problem" %}</th>
+    </tr></thead>
+    <tbody role="rowgroup">
+    {% for error in result.errors %}
+      <tr role="row">
+        <td role="cell" data-label="{% translate 'Line' %}" class="cell-num">{{ error.line }}</td>
+        <td role="cell" data-label="{% translate 'Column' %}">{{ error.column|default:"—" }}</td>
+        <td role="cell" data-label="{% translate 'Problem' %}">{{ error.message }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% if result.error_count > result.errors|length %}<p class="field-hint">{% blocktranslate with shown=result.errors|length total=result.error_count %}Showing the first {{ shown }} of {{ total }} errors.{% endblocktranslate %}</p>{% endif %}
+  <a class="btn btn-primary w-fit" href="{% url 'academics:import_upload' importer.key %}">{% translate "Upload another file" %}</a>
+  {% endif %}
+</div>
+{% endblock %}

@@ -33,6 +33,38 @@ def admin_nav_items(current: str = "") -> list[dict]:
             }
             for screen in SCREENS.values()
         ),
+        {
+            "key": "assign",
+            "label": _("Assign teachers"),
+            "url": reverse("academics:assign_teachers"),
+            "icon": "users",
+        },
+        {"group": _("Enrollment")},
+        {
+            "key": "enroll-group",
+            "label": _("Enroll by level/term"),
+            "url": reverse("enrollment:group"),
+            "icon": "users",
+        },
+        {
+            "key": "enrollments",
+            "label": _("Enrollments"),
+            "url": reverse("enrollment:list"),
+            "icon": "list",
+        },
+        {
+            "key": "enroll-missing",
+            "label": _("Missing enrollment"),
+            "url": reverse("enrollment:missing"),
+            "icon": "list",
+        },
+        {"group": _("Data")},
+        {
+            "key": "import",
+            "label": _("CSV import"),
+            "url": reverse("academics:import_index"),
+            "icon": "list",
+        },
     ]
     return [{**entry, "current": entry.get("key") == current} for entry in entries]
 

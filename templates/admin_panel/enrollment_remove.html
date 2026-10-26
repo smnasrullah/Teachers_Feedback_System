@@ -1,0 +1,16 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Remove enrollment" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <h1>{% translate "Remove enrollment" %}</h1>
+  <form method="post" class="card grid gap-4">
+    {% csrf_token %}
+    <p>{% blocktranslate with student=student_id|default:"—" course=enrollment.offering.course.code %}Remove student {{ student }} from {{ course }}? The student will no longer see this course.{% endblocktranslate %}</p>
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-danger">{% translate "Remove" %}</button>
+      <a class="btn btn-ghost" href="{% url 'enrollment:list' %}">{% translate "Cancel" %}</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

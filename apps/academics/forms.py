@@ -12,6 +12,8 @@ from apps.academics.models import (
     Program,
     Semester,
 )
+from apps.academics.services import importers
+from apps.accounts.forms import MAX_CODE_VALID_DAYS
 from apps.accounts.models import TeacherProfile
 from apps.core.forms import StyledFormMixin
 
@@ -132,3 +134,50 @@ class CourseOfferingForm(StyledModelForm):
                 },
             )
         return data
+
+
+class ImportUploadForm(StyledFormMixin, forms.Form):
+    file = forms.FileField(
+        label=_("CSV file"),
+        help_text=_("UTF-8 (a BOM from Excel is fine), up to 5 MB and 10,000 rows."),
+        widget=forms.ClearableFileInput(attrs={"accept": ".csv,text/csv"}),
+    )
+    issue_codes = forms.BooleanField(
+        label=_("Generate activation codes"),
+        required=False,
+        help_text=_("Codes are shown only once, in a downloaded CSV file, after the import."),
+    )
+    valid_days = forms.IntegerField(
+        label=_("Codes valid for (days)"),
+        min_value=1,
+        max_value=MAX_CODE_VALID_DAYS,
+        initial=importers.DEFAULT_CODE_VALID_DAYS,
+        required=False,
+    )
+
+    def __init__(self, *args, importer, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not importer.issues_codes:
+            del self.fields["issue_codes"], self.fields["valid_days"]
+
+    def clean_file(self):
+        upload = self.cleaned_data["file"]
+        return importers.decode(upload.read(importers.MAX_BYTES + 1))
+
+    def options(self) -> dict:
+        return {
+            "issue_codes": bool(self.cleaned_data.get("issue_codes")),
+            "valid_days": self.cleaned_data.get("valid_days") or importers.DEFAULT_CODE_VALID_DAYS,
+        }
+
+
+class AssignFilterForm(StyledFormMixin, forms.Form):
+    semester = forms.ModelChoiceField(
+        label=_("Semester"), queryset=Semester.objects.all(), required=False, empty_label=None
+    )
+    department = forms.ModelChoiceField(
+        label=_("Department"),
+        queryset=Department.objects.all(),
+        required=False,
+        empty_label=_("All"),
+    )
