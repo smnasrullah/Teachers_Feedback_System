@@ -1,7 +1,7 @@
 """URLs used only by tests/test_permissions.py to exercise deny-by-default."""
 
 from django.http import HttpResponse
-from django.urls import path
+from django.urls import include, path
 from django.views import View
 
 from apps.core.permissions import HOD, PublicMixin, Role, RoleRequiredMixin, public, role_required
@@ -39,4 +39,6 @@ urlpatterns = [
     path("admin-only/", admin_only, name="admin_only"),
     path("hod/", HodView.as_view(), name="hod"),
     path("open-view/", OpenView.as_view(), name="open_view"),
+    # The login redirect target (``settings.LOGIN_URL``) must resolve in this URLconf too.
+    path("accounts/", include(([path("login/", open_page, name="login")], "accounts"))),
 ]

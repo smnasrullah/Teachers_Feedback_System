@@ -1,5 +1,7 @@
 """Identity: users, the pre-registered ID registry and the profiles that exist before signup."""
 
+import uuid
+
 from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.core.validators import RegexValidator
@@ -69,6 +71,8 @@ class User(AbstractBaseUser):
 
     totp_secret = EncryptedCharField(_("TOTP secret"), max_length=64, null=True, blank=True)
     totp_enabled = models.BooleanField(_("two-factor enabled"), default=False)
+    # Time step of the last accepted code: a code can be used once, never replayed.
+    totp_last_step = models.BigIntegerField(default=0, editable=False)
 
     is_active = models.BooleanField(_("active"), default=True)
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
@@ -92,6 +96,11 @@ class User(AbstractBaseUser):
     def is_staff(self):
         """Lets the development-only Django admin recognise the Admin role."""
         return self.role == Role.ADMIN
+
+    @property
+    def requires_second_factor(self) -> bool:
+        """Admins and heads of department see student identities, so they must use TOTP."""
+        return self.role == Role.ADMIN or self.is_hod
 
     @cached_property
     def teacher_profile(self):
@@ -316,3 +325,66 @@ class TeacherProfile(models.Model):
 
     def __str__(self):
         return f"TeacherProfile({self.pk})"
+
+
+class RecoveryCode(models.Model):
+    """A single-use fallback for a lost authenticator; only a keyed hash is stored."""
+
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="recovery_codes", verbose_name=_("user")
+    )
+    code_hash = models.CharField(max_length=64, editable=False)
+    used_at = models.DateTimeField(null=True, blank=True, editable=False)
+    created_at = models.DateTimeField(default=timezone.now, editable=False)
+
+    class Meta:
+        verbose_name = _("recovery code")
+        verbose_name_plural = _("recovery codes")
+        constraints = [
+            models.UniqueConstraint(fields=["user", "code_hash"], name="recovery_code_unique")
+        ]
+
+    def __str__(self):
+        return f"RecoveryCode({self.pk})"
+
+
+class OtpPurpose(models.TextChoices):
+    SIGNUP = "signup", _("Sign-up")
+    PASSWORD_RESET = "password_reset", _("Password reset")
+    USERNAME_RECOVERY = "username_recovery", _("Username recovery")
+
+
+class OneTimeCode(models.Model):
+    """One OTP challenge: a hashed 6-digit code with expiry, attempt and resend limits.
+
+    A challenge for an unknown account is stored exactly like a real one (``user`` and
+    ``registry`` both empty, nothing delivered), so the visible behaviour is identical.
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    purpose = models.CharField(max_length=24, choices=OtpPurpose.choices)
+    channel = models.CharField(max_length=8)
+    user = models.ForeignKey(
+        User, null=True, blank=True, on_delete=models.CASCADE, related_name="+"
+    )
+    registry = models.ForeignKey(
+        IdRegistry, null=True, blank=True, on_delete=models.CASCADE, related_name="+"
+    )
+    # Sign-up only: the contact being verified. Cleared once the account exists.
+    destination = EncryptedCharField(max_length=254, null=True, blank=True)
+    code_hash = models.CharField(max_length=64, editable=False)
+    sent_at = models.DateTimeField(default=timezone.now)
+    expires_at = models.DateTimeField()
+    send_count = models.PositiveSmallIntegerField(default=1)
+    attempts = models.PositiveSmallIntegerField(default=0)
+    verified_at = models.DateTimeField(null=True, blank=True)
+    consumed_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now, editable=False)
+
+    class Meta:
+        verbose_name = _("one-time code")
+        verbose_name_plural = _("one-time codes")
+        indexes = [models.Index(fields=["created_at"], name="otp_created_idx")]
+
+    def __str__(self):
+        return f"OneTimeCode({self.pk})"

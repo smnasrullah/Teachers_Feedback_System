@@ -21,6 +21,7 @@ from tests.factories import (
     make_hod,
     make_student,
     make_teacher,
+    sign_in,
 )
 
 pytestmark = pytest.mark.django_db
@@ -32,7 +33,7 @@ SECRET_NAME = "Tahmina Akter"
 @pytest.fixture
 def admin_client(client):
     client.defaults["HTTP_ACCEPT_LANGUAGE"] = "en"  # the site default is Bangla
-    client.force_login(make_admin())
+    sign_in(client, make_admin())
     return client
 
 
@@ -80,7 +81,7 @@ def test_only_admins_reach_the_management_screens(client, secret_student, role):
         "teacher": lambda: claim(make_teacher(department)),
         "hod": lambda: make_hod(department),  # even the HOD of the student's own department
     }[role]()
-    client.force_login(viewer)
+    sign_in(client, viewer)
     for url in urls_for(secret_student.registry, viewer):
         response = client.get(url)
         assert response.status_code == 403

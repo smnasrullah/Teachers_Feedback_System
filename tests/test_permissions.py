@@ -23,7 +23,28 @@ from apps.core.permissions import (
 from tests.testapp import urls as policy_urls
 
 # Every URL reachable without login. Adding a public page means adding it here, on review.
-PUBLIC_VIEWS = {"core:home", "core:healthz", "core:dev_gallery"}
+PUBLIC_VIEWS = {
+    "core:home",
+    "core:healthz",
+    "core:dev_gallery",
+    # Sign-up, login, second factor and recovery run before anyone is signed in.
+    "accounts:login",
+    "accounts:login_second_factor",
+    "accounts:login_two_factor_setup",
+    "accounts:logout",
+    "accounts:signup",
+    "accounts:signup_contact",
+    "accounts:signup_verify",
+    "accounts:signup_resend",
+    "accounts:signup_password",
+    "accounts:password_forgot",
+    "accounts:password_forgot_verify",
+    "accounts:password_forgot_resend",
+    "accounts:password_forgot_new",
+    "accounts:username_forgot",
+    "accounts:username_forgot_verify",
+    "accounts:username_forgot_resend",
+}
 
 
 @dataclass

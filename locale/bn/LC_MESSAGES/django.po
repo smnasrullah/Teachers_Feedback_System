@@ -947,3 +947,410 @@ msgstr "ইউজারনেম"
 
 msgid "users"
 msgstr "ব্যবহারকারীরা"
+
+# Sign-up, login, two-factor and recovery
+msgid "6-digit code"
+msgstr "৬ অঙ্কের কোড"
+
+msgid "6-digit code from the app"
+msgstr "অ্যাপের ৬ অঙ্কের কোড"
+
+msgid "A new code was sent."
+msgstr "নতুন কোড পাঠানো হয়েছে।"
+
+msgid "Admin dashboard"
+msgstr "অ্যাডমিন ড্যাশবোর্ড"
+
+msgid "Already have an account?"
+msgstr "আগে থেকেই অ্যাকাউন্ট আছে?"
+
+msgid "Authenticator code"
+msgstr "অথেন্টিকেটর কোড"
+
+msgid "Back to log in"
+msgstr "লগইনে ফিরে যান"
+
+msgid "Back to my account"
+msgstr "আমার অ্যাকাউন্টে ফিরে যান"
+
+msgid "Change password"
+msgstr "পাসওয়ার্ড পরিবর্তন করুন"
+
+msgid "Choose a new password"
+msgstr "নতুন পাসওয়ার্ড বেছে নিন"
+
+msgid "Contact"
+msgstr "যোগাযোগ"
+
+msgid "Contact on file"
+msgstr "নথিভুক্ত যোগাযোগ"
+
+msgid "Continue"
+msgstr "চালিয়ে যান"
+
+msgid "Create account"
+msgstr "অ্যাকাউন্ট তৈরি করুন"
+
+msgid "Create your account"
+msgstr "আপনার অ্যাকাউন্ট তৈরি করুন"
+
+msgid "Current password"
+msgstr "বর্তমান পাসওয়ার্ড"
+
+msgid "Delete finished one-time code challenges, and the contacts they hold, after a day."
+msgstr "সম্পন্ন হওয়া ওয়ান-টাইম কোড এবং তাতে থাকা যোগাযোগের তথ্য একদিন পরে মুছে ফেলুন।"
+
+msgid "Deleted %(count)d one-time codes."
+msgstr "%(count)d টি ওয়ান-টাইম কোড মুছে ফেলা হয়েছে।"
+
+msgid "Done:"
+msgstr "সম্পন্ন:"
+
+msgid "E-mail address"
+msgstr "ইমেইল ঠিকানা"
+
+msgid "E-mail address or phone number"
+msgstr "ইমেইল ঠিকানা বা ফোন নম্বর"
+
+msgid "Enter the 6-digit code from your authenticator app. If you lost your phone, enter one of your recovery codes instead."
+msgstr "আপনার অথেন্টিকেটর অ্যাপের ৬ অঙ্কের কোডটি দিন। ফোন হারিয়ে গেলে এর বদলে একটি রিকভারি কোড দিন।"
+
+msgid "Enter the 6-digit code the app shows."
+msgstr "অ্যাপে দেখানো ৬ অঙ্কের কোডটি দিন।"
+
+msgid "Enter the 6-digit code."
+msgstr "৬ অঙ্কের কোডটি দিন।"
+
+msgid "Enter the code we sent to the contact on your account."
+msgstr "আপনার অ্যাকাউন্টের যোগাযোগ মাধ্যমে আমরা যে কোড পাঠিয়েছি তা দিন।"
+
+msgid "Enter your ID and the activation code your department gave you."
+msgstr "আপনার আইডি এবং বিভাগ থেকে পাওয়া অ্যাক্টিভেশন কোড দিন।"
+
+msgid "First time here? Create your account"
+msgstr "প্রথমবার এসেছেন? অ্যাকাউন্ট তৈরি করুন"
+
+msgid "Forgot your password?"
+msgstr "পাসওয়ার্ড ভুলে গেছেন?"
+
+msgid "Forgot your username?"
+msgstr "ইউজারনেম ভুলে গেছেন?"
+
+msgid "Go to log in"
+msgstr "লগইনে যান"
+
+msgid "Head of department dashboard"
+msgstr "বিভাগীয় প্রধানের ড্যাশবোর্ড"
+
+msgid "I have saved my codes"
+msgstr "আমি কোডগুলো সংরক্ষণ করেছি"
+
+msgid "ID and code"
+msgstr "আইডি ও কোড"
+
+msgid "If the details match an account, we sent a 6-digit code to its contact."
+msgstr "তথ্য কোনো অ্যাকাউন্টের সাথে মিললে আমরা তার যোগাযোগ মাধ্যমে ৬ অঙ্কের একটি কোড পাঠিয়েছি।"
+
+msgid "Install an authenticator app (for example Google Authenticator, Microsoft Authenticator or Aegis)."
+msgstr "একটি অথেন্টিকেটর অ্যাপ ইনস্টল করুন (যেমন Google Authenticator, Microsoft Authenticator বা Aegis)।"
+
+msgid "It expires in 5 minutes."
+msgstr "এটি ৫ মিনিট পরে মেয়াদোত্তীর্ণ হবে।"
+
+msgid "Key for manual entry:"
+msgstr "নিজে টাইপ করার কী:"
+
+msgid "Log out of all devices"
+msgstr "সব ডিভাইস থেকে লগ আউট করুন"
+
+msgid "Make new recovery codes"
+msgstr "নতুন রিকভারি কোড তৈরি করুন"
+
+msgid "Making new codes makes the old ones stop working."
+msgstr "নতুন কোড তৈরি করলে পুরনো কোডগুলো আর কাজ করবে না।"
+
+msgid "My account"
+msgstr "আমার অ্যাকাউন্ট"
+
+msgid "New password"
+msgstr "নতুন পাসওয়ার্ড"
+
+msgid "No active sign-in is recorded."
+msgstr "কোনো সক্রিয় সাইন-ইন নথিভুক্ত নেই।"
+
+msgid "No more codes can be sent. Start again."
+msgstr "আর কোড পাঠানো যাবে না। আবার শুরু করুন।"
+
+msgid "Only one device can be signed in at a time: logging in elsewhere signs this one out."
+msgstr "একসাথে শুধু একটি ডিভাইসে সাইন-ইন থাকা যায়: অন্য কোথাও লগইন করলে এটি সাইন-আউট হয়ে যাবে।"
+
+msgid "Password"
+msgstr "পাসওয়ার্ড"
+
+msgid "Password reset"
+msgstr "পাসওয়ার্ড রিসেট"
+
+msgid "Please sign in again and complete two-factor authentication."
+msgstr "অনুগ্রহ করে আবার সাইন-ইন করুন এবং টু-ফ্যাক্টর অথেন্টিকেশন সম্পন্ন করুন।"
+
+msgid "Please wait %(seconds)d seconds before asking for a new code."
+msgstr "নতুন কোড চাওয়ার আগে অনুগ্রহ করে %(seconds)d সেকেন্ড অপেক্ষা করুন।"
+
+msgid "Recover your username"
+msgstr "আপনার ইউজারনেম উদ্ধার করুন"
+
+msgid "Recovery codes"
+msgstr "রিকভারি কোড"
+
+msgid "Repeat the new password"
+msgstr "নতুন পাসওয়ার্ডটি আবার দিন"
+
+msgid "Reset your password"
+msgstr "আপনার পাসওয়ার্ড রিসেট করুন"
+
+msgid "Save these codes now, somewhere safe and apart from your phone. Each works once if you lose your authenticator. They are shown only this time."
+msgstr "এই কোডগুলো এখনই নিরাপদ জায়গায়, ফোন থেকে আলাদা করে সংরক্ষণ করুন। অথেন্টিকেটর হারালে প্রতিটি কোড একবার করে কাজ করবে। কোডগুলো শুধু এই একবারই দেখানো হয়।"
+
+msgid "Scan this QR code with the app, or type the key below into it."
+msgstr "অ্যাপ দিয়ে এই QR কোড স্ক্যান করুন, অথবা নিচের কী-টি অ্যাপে টাইপ করুন।"
+
+msgid "Security"
+msgstr "নিরাপত্তা"
+
+msgid "Send a new code"
+msgstr "নতুন কোড পাঠান"
+
+msgid "Send code"
+msgstr "কোড পাঠান"
+
+msgid "Set up two-factor"
+msgstr "টু-ফ্যাক্টর চালু করুন"
+
+msgid "Set up two-factor authentication"
+msgstr "টু-ফ্যাক্টর অথেন্টিকেশন চালু করুন"
+
+msgid "Sign-up"
+msgstr "সাইন-আপ"
+
+msgid "Sign-up could not be completed. Please start again."
+msgstr "সাইন-আপ সম্পন্ন করা যায়নি। অনুগ্রহ করে আবার শুরু করুন।"
+
+msgid "Signed in %(when)s"
+msgstr "সাইন-ইন: %(when)s"
+
+msgid "Signed in as %(username)s."
+msgstr "আপনি %(username)s হিসেবে সাইন-ইন করেছেন।"
+
+msgid "Start over"
+msgstr "আবার শুরু করুন"
+
+msgid "Student dashboard"
+msgstr "শিক্ষার্থীর ড্যাশবোর্ড"
+
+msgid "Student or teacher ID"
+msgstr "শিক্ষার্থী বা শিক্ষকের আইডি"
+
+msgid "Teacher dashboard"
+msgstr "শিক্ষকের ড্যাশবোর্ড"
+
+msgid "That code is not correct."
+msgstr "কোডটি সঠিক নয়।"
+
+msgid "The ID or code is not valid, or it has already been used. Check both and try again."
+msgstr "আইডি বা কোডটি সঠিক নয়, অথবা আগেই ব্যবহার করা হয়েছে। দুটোই পরীক্ষা করে আবার চেষ্টা করুন।"
+
+msgid "The code your department gave you, like XXXX-XXXX-XXXX."
+msgstr "আপনার বিভাগ থেকে পাওয়া কোড, যেমন XXXX-XXXX-XXXX।"
+
+msgid "The current password is not correct."
+msgstr "বর্তমান পাসওয়ার্ডটি সঠিক নয়।"
+
+msgid "The password is not correct, so the codes were not replaced."
+msgstr "পাসওয়ার্ড সঠিক নয়, তাই কোডগুলো বদলানো হয়নি।"
+
+msgid "The password is not correct, so two-factor was not turned off."
+msgstr "পাসওয়ার্ড সঠিক নয়, তাই টু-ফ্যাক্টর বন্ধ করা হয়নি।"
+
+msgid "The password is not correct."
+msgstr "পাসওয়ার্ডটি সঠিক নয়।"
+
+msgid "The two passwords do not match."
+msgstr "দুটি পাসওয়ার্ড মিলছে না।"
+
+msgid "The username or password is not correct."
+msgstr "ইউজারনেম বা পাসওয়ার্ড সঠিক নয়।"
+
+msgid "This code has expired. Send a new code."
+msgstr "এই কোডের মেয়াদ শেষ। নতুন কোড পাঠান।"
+
+msgid "This device"
+msgstr "এই ডিভাইস"
+
+msgid "This e-mail address or phone number cannot be used. Try another."
+msgstr "এই ইমেইল ঠিকানা বা ফোন নম্বরটি ব্যবহার করা যাবে না। অন্যটি দিন।"
+
+msgid "This is the name you log in with. It is not your student or teacher ID, and it never changes."
+msgstr "এই নামে আপনি লগইন করেন। এটি আপনার শিক্ষার্থী বা শিক্ষক আইডি নয়, এবং কখনও বদলায় না।"
+
+msgid "This page will show your work here once the next parts of the system are ready."
+msgstr "ব্যবস্থার পরবর্তী অংশগুলো প্রস্তুত হলে আপনার কাজ এখানে দেখা যাবে।"
+
+msgid "This reset link has expired. Start again."
+msgstr "রিসেটের সময় শেষ হয়ে গেছে। আবার শুরু করুন।"
+
+msgid "Too many attempts. Please wait a few minutes and try again."
+msgstr "অনেকবার চেষ্টা করা হয়েছে। অনুগ্রহ করে কয়েক মিনিট অপেক্ষা করে আবার চেষ্টা করুন।"
+
+msgid "Too many failed attempts. Please try again in %(minutes)d minutes."
+msgstr "অনেকবার ব্যর্থ চেষ্টা হয়েছে। অনুগ্রহ করে %(minutes)d মিনিট পরে আবার চেষ্টা করুন।"
+
+msgid "Too many wrong attempts. Send a new code."
+msgstr "অনেকবার ভুল দেওয়া হয়েছে। নতুন কোড পাঠান।"
+
+msgid "Turn off"
+msgstr "বন্ধ করুন"
+
+msgid "Turn off two-factor"
+msgstr "টু-ফ্যাক্টর বন্ধ করুন"
+
+msgid "Turn on and continue"
+msgstr "চালু করে চালিয়ে যান"
+
+msgid "Two-factor authentication adds a 6-digit code from your phone to every login."
+msgstr "টু-ফ্যাক্টর অথেন্টিকেশনে প্রতিটি লগইনে আপনার ফোন থেকে একটি ৬ অঙ্কের কোড লাগে।"
+
+msgid "Two-factor authentication is off."
+msgstr "টু-ফ্যাক্টর অথেন্টিকেশন বন্ধ আছে।"
+
+msgid "Two-factor authentication is required for your role."
+msgstr "আপনার ভূমিকার জন্য টু-ফ্যাক্টর অথেন্টিকেশন বাধ্যতামূলক।"
+
+msgid "Two-factor off"
+msgstr "টু-ফ্যাক্টর বন্ধ"
+
+msgid "Two-factor on"
+msgstr "টু-ফ্যাক্টর চালু"
+
+msgid "Two-factor required"
+msgstr "টু-ফ্যাক্টর আবশ্যক"
+
+msgid "Unknown browser"
+msgstr "অজানা ব্রাউজার"
+
+msgid "Use a different e-mail address or phone"
+msgstr "অন্য ইমেইল ঠিকানা বা ফোন ব্যবহার করুন"
+
+msgid "Use it with your password to log in."
+msgstr "লগইন করতে এটি পাসওয়ার্ডের সাথে ব্যবহার করুন।"
+
+msgid "Username or ID"
+msgstr "ইউজারনেম বা আইডি"
+
+msgid "Username recovery"
+msgstr "ইউজারনেম উদ্ধার"
+
+msgid "Verify"
+msgstr "যাচাই করুন"
+
+msgid "We send a 6-digit code here. It is also used to recover your account."
+msgstr "আমরা এখানে ৬ অঙ্কের কোড পাঠাব। অ্যাকাউন্ট উদ্ধারেও এটি ব্যবহার হবে।"
+
+msgid "We sent a 6-digit code. It expires in 5 minutes."
+msgstr "আমরা ৬ অঙ্কের একটি কোড পাঠিয়েছি। এটি ৫ মিনিট পরে মেয়াদোত্তীর্ণ হবে।"
+
+msgid "We will send a 6-digit code to the e-mail address or phone you verified when you signed up."
+msgstr "সাইন-আপের সময় যাচাই করা ইমেইল ঠিকানা বা ফোনে আমরা ৬ অঙ্কের একটি কোড পাঠাব।"
+
+msgid "Where should we send your verification code?"
+msgstr "যাচাইয়ের কোড কোথায় পাঠাব?"
+
+msgid "Where you are signed in"
+msgstr "যেখানে আপনি সাইন-ইন আছেন"
+
+msgid "Write it down. You log in with this username and your password, not with your ID. You can always see it on your account page."
+msgstr "এটি লিখে রাখুন। আপনি আইডি দিয়ে নয়, এই ইউজারনেম ও পাসওয়ার্ড দিয়ে লগইন করবেন। আপনার অ্যাকাউন্ট পেজেও সবসময় এটি দেখতে পাবেন।"
+
+msgid "You have been logged out."
+msgstr "আপনি লগ আউট করেছেন।"
+
+msgid "You signed in with a recovery code. %(left)d recovery codes are left."
+msgstr "আপনি রিকভারি কোড দিয়ে সাইন-ইন করেছেন। আর %(left)d টি রিকভারি কোড বাকি আছে।"
+
+msgid "You were signed out on every device."
+msgstr "সব ডিভাইসে আপনাকে সাইন-আউট করা হয়েছে।"
+
+msgid "Your Teacher Feedback System code is %(code)s. It expires in %(minutes)d minutes. If you did not ask for it, ignore this message and tell nobody the code."
+msgstr "আপনার শিক্ষক মূল্যায়ন ব্যবস্থার কোড %(code)s। এটি %(minutes)d মিনিট পরে মেয়াদোত্তীর্ণ হবে। আপনি না চেয়ে থাকলে এই বার্তা উপেক্ষা করুন এবং কোডটি কাউকে বলবেন না।"
+
+msgid "Your account is ready"
+msgstr "আপনার অ্যাকাউন্ট তৈরি হয়েছে"
+
+msgid "Your contact is verified. Choose a password."
+msgstr "আপনার যোগাযোগ যাচাই হয়েছে। একটি পাসওয়ার্ড বেছে নিন।"
+
+msgid "Your dashboard is on its way"
+msgstr "আপনার ড্যাশবোর্ড শীঘ্রই আসছে"
+
+msgid "Your password"
+msgstr "আপনার পাসওয়ার্ড"
+
+msgid "Your password reset code"
+msgstr "আপনার পাসওয়ার্ড রিসেট কোড"
+
+msgid "Your password was changed."
+msgstr "আপনার পাসওয়ার্ড পরিবর্তন করা হয়েছে।"
+
+msgid "Your password was changed. You can log in now."
+msgstr "আপনার পাসওয়ার্ড পরিবর্তন করা হয়েছে। এখন লগইন করতে পারেন।"
+
+msgid "Your recovery codes"
+msgstr "আপনার রিকভারি কোড"
+
+msgid "Your role can see student identities, so two-factor authentication is required before you continue."
+msgstr "আপনার ভূমিকায় শিক্ষার্থীদের পরিচয় দেখা যায়, তাই চালিয়ে যাওয়ার আগে টু-ফ্যাক্টর অথেন্টিকেশন আবশ্যক।"
+
+msgid "Your role requires two-factor authentication, so it cannot be turned off."
+msgstr "আপনার ভূমিকায় টু-ফ্যাক্টর অথেন্টিকেশন আবশ্যক, তাই এটি বন্ধ করা যাবে না।"
+
+msgid "Your sign-up code"
+msgstr "আপনার সাইন-আপ কোড"
+
+msgid "Your username"
+msgstr "আপনার ইউজারনেম"
+
+msgid "Your username is:"
+msgstr "আপনার ইউজারনেম:"
+
+msgid "Your username recovery code"
+msgstr "আপনার ইউজারনেম উদ্ধারের কোড"
+
+msgid "Your verification code"
+msgstr "আপনার যাচাইকরণ কোড"
+
+msgid "browser"
+msgstr "ব্রাউজার"
+
+msgid "one-time code"
+msgstr "ওয়ান-টাইম কোড"
+
+msgid "one-time codes"
+msgstr "ওয়ান-টাইম কোড"
+
+msgid "recovery code"
+msgstr "রিকভারি কোড"
+
+msgid "recovery codes"
+msgstr "রিকভারি কোড"
+
+msgid "signed in at"
+msgstr "সাইন-ইনের সময়"
+
+msgid "%(left)s recovery code left."
+msgid_plural "%(left)s recovery codes left."
+msgstr[0] "আর %(left)s টি রিকভারি কোড বাকি আছে।"
+msgstr[1] "আর %(left)s টি রিকভারি কোড বাকি আছে।"
+
+msgid "You can ask for a new code in %(seconds)s second."
+msgid_plural "You can ask for a new code in %(seconds)s seconds."
+msgstr[0] "আপনি %(seconds)s সেকেন্ড পরে নতুন কোড চাইতে পারবেন।"
+msgstr[1] "আপনি %(seconds)s সেকেন্ড পরে নতুন কোড চাইতে পারবেন।"

@@ -1,0 +1,40 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Two-factor authentication" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-xl">
+  <h1>{% translate "Two-factor authentication" %}</h1>
+
+  {% if request.user.totp_enabled %}
+  <section class="card grid gap-3" aria-labelledby="recovery-title">
+    <h2 id="recovery-title" class="text-lg">{% translate "Recovery codes" %}</h2>
+    <p>{% blocktranslate count left=recovery_left %}{{ left }} recovery code left.{% plural %}{{ left }} recovery codes left.{% endblocktranslate %}</p>
+    <form method="post" action="{% url 'accounts:two_factor_regenerate' %}" class="grid gap-4">
+      {% csrf_token %}
+      {% for field in regenerate_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+      <p class="field-hint">{% translate "Making new codes makes the old ones stop working." %}</p>
+      <div><button type="submit" class="btn btn-ghost">{% translate "Make new recovery codes" %}</button></div>
+    </form>
+  </section>
+
+  <section class="card grid gap-3" aria-labelledby="off-title">
+    <h2 id="off-title" class="text-lg">{% translate "Turn off" %}</h2>
+    {% if must_use_two_factor %}
+    <p class="text-muted">{% translate "Your role requires two-factor authentication, so it cannot be turned off." %}</p>
+    {% else %}
+    <form method="post" action="{% url 'accounts:two_factor_disable' %}" class="grid gap-4">
+      {% csrf_token %}
+      {% for field in disable_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+      <div><button type="submit" class="btn btn-danger">{% translate "Turn off two-factor" %}</button></div>
+    </form>
+    {% endif %}
+  </section>
+  {% else %}
+  <section class="card grid gap-3">
+    <p>{% translate "Two-factor authentication adds a 6-digit code from your phone to every login." %}</p>
+    <div><a class="btn btn-primary" href="{% url 'accounts:two_factor_setup' %}">{% icon "shield" %}{% translate "Set up two-factor" %}</a></div>
+  </section>
+  {% endif %}
+  <a class="text-sm" href="{% url 'accounts:account' %}">{% translate "Back to my account" %}</a>
+</div>
+{% endblock %}

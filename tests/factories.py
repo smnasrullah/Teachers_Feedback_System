@@ -1,6 +1,7 @@
 """Builders for identity and academic fixtures."""
 
 import itertools
+import time
 
 import factory
 
@@ -14,6 +15,7 @@ from apps.accounts.models import (
     User,
 )
 from apps.core.permissions import Role
+from apps.core.services.sessions import SECOND_FACTOR_KEY
 
 PASSWORD = "Long-enough-pass-1"
 _sequence = itertools.count(1)
@@ -114,3 +116,11 @@ def make_hod(department=None) -> User:
 
 def make_admin(password=None, **fields) -> User:
     return User.objects.create_admin(password, **fields)
+
+
+def sign_in(client, user: User) -> None:
+    """Log ``user`` in as if they had also passed the second factor (see ``sessions.problem``)."""
+    client.force_login(user)
+    session = client.session
+    session[SECOND_FACTOR_KEY] = int(time.time())
+    session.save()

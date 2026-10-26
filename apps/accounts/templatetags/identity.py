@@ -34,3 +34,13 @@ def student_name(profile, viewer):
         else profile.registry.full_name
     )
     return name or ""
+
+
+@register.filter
+def mask_contact(value):
+    """``ra***@example.com`` or ``+880*****123``: enough to recognise, not to harvest."""
+    value = value or ""
+    if "@" in value:
+        local, _, domain = value.partition("@")
+        return f"{local[:2]}***@{domain}"
+    return f"{value[:4]}{'*' * max(len(value) - 7, 0)}{value[-3:]}" if len(value) > 7 else "***"

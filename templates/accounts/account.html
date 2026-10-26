@@ -1,0 +1,50 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui identity %}
+{% block title %}{% translate "My account" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <h1>{% translate "My account" %}</h1>
+
+  <section class="card grid gap-3" aria-labelledby="username-title">
+    <h2 id="username-title" class="text-lg">{% translate "Your username" %}</h2>
+    <p class="num text-2xl font-bold">{{ request.user.username }}</p>
+    <p class="field-hint">{% translate "This is the name you log in with. It is not your student or teacher ID, and it never changes." %}</p>
+    <dl class="grid gap-3 sm:grid-cols-2">
+      <div><dt class="text-muted text-sm">{% translate "Role" %}</dt><dd>{{ request.user.get_role_display }}{% if request.user.is_hod %} · {% translate "Head of department" %}{% endif %}</dd></div>
+      <div><dt class="text-muted text-sm">{% translate "Contact on file" %}</dt><dd>{% if request.user.contact_email %}{{ request.user.contact_email|mask_contact }}{% elif request.user.contact_phone %}{{ request.user.contact_phone|mask_contact }}{% else %}—{% endif %}</dd></div>
+    </dl>
+  </section>
+
+  <section class="card grid gap-3" aria-labelledby="security-title">
+    <h2 id="security-title" class="text-lg">{% translate "Security" %}</h2>
+    <p>
+      {% if request.user.totp_enabled %}<span class="badge badge-done">{% icon "check" %}{% translate "Two-factor on" %}</span>
+      {% elif must_use_two_factor %}<span class="badge badge-alert">{% icon "alert" %}{% translate "Two-factor required" %}</span>
+      {% else %}<span class="badge badge-pending">{% translate "Two-factor off" %}</span>{% endif %}
+    </p>
+    <div class="flex flex-wrap gap-3">
+      <a class="btn btn-ghost" href="{% url 'accounts:two_factor' %}">{% icon "shield" %}{% translate "Two-factor authentication" %}</a>
+      <a class="btn btn-ghost" href="{% url 'accounts:password_change' %}">{% icon "lock" %}{% translate "Change password" %}</a>
+    </div>
+  </section>
+
+  <section class="card grid gap-3" aria-labelledby="sessions-title">
+    <h2 id="sessions-title" class="text-lg">{% translate "Where you are signed in" %}</h2>
+    <p class="field-hint">{% translate "Only one device can be signed in at a time: logging in elsewhere signs this one out." %}</p>
+    <ul class="grid gap-3">
+      {% for session in sessions %}
+      <li class="tint">
+        <p><strong>{{ session.user_agent|default:_("Unknown browser")|truncatechars:80 }}</strong> <span class="badge badge-info">{% translate "This device" %}</span></p>
+        <p class="text-sm text-muted">{% blocktranslate with when=session.created_at|date:"j M Y, H:i" %}Signed in {{ when }}{% endblocktranslate %}{% if session.ip %} · {{ session.ip }}{% endif %}</p>
+      </li>
+      {% empty %}
+      <li class="text-muted">{% translate "No active sign-in is recorded." %}</li>
+      {% endfor %}
+    </ul>
+    <form method="post" action="{% url 'accounts:sign_out_everywhere' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-ghost">{% icon "logout" %}{% translate "Log out of all devices" %}</button>
+    </form>
+  </section>
+</div>
+{% endblock %}

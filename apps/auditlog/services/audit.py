@@ -98,8 +98,9 @@ def record(
     """
     if not ACTION_PATTERN.fullmatch(action):
         raise ValueError(f"Invalid audit action name: {action!r}")
-    if actor is None and request is not None and request.user.is_authenticated:
-        actor = request.user
+    user = getattr(request, "user", None)
+    if actor is None and user is not None and user.is_authenticated:
+        actor = user
     clean = json.loads(json.dumps(_clean_metadata(metadata or {}), allow_nan=False))
     fields = {
         "actor_id": actor.pk if actor is not None else None,

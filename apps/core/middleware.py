@@ -92,6 +92,9 @@ class SessionSecurityMiddleware:
         sessions.SessionProblem.REPLACED: _(
             "You were signed out because your account signed in on another device."
         ),
+        sessions.SessionProblem.SECOND_FACTOR: _(
+            "Please sign in again and complete two-factor authentication."
+        ),
     }
 
     def __init__(self, get_response):

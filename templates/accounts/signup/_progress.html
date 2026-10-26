@@ -1,0 +1,9 @@
+{% load i18n ui %}
+<ol class="stepper" aria-label="{% translate 'Sign-up progress' %}">
+  {% for number, label in steps %}
+  <li{% if number == step_number and not done %} aria-current="step"{% endif %}{% if number < step_number or done %} class="is-done"{% endif %}>
+    <span class="step-dot">{% if number < step_number or done %}{% icon "check" %}<span class="sr-only">{% translate "Done:" %}</span>{% else %}{{ number }}{% endif %}</span>
+    <span>{{ label }}</span>
+  </li>
+  {% endfor %}
+</ol>

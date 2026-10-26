@@ -1,0 +1,10 @@
+{% extends "layouts/auth.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Create your account" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<section class="card grid gap-4" aria-labelledby="signup-title">
+  <h1 id="signup-title">{% translate "Create your account" %}</h1>
+  <div id="signup-step" class="grid gap-4" aria-live="polite">{% include step_template %}</div>
+  <p class="text-sm">{% translate "Already have an account?" %} <a href="{% url 'accounts:login' %}">{% translate "Log in" %}</a></p>
+</section>
+{% endblock %}

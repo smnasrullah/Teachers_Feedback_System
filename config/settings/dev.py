@@ -7,6 +7,13 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]", "testserver"]
 INSTALLED_APPS = ["django.contrib.admin", *INSTALLED_APPS]  # noqa: F405
 ACCESS_POLICY_EXEMPT_NAMESPACES = ["admin"]  # admin guards itself with is_staff
 
+# Codes are printed to the server console instead of being sent.
+OTP_BACKENDS = {
+    "email": "apps.notifications.backends.ConsoleBackend",
+    "sms": "apps.notifications.backends.ConsoleBackend",
+}
+OTP_SMS_ENABLED = True
+
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
 

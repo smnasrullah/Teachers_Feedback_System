@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -15,6 +16,9 @@ class ActiveSession(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="+", verbose_name=_("user")
     )
     login_id = models.CharField(_("login id"), max_length=64)
+    created_at = models.DateTimeField(_("signed in at"), default=timezone.now)
+    ip = models.GenericIPAddressField(_("IP address"), null=True, blank=True)
+    user_agent = models.CharField(_("browser"), max_length=255, blank=True)
 
     class Meta:
         verbose_name = _("active session")

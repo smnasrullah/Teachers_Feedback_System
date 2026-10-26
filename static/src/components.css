@@ -1217,6 +1217,94 @@
     width: 100%;
     max-width: 440px;
   }
+  .stepper {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .stepper li {
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+    text-align: center;
+    font-size: var(--text-xs);
+    color: var(--muted);
+  }
+  .step-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    background: var(--surface);
+    color: var(--text);
+    border: 2px solid var(--border-input);
+  }
+  .stepper [aria-current="step"] {
+    color: var(--text);
+    font-weight: 700;
+  }
+  .stepper [aria-current="step"] .step-dot {
+    background: var(--primary);
+    color: var(--on-primary);
+    border-color: var(--primary);
+  }
+  .stepper .is-done .step-dot {
+    border-color: var(--success);
+    color: var(--success);
+  }
+  .otp-input {
+    text-align: center;
+    font-size: var(--text-2xl);
+    letter-spacing: 0.35em;
+    min-height: 56px;
+  }
+  .qr {
+    justify-self: center;
+    width: 220px;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-btn);
+    padding: 8px;
+  }
+  .secret-key {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    letter-spacing: 0.08em;
+    overflow-wrap: anywhere;
+  }
+  .code-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .code-grid li {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-align: center;
+    padding: 10px 8px;
+    background: var(--primary-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-btn);
+  }
+  .callout {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: var(--primary-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-btn);
+    padding: 12px 14px;
+    font-size: var(--text-sm);
+  }
   .error-code {
     font-size: 72px;
     font-weight: 700;
