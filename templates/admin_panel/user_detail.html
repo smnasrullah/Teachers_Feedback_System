@@ -1,0 +1,40 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{{ account.username }} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <header class="grid gap-2">
+    <a class="btn btn-ghost w-fit" href="{% url 'accounts:user_list' %}">{% icon "chevron-left" %}{% translate "Back to users" %}</a>
+    <h1 class="num">{{ account.username }}</h1>
+  </header>
+
+  <section class="card" aria-labelledby="account-title">
+    <h2 id="account-title" class="text-lg mb-4">{% translate "Account" %}</h2>
+    <dl class="grid gap-3 sm:grid-cols-2">
+      <div><dt class="text-muted text-sm">{% translate "Role" %}</dt><dd>{{ account.get_role_display }}{% if account.is_hod %} · {% translate "Head of department" %}{% endif %}</dd></div>
+      <div><dt class="text-muted text-sm">{% translate "Department" %}</dt><dd>{{ account.department.name|default:"—" }}</dd></div>
+      <div><dt class="text-muted text-sm">{% translate "Nickname" %}</dt><dd>{{ account.nickname|default:"—" }}</dd></div>
+      <div><dt class="text-muted text-sm">{% translate "Language" %}</dt><dd>{{ account.get_language_display }}</dd></div>
+      <div><dt class="text-muted text-sm">{% translate "Two-factor authentication" %}</dt><dd>{% if account.totp_enabled %}{% translate "Enabled" %}{% else %}{% translate "Not enabled" %}{% endif %}</dd></div>
+      <div><dt class="text-muted text-sm">{% translate "Status" %}</dt><dd>{% if account.is_active %}{% translate "Active" %}{% else %}{% translate "Disabled" %}{% endif %}</dd></div>
+      {% if registry %}
+      <div><dt class="text-muted text-sm">{% translate "Registry entry" %}</dt><dd><a href="{% url 'accounts:registry_edit' registry.pk %}">{{ registry.get_id_type_display }}</a></dd></div>
+      {% endif %}
+    </dl>
+  </section>
+
+  <section class="card grid gap-4" aria-labelledby="role-title">
+    <h2 id="role-title" class="text-lg">{% translate "Role" %}</h2>
+    {% if role_form %}
+    <form method="post" action="{% url 'accounts:user_role' account.pk %}" class="grid gap-4">
+      {% csrf_token %}
+      {% for field in role_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+      <p class="field-hint">{% translate "Making a teacher an Admin gives access to every student ID and removes any head-of-department role." %}</p>
+      <div><button type="submit" class="btn btn-primary">{% translate "Change role" %}</button></div>
+    </form>
+    {% else %}
+      <p class="text-muted">{% translate "This account's role cannot be changed here." %}</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

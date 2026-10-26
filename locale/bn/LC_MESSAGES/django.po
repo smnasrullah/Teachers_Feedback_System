@@ -460,3 +460,490 @@ msgstr "এর বিষয়বস্তু হ্যাশের সাথে
 
 msgid "Audit chain broken at event %(id)d: %(reason)s. %(count)d earlier events intact."
 msgstr "%(id)d নম্বর ঘটনায় অডিট চেইন ভাঙা: %(reason)s। এর আগের %(count)d টি ঘটনা অক্ষত।"
+
+msgid "%(count)d entry was re-activated."
+msgid_plural "%(count)d entries were re-activated."
+msgstr[0] "%(count)d টি এন্ট্রি পুনরায় সক্রিয় করা হয়েছে।"
+msgstr[1] "%(count)d টি এন্ট্রি পুনরায় সক্রিয় করা হয়েছে।"
+
+msgid "%(count)d entry was revoked."
+msgid_plural "%(count)d entries were revoked."
+msgstr[0] "%(count)d টি এন্ট্রি বাতিল করা হয়েছে।"
+msgstr[1] "%(count)d টি এন্ট্রি বাতিল করা হয়েছে।"
+
+msgid "A head of department sees student IDs and names of their own department. Naming a new head replaces the current one."
+msgstr "বিভাগীয় প্রধান নিজের বিভাগের শিক্ষার্থীদের আইডি ও নাম দেখতে পান। নতুন প্রধান নির্ধারণ করলে বর্তমান প্রধান প্রতিস্থাপিত হন।"
+
+msgid "Academic status"
+msgstr "একাডেমিক অবস্থা"
+
+msgid "Account"
+msgstr "অ্যাকাউন্ট"
+
+msgid "Action"
+msgstr "কাজ"
+
+msgid "Actions on selected entries"
+msgstr "নির্বাচিত এন্ট্রির উপর কাজ"
+
+msgid "Activation code"
+msgstr "অ্যাক্টিভেশন কোড"
+
+msgid "Activation codes are shown only once, in the downloaded CSV file. Only a hash is stored, so a lost code cannot be recovered: generate a new one instead."
+msgstr "অ্যাক্টিভেশন কোড শুধু একবার, ডাউনলোড করা CSV ফাইলে দেখানো হয়। কেবল হ্যাশ সংরক্ষিত থাকে, তাই হারানো কোড ফিরে পাওয়া যায় না; এর বদলে নতুন কোড তৈরি করুন।"
+
+msgid "Active"
+msgstr "সক্রিয়"
+
+msgid "Add a student"
+msgstr "শিক্ষার্থী যোগ করুন"
+
+msgid "Add a student or a teacher, or change the filters."
+msgstr "একজন শিক্ষার্থী বা শিক্ষক যোগ করুন, অথবা ফিল্টার বদলান।"
+
+msgid "Add a teacher"
+msgstr "শিক্ষক যোগ করুন"
+
+msgid "Add student"
+msgstr "শিক্ষার্থী যোগ"
+
+msgid "Add teacher"
+msgstr "শিক্ষক যোগ"
+
+msgid "Admin account created."
+msgstr "অ্যাডমিন অ্যাকাউন্ট তৈরি হয়েছে।"
+
+msgid "All departments"
+msgstr "সব বিভাগ"
+
+msgid "All roles"
+msgstr "সব ভূমিকা"
+
+msgid "All statuses"
+msgstr "সব অবস্থা"
+
+msgid "All types"
+msgstr "সব ধরন"
+
+msgid "Apply filters"
+msgstr "ফিল্টার প্রয়োগ করুন"
+
+msgid "Apply to every entry matching the current filters"
+msgstr "বর্তমান ফিল্টারের সাথে মেলে এমন সব এন্ট্রিতে প্রয়োগ করুন"
+
+msgid "Assign as head of department"
+msgstr "বিভাগীয় প্রধান হিসেবে নিয়োগ দিন"
+
+msgid "Back to the registry"
+msgstr "রেজিস্ট্রিতে ফিরে যান"
+
+msgid "Back to users"
+msgstr "ব্যবহারকারীদের তালিকায় ফিরে যান"
+
+msgid "Batch"
+msgstr "ব্যাচ"
+
+msgid "Cancel"
+msgstr "বাতিল"
+
+msgid "Change role"
+msgstr "ভূমিকা পরিবর্তন করুন"
+
+msgid "Change the filters and try again."
+msgstr "ফিল্টার বদলে আবার চেষ্টা করুন।"
+
+msgid "Choose a valid role."
+msgstr "সঠিক ভূমিকা বেছে নিন।"
+
+msgid "Claimed"
+msgstr "দাবি করা হয়েছে"
+
+msgid "Codes valid for (days)"
+msgstr "কোডের মেয়াদ (দিন)"
+
+msgid "Contact e-mail: "
+msgstr "যোগাযোগের ই-মেইল: "
+
+msgid "Create an Admin account interactively. There is no public signup for Admins; two-factor authentication is set up at the first login."
+msgstr "ইন্টারঅ্যাক্টিভভাবে একটি অ্যাডমিন অ্যাকাউন্ট তৈরি করুন। অ্যাডমিনের জন্য কোনো পাবলিক সাইনআপ নেই; প্রথম লগইনে দ্বি-স্তর যাচাই (টু-ফ্যাক্টর) সেট করা হয়।"
+
+msgid "Department to head"
+msgstr "যে বিভাগের প্রধান হবেন"
+
+msgid "Designation"
+msgstr "পদবি"
+
+msgid "Disabled"
+msgstr "নিষ্ক্রিয়"
+
+msgid "Dropped"
+msgstr "ঝরে পড়েছে"
+
+msgid "Edit registry entry"
+msgstr "রেজিস্ট্রি এন্ট্রি সম্পাদনা"
+
+msgid "Enabled"
+msgstr "চালু"
+
+msgid "Enter a valid e-mail address."
+msgstr "সঠিক ই-মেইল ঠিকানা দিন।"
+
+msgid "Enter an ID of 3 to 32 letters, digits, dots, slashes or hyphens."
+msgstr "৩ থেকে ৩২টি অক্ষর, সংখ্যা, ডট, স্ল্যাশ বা হাইফেনের একটি আইডি দিন।"
+
+msgid "Exact ID or username. Names are encrypted and cannot be searched."
+msgstr "সঠিক আইডি বা ইউজারনেম। নাম এনক্রিপ্টেড থাকায় নাম দিয়ে খোঁজা যায় না।"
+
+msgid "Expired"
+msgstr "মেয়াদ শেষ"
+
+msgid "Filter the registry"
+msgstr "রেজিস্ট্রি ফিল্টার করুন"
+
+msgid "Filter users"
+msgstr "ব্যবহারকারী ফিল্টার করুন"
+
+msgid "Full name"
+msgstr "পূর্ণ নাম"
+
+msgid "Full name (optional)"
+msgstr "পূর্ণ নাম (ঐচ্ছিক)"
+
+msgid "Generate activation codes"
+msgstr "অ্যাক্টিভেশন কোড তৈরি করুন"
+
+msgid "Graduated"
+msgstr "স্নাতক সম্পন্ন"
+
+msgid "Head of department"
+msgstr "বিভাগীয় প্রধান"
+
+msgid "ID"
+msgstr "আইডি"
+
+msgid "ID registry"
+msgstr "আইডি রেজিস্ট্রি"
+
+msgid "ID registry entries"
+msgstr "আইডি রেজিস্ট্রি এন্ট্রি"
+
+msgid "ID registry entry"
+msgstr "আইডি রেজিস্ট্রি এন্ট্রি"
+
+msgid "Issued by the system and never changes."
+msgstr "সিস্টেম থেকে দেওয়া হয়, কখনও বদলায় না।"
+
+msgid "JPEG, PNG or WebP, up to 2 MB. It is re-encoded before it is stored."
+msgstr "JPEG, PNG বা WebP, সর্বোচ্চ ২ এমবি। সংরক্ষণের আগে ছবিটি নতুন করে এনকোড করা হয়।"
+
+msgid "Level/Term"
+msgstr "লেভেল/টার্ম"
+
+msgid "Making a teacher an Admin gives access to every student ID and removes any head-of-department role."
+msgstr "শিক্ষককে অ্যাডমিন করলে তিনি সব শিক্ষার্থীর আইডি দেখতে পাবেন এবং বিভাগীয় প্রধানের দায়িত্ব সরে যাবে।"
+
+msgid "New registry entry"
+msgstr "নতুন রেজিস্ট্রি এন্ট্রি"
+
+msgid "Nickname"
+msgstr "ডাকনাম"
+
+msgid "No entries found"
+msgstr "কোনো এন্ট্রি পাওয়া যায়নি"
+
+msgid "No users found"
+msgstr "কোনো ব্যবহারকারী পাওয়া যায়নি"
+
+msgid "Not enabled"
+msgstr "চালু নেই"
+
+msgid "Only an account created from a teacher ID can become a teacher."
+msgstr "শুধু শিক্ষক আইডি থেকে তৈরি অ্যাকাউন্টই শিক্ষক হতে পারে।"
+
+msgid "Only teachers can be head of department."
+msgstr "শুধু শিক্ষকরাই বিভাগীয় প্রধান হতে পারেন।"
+
+msgid "Only unclaimed entries can receive an activation code."
+msgstr "শুধু দাবি না করা এন্ট্রি অ্যাক্টিভেশন কোড পেতে পারে।"
+
+msgid "Password (again): "
+msgstr "পাসওয়ার্ড (আবার): "
+
+msgid "Password: "
+msgstr "পাসওয়ার্ড: "
+
+msgid "People"
+msgstr "ব্যক্তি"
+
+msgid "Photo"
+msgstr "ছবি"
+
+msgid "Program"
+msgstr "প্রোগ্রাম"
+
+msgid "Re-activate"
+msgstr "পুনরায় সক্রিয় করুন"
+
+msgid "Registry entry"
+msgstr "রেজিস্ট্রি এন্ট্রি"
+
+msgid "Remove as head of department"
+msgstr "বিভাগীয় প্রধানের দায়িত্ব থেকে সরান"
+
+msgid "Reset"
+msgstr "রিসেট"
+
+msgid "Revoke"
+msgstr "বাতিল করুন"
+
+msgid "Revoked"
+msgstr "বাতিল"
+
+msgid "Role"
+msgstr "ভূমিকা"
+
+msgid "Run action"
+msgstr "কাজটি চালান"
+
+msgid "Save"
+msgstr "সংরক্ষণ করুন"
+
+msgid "Search"
+msgstr "খুঁজুন"
+
+msgid "Section"
+msgstr "সেকশন"
+
+msgid "Select"
+msgstr "নির্বাচন"
+
+msgid "Select %(id)s"
+msgstr "নির্বাচন করুন: %(id)s"
+
+msgid "Select at least one entry."
+msgstr "অন্তত একটি এন্ট্রি নির্বাচন করুন।"
+
+msgid "Select at most %(max)d entries at a time."
+msgstr "একবারে সর্বোচ্চ %(max)d টি এন্ট্রি নির্বাচন করুন।"
+
+msgid "Sign in, then set up two-factor authentication when asked."
+msgstr "সাইন ইন করুন, তারপর বলা হলে দ্বি-স্তর যাচাই (টু-ফ্যাক্টর) সেট করুন।"
+
+msgid "Status"
+msgstr "অবস্থা"
+
+msgid "TOTP secret"
+msgstr "TOTP সিক্রেট"
+
+msgid "That e-mail address is already in use."
+msgstr "এই ই-মেইল ঠিকানাটি আগে থেকেই ব্যবহৃত হচ্ছে।"
+
+msgid "The ID of a claimed entry cannot be changed."
+msgstr "দাবি করা এন্ট্রির আইডি বদলানো যায় না।"
+
+msgid "The filters are not valid."
+msgstr "ফিল্টারগুলো সঠিক নয়।"
+
+msgid "The head of department was assigned and the previous head was replaced."
+msgstr "বিভাগীয় প্রধান নিয়োগ দেওয়া হয়েছে এবং আগের প্রধান প্রতিস্থাপিত হয়েছেন।"
+
+msgid "The head of department was assigned."
+msgstr "বিভাগীয় প্রধান নিয়োগ দেওয়া হয়েছে।"
+
+msgid "The head of department was removed."
+msgstr "বিভাগীয় প্রধানের দায়িত্ব সরানো হয়েছে।"
+
+msgid "The image dimensions are too large."
+msgstr "ছবির মাত্রা অনেক বড়।"
+
+msgid "The image is too large. The limit is %(mb)d MB."
+msgstr "ছবিটি অনেক বড়। সীমা %(mb)d এমবি।"
+
+msgid "The passwords do not match."
+msgstr "পাসওয়ার্ড দুটি মেলেনি।"
+
+msgid "The registry entry was saved."
+msgstr "রেজিস্ট্রি এন্ট্রি সংরক্ষণ করা হয়েছে।"
+
+msgid "The role was changed."
+msgstr "ভূমিকা পরিবর্তন করা হয়েছে।"
+
+msgid "This ID is already registered."
+msgstr "এই আইডি আগেই নিবন্ধিত।"
+
+msgid "This account's role cannot be changed here."
+msgstr "এই অ্যাকাউন্টের ভূমিকা এখানে বদলানো যায় না।"
+
+msgid "This account's role cannot be changed."
+msgstr "এই অ্যাকাউন্টের ভূমিকা বদলানো যায় না।"
+
+msgid "This batch belongs to a different program."
+msgstr "এই ব্যাচ অন্য একটি প্রোগ্রামের।"
+
+msgid "This password is too short. It must contain at least %(min)d characters."
+msgstr "পাসওয়ার্ডটি অনেক ছোট। কমপক্ষে %(min)d টি অক্ষর থাকতে হবে।"
+
+msgid "This program belongs to a different department."
+msgstr "এই প্রোগ্রাম অন্য একটি বিভাগের।"
+
+msgid "This teacher cannot be made head of department."
+msgstr "এই শিক্ষককে বিভাগীয় প্রধান করা যাবে না।"
+
+msgid "This teacher heads %(department)s."
+msgstr "এই শিক্ষক %(department)s বিভাগের প্রধান।"
+
+msgid "Too many invalid attempts."
+msgstr "অনেকবার ভুল চেষ্টা করা হয়েছে।"
+
+msgid "Two-factor authentication"
+msgstr "দ্বি-স্তর যাচাই (টু-ফ্যাক্টর)"
+
+msgid "Type"
+msgstr "ধরন"
+
+msgid "Unclaimed"
+msgstr "দাবি করা হয়নি"
+
+msgid "Upload a valid JPEG, PNG or WebP image."
+msgstr "সঠিক JPEG, PNG বা WebP ছবি আপলোড করুন।"
+
+msgid "Use at least three of: lower case, upper case, digits and symbols."
+msgstr "ছোট হাতের অক্ষর, বড় হাতের অক্ষর, সংখ্যা ও চিহ্নের মধ্যে অন্তত তিনটি ব্যবহার করুন।"
+
+msgid "Used"
+msgstr "ব্যবহৃত"
+
+msgid "Username"
+msgstr "ইউজারনেম"
+
+msgid "Username or nickname"
+msgstr "ইউজারনেম বা ডাকনাম"
+
+msgid "Username: %(username)s"
+msgstr "ইউজারনেম: %(username)s"
+
+msgid "Users"
+msgstr "ব্যবহারকারী"
+
+msgid "Valid until"
+msgstr "বৈধতার শেষ তারিখ"
+
+msgid "Valid until %(date)s"
+msgstr "%(date)s পর্যন্ত বৈধ"
+
+msgid "You cannot change your own role."
+msgstr "আপনি নিজের ভূমিকা বদলাতে পারবেন না।"
+
+msgid "You cannot revoke your own entry."
+msgstr "আপনি নিজের এন্ট্রি বাতিল করতে পারবেন না।"
+
+msgid "academic status"
+msgstr "একাডেমিক অবস্থা"
+
+msgid "active"
+msgstr "সক্রিয়"
+
+msgid "avatar"
+msgstr "প্রোফাইল ছবি"
+
+msgid "batch"
+msgstr "ব্যাচ"
+
+msgid "batches"
+msgstr "ব্যাচসমূহ"
+
+msgid "claimed by"
+msgstr "দাবি করেছেন"
+
+msgid "code"
+msgstr "কোড"
+
+msgid "contact e-mail"
+msgstr "যোগাযোগের ই-মেইল"
+
+msgid "contact phone"
+msgstr "যোগাযোগের ফোন"
+
+msgid "date joined"
+msgstr "যোগদানের তারিখ"
+
+msgid "department"
+msgstr "বিভাগ"
+
+msgid "department headed"
+msgstr "যে বিভাগের প্রধান"
+
+msgid "departments"
+msgstr "বিভাগসমূহ"
+
+msgid "designation"
+msgstr "পদবি"
+
+msgid "full name"
+msgstr "পূর্ণ নাম"
+
+msgid "head of department"
+msgstr "বিভাগীয় প্রধান"
+
+msgid "language"
+msgstr "ভাষা"
+
+msgid "level/term"
+msgstr "লেভেল/টার্ম"
+
+msgid "levels/terms"
+msgstr "লেভেল/টার্মসমূহ"
+
+msgid "name"
+msgstr "নাম"
+
+msgid "name (Bangla)"
+msgstr "নাম (বাংলা)"
+
+msgid "nickname"
+msgstr "ডাকনাম"
+
+msgid "order"
+msgstr "ক্রম"
+
+msgid "photo"
+msgstr "ছবি"
+
+msgid "program"
+msgstr "প্রোগ্রাম"
+
+msgid "programs"
+msgstr "প্রোগ্রামসমূহ"
+
+msgid "registry entry"
+msgstr "রেজিস্ট্রি এন্ট্রি"
+
+msgid "section"
+msgstr "সেকশন"
+
+msgid "status"
+msgstr "অবস্থা"
+
+msgid "student profile"
+msgstr "শিক্ষার্থীর প্রোফাইল"
+
+msgid "student profiles"
+msgstr "শিক্ষার্থীদের প্রোফাইল"
+
+msgid "teacher profile"
+msgstr "শিক্ষকের প্রোফাইল"
+
+msgid "teacher profiles"
+msgstr "শিক্ষকদের প্রোফাইল"
+
+msgid "two-factor enabled"
+msgstr "দ্বি-স্তর যাচাই চালু"
+
+msgid "type"
+msgstr "ধরন"
+
+msgid "username"
+msgstr "ইউজারনেম"
+
+msgid "users"
+msgstr "ব্যবহারকারীরা"

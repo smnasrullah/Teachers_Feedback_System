@@ -1,0 +1,44 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Users" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6">
+  <h1>{% translate "Users" %}</h1>
+  <form method="get" class="card grid gap-4 sm:grid-cols-3" role="search" aria-label="{% translate 'Filter users' %}">
+    {% for field in filter_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex items-end gap-3">
+      <button type="submit" class="btn btn-primary">{% icon "search" %}{% translate "Apply filters" %}</button>
+      <a class="btn btn-ghost" href="{% url 'accounts:user_list' %}">{% translate "Reset" %}</a>
+    </div>
+  </form>
+
+  {% if page_obj.object_list %}
+  <table class="data-table" role="table">
+    <caption class="sr-only">{% translate "Users" %}</caption>
+    <thead role="rowgroup"><tr role="row">
+      <th scope="col" role="columnheader">{% translate "Username" %}</th>
+      <th scope="col" role="columnheader">{% translate "Nickname" %}</th>
+      <th scope="col" role="columnheader">{% translate "Role" %}</th>
+      <th scope="col" role="columnheader">{% translate "Department" %}</th>
+      <th scope="col" role="columnheader">{% translate "Status" %}</th>
+    </tr></thead>
+    <tbody role="rowgroup">
+    {% for account in page_obj %}
+      <tr role="row">
+        <td role="cell" data-label="{% translate 'Username' %}"><a href="{% url 'accounts:user_detail' account.pk %}" class="num">{{ account.username }}</a></td>
+        <td role="cell" data-label="{% translate 'Nickname' %}">{{ account.nickname|default:"—" }}</td>
+        <td role="cell" data-label="{% translate 'Role' %}">{{ account.get_role_display }}</td>
+        <td role="cell" data-label="{% translate 'Department' %}">{{ account.department.code|default:"—" }}</td>
+        <td role="cell" data-label="{% translate 'Status' %}">
+          {% if account.is_active %}{% include "components/badge.html" with variant="done" label=_("Active") %}{% else %}{% include "components/badge.html" with variant="alert" label=_("Disabled") %}{% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    {% include "components/empty_state.html" with title=_("No users found") text=_("Change the filters and try again.") icon="users" %}
+  {% endif %}
+  {% include "components/pagination.html" with page_obj=page_obj query=query %}
+</div>
+{% endblock %}

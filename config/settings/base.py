@@ -82,6 +82,7 @@ TEMPLATES = [
 DATABASES = {"default": env.db("DATABASE_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}")}
 CACHES = {"default": env.cache("CACHE_URL", default="locmemcache://tfs")}
 
+AUTH_USER_MODEL = "accounts.User"
 AUTHENTICATION_BACKENDS = [
     "axes.backends.AxesStandaloneBackend",
     "django.contrib.auth.backends.ModelBackend",
@@ -111,6 +112,9 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+# User uploads (avatars, teacher photos). Always re-encoded by apps.core.uploads first.
+MEDIA_URL = "media/"
+MEDIA_ROOT = env.path("MEDIA_ROOT", default=str(BASE_DIR / "media"))
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
     "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},

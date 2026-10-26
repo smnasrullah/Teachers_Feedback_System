@@ -7,11 +7,13 @@ from django.utils import translation
 
 from apps.auditlog.models import GENESIS_HASH, AuditEvent, AuditLogImmutableError
 from apps.auditlog.services import audit
+from apps.core.permissions import Role
+from tests.factories import make_user
 
 
 @pytest.fixture
-def actor(django_user_model):
-    return django_user_model.objects.create_user(username="tch_q8w2", password="Long-enough-pass-1")
+def actor():
+    return make_user("tch_q8w2", Role.TEACHER)
 
 
 @pytest.fixture
@@ -39,7 +41,7 @@ def test_record_captures_context(events, actor):
     assert login.ip == "203.0.113.7"
     assert login.user_agent == "pytest-agent"
     assert login.request_id == "req-0000aaaa"
-    assert events[1].object_type == "auth.user"
+    assert events[1].object_type == "accounts.user"
     assert events[1].object_id == str(actor.pk)
     assert events[1].department_id == 3
 

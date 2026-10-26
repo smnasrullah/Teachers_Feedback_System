@@ -431,6 +431,12 @@
     padding: 0 14px;
     min-height: 44px;
   }
+  .check {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    accent-color: var(--primary);
+  }
   .select {
     padding-inline-end: 40px;
     appearance: none;

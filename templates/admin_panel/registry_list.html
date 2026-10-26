@@ -1,0 +1,81 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "ID registry" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6">
+  <header class="flex flex-wrap items-center justify-between gap-3">
+    <h1>{% translate "ID registry" %}</h1>
+    <div class="flex flex-wrap gap-3">
+      <a class="btn btn-primary" href="{% url 'accounts:registry_create' 'student' %}">{% icon "user" %}{% translate "Add student" %}</a>
+      <a class="btn btn-ghost" href="{% url 'accounts:registry_create' 'teacher' %}">{% icon "user" %}{% translate "Add teacher" %}</a>
+    </div>
+  </header>
+
+  <form method="get" class="card grid gap-4 sm:grid-cols-2 lg:grid-cols-4" role="search" aria-label="{% translate 'Filter the registry' %}">
+    {% for field in filter_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex items-end gap-3">
+      <button type="submit" class="btn btn-primary">{% icon "search" %}{% translate "Apply filters" %}</button>
+      <a class="btn btn-ghost" href="{% url 'accounts:registry_list' %}">{% translate "Reset" %}</a>
+    </div>
+  </form>
+
+  <form method="post" action="{% url 'accounts:registry_bulk' %}" class="grid gap-4">
+    {% csrf_token %}
+    <input type="hidden" name="return_query" value="{{ return_query }}">
+    {% for key, value in filter_values %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endfor %}
+
+    <section class="card grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-labelledby="bulk-title">
+      <h2 id="bulk-title" class="text-lg sm:col-span-2 lg:col-span-4">{% translate "Actions on selected entries" %}</h2>
+      {% include "components/form_field.html" with field=bulk_form.action %}
+      {% include "components/form_field.html" with field=bulk_form.valid_days %}
+      <div class="sm:col-span-2">{% include "components/form_field.html" with field=bulk_form.select_all_matching %}</div>
+      <p class="field-hint sm:col-span-2 lg:col-span-4">{% translate "Activation codes are shown only once, in the downloaded CSV file. Only a hash is stored, so a lost code cannot be recovered: generate a new one instead." %}</p>
+      <div class="sm:col-span-2 lg:col-span-4"><button type="submit" class="btn btn-primary">{% translate "Run action" %}</button></div>
+    </section>
+
+    {% if page_obj.object_list %}
+    <table class="data-table" role="table">
+      <caption class="sr-only">{% translate "ID registry entries" %}</caption>
+      <thead role="rowgroup"><tr role="row">
+        <th scope="col" role="columnheader"><span class="sr-only">{% translate "Select" %}</span></th>
+        <th scope="col" role="columnheader">{% translate "ID" %}</th>
+        <th scope="col" role="columnheader">{% translate "Full name" %}</th>
+        <th scope="col" role="columnheader">{% translate "Type" %}</th>
+        <th scope="col" role="columnheader">{% translate "Department" %}</th>
+        <th scope="col" role="columnheader">{% translate "Status" %}</th>
+        <th scope="col" role="columnheader">{% translate "Activation code" %}</th>
+        <th scope="col" role="columnheader">{% translate "Account" %}</th>
+      </tr></thead>
+      <tbody role="rowgroup">
+      {% for entry in page_obj %}
+        <tr role="row">
+          <td role="cell" data-label="{% translate 'Select' %}"><input class="check" type="checkbox" name="ids" value="{{ entry.pk }}" aria-label="{% blocktranslate with id=entry.external_id %}Select {{ id }}{% endblocktranslate %}"></td>
+          <td role="cell" data-label="{% translate 'ID' %}"><a href="{% url 'accounts:registry_edit' entry.pk %}" class="num">{{ entry.external_id }}</a></td>
+          <td role="cell" data-label="{% translate 'Full name' %}">{{ entry.full_name|default:"—" }}</td>
+          <td role="cell" data-label="{% translate 'Type' %}">{{ entry.get_id_type_display }}</td>
+          <td role="cell" data-label="{% translate 'Department' %}">{{ entry.department.code }}</td>
+          <td role="cell" data-label="{% translate 'Status' %}">
+            {% if entry.status == "claimed" %}{% include "components/badge.html" with variant="done" label=entry.get_status_display %}
+            {% elif entry.status == "revoked" %}{% include "components/badge.html" with variant="alert" label=entry.get_status_display %}
+            {% else %}{% include "components/badge.html" with variant="pending" label=entry.get_status_display %}{% endif %}
+          </td>
+          <td role="cell" data-label="{% translate 'Activation code' %}">
+            {% with state=entry.activation_state %}
+              {% if state == "active" %}{% blocktranslate with date=entry.activation_expires_at|date:"SHORT_DATE_FORMAT" %}Valid until {{ date }}{% endblocktranslate %}
+              {% elif state == "expired" %}{% include "components/badge.html" with variant="closed" label=_("Expired") %}
+              {% elif state == "used" %}{% include "components/badge.html" with variant="done" label=_("Used") %}
+              {% else %}—{% endif %}
+            {% endwith %}
+          </td>
+          <td role="cell" data-label="{% translate 'Account' %}">{% if entry.claimed_by %}<a href="{% url 'accounts:user_detail' entry.claimed_by_id %}" class="num">{{ entry.claimed_by.username }}</a>{% else %}—{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      {% include "components/empty_state.html" with title=_("No entries found") text=_("Add a student or a teacher, or change the filters.") icon="list" %}
+    {% endif %}
+  </form>
+  {% include "components/pagination.html" with page_obj=page_obj query=query %}
+</div>
+{% endblock %}

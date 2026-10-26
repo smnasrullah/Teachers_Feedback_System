@@ -10,7 +10,6 @@ from collections.abc import Callable, Iterable
 from functools import wraps
 
 from django.conf import settings
-from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.db import models
 from django.shortcuts import get_object_or_404
@@ -65,6 +64,10 @@ def _validated(roles: Iterable[str]) -> frozenset[str]:
 
 def _gate(request, allowed: frozenset[str]):
     """Login redirect for anonymous users, 403 for the wrong role, ``None`` when allowed."""
+    # Imported here: auth.views resolves the user model on import, which model modules
+    # (they need ``Role``) cannot wait for.
+    from django.contrib.auth.views import redirect_to_login
+
     if not request.user.is_authenticated:
         return redirect_to_login(request.get_full_path())
     if user_roles(request.user).isdisjoint(allowed):

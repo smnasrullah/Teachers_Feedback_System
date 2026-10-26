@@ -8,16 +8,16 @@ from django.test import Client, override_settings
 from django.urls import reverse
 
 from apps.core.models import ActiveSession
+from apps.core.permissions import Role
 from apps.core.services import sessions
+from tests.factories import make_user
 
 HOME = reverse("core:home")
 
 
 @pytest.fixture
-def user(django_user_model):
-    return django_user_model.objects.create_user(
-        username="stu_k7x9a2", password="Long-enough-pass-1"
-    )
+def user():
+    return make_user("stu_k7x9a2", Role.STUDENT)
 
 
 def nonce_of(response):

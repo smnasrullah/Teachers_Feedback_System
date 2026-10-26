@@ -1,4 +1,5 @@
 import os
+import secrets
 import subprocess
 import sys
 from pathlib import Path
@@ -10,9 +11,10 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from django.core.management.utils import get_random_secret_key
 
 from apps.core.net import UNKNOWN_IP, client_ip
+from apps.core.permissions import Role
+from tests.factories import make_user
 
 BASE_DIR = Path(settings.BASE_DIR)
 
@@ -36,8 +38,8 @@ def test_cookie_and_session_flags():
 
 
 @pytest.mark.django_db
-def test_axes_locks_out_after_repeated_failures(rf, django_user_model):
-    django_user_model.objects.create_user(username="stu_lock01", password="Long-enough-pass-1")
+def test_axes_locks_out_after_repeated_failures(rf):
+    make_user("stu_lock01", Role.STUDENT)
 
     def attempt(password):
         request = rf.post("/login/", REMOTE_ADDR="198.51.100.4")
@@ -70,12 +72,12 @@ def run_with_prod_settings(*args):
     env = {
         **os.environ,
         "DJANGO_SETTINGS_MODULE": "config.settings.prod",
-        "DJANGO_SECRET_KEY": get_random_secret_key() + get_random_secret_key(),
+        "DJANGO_SECRET_KEY": secrets.token_urlsafe(64),
         "DJANGO_ALLOWED_HOSTS": "feedback.example.edu",
         "DATABASE_URL": "sqlite:///:memory:",
         "CACHE_URL": "redis://127.0.0.1:6379/9",
         "FIELD_ENCRYPTION_KEYS": Fernet.generate_key().decode(),
-        "BLIND_INDEX_KEY": get_random_secret_key(),
+        "BLIND_INDEX_KEY": secrets.token_urlsafe(48),
     }
     return subprocess.run(  # noqa: S603 - fixed argv, no shell
         [sys.executable, "manage.py", *args],
