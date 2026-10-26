@@ -2,6 +2,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import environ
+from celery.schedules import crontab
 from django.utils.translation import gettext_lazy as _
 
 from apps.core.logging import build_logging_config
@@ -216,7 +217,40 @@ RESULTS_VISIBLE = env("RESULTS_VISIBLE", default="after_close")
 DRAFT_RETENTION_DAYS = env.int("DRAFT_RETENTION_DAYS", default=30)
 
 # Hours before a round closes at which students with unsubmitted forms are reminded.
-REMINDER_HOURS_BEFORE_CLOSE = env.list("REMINDER_HOURS_BEFORE_CLOSE", cast=int, default=[48, 24])
+REMINDER_HOURS_BEFORE_CLOSE = env.list("REMINDER_HOURS_BEFORE_CLOSE", cast=int, default=[72, 24, 1])
+
+# Whether students are told the moment a round opens.
+REMINDER_ON_OPEN = env.bool("REMINDER_ON_OPEN", default=True)
+
+# E-mail and text messages are held back from QUIET_HOURS_START until QUIET_HOURS_END
+# (Asia/Dhaka hours, 0-23); in-app notices are never held. Equal hours switch it off.
+QUIET_HOURS_START = env.int("QUIET_HOURS_START", default=22)
+QUIET_HOURS_END = env.int("QUIET_HOURS_END", default=7)
+
+# Delivery per channel for notifications (apps.notifications.senders); SMS needs a gateway.
+NOTIFICATION_SENDERS = {
+    "email": "apps.notifications.senders.EmailSender",
+    "sms": "apps.notifications.senders.SmsSender",
+}
+NOTIFICATION_SMS_ENABLED = env.bool("NOTIFICATION_SMS_ENABLED", default=False)
+# Links in e-mails and texts start with this address.
+SITE_URL = env("SITE_URL", default="http://localhost:8000").rstrip("/")
+
+# Scheduled jobs; a Celery beat process runs them (or ``manage.py send_notifications`` by hand).
+CELERY_BEAT_SCHEDULE = {
+    "round-reminders": {
+        "task": "notifications.send_round_reminders",
+        "schedule": crontab(minute="*/10"),
+    },
+    "hod-reminders": {
+        "task": "notifications.process_reminder_requests",
+        "schedule": crontab(minute="*/5"),
+    },
+    "results-notices": {
+        "task": "notifications.announce_results",
+        "schedule": crontab(minute="*/15"),
+    },
+}
 
 # A course average below this raises an alert card on the head of department's overview.
 LOW_RATING_THRESHOLD = env.float("LOW_RATING_THRESHOLD", default=3.5)

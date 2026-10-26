@@ -1,0 +1,32 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{{ label }} · {% translate "Message templates" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <header class="grid gap-2">
+    <a href="{% url 'notifications:template_list' %}">{% translate "All message templates" %}</a>
+    <h1>{{ label }}</h1>
+    <p>{% translate "Leave a field empty to use the built-in text, which it shows in grey. Put a variable in curly braces where its value should go." %}</p>
+    <dl class="grid gap-1">
+      {% for name, help in variables %}
+      <div class="flex flex-wrap gap-2"><dt><code>{{ "{" }}{{ name }}{{ "}" }}</code></dt><dd class="m-0 text-muted">{{ help }}</dd></div>
+      {% endfor %}
+    </dl>
+  </header>
+  <form method="post" novalidate class="card grid gap-4">
+    {% csrf_token %}
+    {% include "components/form_errors.html" with form=form %}
+    {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-primary">{% translate "Save" %}</button>
+    </div>
+  </form>
+  <form method="post" action="{% url 'notifications:template_test' kind %}" class="card grid gap-4">
+    {% csrf_token %}
+    <h2>{% translate "Send a test" %}</h2>
+    <p>{% translate "Sends the saved wording, filled with sample values, to you: as a notification and to your contact e-mail if you have one. Quiet hours do not apply." %}</p>
+    {% for field in test_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div><button type="submit" class="btn btn-ghost">{% icon "send" %}{% translate "Send test" %}</button></div>
+  </form>
+</div>
+{% endblock %}

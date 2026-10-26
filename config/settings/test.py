@@ -13,3 +13,10 @@ INSTALLED_APPS = [*INSTALLED_APPS, "tests.testapp"]  # noqa: F405
 # Codes land in memory (tests/outbox.py) instead of being sent.
 OTP_BACKENDS = {"email": "tests.outbox.OutboxBackend", "sms": "tests.outbox.OutboxBackend"}
 OTP_SMS_ENABLED = True
+
+# Texts land in memory too; e-mail uses Django's in-memory mailbox.
+NOTIFICATION_SENDERS = {
+    "email": "apps.notifications.senders.EmailSender",
+    "sms": "tests.outbox.OutboxSender",
+}
+NOTIFICATION_SMS_ENABLED = True

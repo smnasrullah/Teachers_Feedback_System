@@ -120,6 +120,19 @@ def admin_nav_items(current: str = "") -> list[dict]:
             "url": reverse("reports:analytics"),
             "icon": "chart",
         },
+        {"group": _("Notifications")},
+        {
+            "key": "notification-templates",
+            "label": _("Message templates"),
+            "url": reverse("notifications:template_list"),
+            "icon": "edit",
+        },
+        {
+            "key": "delivery-log",
+            "label": _("Delivery log"),
+            "url": reverse("notifications:log"),
+            "icon": "send",
+        },
         {"group": _("Data")},
         {
             "key": "import",

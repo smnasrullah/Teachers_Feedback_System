@@ -238,7 +238,10 @@ def self_values(**overrides):
         "PROFANITY_ACTION": "remove",
         "RESULTS_VISIBLE": "after_close",
         "DRAFT_RETENTION_DAYS": "30",
-        "REMINDER_HOURS_BEFORE_CLOSE": "48, 24",
+        "REMINDER_HOURS_BEFORE_CLOSE": "72, 24, 1",
+        "REMINDER_ON_OPEN": "on",
+        "QUIET_HOURS_START": "22",
+        "QUIET_HOURS_END": "7",
     }
     values.update(overrides)
     return values

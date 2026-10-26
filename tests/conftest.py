@@ -25,6 +25,7 @@ def _isolated_state():
     """Rate limits live in the cache and delivered codes in memory: start every test clean."""
     cache.clear()
     outbox.sent.clear()
+    outbox.texts.clear()
     yield
     cache.clear()
 

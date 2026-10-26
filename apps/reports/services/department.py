@@ -31,6 +31,7 @@ from apps.core.services import system_settings
 from apps.core.services.localize import pick
 from apps.enrollment.models import Enrollment
 from apps.feedback.models import FeedbackWindow, SubmissionReceipt
+from apps.notifications import tasks
 from apps.notifications.models import ReminderRequest
 from apps.reports.models import ActionNote
 from apps.reports.services import teacher
@@ -312,6 +313,8 @@ def queue_reminders(request, department, window, offering, student_id=None, now=
             department_id=department.pk,
             metadata={"count": queued, "window_id": window.pk},
         )
+        if queued:
+            transaction.on_commit(tasks.process_reminder_requests.delay)
     return queued
 
 

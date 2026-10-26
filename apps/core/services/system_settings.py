@@ -179,6 +179,31 @@ DEFINITIONS = {
             minimum=1,
             maximum=MAX_REMINDER_HOURS,
         ),
+        Definition(
+            "REMINDER_ON_OPEN",
+            Kind.BOOL,
+            _("Tell students when a round opens"),
+            _("Sends one notice to every student with forms to fill in."),
+        ),
+        Definition(
+            "QUIET_HOURS_START",
+            Kind.INT,
+            _("Quiet hours start (hour, 0-23)"),
+            _(
+                "E-mail and text messages wait from this hour (Dhaka time); in-app notices "
+                "are never held. Use the same hour for both to switch quiet hours off."
+            ),
+            minimum=0,
+            maximum=23,
+        ),
+        Definition(
+            "QUIET_HOURS_END",
+            Kind.INT,
+            _("Quiet hours end (hour, 0-23)"),
+            _("E-mail and text messages go out again from this hour."),
+            minimum=0,
+            maximum=23,
+        ),
     )
 }
 

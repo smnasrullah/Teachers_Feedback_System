@@ -1,0 +1,41 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Delivery log" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-4">
+  <header class="grid gap-2">
+    <h1>{% translate "Delivery log" %}</h1>
+    <p>{% translate "What was sent, on which channel and whether it worked. The log never holds the message text or the address it went to." %}</p>
+  </header>
+  <section class="card grid gap-3">
+    {% if page_obj.object_list %}
+    <table class="data-table" role="table">
+      <caption class="sr-only">{% translate "Delivery attempts, newest first" %}</caption>
+      <thead role="rowgroup"><tr role="row">
+        <th scope="col" role="columnheader">{% translate "Time" %}</th>
+        <th scope="col" role="columnheader">{% translate "Kind" %}</th>
+        <th scope="col" role="columnheader">{% translate "Channel" %}</th>
+        <th scope="col" role="columnheader">{% translate "Status" %}</th>
+        <th scope="col" role="columnheader">{% translate "Detail" %}</th>
+        <th scope="col" role="columnheader">{% translate "Recipient" %}</th>
+      </tr></thead>
+      <tbody role="rowgroup">
+      {% for entry in page_obj %}
+      <tr role="row">
+        <td role="cell">{{ entry.created_at|date:"DATETIME_FORMAT" }}</td>
+        <td role="cell">{{ entry.kind }}</td>
+        <td role="cell">{{ entry.channel }}</td>
+        <td role="cell">{{ entry.get_status_display }}</td>
+        <td role="cell">{{ entry.detail|default:"–" }}</td>
+        <td role="cell">{{ entry.user.username|default:"–" }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% include "components/pagination.html" with page_obj=page_obj query="" %}
+    {% else %}
+    {% translate "Nothing sent yet" as empty_title %}{% translate "Messages appear here once the system has sent some." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="send" %}
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

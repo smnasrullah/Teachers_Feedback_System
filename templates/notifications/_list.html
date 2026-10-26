@@ -1,0 +1,17 @@
+{% load i18n %}
+{% for entry in entries %}
+<form method="post" action="{% url 'notifications:open' entry.pk %}" class="m-0">
+  {% csrf_token %}
+  <button type="submit" class="menu-item">
+    <span class="grid text-left">
+      <span{% if entry.unread %} class="font-semibold"{% endif %}>{% if entry.unread %}<span class="sr-only">{% translate "Unread:" %} </span>{% endif %}{{ entry.subject }}</span>
+      <span class="text-sm text-muted">{{ entry.created_at|date:"DATETIME_FORMAT" }}</span>
+    </span>
+  </button>
+</form>
+{% empty %}
+<p class="px-3 pb-3 text-sm text-muted">{% translate "You have no notifications." %}</p>
+{% endfor %}
+{% if unread_count %}
+<button type="button" class="menu-item" hx-post="{% url 'notifications:read_all' %}" hx-target="#nav-notifications-list" hx-swap="innerHTML">{% translate "Mark all as read" %}</button>
+{% endif %}

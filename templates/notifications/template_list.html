@@ -1,0 +1,20 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Message templates" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-4 max-w-3xl">
+  <header class="grid gap-2">
+    <h1>{% translate "Message templates" %}</h1>
+    <p>{% translate "The wording of the notices and messages the system sends, in English and Bangla. Each message goes out in the language its reader chose." %}</p>
+  </header>
+  <ul class="card grid gap-3 list-none m-0">
+    {% for kind, label, customised in kinds %}
+    <li class="flex flex-wrap items-center gap-3">
+      <span class="flex-1">{{ label }}</span>
+      <span class="badge">{% if customised %}{% translate "Edited" %}{% else %}{% translate "Built-in text" %}{% endif %}</span>
+      <a class="btn btn-ghost" href="{% url 'notifications:template_edit' kind %}">{% icon "edit" %}{% translate "Edit" %}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

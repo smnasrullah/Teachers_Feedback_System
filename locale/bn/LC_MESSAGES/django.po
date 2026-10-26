@@ -3607,7 +3607,8 @@ msgstr "বিভাগের সারসংক্ষেপ"
 msgid "This department only"
 msgstr "শুধু এই বিভাগ"
 
-msgid "The overview appears once a feedback round has started for your department."
+msgid ""
+"The overview appears once a feedback round has started for your department."
 msgstr "আপনার বিভাগের জন্য মতামত রাউন্ড শুরু হলে সারসংক্ষেপ এখানে দেখা যাবে।"
 
 msgid "Alert below"
@@ -3679,7 +3680,8 @@ msgstr "%(enrolled)s জনের মধ্যে %(submitted)s জন উত্
 msgid "Courses below %(value)s"
 msgstr "%(value)s এর নিচের কোর্স"
 
-msgid "The list appears once a feedback round has started for your department."
+msgid ""
+"The list appears once a feedback round has started for your department."
 msgstr "আপনার বিভাগের জন্য মতামত রাউন্ড শুরু হলে তালিকা এখানে দেখা যাবে।"
 
 msgid "Level/term of the student"
@@ -3688,8 +3690,11 @@ msgstr "শিক্ষার্থীর লেভেল/টার্ম"
 msgid "Filter"
 msgstr "ফিল্টার"
 
-msgid "Student IDs are visible to the Admin and to the head of the student's own department only."
-msgstr "শিক্ষার্থী আইডি শুধু অ্যাডমিন ও শিক্ষার্থীর নিজ বিভাগের প্রধান দেখতে পান।"
+msgid ""
+"Student IDs are visible to the Admin and to the head of the student's own "
+"department only."
+msgstr ""
+"শিক্ষার্থী আইডি শুধু অ্যাডমিন ও শিক্ষার্থীর নিজ বিভাগের প্রধান দেখতে পান।"
 
 msgid "Remind everyone pending in this course"
 msgstr "এই কোর্সের সব অপেক্ষমাণ শিক্ষার্থীকে রিমাইন্ড করুন"
@@ -3706,8 +3711,12 @@ msgstr "কেউ অপেক্ষমাণ নেই"
 msgid "Every student of your department in this selection has submitted."
 msgstr "এই নির্বাচনে আপনার বিভাগের সব শিক্ষার্থী মতামত জমা দিয়েছেন।"
 
-msgid "Actions by staff that concern your department. Students' own actions are not listed."
-msgstr "আপনার বিভাগ সংক্রান্ত কর্মীদের কার্যক্রম। শিক্ষার্থীদের নিজস্ব কার্যক্রম তালিকাভুক্ত নয়।"
+msgid ""
+"Actions by staff that concern your department. Students' own actions are not"
+" listed."
+msgstr ""
+"আপনার বিভাগ সংক্রান্ত কর্মীদের কার্যক্রম। শিক্ষার্থীদের নিজস্ব কার্যক্রম "
+"তালিকাভুক্ত নয়।"
 
 msgid "All actions"
 msgstr "সব কার্যক্রম"
@@ -3776,10 +3785,18 @@ msgid_plural "%(n)s students of your department have not submitted"
 msgstr[0] "আপনার বিভাগের %(n)s জন শিক্ষার্থী এখনও জমা দেননি"
 msgstr[1] "আপনার বিভাগের %(n)s জন শিক্ষার্থী এখনও জমা দেননি"
 
-msgid "%(n)s student of another department has not submitted. Their IDs are shown to their own head of department only."
-msgid_plural "%(n)s students of other departments have not submitted. Their IDs are shown to their own heads of department only."
-msgstr[0] "অন্য বিভাগের %(n)s জন শিক্ষার্থী এখনও জমা দেননি। তাদের আইডি শুধু তাদের নিজ বিভাগের প্রধান দেখতে পান।"
-msgstr[1] "অন্য বিভাগের %(n)s জন শিক্ষার্থী এখনও জমা দেননি। তাদের আইডি শুধু তাদের নিজ বিভাগের প্রধান দেখতে পান।"
+msgid ""
+"%(n)s student of another department has not submitted. Their IDs are shown "
+"to their own head of department only."
+msgid_plural ""
+"%(n)s students of other departments have not submitted. Their IDs are shown "
+"to their own heads of department only."
+msgstr[0] ""
+"অন্য বিভাগের %(n)s জন শিক্ষার্থী এখনও জমা দেননি। তাদের আইডি শুধু তাদের নিজ "
+"বিভাগের প্রধান দেখতে পান।"
+msgstr[1] ""
+"অন্য বিভাগের %(n)s জন শিক্ষার্থী এখনও জমা দেননি। তাদের আইডি শুধু তাদের নিজ "
+"বিভাগের প্রধান দেখতে পান।"
 
 msgid "setting"
 msgstr "সেটিং"
@@ -3833,7 +3850,9 @@ msgid "moderation"
 msgstr "মডারেশন"
 
 msgid "An Admin can hide a comment or approve it; the text is never edited."
-msgstr "অ্যাডমিন মন্তব্য লুকাতে বা অনুমোদন করতে পারেন; লেখা কখনও সম্পাদনা করা হয় না।"
+msgstr ""
+"অ্যাডমিন মন্তব্য লুকাতে বা অনুমোদন করতে পারেন; লেখা কখনও সম্পাদনা করা হয় "
+"না।"
 
 msgid "All semesters"
 msgstr "সব সেমিস্টার"
@@ -3877,8 +3896,10 @@ msgstr "একসঙ্গে অনেক যাচাই হয়েছে।
 msgid "The audit trail is intact: %(count)s events checked."
 msgstr "অডিট ট্রেইল অক্ষত আছে: %(count)s টি ঘটনা যাচাই করা হয়েছে।"
 
-msgid "The audit trail was changed: event %(id)s no longer matches its record."
-msgstr "অডিট ট্রেইল পরিবর্তন করা হয়েছে: ঘটনা %(id)s আর তার রেকর্ডের সঙ্গে মেলে না।"
+msgid ""
+"The audit trail was changed: event %(id)s no longer matches its record."
+msgstr ""
+"অডিট ট্রেইল পরিবর্তন করা হয়েছে: ঘটনা %(id)s আর তার রেকর্ডের সঙ্গে মেলে না।"
 
 msgid "Settings saved."
 msgstr "সেটিংস সংরক্ষণ করা হয়েছে।"
@@ -3910,14 +3931,20 @@ msgstr "সর্বোচ্চ %(count)s টি রিমাইন্ডার
 msgid "Minimum responses"
 msgstr "ন্যূনতম মতামত"
 
-msgid "Results and comments stay hidden below this many responses. It can never be lower than 3."
-msgstr "এর চেয়ে কম মতামত থাকলে ফলাফল ও মন্তব্য লুকানো থাকে। এটি কখনও ৩ এর নিচে হতে পারে না।"
+msgid ""
+"Results and comments stay hidden below this many responses. It can never be "
+"lower than 3."
+msgstr ""
+"এর চেয়ে কম মতামত থাকলে ফলাফল ও মন্তব্য লুকানো থাকে। এটি কখনও ৩ এর নিচে হতে "
+"পারে না।"
 
 msgid "Low rating alert"
 msgstr "কম রেটিংয়ের সতর্কতা"
 
-msgid "A course average below this raises an alert for the head of department."
-msgstr "কোনো কোর্সের গড় এর নিচে হলে বিভাগীয় প্রধানের জন্য সতর্কতা দেখানো হয়।"
+msgid ""
+"A course average below this raises an alert for the head of department."
+msgstr ""
+"কোনো কোর্সের গড় এর নিচে হলে বিভাগীয় প্রধানের জন্য সতর্কতা দেখানো হয়।"
 
 msgid "Show students their own ID"
 msgstr "শিক্ষার্থীকে তার নিজের আইডি দেখান"
@@ -3940,8 +3967,12 @@ msgstr "তারকাচিহ্ন দিয়ে ঢেকে দিন"
 msgid "Results for teachers and heads"
 msgstr "শিক্ষক ও প্রধানদের জন্য ফলাফল"
 
-msgid "Results are never shown before a round closes; holding them delays that further."
-msgstr "রাউন্ড শেষ হওয়ার আগে ফলাফল কখনও দেখানো হয় না; আটকে রাখলে তা আরও পিছিয়ে যায়।"
+msgid ""
+"Results are never shown before a round closes; holding them delays that "
+"further."
+msgstr ""
+"রাউন্ড শেষ হওয়ার আগে ফলাফল কখনও দেখানো হয় না; আটকে রাখলে তা আরও পিছিয়ে "
+"যায়।"
 
 msgid "Show once the round has closed"
 msgstr "রাউন্ড শেষ হলে দেখান"
@@ -3958,8 +3989,11 @@ msgstr "শেষ সংরক্ষণের এত দিন পর খসড�
 msgid "Reminder schedule (hours before a round closes)"
 msgstr "রিমাইন্ডারের সময়সূচি (রাউন্ড শেষ হওয়ার কত ঘণ্টা আগে)"
 
-msgid "Comma-separated, for example 48, 24. Leave empty for no automatic reminders."
-msgstr "কমা দিয়ে আলাদা করুন, যেমন ৪৮, ২৪। স্বয়ংক্রিয় রিমাইন্ডার না চাইলে ফাঁকা রাখুন।"
+msgid ""
+"Comma-separated, for example 48, 24. Leave empty for no automatic reminders."
+msgstr ""
+"কমা দিয়ে আলাদা করুন, যেমন ৪৮, ২৪। স্বয়ংক্রিয় রিমাইন্ডার না চাইলে ফাঁকা "
+"রাখুন।"
 
 msgid "Share of answers (%)"
 msgstr "উত্তরের অংশ (%)"
@@ -4015,8 +4049,11 @@ msgstr "মনোযোগ প্রয়োজন এমন কোর্স"
 msgid "%(submitted)s of %(enrolled)s forms submitted"
 msgstr "%(enrolled)s টির মধ্যে %(submitted)s টি ফর্ম জমা হয়েছে"
 
-msgid "Every row is chained to the one before it, so a changed or removed row can be found."
-msgstr "প্রতিটি সারি আগের সারির সঙ্গে শিকলে বাঁধা, তাই বদলানো বা মোছা সারি ধরা যায়।"
+msgid ""
+"Every row is chained to the one before it, so a changed or removed row can "
+"be found."
+msgstr ""
+"প্রতিটি সারি আগের সারির সঙ্গে শিকলে বাঁধা, তাই বদলানো বা মোছা সারি ধরা যায়।"
 
 msgid "Verify the chain"
 msgstr "শিকল যাচাই করুন"
@@ -4081,7 +4118,8 @@ msgstr "এখনও কিছু রেকর্ড হয়নি।"
 msgid "Open the audit log"
 msgstr "অডিট লগ খুলুন"
 
-msgid "The distribution appears once a round has closed with enough responses."
+msgid ""
+"The distribution appears once a round has closed with enough responses."
 msgstr "যথেষ্ট মতামতসহ রাউন্ড শেষ হলে বণ্টন দেখা যাবে।"
 
 msgid "Moderation queue"
@@ -4105,8 +4143,13 @@ msgstr "%(students)s জন শিক্ষার্থী, %(teachers)s জন 
 msgid "%(name)s: participation %(value)s percent"
 msgstr "%(name)s: অংশগ্রহণ %(value)s শতাংশ"
 
-msgid "Only the cleaned text is shown. Nobody can see who wrote a comment, for which course or when. You can approve or hide a comment, never edit it."
-msgstr "শুধু পরিষ্কার করা লেখা দেখানো হয়। কে, কোন কোর্সের জন্য বা কখন লিখেছেন তা কেউ দেখতে পারে না। আপনি মন্তব্য অনুমোদন বা লুকাতে পারেন, কখনও সম্পাদনা করতে পারেন না।"
+msgid ""
+"Only the cleaned text is shown. Nobody can see who wrote a comment, for "
+"which course or when. You can approve or hide a comment, never edit it."
+msgstr ""
+"শুধু পরিষ্কার করা লেখা দেখানো হয়। কে, কোন কোর্সের জন্য বা কখন লিখেছেন তা "
+"কেউ দেখতে পারে না। আপনি মন্তব্য অনুমোদন বা লুকাতে পারেন, কখনও সম্পাদনা করতে "
+"পারেন না।"
 
 msgid "Approve"
 msgstr "অনুমোদন"
@@ -4123,8 +4166,12 @@ msgstr "এই তালিকায় কোনো মন্তব্য ন�
 msgid "Comment lists"
 msgstr "মন্তব্যের তালিকা"
 
-msgid "These values take effect at once. Every change is written to the audit log with the old and the new value."
-msgstr "এই মানগুলো সঙ্গে সঙ্গে কার্যকর হয়। প্রতিটি পরিবর্তন পুরোনো ও নতুন মানসহ অডিট লগে লেখা হয়।"
+msgid ""
+"These values take effect at once. Every change is written to the audit log "
+"with the old and the new value."
+msgstr ""
+"এই মানগুলো সঙ্গে সঙ্গে কার্যকর হয়। প্রতিটি পরিবর্তন পুরোনো ও নতুন মানসহ "
+"অডিট লগে লেখা হয়।"
 
 msgid "See changes in the audit log"
 msgstr "অডিট লগে পরিবর্তনগুলো দেখুন"
@@ -4280,3 +4327,379 @@ msgstr "বিশ্ববিদ্যালয়ের প্রতিবে�
 #: apps/reports/services/exports
 msgid "Value"
 msgstr "মান"
+
+#. notifications
+msgid "The template was saved."
+msgstr "টেমপ্লেট সংরক্ষণ করা হয়েছে।"
+
+#. notifications
+msgid "Too many test messages. Wait a moment."
+msgstr "অনেকগুলো পরীক্ষামূলক বার্তা পাঠানো হয়েছে। একটু অপেক্ষা করুন।"
+
+#. notifications
+msgid ""
+"A sample was sent to your notifications. Add a contact e-mail to your "
+"profile to get it by e-mail too."
+msgstr ""
+"একটি নমুনা আপনার বিজ্ঞপ্তিতে পাঠানো হয়েছে। ইমেইলেও পেতে প্রোফাইলে যোগাযোগের"
+" ইমেইল যোগ করুন।"
+
+#. notifications
+msgid "A sample was sent to your notifications and by %(channels)s."
+msgstr "একটি নমুনা আপনার বিজ্ঞপ্তিতে এবং %(channels)s-এ পাঠানো হয়েছে।"
+
+#. notifications
+msgid "e-mail"
+msgstr "ইমেইল"
+
+#. notifications
+msgid "text message"
+msgstr "টেক্সট বার্তা"
+
+#. notifications
+msgid "Subject (English)"
+msgstr "বিষয় (ইংরেজি)"
+
+#. notifications
+msgid "Message (English)"
+msgstr "বার্তা (ইংরেজি)"
+
+#. notifications
+msgid "Subject (Bangla)"
+msgstr "বিষয় (বাংলা)"
+
+#. notifications
+msgid "Message (Bangla)"
+msgstr "বার্তা (বাংলা)"
+
+#. notifications
+msgid "A feedback round opened"
+msgstr "একটি ফিডব্যাক রাউন্ড শুরু হয়েছে"
+
+#. notifications
+msgid "A feedback round closes soon"
+msgstr "একটি ফিডব্যাক রাউন্ড শীঘ্রই শেষ হবে"
+
+#. notifications
+msgid "A reminder from the head of department"
+msgstr "বিভাগীয় প্রধানের পক্ষ থেকে অনুস্মারক"
+
+#. notifications
+msgid "Results are available"
+msgstr "ফলাফল পাওয়া যাচ্ছে"
+
+#. notifications
+msgid "values"
+msgstr "মান"
+
+#. notifications
+msgid "link"
+msgstr "লিংক"
+
+#. notifications
+msgid "created at"
+msgstr "তৈরির সময়"
+
+#. notifications
+msgid "read at"
+msgstr "পড়ার সময়"
+
+#. notifications
+msgid "notification"
+msgstr "বিজ্ঞপ্তি"
+
+#. notifications
+msgid "notifications"
+msgstr "বিজ্ঞপ্তিসমূহ"
+
+#. notifications
+msgid "subject (English)"
+msgstr "বিষয় (ইংরেজি)"
+
+#. notifications
+msgid "subject (Bangla)"
+msgstr "বিষয় (বাংলা)"
+
+#. notifications
+msgid "message (English)"
+msgstr "বার্তা (ইংরেজি)"
+
+#. notifications
+msgid "message (Bangla)"
+msgstr "বার্তা (বাংলা)"
+
+#. notifications
+msgid "message template"
+msgstr "বার্তার টেমপ্লেট"
+
+#. notifications
+msgid "message templates"
+msgstr "বার্তার টেমপ্লেটসমূহ"
+
+#. notifications
+msgid "Sent"
+msgstr "পাঠানো হয়েছে"
+
+#. notifications
+msgid "Failed"
+msgstr "ব্যর্থ"
+
+#. notifications
+msgid "Skipped"
+msgstr "বাদ দেওয়া হয়েছে"
+
+#. notifications
+msgid "channel"
+msgstr "মাধ্যম"
+
+#. notifications
+msgid "detail"
+msgstr "বিবরণ"
+
+#. notifications
+msgid "time"
+msgstr "সময়"
+
+#. notifications
+msgid "delivery log entry"
+msgstr "প্রেরণ লগের এন্ট্রি"
+
+#. notifications
+msgid "delivery log"
+msgstr "প্রেরণ লগ"
+
+#. notifications
+msgid "recipient"
+msgstr "প্রাপক"
+
+#. notifications
+msgid "the name of the feedback round"
+msgstr "ফিডব্যাক রাউন্ডের নাম"
+
+#. notifications
+msgid "when the round closes"
+msgstr "রাউন্ড কখন শেষ হবে"
+
+#. notifications
+msgid "how long is left, such as “1 day”"
+msgstr "কতটা সময় বাকি, যেমন “১ দিন”"
+
+#. notifications
+msgid "how many forms the student still has to fill in"
+msgstr "শিক্ষার্থীর আর কতগুলো ফর্ম পূরণ করা বাকি"
+
+#. notifications
+msgid "the course"
+msgstr "কোর্স"
+
+#. notifications
+msgid "the address of the site"
+msgstr "সাইটের ঠিকানা"
+
+#. notifications
+msgid "Unknown placeholder(s): %(names)s."
+msgstr "অজানা প্লেসহোল্ডার: %(names)s।"
+
+#. notifications
+msgid "Sample round"
+msgstr "নমুনা রাউন্ড"
+
+#. notifications
+msgid "CSE101 · Programming"
+msgstr "CSE101 · প্রোগ্রামিং"
+
+#. notifications
+msgid "Feedback round open: {round}"
+msgstr "ফিডব্যাক রাউন্ড চলছে: {round}"
+
+#. notifications
+msgid ""
+"The feedback round {round} is open until {closes_at}. You have {pending} "
+"form(s) to fill in. Your answers are anonymous. {link}"
+msgstr ""
+"ফিডব্যাক রাউন্ড {round} {closes_at} পর্যন্ত চালু আছে। আপনার পূরণ করার মতো "
+"{pending}টি ফর্ম আছে। আপনার উত্তর গোপন থাকে। {link}"
+
+#. notifications
+msgid "{time_left} left to give feedback"
+msgstr "ফিডব্যাক দিতে {time_left} বাকি"
+
+#. notifications
+msgid ""
+"The feedback round {round} closes at {closes_at}, in {time_left}. You still "
+"have {pending} form(s) to fill in. Your answers are anonymous. {link}"
+msgstr ""
+"ফিডব্যাক রাউন্ড {round} {closes_at}-এ শেষ হবে, আর {time_left} বাকি। আপনার "
+"এখনও {pending}টি ফর্ম পূরণ করা বাকি। আপনার উত্তর গোপন থাকে। {link}"
+
+#. notifications
+msgid "Please give feedback on {course}"
+msgstr "অনুগ্রহ করে {course} সম্পর্কে ফিডব্যাক দিন"
+
+#. notifications
+msgid ""
+"Your head of department asks you to give feedback on {course} in the round "
+"{round}, which closes at {closes_at}. Your answers are anonymous. {link}"
+msgstr ""
+"আপনার বিভাগীয় প্রধান আপনাকে রাউন্ড {round}-এ {course} সম্পর্কে ফিডব্যাক "
+"দিতে অনুরোধ করেছেন। রাউন্ডটি {closes_at}-এ শেষ হবে। আপনার উত্তর গোপন থাকে। "
+"{link}"
+
+#. notifications
+msgid "Feedback results are available"
+msgstr "ফিডব্যাকের ফলাফল পাওয়া যাচ্ছে"
+
+#. notifications
+msgid "The results of the feedback round {round} are now available. {link}"
+msgstr "ফিডব্যাক রাউন্ড {round}-এর ফলাফল এখন পাওয়া যাচ্ছে। {link}"
+
+#. notifications
+msgid "Tell students when a round opens"
+msgstr "রাউন্ড শুরু হলে শিক্ষার্থীদের জানান"
+
+#. notifications
+msgid "Sends one notice to every student with forms to fill in."
+msgstr "ফর্ম পূরণ করার মতো প্রত্যেক শিক্ষার্থীকে একটি বিজ্ঞপ্তি পাঠায়।"
+
+#. notifications
+msgid "Quiet hours start (hour, 0-23)"
+msgstr "নীরব সময় শুরু (ঘণ্টা, ০-২৩)"
+
+#. notifications
+msgid ""
+"E-mail and text messages wait from this hour (Dhaka time); in-app notices "
+"are never held. Use the same hour for both to switch quiet hours off."
+msgstr ""
+"এই ঘণ্টা থেকে (ঢাকার সময়) ইমেইল ও টেক্সট বার্তা আটকে থাকে; অ্যাপের ভেতরের "
+"বিজ্ঞপ্তি কখনও আটকানো হয় না। নীরব সময় বন্ধ করতে দুটিতে একই ঘণ্টা দিন।"
+
+#. notifications
+msgid "Quiet hours end (hour, 0-23)"
+msgstr "নীরব সময় শেষ (ঘণ্টা, ০-২৩)"
+
+#. notifications
+msgid "E-mail and text messages go out again from this hour."
+msgstr "এই ঘণ্টা থেকে ইমেইল ও টেক্সট বার্তা আবার যায়।"
+
+#. notifications
+msgid "Message templates"
+msgstr "বার্তার টেমপ্লেট"
+
+#. notifications
+msgid "Delivery log"
+msgstr "প্রেরণ লগ"
+
+#. notifications
+msgid ""
+"What was sent, on which channel and whether it worked. The log never holds "
+"the message text or the address it went to."
+msgstr ""
+"কী পাঠানো হয়েছে, কোন মাধ্যমে এবং সফল হয়েছে কিনা। লগে বার্তার লেখা বা "
+"প্রাপকের ঠিকানা কখনও রাখা হয় না।"
+
+#. notifications
+msgid "Delivery attempts, newest first"
+msgstr "প্রেরণের চেষ্টা, নতুনটি আগে"
+
+#. notifications
+msgid "Time"
+msgstr "সময়"
+
+#. notifications
+msgid "Kind"
+msgstr "ধরন"
+
+#. notifications
+msgid "Channel"
+msgstr "মাধ্যম"
+
+#. notifications
+msgid "Detail"
+msgstr "বিবরণ"
+
+#. notifications
+msgid "Recipient"
+msgstr "প্রাপক"
+
+#. notifications
+msgid "Nothing sent yet"
+msgstr "এখনও কিছু পাঠানো হয়নি"
+
+#. notifications
+msgid "Messages appear here once the system has sent some."
+msgstr "সিস্টেম বার্তা পাঠালে এখানে দেখা যাবে।"
+
+#. notifications
+msgid "All message templates"
+msgstr "সব বার্তার টেমপ্লেট"
+
+#. notifications
+msgid ""
+"Leave a field empty to use the built-in text, which it shows in grey. Put a "
+"variable in curly braces where its value should go."
+msgstr ""
+"ঘর খালি রাখলে সিস্টেমের নিজস্ব লেখা ব্যবহার হয়, যা ধূসর রঙে দেখানো আছে। "
+"কোথায় মান বসবে সেখানে কোঁকড়া বন্ধনীতে চলকের নাম দিন।"
+
+#. notifications
+msgid "Send a test"
+msgstr "পরীক্ষামূলক বার্তা পাঠান"
+
+#. notifications
+msgid ""
+"Sends the saved wording, filled with sample values, to you: as a "
+"notification and to your contact e-mail if you have one. Quiet hours do not "
+"apply."
+msgstr ""
+"সংরক্ষিত লেখাটি নমুনা মান বসিয়ে আপনাকে পাঠায়: বিজ্ঞপ্তি হিসেবে এবং "
+"যোগাযোগের ইমেইল থাকলে সেখানেও। নীরব সময় এখানে প্রযোজ্য নয়।"
+
+#. notifications
+msgid "Send test"
+msgstr "পরীক্ষা পাঠান"
+
+#. notifications
+msgid ""
+"The wording of the notices and messages the system sends, in English and "
+"Bangla. Each message goes out in the language its reader chose."
+msgstr ""
+"সিস্টেম যেসব বিজ্ঞপ্তি ও বার্তা পাঠায় তার লেখা, ইংরেজি ও বাংলায়। প্রতিটি "
+"বার্তা পাঠকের বেছে নেওয়া ভাষায় যায়।"
+
+#. notifications
+msgid "Edited"
+msgstr "সম্পাদিত"
+
+#. notifications
+msgid "Built-in text"
+msgstr "নিজস্ব লেখা"
+
+#. notifications
+msgid "Unread:"
+msgstr "অপঠিত:"
+
+#. notifications
+msgid "You have no notifications."
+msgstr "আপনার কোনো বিজ্ঞপ্তি নেই।"
+
+#. notifications
+msgid "Mark all as read"
+msgstr "সব পঠিত হিসেবে চিহ্নিত করুন"
+
+#. notifications
+msgid "%(n)d hour"
+msgid_plural "%(n)d hours"
+msgstr[0] "%(n)d ঘণ্টা"
+msgstr[1] "%(n)d ঘণ্টা"
+
+#. notifications
+msgid "%(n)d day"
+msgid_plural "%(n)d days"
+msgstr[0] "%(n)d দিন"
+msgstr[1] "%(n)d দিন"
+
+#. notifications
+msgid "%(n)s unread notification"
+msgid_plural "%(n)s unread notifications"
+msgstr[0] "%(n)s টি অপঠিত বিজ্ঞপ্তি"
+msgstr[1] "%(n)s টি অপঠিত বিজ্ঞপ্তি"
