@@ -22,4 +22,6 @@ Tarpor Claude Code-e bolo: `Load docs/QUESTION_BANK.md into the question bank us
 | 3 |  |  |  |  |  |  |  |  |
 
 ## Rating topics (kon kon bisoye rating hobe)
-- (pore likho, ekta line-e ekta topic, jemon: Course Content, Teaching Quality, Punctuality, Lab Support)
+- (pore likho, ekta line-e ekta topic. Bangla naam dite chaile `English / বাংলা` format-e likho; Bangla na dile English-i dekhabe. Jemon: `Punctuality / সময়ানুবর্তিতা`, `Lab Support`)
+
+`load_questions` chalaole prottek topic category hoye jabe. Prothom bar nijer question load korar shomoy, shuru-te toiri hoye thaka 12-ta placeholder soriye dite: `python manage.py load_questions docs/QUESTION_BANK.md --replace-placeholders` (jader uttor ashe nai shudhu tader-i muchbe). File UTF-8 hote hobe (BOM thakleo cholbe).

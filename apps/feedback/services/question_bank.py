@@ -62,7 +62,7 @@ class Skipped:
 class ParsedBank:
     questions: list[ParsedQuestion] = field(default_factory=list)
     skipped: list[Skipped] = field(default_factory=list)
-    topics: list[str] = field(default_factory=list)
+    topics: list[tuple[str, str]] = field(default_factory=list)  # (English, Bangla)
 
 
 @dataclass
@@ -72,6 +72,8 @@ class LoadReport:
     unchanged: int = 0
     categories: int = 0
     placeholders: int = 0
+    placeholders_removed: int = 0
+    placeholders_kept: int = 0
     skipped: list[Skipped] = field(default_factory=list)
 
 
@@ -86,6 +88,15 @@ def _cells(line: str) -> list[str]:
 
 def _is_separator(cells: list[str]) -> bool:
     return bool(cells) and all(SEPARATOR_CELL.fullmatch(cell) for cell in cells)
+
+
+def _split_topic(topic: str) -> tuple[str, str]:
+    """Split "English / <Bangla>" into both names. The part after the last " / " counts as
+    Bangla only if it is not plain ASCII, so "Lab / Theory Support" stays one English name."""
+    english, separator, bangla = topic.rpartition(" / ")
+    if not separator or not english.strip() or bangla.strip().isascii():
+        return " ".join(topic.split()), ""
+    return " ".join(english.split()), " ".join(bangla.split())
 
 
 def _split_options(raw: str) -> list[str]:
@@ -154,7 +165,7 @@ def parse(markdown: str) -> ParsedBank:
         if in_topics:
             topic = stripped.removeprefix("-").removeprefix("*").strip()
             if stripped[:1] in "-*" and topic and not topic.startswith("("):
-                bank.topics.append(" ".join(topic.split()))
+                bank.topics.append(_split_topic(topic))
             continue
         if not stripped.startswith("|"):
             in_table = seen_header = False
@@ -206,14 +217,18 @@ def _upsert(row: ParsedQuestion, heads: dict[str, Question], actor, order: int) 
     return "updated" if changed else "unchanged"
 
 
-def load(markdown: str, *, actor=None) -> LoadReport:
-    """Upsert ``markdown`` into the bank. Invalid rows are reported, never half-applied."""
+def load(markdown: str, *, actor=None, replace_placeholders: bool = False) -> LoadReport:
+    """Upsert ``markdown`` into the bank. Invalid rows are reported, never half-applied.
+
+    With ``replace_placeholders``, once real questions are loaded the seeded placeholders
+    that have no answers are deleted (answered ones stay and are counted).
+    """
     bank = parse(markdown)
     report = LoadReport(skipped=list(bank.skipped))
     known_categories = QuestionCategory.objects.count()
     with transaction.atomic():
-        for topic in bank.topics:
-            questions.find_or_create_category(topic)
+        for topic, topic_bn in bank.topics:
+            questions.find_or_create_category(topic, topic_bn)
         heads = {
             _key(question.text): question
             for question in Question.objects.filter(superseded_by__isnull=True)
@@ -228,6 +243,9 @@ def load(markdown: str, *, actor=None) -> LoadReport:
                 continue
             setattr(report, outcome, getattr(report, outcome) + 1)
         report.categories = QuestionCategory.objects.count() - known_categories
+        if replace_placeholders and report.created + report.updated + report.unchanged:
+            kept = {_key(row.text) for row in bank.questions}
+            report.placeholders_removed, report.placeholders_kept = _remove_placeholders(kept)
         if not bank.questions and not Question.objects.exists():
             report.placeholders = _seed_placeholders(actor)
         audit.record(
@@ -238,6 +256,7 @@ def load(markdown: str, *, actor=None) -> LoadReport:
                 "updated": report.updated,
                 "skipped": len(report.skipped),
                 "placeholders": report.placeholders,
+                "placeholders_removed": report.placeholders_removed,
             },
         )
     return report
@@ -260,5 +279,26 @@ def _seed_placeholders(actor) -> int:
     return len(PLACEHOLDER_QUESTIONS)
 
 
-def load_file(path: Path, *, actor=None) -> LoadReport:
-    return load(path.read_text(encoding="utf-8-sig"), actor=actor)
+def _remove_placeholders(loaded_keys: set[str]) -> tuple[int, int]:
+    """Delete unanswered, untouched placeholders (not a question the file itself loaded)."""
+    removed = kept = 0
+    texts = {_key(text) for _category, text, _kind in PLACEHOLDER_QUESTIONS}
+    candidates = Question.objects.filter(version=1, supersedes__isnull=True)
+    for question in candidates.filter(superseded_by__isnull=True):
+        if _key(question.text) not in texts or _key(question.text) in loaded_keys:
+            continue
+        if question.answers.exists():
+            kept += 1
+            continue
+        question.delete()
+        removed += 1
+    return removed, kept
+
+
+def load_file(path: Path, *, actor=None, replace_placeholders: bool = False) -> LoadReport:
+    """Read ``path`` as UTF-8 (a BOM is accepted), whatever the console encoding is."""
+    return load(
+        path.read_text(encoding="utf-8-sig"),
+        actor=actor,
+        replace_placeholders=replace_placeholders,
+    )

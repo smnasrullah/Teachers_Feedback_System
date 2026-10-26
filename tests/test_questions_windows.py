@@ -135,7 +135,83 @@ class TestParser:
             + "\n## Rating topics (kon)\n- (pore likho)\n- Punctuality\n* Lab Support\n"
             + "\n## Other\n- Ignored\n"
         )
-        assert question_bank.parse(text).topics == ["Punctuality", "Lab Support"]
+        assert question_bank.parse(text).topics == [("Punctuality", ""), ("Lab Support", "")]
+
+
+ROW = "| 1 | Teaching | Real question. | আসল প্রশ্ন | rating | yes | all |  |  |"
+
+
+class TestTopicsAndPlaceholders:
+    def test_topic_lines_may_carry_a_bangla_name(self):
+        topics = "- Punctuality / সময়ানুবর্তিতা\n- Lab / Theory Support\n- Odd /\n"
+        parsed = question_bank.parse(bank() + "\n## Rating topics\n" + topics)
+        assert parsed.topics == [
+            ("Punctuality", "সময়ানুবর্তিতা"),
+            ("Lab / Theory Support", ""),
+            ("Odd /", ""),
+        ]
+
+    def test_both_names_are_stored_and_reloading_keeps_them(self):
+        topics = "- Punctuality / সময়ানুবর্তিতা\n- Teaching / শিক্ষাদান\n"
+        text = bank() + "\n## Rating topics\n" + topics
+        QuestionCategory.objects.filter(name="Teaching").update(name_bn="পাঠদান")
+        question_bank.load(text)
+        question_bank.load(text)
+        assert QuestionCategory.objects.get(name="Punctuality").name_bn == "সময়ানুবর্তিতা"
+        assert QuestionCategory.objects.get(name="Teaching").name_bn == "পাঠদান"  # kept
+        assert QuestionCategory.objects.filter(name="Punctuality").count() == 1
+
+    def test_missing_bangla_name_falls_back_to_english(self):
+        question_bank.load(bank() + "\n## Rating topics\n- Lab Support\n")
+        assert QuestionCategory.objects.get(name="Lab Support").name_bn == ""
+
+    def seeded(self):
+        question_bank.load(bank())
+        assert Question.objects.count() == 12
+
+    def test_replace_placeholders_removes_unanswered_ones_when_real_questions_load(self):
+        self.seeded()
+        report = question_bank.load(bank(ROW), replace_placeholders=True)
+        assert (report.placeholders_removed, report.placeholders_kept) == (12, 0)
+        assert list(Question.objects.values_list("text", flat=True)) == ["Real question."]
+
+    def test_answered_placeholders_stay(self):
+        self.seeded()
+        answered = Question.objects.get(text="Overall, how would you rate this course?")
+        Answer.objects.create(
+            response=FeedbackResponse.objects.create(**response_parts()),
+            question=answered,
+            int_value=4,
+        )
+        report = question_bank.load(bank(ROW), replace_placeholders=True)
+        assert (report.placeholders_removed, report.placeholders_kept) == (11, 1)
+        assert Question.objects.filter(pk=answered.pk).exists()
+
+    def test_nothing_is_removed_without_the_flag_or_without_real_questions(self):
+        self.seeded()
+        question_bank.load(bank(ROW))
+        assert Question.objects.count() == 13
+        report = question_bank.load(bank(), replace_placeholders=True)
+        assert report.placeholders_removed == 0
+        assert Question.objects.count() == 13
+
+    def test_a_real_row_with_a_placeholder_text_is_kept(self):
+        self.seeded()
+        text = "Overall, how would you rate this course?"
+        row = f"| 1 | Overall | {text} | সামগ্রিক | rating | yes | all |  |  |"
+        question_bank.load(bank(row), replace_placeholders=True)
+        assert Question.objects.filter(text=text).count() == 1
+
+    def test_command_reads_utf8_with_bom_and_replaces_placeholders(self, tmp_path, capsys):
+        path = tmp_path / "bank.md"
+        empty = tmp_path / "empty.md"
+        empty.write_text(bank(), encoding="utf-8")
+        call_command("load_questions", str(empty))
+        path.write_bytes(b"\xef\xbb\xbf" + bank(ROW).encode("utf-8"))  # UTF-8 BOM
+        call_command("load_questions", str(path), "--replace-placeholders")
+        out = capsys.readouterr().out
+        assert "Placeholders: 12 removed, 0 kept" in out
+        assert Question.objects.get().text_bn == "আসল প্রশ্ন"
 
 
 class TestLoad:

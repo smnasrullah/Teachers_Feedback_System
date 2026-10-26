@@ -2978,3 +2978,6 @@ msgid "%(count)s course offering is covered by this round."
 msgid_plural "%(count)s course offerings are covered by this round."
 msgstr[0] "এই পর্বে %(count)s টি কোর্স অফারিং অন্তর্ভুক্ত।"
 msgstr[1] "এই পর্বে %(count)s টি কোর্স অফারিং অন্তর্ভুক্ত।"
+
+msgid "Placeholders: %(removed)d removed, %(kept)d kept because they have answers."
+msgstr "নমুনা প্রশ্ন: %(removed)d টি মুছেছে, উত্তর থাকায় %(kept)d টি রয়ে গেছে।"

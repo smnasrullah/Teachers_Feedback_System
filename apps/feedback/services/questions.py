@@ -155,15 +155,21 @@ def reorder(positions: dict[int, int], *, actor, request=None) -> None:
         )
 
 
-def find_or_create_category(name: str) -> tuple[QuestionCategory, bool]:
-    """The category called ``name`` (case-insensitive), created at the end if new."""
-    name = " ".join(name.split())
+def find_or_create_category(name: str, name_bn: str = "") -> tuple[QuestionCategory, bool]:
+    """The category called ``name`` (case-insensitive), created at the end if new.
+
+    ``name_bn`` fills a missing Bangla name but never overwrites one already set.
+    """
+    name, name_bn = " ".join(name.split()), " ".join(name_bn.split())
     existing = QuestionCategory.objects.filter(name__iexact=name).first()
     if existing:
+        if name_bn and not existing.name_bn:
+            existing.name_bn = name_bn
+            existing.save(update_fields=["name_bn"])
         return existing, False
     top = QuestionCategory.objects.aggregate(top=Max("order"))["top"]
     category = QuestionCategory.objects.create(
-        name=name, order=ORDER_STEP if top is None else top + ORDER_STEP
+        name=name, name_bn=name_bn, order=ORDER_STEP if top is None else top + ORDER_STEP
     )
     return category, True
 
