@@ -8,8 +8,11 @@ from apps.academics.models import (
     Course,
     CourseOffering,
     Department,
+    GradeScale,
     LevelTerm,
+    Outcome,
     Program,
+    PromotionRule,
     Semester,
 )
 from apps.academics.services import importers
@@ -169,6 +172,97 @@ class ImportUploadForm(StyledFormMixin, forms.Form):
             "issue_codes": bool(self.cleaned_data.get("issue_codes")),
             "valid_days": self.cleaned_data.get("valid_days") or importers.DEFAULT_CODE_VALID_DAYS,
         }
+
+
+class GradeScaleForm(StyledModelForm):
+    class Meta:
+        model = GradeScale
+        fields = ["letter", "points", "is_pass"]
+        help_texts = {
+            "points": _("Changing the points does not change results already entered."),
+        }
+
+
+class PromotionRuleForm(StyledModelForm):
+    class Meta:
+        model = PromotionRule
+        fields = ["max_failed_courses", "min_cgpa", "min_credits", "retake_policy"]
+
+
+class SemesterChoiceForm(StyledFormMixin, forms.Form):
+    """Pick a semester; without a choice, the current one (else the latest)."""
+
+    semester = forms.ModelChoiceField(
+        label=_("Semester"), queryset=Semester.objects.all(), required=False, empty_label=None
+    )
+
+    def semester_or_current(self) -> Semester | None:
+        chosen = self.cleaned_data.get("semester") if self.is_valid() else None
+        return (
+            chosen or Semester.objects.filter(is_current=True).first() or Semester.objects.first()
+        )
+
+
+class ResultFilterForm(SemesterChoiceForm):
+    department = forms.ModelChoiceField(
+        label=_("Department"),
+        queryset=Department.objects.all(),
+        required=False,
+        empty_label=_("All"),
+    )
+
+
+class GradeSheetForm(StyledFormMixin, forms.Form):
+    """One grade dropdown per enrollment, named ``grade_<enrollment pk>``."""
+
+    PREFIX = "grade_"
+
+    def __init__(self, *args, enrollments, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scale = {grade.pk: grade for grade in GradeScale.objects.all()}
+        choices = [("", "—"), *((pk, grade.letter) for pk, grade in self.scale.items())]
+        for enrollment in enrollments:
+            result = getattr(enrollment, "result", None)
+            self.fields[f"{self.PREFIX}{enrollment.pk}"] = forms.TypedChoiceField(
+                label=_("Grade"),
+                choices=choices,
+                coerce=int,
+                empty_value=None,
+                required=False,
+                initial=result.grade_id if result else None,
+                widget=forms.Select(attrs={"class": "select"}),
+            )
+
+    def grades(self) -> dict:
+        """{enrollment pk: GradeScale or None}."""
+        return {
+            int(name.removeprefix(self.PREFIX)): self.scale.get(pk)
+            for name, pk in self.cleaned_data.items()
+        }
+
+
+class PromotionFilterForm(SemesterChoiceForm):
+    outcome = forms.ChoiceField(
+        label=_("Outcome"), required=False, choices=[("", _("All")), *Outcome.choices]
+    )
+
+
+class OverrideForm(StyledFormMixin, forms.Form):
+    outcome = forms.ChoiceField(
+        label=_("Outcome"),
+        choices=[
+            (Outcome.PROMOTE, Outcome.PROMOTE.label),
+            (Outcome.RETAIN, Outcome.RETAIN.label),
+            (Outcome.GRADUATE, Outcome.GRADUATE.label),
+        ],
+        help_text=_("A promoted student with failed courses also gets retake enrollments."),
+    )
+    reason = forms.CharField(
+        label=_("Reason"),
+        max_length=300,
+        widget=forms.Textarea(attrs={"rows": 3}),
+        help_text=_("Required. Kept with the decision; do not write personal details."),
+    )
 
 
 class AssignFilterForm(StyledFormMixin, forms.Form):

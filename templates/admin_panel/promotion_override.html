@@ -1,0 +1,31 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Override promotion" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <header class="grid gap-2">
+    <a class="btn btn-ghost w-fit" href="{% url 'academics:promotion' %}?semester={{ semester.pk }}">{% icon "chevron-left" %}{% translate "Back to the preview" %}</a>
+    <h1>{% translate "Override promotion" %}</h1>
+    <p>{% blocktranslate with id=student_id|default:"—" name=full_name|default:"—" level_term=student.level_term semester=semester %}Student {{ id }} ({{ name }}), {{ level_term }}, promotion for {{ semester }}.{% endblocktranslate %}</p>
+  </header>
+
+  <form method="post" novalidate class="card grid gap-4">
+    {% csrf_token %}
+    {% include "components/form_errors.html" with form=form %}
+    {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-primary">{% translate "Save override" %}</button>
+      <a class="btn btn-ghost" href="{% url 'academics:promotion' %}?semester={{ semester.pk }}">{% translate "Cancel" %}</a>
+    </div>
+  </form>
+
+  {% if override %}
+  <form method="post" class="card grid gap-4">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="clear">
+    <p>{% translate "Remove the override to use the outcome the rule computes." %}</p>
+    <div><button type="submit" class="btn btn-danger">{% icon "x" %}{% translate "Remove override" %}</button></div>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

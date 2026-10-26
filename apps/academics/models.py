@@ -1,7 +1,12 @@
-"""Academic structure: departments and programs down to semesters, courses and offerings."""
+"""Academic structure: departments and programs down to semesters, courses and offerings,
+then grades, results and the promotion rule (BLUEPRINT §3 F2)."""
 
+from decimal import Decimal
+
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -213,3 +218,196 @@ class CourseOffering(models.Model):
     @property
     def department(self) -> Department:
         return self.course.department
+
+
+class GradeScale(models.Model):
+    """One letter grade of the admin-editable scale and the points it is worth."""
+
+    letter = models.CharField(_("letter grade"), max_length=4, unique=True)
+    points = models.DecimalField(_("grade points"), max_digits=3, decimal_places=2)
+    is_pass = models.BooleanField(
+        _("passing grade"),
+        default=True,
+        help_text=_("A course with a failing grade must be retaken."),
+    )
+
+    class Meta:
+        ordering = ["-points", "letter"]
+        verbose_name = _("grade")
+        verbose_name_plural = _("grade scale")
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(points__gte=0),
+                name="grade_points_not_negative",
+                violation_error_message=_("Grade points cannot be negative."),
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.letter} ({self.points})"
+
+
+class Result(models.Model):
+    """The grade of one enrollment. ``points`` is copied from the grade when it is set, so a
+    later change to the grade scale never rewrites a published GPA."""
+
+    enrollment = models.OneToOneField(
+        "enrollment.Enrollment",
+        on_delete=models.PROTECT,
+        related_name="result",
+        verbose_name=_("enrollment"),
+    )
+    grade = models.ForeignKey(
+        GradeScale, on_delete=models.PROTECT, related_name="results", verbose_name=_("grade")
+    )
+    points = models.DecimalField(_("grade points"), max_digits=3, decimal_places=2)
+    published = models.BooleanField(_("published"), default=False)
+
+    class Meta:
+        verbose_name = _("result")
+        verbose_name_plural = _("results")
+
+    def __str__(self):
+        return f"Result({self.pk})"
+
+
+class RetakePolicy(models.TextChoices):
+    LATEST = "latest", _("The latest attempt counts")
+    BEST = "best", _("The best attempt counts")
+
+
+class PromotionRule(models.Model):
+    """The one promotion rule (row ``pk=1``); ``current()`` creates it with the defaults."""
+
+    max_failed_courses = models.PositiveSmallIntegerField(
+        _("most failed courses allowed"),
+        default=2,
+        help_text=_("Courses whose counting attempt is a failing grade, from any term so far."),
+    )
+    min_cgpa = models.DecimalField(
+        _("lowest CGPA allowed"), max_digits=3, decimal_places=2, default=Decimal("2.00")
+    )
+    min_credits = models.DecimalField(
+        _("fewest credits to earn in the term"),
+        max_digits=4,
+        decimal_places=1,
+        default=Decimal("0"),
+        help_text=_("Credits of the courses passed in the semester being promoted from."),
+    )
+    retake_policy = models.CharField(
+        _("retake policy"),
+        max_length=16,
+        choices=RetakePolicy.choices,
+        default=RetakePolicy.LATEST,
+        help_text=_("Which attempt of a retaken course counts in the CGPA."),
+    )
+
+    class Meta:
+        verbose_name = _("promotion rule")
+        verbose_name_plural = _("promotion rule")
+        constraints = [
+            models.CheckConstraint(condition=models.Q(pk=1), name="promotion_rule_singleton"),
+            models.CheckConstraint(
+                condition=models.Q(min_cgpa__gte=0, min_credits__gte=0),
+                name="promotion_rule_not_negative",
+                violation_error_message=_("The limits cannot be negative."),
+            ),
+        ]
+
+    def __str__(self):
+        return str(self._meta.verbose_name)
+
+    @classmethod
+    def current(cls) -> "PromotionRule":
+        return cls.objects.get_or_create(pk=1)[0]
+
+
+class Outcome(models.TextChoices):
+    PROMOTE = "promote", _("Promote")
+    PROMOTE_WITH_RETAKES = "promote_with_retakes", _("Promote with retakes")
+    RETAIN = "retain", _("Retain")
+    GRADUATE = "graduate", _("Graduate")
+
+
+class PromotionOverride(models.Model):
+    """The admin's choice for one student, replacing the computed outcome when applied."""
+
+    student_profile = models.ForeignKey(
+        "accounts.StudentProfile",
+        on_delete=models.CASCADE,
+        related_name="promotion_overrides",
+        verbose_name=_("student"),
+    )
+    semester = models.ForeignKey(
+        Semester,
+        on_delete=models.CASCADE,
+        related_name="promotion_overrides",
+        verbose_name=_("semester"),
+    )
+    outcome = models.CharField(_("outcome"), max_length=24, choices=Outcome.choices)
+    reason = models.CharField(_("reason"), max_length=300)
+
+    class Meta:
+        verbose_name = _("promotion override")
+        verbose_name_plural = _("promotion overrides")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["student_profile", "semester"], name="promotion_override_unique"
+            )
+        ]
+
+    def __str__(self):
+        return f"PromotionOverride({self.pk})"
+
+
+class PromotionDecision(models.Model):
+    """What applying the promotion of ``semester`` did to one student. Its existence marks the
+    student as done for that semester, which makes a second apply change nothing."""
+
+    student_profile = models.ForeignKey(
+        "accounts.StudentProfile",
+        on_delete=models.PROTECT,
+        related_name="promotion_decisions",
+        verbose_name=_("student"),
+    )
+    semester = models.ForeignKey(
+        Semester,
+        on_delete=models.PROTECT,
+        related_name="promotion_decisions",
+        verbose_name=_("semester"),
+    )
+    outcome = models.CharField(_("outcome"), max_length=24, choices=Outcome.choices)
+    computed_outcome = models.CharField(
+        _("computed outcome"), max_length=24, choices=Outcome.choices
+    )
+    override_reason = models.CharField(_("override reason"), max_length=300, blank=True)
+    from_level_term = models.ForeignKey(
+        LevelTerm, on_delete=models.PROTECT, related_name="+", verbose_name=_("from level/term")
+    )
+    to_level_term = models.ForeignKey(
+        LevelTerm, on_delete=models.PROTECT, related_name="+", verbose_name=_("to level/term")
+    )
+    term_gpa = models.DecimalField(_("term GPA"), max_digits=3, decimal_places=2)
+    cgpa = models.DecimalField(_("CGPA"), max_digits=3, decimal_places=2)
+    credits_earned = models.DecimalField(_("credits earned"), max_digits=5, decimal_places=1)
+    failed_courses = models.PositiveSmallIntegerField(_("failed courses"))
+    applied_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="+",
+        verbose_name=_("applied by"),
+    )
+    applied_at = models.DateTimeField(_("applied at"), default=timezone.now)
+
+    class Meta:
+        verbose_name = _("promotion decision")
+        verbose_name_plural = _("promotion decisions")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["student_profile", "semester"], name="promotion_decision_unique"
+            )
+        ]
+
+    def __str__(self):
+        return f"PromotionDecision({self.pk})"

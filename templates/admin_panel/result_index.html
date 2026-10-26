@@ -1,0 +1,52 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Results" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6">
+  <header class="grid gap-2">
+    <h1>{% translate "Results" %}</h1>
+    <p>{% translate "Enter grades per offering, then publish them. Only published results count for GPA and promotion. Grades can also be uploaded with the CSV import." %}</p>
+  </header>
+
+  <form method="get" class="card grid gap-4 sm:grid-cols-2 lg:grid-cols-4" role="search" aria-label="{% translate 'Filter offerings' %}">
+    {% for field in filter_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex items-end gap-3">
+      <button type="submit" class="btn btn-primary">{% icon "search" %}{% translate "Apply filters" %}</button>
+      <a class="btn btn-ghost" href="{% url 'academics:results' %}">{% translate "Reset" %}</a>
+    </div>
+  </form>
+
+  {% if page_obj.object_list %}
+  <table class="data-table" role="table">
+    <caption class="sr-only">{% blocktranslate with name=semester %}Offerings of {{ name }}{% endblocktranslate %}</caption>
+    <thead role="rowgroup"><tr role="row">
+      <th scope="col" role="columnheader">{% translate "Course" %}</th>
+      <th scope="col" role="columnheader">{% translate "Section" %}</th>
+      <th scope="col" role="columnheader" class="cell-num">{% translate "Enrolled" %}</th>
+      <th scope="col" role="columnheader" class="cell-num">{% translate "Graded" %}</th>
+      <th scope="col" role="columnheader">{% translate "Status" %}</th>
+      <th scope="col" role="columnheader"><span class="sr-only">{% translate "Actions" %}</span></th>
+    </tr></thead>
+    <tbody role="rowgroup">
+    {% for offering in page_obj %}
+      <tr role="row">
+        <td role="cell" data-label="{% translate 'Course' %}">{{ offering.course.code }} {{ offering.course.title }}</td>
+        <td role="cell" data-label="{% translate 'Section' %}">{{ offering.section|default:"—" }}</td>
+        <td role="cell" data-label="{% translate 'Enrolled' %}" class="cell-num">{{ offering.enrolled }}</td>
+        <td role="cell" data-label="{% translate 'Graded' %}" class="cell-num">{{ offering.graded }}</td>
+        <td role="cell" data-label="{% translate 'Status' %}">
+          {% if offering.enrolled and offering.published == offering.enrolled %}{% translate "Published" as label %}{% include "components/badge.html" with label=label variant="done" %}
+          {% elif offering.published %}{% translate "Partly published" as label %}{% include "components/badge.html" with label=label variant="pending" %}
+          {% else %}{% translate "Not published" as label %}{% include "components/badge.html" with label=label variant="closed" %}{% endif %}
+        </td>
+        <td role="cell" data-label="{% translate 'Actions' %}"><a href="{% url 'academics:grade_sheet' offering.pk %}">{% translate "Grades" %}</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    {% include "components/empty_state.html" with title=_("No offerings") text=_("Add course offerings or change the filters.") icon="list" %}
+  {% endif %}
+  {% include "components/pagination.html" with page_obj=page_obj query=query %}
+</div>
+{% endblock %}

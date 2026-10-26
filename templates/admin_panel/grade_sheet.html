@@ -1,0 +1,55 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Grades" %} · {{ offering.course.code }} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6">
+  <header class="grid gap-2">
+    <a class="btn btn-ghost w-fit" href="{% url 'academics:results' %}?semester={{ offering.semester_id }}">{% icon "chevron-left" %}{% translate "Back to results" %}</a>
+    <h1>{{ offering.course.code }} {{ offering.course.title }}</h1>
+    <p>{% blocktranslate with semester=offering.semester section=offering.section|default:"—" credit=offering.course.credit|floatformat:"-1" %}{{ semester }} · section {{ section }} · {{ credit }} credits{% endblocktranslate %}</p>
+  </header>
+
+  {% if rows %}
+  <form method="post" novalidate class="grid gap-4">
+    {% csrf_token %}
+    {% include "components/form_errors.html" with form=form %}
+    <table class="data-table" role="table">
+      <caption class="sr-only">{% translate "Grades" %}</caption>
+      <thead role="rowgroup"><tr role="row">
+        <th scope="col" role="columnheader">{% translate "Student ID" %}</th>
+        <th scope="col" role="columnheader">{% translate "Full name" %}</th>
+        <th scope="col" role="columnheader">{% translate "Enrollment" %}</th>
+        <th scope="col" role="columnheader">{% translate "Grade" %}</th>
+        <th scope="col" role="columnheader">{% translate "Status" %}</th>
+      </tr></thead>
+      <tbody role="rowgroup">
+      {% for row in rows %}
+        <tr role="row">
+          <td role="cell" data-label="{% translate 'Student ID' %}" class="num">{{ row.student_id|default:"—" }}</td>
+          <td role="cell" data-label="{% translate 'Full name' %}">{{ row.full_name|default:"—" }}</td>
+          <td role="cell" data-label="{% translate 'Enrollment' %}">{{ row.enrollment.get_status_display }}</td>
+          <td role="cell" data-label="{% translate 'Grade' %}">
+            <label class="sr-only" for="{{ row.field.id_for_label }}">{% blocktranslate with student=row.student_id|default:forloop.counter %}Grade for {{ student }}{% endblocktranslate %}</label>
+            {{ row.field }}
+            {% for error in row.field.errors %}<p class="field-error">{% icon "alert-circle" %}<span>{{ error }}</span></p>{% endfor %}
+          </td>
+          <td role="cell" data-label="{% translate 'Status' %}">
+            {% if row.result.published %}{% translate "Published" as label %}{% include "components/badge.html" with label=label variant="done" %}
+            {% elif row.result %}{% translate "Not published" as label %}{% include "components/badge.html" with label=label variant="closed" %}
+            {% else %}{% translate "No grade" as label %}{% include "components/badge.html" with label=label variant="pending" %}{% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <p class="field-hint">{% translate "Publishing releases every grade of this offering at once, so every student needs a grade. Published grades can still be corrected; each change is audited." %}</p>
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-ghost">{% translate "Save" %}</button>
+      <button type="submit" name="publish" value="1" class="btn btn-primary">{% icon "send" %}{% translate "Save and publish" %}</button>
+    </div>
+  </form>
+  {% else %}
+    {% include "components/empty_state.html" with title=_("No students") text=_("Nobody is enrolled in this offering.") icon="users" %}
+  {% endif %}
+</div>
+{% endblock %}

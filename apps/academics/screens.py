@@ -14,6 +14,7 @@ from apps.academics.models import (
     CourseOffering,
     CourseType,
     Department,
+    GradeScale,
     LevelTerm,
     Program,
     Semester,
@@ -253,6 +254,20 @@ SCREENS: dict[str, Screen] = {
             select_related=("course__department", "semester", "teacher__registry"),
             department_of=lambda o: o.course.department_id,
             icon="calendar",
+        ),
+        Screen(
+            key="grades",
+            model=GradeScale,
+            form_class=academic_forms.GradeScaleForm,
+            title=_("Grade scale"),
+            singular=_("grade"),
+            columns=(
+                Column(_("Letter grade"), lambda o: o.letter),
+                Column(_("Grade points"), lambda o: f"{o.points:.2f}", numeric=True),
+                Column(_("Passing grade"), lambda o: yes_no(o.is_pass)),
+            ),
+            search=("letter",),
+            icon="award",
         ),
     )
 }

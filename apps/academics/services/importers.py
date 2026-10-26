@@ -27,8 +27,10 @@ from apps.academics.models import (
     CourseOffering,
     CourseType,
     Department,
+    GradeScale,
     LevelTerm,
     Program,
+    Result,
     Semester,
 )
 from apps.accounts.models import (
@@ -539,6 +541,66 @@ class EnrollmentImporter(Importer):
         return []
 
 
+class ResultImporter(EnrollmentImporter):
+    key = "results"
+    title = gettext_lazy("Results")
+    summary = gettext_lazy(
+        "Adds grades to existing enrollments. Grades already entered are changed on the "
+        "results screen."
+    )
+    required = ("student_id", "department", "course_code", "semester", "grade")
+    optional = ("section", "published")
+    sample = (
+        ("2101001", "CSE", "CSE101", "Spring 2026", "A+", "A", "no"),
+        ("2101002", "CSE", "CSE101", "Spring 2026", "B-", "A", "no"),
+    )
+
+    def __init__(self, **options):
+        super().__init__(**options)
+        self._enrollments = {
+            (student, offering): pk
+            for pk, student, offering in Enrollment.objects.values_list(
+                "pk", "student_profile_id", "offering_id"
+            )
+        }
+        self._grades = {grade.letter.casefold(): grade for grade in GradeScale.objects.all()}
+
+    def clean(self, row):
+        enrollment = super().clean(row)
+        key = (enrollment.student_profile_id, enrollment.offering_id)
+        if key not in self._enrollments:
+            raise RowInvalid("student_id", _("This student is not enrolled in this offering."))
+        letter = _text(row, "grade", max_length=4, required=True)
+        try:
+            grade = self._grades[letter.casefold()]
+        except KeyError:
+            raise RowInvalid(
+                "grade", _("Unknown grade “%(value)s”.") % {"value": _shown(letter)}
+            ) from None
+        return Result(
+            enrollment_id=self._enrollments[key],
+            grade=grade,
+            points=grade.points,
+            published=_flag(row, "published"),
+        )
+
+    def finish(self, records):
+        stored = set(
+            Result.objects.filter(
+                enrollment_id__in=[record.enrollment_id for _line, record in records]
+            ).values_list("enrollment_id", flat=True)
+        )
+        return [
+            RowError(line, "student_id", _("This student already has a result in this offering."))
+            for line, record in records
+            if record.enrollment_id in stored
+        ]
+
+    def save(self, records, *, with_codes):
+        Result.objects.bulk_create(records, batch_size=BULK_BATCH)
+        return []
+
+
 IMPORTERS: dict[str, type[Importer]] = {
     importer.key: importer
     for importer in (
@@ -547,6 +609,7 @@ IMPORTERS: dict[str, type[Importer]] = {
         CourseImporter,
         OfferingImporter,
         EnrollmentImporter,
+        ResultImporter,
     )
 }
 

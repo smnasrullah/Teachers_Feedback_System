@@ -1,0 +1,27 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Apply promotion" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <header class="grid gap-2">
+    <a class="btn btn-ghost w-fit" href="{% url 'academics:promotion' %}?semester={{ semester.pk }}">{% icon "chevron-left" %}{% translate "Back to the preview" %}</a>
+    <h1>{% blocktranslate with name=semester %}Apply promotion for {{ name }}{% endblocktranslate %}</h1>
+  </header>
+
+  <form method="post" class="card grid gap-4">
+    {% csrf_token %}
+    <input type="hidden" name="fingerprint" value="{{ fingerprint }}">
+    <dl class="grid gap-2 sm:grid-cols-2">
+      {% for label, count in summary.counts %}<dt>{{ label }}</dt><dd class="num">{{ count }}</dd>{% endfor %}
+      <dt>{% translate "Overridden" %}</dt><dd class="num">{{ summary.overridden }}</dd>
+      <dt>{% translate "New enrollments" %}</dt><dd class="num">{{ summary.enrollments }}{% if summary.target %} ({{ summary.target }}){% endif %}</dd>
+      <dt>{% translate "Retakes not offered" %}</dt><dd class="num">{{ summary.unplaced }}</dd>
+    </dl>
+    <p class="callout">{% icon "alert" %}<span>{% translate "Applying updates each student's level/term or status and creates the enrollments, all at once. It is recorded in the audit log and cannot be undone from this screen. Students already promoted for this semester are not touched again." %}</span></p>
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-primary"{% if not planned.decisions %} disabled{% endif %}>{% icon "check" %}{% translate "Apply promotion" %}</button>
+      <a class="btn btn-ghost" href="{% url 'academics:promotion' %}?semester={{ semester.pk }}">{% translate "Cancel" %}</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

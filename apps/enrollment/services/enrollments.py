@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from django.utils.translation import gettext as _
 
-from apps.academics.models import CourseOffering, Semester
+from apps.academics.models import CourseOffering, Result, Semester
 from apps.accounts.models import AcademicStatus, StudentProfile
 from apps.auditlog.services import audit
 from apps.enrollment.models import Enrollment, EnrollmentStatus
@@ -112,6 +112,10 @@ def enroll(student_profile, offering, *, status=EnrollmentStatus.REGULAR, actor,
 
 @transaction.atomic
 def remove(enrollment, *, actor, request=None) -> None:
+    if Result.objects.filter(enrollment=enrollment).exists():
+        raise ValidationError(
+            _("This enrollment has a result, so it cannot be removed."), code="has_result"
+        )
     department_id = enrollment.offering.course.department_id
     audit.record(
         "enrollment.removed",

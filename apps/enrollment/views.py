@@ -128,8 +128,12 @@ def enrollment_remove(request, pk):
         Enrollment.objects.select_related("offering__course", "student_profile__registry"), pk=pk
     )
     if request.method == "POST":
-        enrollments.remove(enrollment, actor=request.user, request=request)
-        messages.success(request, _("The enrollment was removed."))
+        try:
+            enrollments.remove(enrollment, actor=request.user, request=request)
+        except ValidationError as error:
+            messages.error(request, error.messages[0])
+        else:
+            messages.success(request, _("The enrollment was removed."))
         return redirect("enrollment:list")
     return _page(
         request,

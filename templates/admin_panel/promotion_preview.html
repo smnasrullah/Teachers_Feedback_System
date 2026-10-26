@@ -1,0 +1,88 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Promotion" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6">
+  <header class="grid gap-2">
+    <h1>{% translate "Promotion" %}</h1>
+    <p>{% translate "A preview of what the promotion rule decides for every active student of the semester whose results are all published. Nothing changes until you apply it." %}</p>
+  </header>
+
+  <form method="get" class="card grid gap-4 sm:grid-cols-2 lg:grid-cols-4" role="search" aria-label="{% translate 'Filter students' %}">
+    {% for field in filter_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex items-end gap-3">
+      <button type="submit" class="btn btn-primary">{% icon "search" %}{% translate "Show" %}</button>
+      <a class="btn btn-ghost" href="{% url 'academics:promotion' %}">{% translate "Reset" %}</a>
+    </div>
+  </form>
+
+  {% if planned %}
+  <section class="grid gap-4" aria-labelledby="summary-title">
+    <h2 id="summary-title" class="text-lg">{% blocktranslate with name=semester %}Summary for {{ name }}{% endblocktranslate %}</h2>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {% for label, count in summary.counts %}{% include "components/stat_tile.html" with label=label value=count icon="users" %}{% endfor %}
+    </div>
+    <p class="callout">{% icon "info" %}<span>
+      {% blocktranslate with failed=planned.rule.max_failed_courses cgpa=planned.rule.min_cgpa credits=planned.rule.min_credits|floatformat:"-1" %}Rule: at most {{ failed }} failed courses, CGPA at least {{ cgpa }}, at least {{ credits }} credits earned in the term.{% endblocktranslate %}
+      <a href="{% url 'academics:promotion_rule' %}">{% translate "Change the rule" %}</a>
+    </span></p>
+    {% if planned.pending_ids %}<p class="callout">{% icon "clock" %}<span>{% blocktranslate count count=planned.pending_ids|length %}{{ count }} student is left out because a result is missing or not published.{% plural %}{{ count }} students are left out because a result is missing or not published.{% endblocktranslate %} <a href="{% url 'academics:results' %}?semester={{ semester.pk }}">{% translate "Open results" %}</a></span></p>{% endif %}
+    {% if planned.applied_count %}<p class="callout">{% icon "check" %}<span>{% blocktranslate count count=planned.applied_count %}{{ count }} student was already promoted for this semester.{% plural %}{{ count }} students were already promoted for this semester.{% endblocktranslate %}</span></p>{% endif %}
+    {% if summary.target %}
+      <p>{% blocktranslate with name=summary.target count=summary.enrollments %}Applying enrolls students in {{ name }}: {{ count }} new enrollments.{% endblocktranslate %}</p>
+    {% else %}
+      <p class="callout">{% icon "alert" %}<span>{% translate "There is no later semester yet, so nobody is enrolled for next term and failed courses get no retake enrollment. Add the next semester and its offerings first, or enroll students later." %}</span></p>
+    {% endif %}
+    {% if summary.unplaced %}<p class="callout">{% icon "alert" %}<span>{% blocktranslate count count=summary.unplaced %}{{ count }} failed course is not offered in the next semester; enroll that retake by hand later.{% plural %}{{ count }} failed courses are not offered in the next semester; enroll those retakes by hand later.{% endblocktranslate %}</span></p>{% endif %}
+    {% if planned.decisions %}
+      <div><a class="btn btn-primary" href="{% url 'academics:promotion_confirm' semester.pk %}?fingerprint={{ planned.fingerprint }}">{% icon "chevron-right" %}{% translate "Review and apply" %}</a></div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if rows %}
+  <table class="data-table" role="table">
+    <caption class="sr-only">{% translate "Promotion preview" %}</caption>
+    <thead role="rowgroup"><tr role="row">
+      <th scope="col" role="columnheader">{% translate "Student ID" %}</th>
+      <th scope="col" role="columnheader">{% translate "Full name" %}</th>
+      <th scope="col" role="columnheader">{% translate "Level/term" %}</th>
+      <th scope="col" role="columnheader" class="cell-num">{% translate "Term GPA" %}</th>
+      <th scope="col" role="columnheader" class="cell-num">{% translate "CGPA" %}</th>
+      <th scope="col" role="columnheader" class="cell-num">{% translate "Credits earned" %}</th>
+      <th scope="col" role="columnheader">{% translate "Failed courses" %}</th>
+      <th scope="col" role="columnheader">{% translate "Rule says" %}</th>
+      <th scope="col" role="columnheader">{% translate "Outcome" %}</th>
+      <th scope="col" role="columnheader"><span class="sr-only">{% translate "Actions" %}</span></th>
+    </tr></thead>
+    <tbody role="rowgroup">
+    {% for row in rows %}
+      <tr role="row">
+        <td role="cell" data-label="{% translate 'Student ID' %}" class="num">{{ row.student.visible_student_id|default:"—" }}</td>
+        <td role="cell" data-label="{% translate 'Full name' %}">{{ row.student.visible_full_name|default:"—" }}</td>
+        <td role="cell" data-label="{% translate 'Level/term' %}">{% if row.from.pk == row.to.pk %}{{ row.from }}{% else %}{{ row.from }} → {{ row.to }}{% endif %}</td>
+        <td role="cell" data-label="{% translate 'Term GPA' %}" class="cell-num">{{ row.decision.term_gpa }}</td>
+        <td role="cell" data-label="{% translate 'CGPA' %}" class="cell-num">{{ row.decision.cgpa }}</td>
+        <td role="cell" data-label="{% translate 'Credits earned' %}" class="cell-num">{{ row.decision.credits_earned|floatformat:"-1" }}</td>
+        <td role="cell" data-label="{% translate 'Failed courses' %}">
+          {{ row.failed|join:", "|default:"—" }}
+          {% if row.unplaced %}<p class="field-hint">{% blocktranslate with codes=row.unplaced|join:", " %}Not offered next semester: {{ codes }}{% endblocktranslate %}</p>{% endif %}
+        </td>
+        <td role="cell" data-label="{% translate 'Rule says' %}">{% include "components/badge.html" with label=row.computed.label variant=row.computed.variant icon=row.computed.icon %}</td>
+        <td role="cell" data-label="{% translate 'Outcome' %}">
+          {% include "components/badge.html" with label=row.outcome.label variant=row.outcome.variant icon=row.outcome.icon %}
+          {% if row.decision.overridden %}<p class="field-hint">{% icon "edit" %}{% translate "Overridden" %}: {{ row.decision.override_reason }}</p>{% endif %}
+        </td>
+        <td role="cell" data-label="{% translate 'Actions' %}"><a href="{% url 'academics:promotion_override' semester.pk row.decision.student_profile_id %}">{% translate "Override" %}</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% elif planned %}
+    {% include "components/empty_state.html" with title=_("Nobody to promote") text=_("No student of this semester is ready for promotion, or the filter matches nobody.") icon="users" %}
+  {% else %}
+    {% include "components/empty_state.html" with title=_("No semester") text=_("Add a semester first.") icon="calendar" %}
+  {% endif %}
+  {% include "components/pagination.html" with page_obj=page_obj query=query %}
+</div>
+{% endblock %}

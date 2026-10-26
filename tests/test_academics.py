@@ -5,7 +5,7 @@ from django.db import IntegrityError, connection, transaction
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 
-from apps.academics.models import Course, CourseOffering, Department, Semester
+from apps.academics.models import Course, CourseOffering, Department, GradeScale, Semester
 from apps.academics.screens import SCREENS
 from apps.academics.selectors import get_current_courses
 from apps.auditlog.models import AuditEvent
@@ -91,6 +91,9 @@ def sample_objects():
         "semesters": offering.semester,
         "courses": course,
         "offerings": offering,
+        "grades": GradeScale.objects.create(
+            letter=f"G{GradeScale.objects.count()}", points="1.00", is_pass=True
+        ),
     }
 
 

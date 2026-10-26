@@ -58,6 +58,25 @@ def admin_nav_items(current: str = "") -> list[dict]:
             "url": reverse("enrollment:missing"),
             "icon": "list",
         },
+        {"group": _("Results")},
+        {
+            "key": "results",
+            "label": _("Results"),
+            "url": reverse("academics:results"),
+            "icon": "file",
+        },
+        {
+            "key": "promotion",
+            "label": _("Promotion"),
+            "url": reverse("academics:promotion"),
+            "icon": "award",
+        },
+        {
+            "key": "promotion-rule",
+            "label": _("Promotion rule"),
+            "url": reverse("academics:promotion_rule"),
+            "icon": "settings",
+        },
         {"group": _("Data")},
         {
             "key": "import",

@@ -2116,3 +2116,459 @@ msgid "%(count)d enrollment was created."
 msgid_plural "%(count)d enrollments were created."
 msgstr[0] "%(count)d টি ভর্তি তৈরি হয়েছে।"
 msgstr[1] "%(count)d টি ভর্তি তৈরি হয়েছে।"
+
+msgid "letter grade"
+msgstr "লেটার গ্রেড"
+
+msgid "grade points"
+msgstr "গ্রেড পয়েন্ট"
+
+msgid "passing grade"
+msgstr "পাস গ্রেড"
+
+msgid "grade"
+msgstr "গ্রেড"
+
+msgid "grade scale"
+msgstr "গ্রেড স্কেল"
+
+msgid "published"
+msgstr "প্রকাশিত"
+
+msgid "result"
+msgstr "ফলাফল"
+
+msgid "results"
+msgstr "ফলাফল"
+
+msgid "The latest attempt counts"
+msgstr "সর্বশেষ চেষ্টা গণনা হবে"
+
+msgid "The best attempt counts"
+msgstr "সেরা চেষ্টা গণনা হবে"
+
+msgid "most failed courses allowed"
+msgstr "সর্বোচ্চ অনুমোদিত ফেল কোর্স"
+
+msgid "lowest CGPA allowed"
+msgstr "সর্বনিম্ন অনুমোদিত CGPA"
+
+msgid "fewest credits to earn in the term"
+msgstr "টার্মে অর্জনযোগ্য সর্বনিম্ন ক্রেডিট"
+
+msgid "retake policy"
+msgstr "রিটেক নীতি"
+
+msgid "promotion rule"
+msgstr "প্রমোশন নিয়ম"
+
+msgid "Promote"
+msgstr "প্রমোশন"
+
+msgid "Promote with retakes"
+msgstr "রিটেকসহ প্রমোশন"
+
+msgid "Retain"
+msgstr "একই টার্মে থাকবে"
+
+msgid "Graduate"
+msgstr "স্নাতক"
+
+msgid "outcome"
+msgstr "ফলাফল সিদ্ধান্ত"
+
+msgid "reason"
+msgstr "কারণ"
+
+msgid "promotion override"
+msgstr "প্রমোশন ওভাররাইড"
+
+msgid "promotion overrides"
+msgstr "প্রমোশন ওভাররাইড"
+
+msgid "computed outcome"
+msgstr "নিয়ম অনুযায়ী সিদ্ধান্ত"
+
+msgid "override reason"
+msgstr "ওভাররাইডের কারণ"
+
+msgid "term GPA"
+msgstr "টার্ম GPA"
+
+msgid "CGPA"
+msgstr "CGPA"
+
+msgid "credits earned"
+msgstr "অর্জিত ক্রেডিট"
+
+msgid "failed courses"
+msgstr "ফেল কোর্স"
+
+msgid "applied at"
+msgstr "প্রয়োগের সময়"
+
+msgid "promotion decision"
+msgstr "প্রমোশন সিদ্ধান্ত"
+
+msgid "promotion decisions"
+msgstr "প্রমোশন সিদ্ধান্ত"
+
+msgid "A course with a failing grade must be retaken."
+msgstr "ফেল গ্রেড পাওয়া কোর্স আবার (রিটেক) নিতে হবে।"
+
+msgid ""
+"Courses whose counting attempt is a failing grade, from any term so far."
+msgstr "এ পর্যন্ত যেকোনো টার্মের যেসব কোর্সের গণনাযোগ্য চেষ্টায় ফেল গ্রেড।"
+
+msgid "Credits of the courses passed in the semester being promoted from."
+msgstr "যে সেমিস্টার থেকে প্রমোশন হচ্ছে, তাতে পাস করা কোর্সের ক্রেডিট।"
+
+msgid "Which attempt of a retaken course counts in the CGPA."
+msgstr "রিটেক করা কোর্সের কোন চেষ্টা CGPA-তে গণনা হবে।"
+
+msgid "from level/term"
+msgstr "আগের লেভেল/টার্ম"
+
+msgid "to level/term"
+msgstr "নতুন লেভেল/টার্ম"
+
+msgid "applied by"
+msgstr "প্রয়োগকারী"
+
+msgid "Grade points cannot be negative."
+msgstr "গ্রেড পয়েন্ট ঋণাত্মক হতে পারে না।"
+
+msgid "The limits cannot be negative."
+msgstr "সীমাগুলো ঋণাত্মক হতে পারে না।"
+
+msgid "Changing the points does not change results already entered."
+msgstr "পয়েন্ট বদলালে আগে দেওয়া ফলাফল বদলায় না।"
+
+msgid "Outcome"
+msgstr "সিদ্ধান্ত"
+
+msgid "A promoted student with failed courses also gets retake enrollments."
+msgstr "ফেল কোর্স থাকলে প্রমোশন পাওয়া শিক্ষার্থী রিটেক ভর্তিও পাবে।"
+
+msgid "Reason"
+msgstr "কারণ"
+
+msgid "Required. Kept with the decision; do not write personal details."
+msgstr "আবশ্যক। সিদ্ধান্তের সাথে রাখা হয়; ব্যক্তিগত তথ্য লিখবেন না।"
+
+msgid "Grade"
+msgstr "গ্রেড"
+
+msgid "Grade scale"
+msgstr "গ্রেড স্কেল"
+
+msgid "Letter grade"
+msgstr "লেটার গ্রেড"
+
+msgid "Grade points"
+msgstr "গ্রেড পয়েন্ট"
+
+msgid "Passing grade"
+msgstr "পাস গ্রেড"
+
+msgid "Saved: %(created)d new, %(changed)d changed, %(published)d published."
+msgstr ""
+"সংরক্ষিত: %(created)d টি নতুন, %(changed)d টি বদলানো, %(published)d টি "
+"প্রকাশিত।"
+
+msgid "The promotion rule was saved."
+msgstr "প্রমোশন নিয়ম সংরক্ষণ করা হয়েছে।"
+
+msgid "The preview changed. Review it again before applying."
+msgstr "প্রিভিউ বদলে গেছে। প্রয়োগের আগে আবার দেখে নিন।"
+
+msgid "The override was saved."
+msgstr "ওভাররাইড সংরক্ষণ করা হয়েছে।"
+
+msgid "The override was removed."
+msgstr "ওভাররাইড সরানো হয়েছে।"
+
+msgid ""
+"Results, overrides or enrollments changed after the preview. Review it "
+"again."
+msgstr "প্রিভিউয়ের পরে ফলাফল, ওভাররাইড বা ভর্তি বদলেছে। আবার দেখে নিন।"
+
+msgid "The promotion of this student for this semester is already applied."
+msgstr ""
+"এই সেমিস্টারের জন্য এই শিক্ষার্থীর প্রমোশন ইতিমধ্যে প্রয়োগ করা হয়েছে।"
+
+msgid "Give a reason for the override."
+msgstr "ওভাররাইডের একটি কারণ দিন।"
+
+msgid "Only active students enrolled in this semester can be overridden."
+msgstr ""
+"শুধু এই সেমিস্টারে ভর্তি সক্রিয় শিক্ষার্থীদের ক্ষেত্রেই ওভাররাইড করা যায়।"
+
+msgid ""
+"This is the last level/term of the student's program: choose graduate or "
+"retain."
+msgstr ""
+"এটি শিক্ষার্থীর প্রোগ্রামের শেষ লেভেল/টার্ম: স্নাতক অথবা একই টার্মে রাখা "
+"বেছে নিন।"
+
+msgid "A grade was given for a student not enrolled in this offering."
+msgstr "এই অফারিংয়ে ভর্তি নয় এমন শিক্ষার্থীর জন্য গ্রেড দেওয়া হয়েছে।"
+
+msgid ""
+"Every enrolled student needs a grade before the results are published. "
+"Nothing was saved."
+msgstr ""
+"ফলাফল প্রকাশের আগে প্রত্যেক ভর্তি শিক্ষার্থীর গ্রেড লাগবে। কিছুই সংরক্ষণ করা"
+" হয়নি।"
+
+msgid "Results"
+msgstr "ফলাফল"
+
+msgid ""
+"Adds grades to existing enrollments. Grades already entered are changed on "
+"the results screen."
+msgstr ""
+"বিদ্যমান ভর্তিতে গ্রেড যোগ করে। আগে দেওয়া গ্রেড ফলাফল স্ক্রিনে বদলাতে হয়।"
+
+msgid "This student is not enrolled in this offering."
+msgstr "এই শিক্ষার্থী এই অফারিংয়ে ভর্তি নয়।"
+
+msgid "This student already has a result in this offering."
+msgstr "এই অফারিংয়ে এই শিক্ষার্থীর ফলাফল ইতিমধ্যে আছে।"
+
+msgid "Unknown grade “%(value)s”."
+msgstr "অজানা গ্রেড “%(value)s”।"
+
+msgid "This enrollment has a result, so it cannot be removed."
+msgstr "এই ভর্তির ফলাফল আছে, তাই এটি সরানো যাবে না।"
+
+msgid "Promotion"
+msgstr "প্রমোশন"
+
+msgid "Promotion rule"
+msgstr "প্রমোশন নিয়ম"
+
+msgid ""
+"Enter grades per offering, then publish them. Only published results count "
+"for GPA and promotion. Grades can also be uploaded with the CSV import."
+msgstr ""
+"প্রতিটি অফারিংয়ের গ্রেড দিন, তারপর প্রকাশ করুন। শুধু প্রকাশিত ফলাফল GPA ও "
+"প্রমোশনে গণনা হয়। CSV ইম্পোর্ট দিয়েও গ্রেড আপলোড করা যায়।"
+
+msgid "Enrolled"
+msgstr "ভর্তি"
+
+msgid "Graded"
+msgstr "গ্রেড দেওয়া"
+
+msgid "Published"
+msgstr "প্রকাশিত"
+
+msgid "Partly published"
+msgstr "আংশিক প্রকাশিত"
+
+msgid "Not published"
+msgstr "অপ্রকাশিত"
+
+msgid "Grades"
+msgstr "গ্রেড"
+
+msgid "Back to results"
+msgstr "ফলাফলে ফিরুন"
+
+msgid "%(semester)s · section %(section)s · %(credit)s credits"
+msgstr "%(semester)s · সেকশন %(section)s · %(credit)s ক্রেডিট"
+
+msgid "Grade for %(student)s"
+msgstr "%(student)s-এর গ্রেড"
+
+msgid "No grade"
+msgstr "গ্রেড নেই"
+
+msgid ""
+"Publishing releases every grade of this offering at once, so every student "
+"needs a grade. Published grades can still be corrected; each change is "
+"audited."
+msgstr ""
+"প্রকাশ করলে এই অফারিংয়ের সব গ্রেড একসাথে প্রকাশ হয়, তাই প্রত্যেক "
+"শিক্ষার্থীর গ্রেড লাগবে। প্রকাশিত গ্রেডও সংশোধন করা যায়; প্রতিটি পরিবর্তন "
+"অডিট লগে থাকে।"
+
+msgid "Save and publish"
+msgstr "সংরক্ষণ ও প্রকাশ করুন"
+
+msgid "No students"
+msgstr "কোনো শিক্ষার্থী নেই"
+
+msgid "Nobody is enrolled in this offering."
+msgstr "এই অফারিংয়ে কেউ ভর্তি নেই।"
+
+msgid ""
+"A student moves to the next level/term only when every limit holds. On the "
+"last level/term of the program, a student who meets the rule with nothing "
+"left to retake graduates. Anyone else is retained."
+msgstr ""
+"সব সীমা পূরণ হলে তবেই শিক্ষার্থী পরের লেভেল/টার্মে যায়। প্রোগ্রামের শেষ "
+"লেভেল/টার্মে নিয়ম পূরণ করা ও কোনো রিটেক বাকি না থাকা শিক্ষার্থী স্নাতক হয়।"
+" বাকিরা একই টার্মে থাকে।"
+
+msgid "Go to promotion"
+msgstr "প্রমোশনে যান"
+
+msgid ""
+"A preview of what the promotion rule decides for every active student of the"
+" semester whose results are all published. Nothing changes until you apply "
+"it."
+msgstr ""
+"যেসব সক্রিয় শিক্ষার্থীর এই সেমিস্টারের সব ফলাফল প্রকাশিত, তাদের জন্য "
+"প্রমোশন নিয়ম কী সিদ্ধান্ত দেয় তার প্রিভিউ। প্রয়োগ না করা পর্যন্ত কিছুই "
+"বদলায় না।"
+
+msgid "Show"
+msgstr "দেখান"
+
+msgid "Summary for %(name)s"
+msgstr "%(name)s-এর সারাংশ"
+
+msgid ""
+"Rule: at most %(failed)s failed courses, CGPA at least %(cgpa)s, at least "
+"%(credits)s credits earned in the term."
+msgstr ""
+"নিয়ম: সর্বোচ্চ %(failed)s টি ফেল কোর্স, CGPA কমপক্ষে %(cgpa)s, টার্মে "
+"কমপক্ষে %(credits)s ক্রেডিট অর্জন।"
+
+msgid "Change the rule"
+msgstr "নিয়ম বদলান"
+
+msgid "Open results"
+msgstr "ফলাফল খুলুন"
+
+msgid "Applying enrolls students in %(name)s: %(count)s new enrollments."
+msgstr ""
+"প্রয়োগ করলে শিক্ষার্থীরা %(name)s-এ ভর্তি হবে: %(count)s টি নতুন ভর্তি।"
+
+msgid ""
+"There is no later semester yet, so nobody is enrolled for next term and "
+"failed courses get no retake enrollment. Add the next semester and its "
+"offerings first, or enroll students later."
+msgstr ""
+"পরের কোনো সেমিস্টার এখনো নেই, তাই কাউকে পরের টার্মে ভর্তি করা হবে না এবং ফেল"
+" কোর্সের রিটেক ভর্তিও হবে না। আগে পরের সেমিস্টার ও তার অফারিং যোগ করুন, অথবা"
+" পরে শিক্ষার্থীদের ভর্তি করুন।"
+
+msgid "Review and apply"
+msgstr "দেখে প্রয়োগ করুন"
+
+msgid "Promotion preview"
+msgstr "প্রমোশন প্রিভিউ"
+
+msgid "Term GPA"
+msgstr "টার্ম GPA"
+
+msgid "Credits earned"
+msgstr "অর্জিত ক্রেডিট"
+
+msgid "Failed courses"
+msgstr "ফেল কোর্স"
+
+msgid "Rule says"
+msgstr "নিয়ম অনুযায়ী"
+
+msgid "Not offered next semester: %(codes)s"
+msgstr "পরের সেমিস্টারে অফার নেই: %(codes)s"
+
+msgid "Overridden"
+msgstr "ওভাররাইড করা"
+
+msgid "Override"
+msgstr "ওভাররাইড"
+
+msgid "Nobody to promote"
+msgstr "প্রমোশনের জন্য কেউ নেই"
+
+msgid ""
+"No student of this semester is ready for promotion, or the filter matches "
+"nobody."
+msgstr ""
+"এই সেমিস্টারের কোনো শিক্ষার্থী প্রমোশনের জন্য প্রস্তুত নয়, অথবা ফিল্টারে "
+"কেউ মেলেনি।"
+
+msgid "No semester"
+msgstr "কোনো সেমিস্টার নেই"
+
+msgid "Add a semester first."
+msgstr "আগে একটি সেমিস্টার যোগ করুন।"
+
+msgid "Apply promotion"
+msgstr "প্রমোশন প্রয়োগ করুন"
+
+msgid "Back to the preview"
+msgstr "প্রিভিউতে ফিরুন"
+
+msgid "Apply promotion for %(name)s"
+msgstr "%(name)s-এর প্রমোশন প্রয়োগ করুন"
+
+msgid "New enrollments"
+msgstr "নতুন ভর্তি"
+
+msgid "Retakes not offered"
+msgstr "অফার না থাকা রিটেক"
+
+msgid ""
+"Applying updates each student's level/term or status and creates the "
+"enrollments, all at once. It is recorded in the audit log and cannot be "
+"undone from this screen. Students already promoted for this semester are not"
+" touched again."
+msgstr ""
+"প্রয়োগ করলে একসাথে প্রত্যেক শিক্ষার্থীর লেভেল/টার্ম বা অবস্থা হালনাগাদ হয় "
+"এবং ভর্তি তৈরি হয়। এটি অডিট লগে লেখা থাকে এবং এই স্ক্রিন থেকে ফেরানো যায় "
+"না। এই সেমিস্টারে ইতিমধ্যে প্রমোশন পাওয়া শিক্ষার্থীদের আর ছোঁয়া হয় না।"
+
+msgid "Override promotion"
+msgstr "প্রমোশন ওভাররাইড"
+
+msgid "Student %(id)s (%(name)s), %(level_term)s, promotion for %(semester)s."
+msgstr ""
+"শিক্ষার্থী %(id)s (%(name)s), %(level_term)s, %(semester)s-এর প্রমোশন।"
+
+msgid "Save override"
+msgstr "ওভাররাইড সংরক্ষণ করুন"
+
+msgid "Remove the override to use the outcome the rule computes."
+msgstr "নিয়মের হিসাব করা সিদ্ধান্ত ব্যবহার করতে ওভাররাইড সরান।"
+
+msgid "Remove override"
+msgstr "ওভাররাইড সরান"
+
+msgid "The promotion was applied to %(count)d student."
+msgid_plural "The promotion was applied to %(count)d students."
+msgstr[0] "%(count)d জন শিক্ষার্থীর প্রমোশন প্রয়োগ করা হয়েছে।"
+msgstr[1] "%(count)d জন শিক্ষার্থীর প্রমোশন প্রয়োগ করা হয়েছে।"
+
+msgid ""
+"%(count)s student is left out because a result is missing or not published."
+msgid_plural ""
+"%(count)s students are left out because a result is missing or not "
+"published."
+msgstr[0] ""
+"ফলাফল না থাকায় বা অপ্রকাশিত থাকায় %(count)s জন শিক্ষার্থী বাদ পড়েছে।"
+msgstr[1] ""
+"ফলাফল না থাকায় বা অপ্রকাশিত থাকায় %(count)s জন শিক্ষার্থী বাদ পড়েছে।"
+
+msgid "%(count)s student was already promoted for this semester."
+msgid_plural "%(count)s students were already promoted for this semester."
+msgstr[0] "%(count)s জন শিক্ষার্থীর এই সেমিস্টারের প্রমোশন আগেই হয়েছে।"
+msgstr[1] "%(count)s জন শিক্ষার্থীর এই সেমিস্টারের প্রমোশন আগেই হয়েছে।"
+
+msgid ""
+"%(count)s failed course is not offered in the next semester; enroll that "
+"retake by hand later."
+msgid_plural ""
+"%(count)s failed courses are not offered in the next semester; enroll those "
+"retakes by hand later."
+msgstr[0] ""
+"%(count)s টি ফেল কোর্স পরের সেমিস্টারে অফার করা হয়নি; সেই রিটেক পরে হাতে "
+"ভর্তি করুন।"
+msgstr[1] ""
+"%(count)s টি ফেল কোর্স পরের সেমিস্টারে অফার করা হয়নি; সেই রিটেক পরে হাতে "
+"ভর্তি করুন।"

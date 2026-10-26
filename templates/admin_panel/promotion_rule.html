@@ -1,0 +1,20 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Promotion rule" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <header class="grid gap-2">
+    <h1>{% translate "Promotion rule" %}</h1>
+    <p>{% translate "A student moves to the next level/term only when every limit holds. On the last level/term of the program, a student who meets the rule with nothing left to retake graduates. Anyone else is retained." %}</p>
+  </header>
+  <form method="post" novalidate class="card grid gap-4">
+    {% csrf_token %}
+    {% include "components/form_errors.html" with form=form %}
+    {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-primary">{% translate "Save" %}</button>
+      <a class="btn btn-ghost" href="{% url 'academics:promotion' %}">{% translate "Go to promotion" %}</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
