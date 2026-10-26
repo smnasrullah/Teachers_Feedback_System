@@ -20,6 +20,12 @@ PHONE_INDEX_PURPOSE = "user.contact_phone"
 REGISTRY_INDEX_PURPOSE = "registry.external_id"
 
 
+class Theme(models.TextChoices):
+    SYSTEM = "system", _("Same as my device")
+    LIGHT = "light", _("Light")
+    DARK = "dark", _("Dark")
+
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -58,6 +64,7 @@ class User(AbstractBaseUser):
     language = models.CharField(
         _("language"), max_length=8, choices=settings.LANGUAGES, default=settings.LANGUAGE_CODE
     )
+    theme = models.CharField(_("theme"), max_length=8, choices=Theme.choices, default=Theme.SYSTEM)
     avatar = models.ImageField(_("avatar"), upload_to="avatars/", blank=True)
 
     contact_email = EncryptedCharField(_("contact e-mail"), max_length=254, null=True, blank=True)
@@ -110,6 +117,16 @@ class User(AbstractBaseUser):
             .first()
         )
 
+    @cached_property
+    def student_profile(self):
+        return (
+            StudentProfile.objects.select_related(
+                "registry__department", "program", "batch", "level_term"
+            )
+            .filter(registry__claimed_by=self)
+            .first()
+        )
+
     @property
     def is_hod(self) -> bool:
         profile = self.teacher_profile
@@ -126,6 +143,7 @@ class User(AbstractBaseUser):
     def refresh_from_db(self, *args, **kwargs):
         super().refresh_from_db(*args, **kwargs)
         self.__dict__.pop("teacher_profile", None)
+        self.__dict__.pop("student_profile", None)
         self._saved_username = self.username
 
     def save(self, *args, **kwargs):

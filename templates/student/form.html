@@ -1,0 +1,66 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n static ui %}
+{% block title %}{% translate "Give feedback" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+{% with course=offering.course teacher=offering.teacher %}
+<div class="form-page">
+  <div class="form-bar">
+    <div class="form-bar-row">
+      <strong class="flex-1">{{ course|localized:"title" }}, {{ course.code }}</strong>
+      {% translate "Anonymous" as anonymous_label %}{% include "components/badge.html" with variant="info" icon="lock" label=anonymous_label %}
+    </div>
+    <div class="form-bar-row text-sm">
+      <span class="text-muted">{% blocktranslate with total=required_total %}<span class="num" data-answered>0</span> of {{ total }} required answered{% endblocktranslate %}</span>
+      <progress class="meter" data-progress max="{{ required_total|default:1 }}" value="0" aria-label="{% translate "Required questions answered" %}"></progress>
+    </div>
+  </div>
+
+  <form method="post" id="feedback-form" class="form-body" data-feedback-form novalidate
+    hx-post="{% url 'feedback:draft' window_id=window.pk offering_id=offering.pk %}" hx-trigger="change delay:1s, input delay:4s" hx-target="#draft-status" hx-swap="innerHTML" hx-params="not password" hx-sync="this:replace">
+    {% csrf_token %}
+    <input type="hidden" name="qset" value="{{ fingerprint }}">
+    <section class="card grid gap-3">
+      <h1 class="text-2xl">{% blocktranslate with name=teacher.registry.full_name|default:_("your teacher") %}Feedback for {{ name }}{% endblocktranslate %}</h1>
+      <p class="text-muted">{% blocktranslate with round=window.name semester=offering.semester.name %}{{ round }}, {{ semester }}. Questions marked required must be answered. You can give feedback once for this course in this round.{% endblocktranslate %}</p>
+      <p class="tint flex gap-3">{% icon "shield" %}<span>{% translate "Do not write your name or personal details. Offensive words are removed automatically." %}</span></p>
+      <p class="text-sm text-muted">{% translate "Your answers are saved as a draft while you work. Only one device can be signed in: signing in elsewhere ends this session, and your saved draft is waiting for you." %}</p>
+    </section>
+
+    {% if notices and not reopen_confirm %}
+    <div class="grid gap-2">{% for notice in notices %}<p class="callout callout-alert" role="alert">{% icon "alert" %}<span>{{ notice }}</span></p>{% endfor %}</div>
+    {% endif %}
+    <p class="callout callout-alert" role="alert" data-form-summary data-template="{% translate "Please answer the {count} highlighted questions before you submit." %}" hidden>{% icon "alert" %}<span></span></p>
+
+    {% for section in sections %}
+    <div class="fq-cat">{% icon section.icon %}<h2 class="text-xl">{{ section.title }}</h2></div>
+    {% for item in section.questions %}{% include "student/_question.html" %}{% endfor %}
+    {% endfor %}
+
+    <div class="action-bar"><div class="wrap">
+      <span id="draft-status" role="status" aria-live="polite" class="draft-status"></span>
+      <button type="button" class="btn btn-ghost" hx-post="{% url 'feedback:draft' window_id=window.pk offering_id=offering.pk %}" hx-include="#feedback-form" hx-params="not password" hx-target="#draft-status" hx-swap="innerHTML">{% icon "file" %}{% translate "Save draft" %}</button>
+      <button type="button" class="btn btn-primary" data-review aria-haspopup="dialog">{% icon "send" %}{% translate "Review and submit" %}</button>
+    </div></div>
+
+    <dialog class="modal" id="confirm-dialog" aria-labelledby="confirm-title"{% if reopen_confirm %} data-autoopen{% endif %}>
+      <div class="card-head"><h2 class="text-xl" id="confirm-title">{% translate "Final and anonymous" %}</h2></div>
+      {% if reopen_confirm %}{% for notice in notices %}<p class="callout callout-alert mb-4" role="alert">{% icon "alert" %}<span>{{ notice }}</span></p>{% endfor %}{% endif %}
+      <ul class="checklist">
+        <li>{% icon "check" %}<span>{% translate "You cannot change your answers after submitting." %}</span></li>
+        <li>{% icon "check" %}<span>{% translate "Your name and ID are never stored with your answers." %}</span></li>
+        <li>{% icon "check" %}<span>{% translate "The teacher sees combined results after the round closes." %}</span></li>
+      </ul>
+      <div class="field mt-4">
+        <label class="field-label" for="confirm-password">{% translate "Enter your password to confirm it is you" %}</label>
+        <input class="input" id="confirm-password" name="password" type="password" autocomplete="current-password" autofocus>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close>{% translate "Go back" %}</button>
+        <button type="submit" class="btn btn-primary">{% icon "send" %}{% translate "Submit feedback" %}</button>
+      </div>
+    </dialog>
+  </form>
+</div>
+{% endwith %}
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/feedback_form.js' %}" nonce="{{ csp_nonce }}" defer></script>{% endblock %}

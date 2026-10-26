@@ -1,0 +1,16 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{{ offering.course|localized:"title" }} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<section class="card grid gap-4 max-w-xl mx-auto w-full">
+  <p class="text-sm text-muted">{{ offering.course.code }} · {{ offering.course|localized:"title" }}</p>
+  {% if state == "submitted" %}
+    {% translate "You have already given feedback" as state_title %}{% translate "Thank you. Feedback for a course can be given once in a round, and it cannot be changed afterwards." as state_text %}{% include "components/empty_state.html" with icon="check" title=state_title text=state_text %}
+  {% elif state == "upcoming" %}
+    {% translate "This round has not opened yet" as state_title %}{% blocktranslate with when=window.opens_at|date:"j M Y, H:i" asvar state_text %}Feedback opens on {{ when }}. Come back then.{% endblocktranslate %}{% include "components/empty_state.html" with icon="calendar" title=state_title text=state_text %}
+  {% else %}
+    {% translate "This round is closed" as state_title %}{% blocktranslate with when=window.closes_at|date:"j M Y, H:i" asvar state_text %}Feedback closed on {{ when }} and can no longer be given.{% endblocktranslate %}{% include "components/empty_state.html" with icon="lock" title=state_title text=state_text %}
+  {% endif %}
+  <a class="btn btn-primary justify-self-center" href="{% url 'accounts:dashboard_student' %}">{% translate "Back to my courses" %}</a>
+</section>
+{% endblock %}

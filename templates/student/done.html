@@ -1,0 +1,13 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Thank you" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<section class="card grid gap-4 max-w-xl mx-auto w-full text-center" aria-labelledby="thanks-title">
+  <div class="seal done-seal" aria-hidden="true"><span>{% translate "Sealed" %}</span>{% icon "check" %}</div>
+  <h1 id="thanks-title" class="text-2xl">{% translate "Thank you!" %}</h1>
+  <p>{% blocktranslate with title=offering.course|localized:"title" %}Your feedback for {{ title }} was submitted. It is final and anonymous.{% endblocktranslate %}</p>
+  <p class="text-muted">{% translate "Teachers see only combined results, and only after the round closes." %}</p>
+  {% if waiting %}<p class="font-semibold">{% blocktranslate count n=waiting %}{{ n }} course is still waiting for your feedback.{% plural %}{{ n }} courses are still waiting for your feedback.{% endblocktranslate %}</p>{% endif %}
+  <a class="btn btn-primary justify-self-center" href="{% url 'accounts:dashboard_student' %}">{% translate "Back to my courses" %}</a>
+</section>
+{% endblock %}

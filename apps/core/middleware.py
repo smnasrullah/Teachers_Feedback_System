@@ -90,7 +90,8 @@ class SessionSecurityMiddleware:
         sessions.SessionProblem.IDLE: _("You were signed out after a period of inactivity."),
         sessions.SessionProblem.EXPIRED: _("Your session has expired. Please sign in again."),
         sessions.SessionProblem.REPLACED: _(
-            "You were signed out because your account signed in on another device."
+            "You were signed out because your account signed in on another device. "
+            "If that was not you, sign in again and change your password."
         ),
         sessions.SessionProblem.SECOND_FACTOR: _(
             "Please sign in again and complete two-factor authentication."

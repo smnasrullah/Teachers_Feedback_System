@@ -1,6 +1,8 @@
 from django.urls import path
 
-from .views import account, auth, dashboards, recovery, registry, signup, twofactor, users
+from apps.feedback.student_views import dashboard as student_dashboard
+
+from .views import account, auth, dashboards, profile, recovery, registry, signup, twofactor, users
 
 app_name = "accounts"
 
@@ -22,11 +24,12 @@ urlpatterns = [
     path("username/forgot/verify/", recovery.username_forgot_verify, name="username_forgot_verify"),
     path("username/forgot/resend/", recovery.username_forgot_resend, name="username_forgot_resend"),
     path("dashboard/", dashboards.dashboard, name="dashboard"),
-    path("dashboard/student/", dashboards.dashboard_student, name="dashboard_student"),
+    path("dashboard/student/", student_dashboard, name="dashboard_student"),
     path("dashboard/teacher/", dashboards.dashboard_teacher, name="dashboard_teacher"),
     path("dashboard/hod/", dashboards.dashboard_hod, name="dashboard_hod"),
     path("dashboard/admin/", dashboards.dashboard_admin, name="dashboard_admin"),
     path("account/", account.account_home, name="account"),
+    path("account/profile/", profile.profile_edit, name="profile"),
     path("account/password/", account.password_change, name="password_change"),
     path("account/sessions/end/", account.sign_out_everywhere, name="sign_out_everywhere"),
     path("account/2fa/", twofactor.two_factor, name="two_factor"),

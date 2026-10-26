@@ -1,0 +1,32 @@
+{# Param: entry (a CourseEntry). One ballot stub per enrolled course. #}
+{% load i18n ui %}
+{% with offering=entry.offering course=entry.offering.course teacher=entry.offering.teacher %}
+<article class="stub{% if entry.state == 'submitted' %} stub-sealed{% endif %}">
+  <div class="stub-main">
+    <p class="text-sm text-muted">{{ course.code }}, {{ course.get_course_type_display }}, {% blocktranslate with credit=course.credit|floatformat:"-1" %}{{ credit }} credits{% endblocktranslate %}</p>
+    <h3 class="text-lg">{{ course|localized:"title" }}</h3>
+    <div class="teacher-line">
+      {% include "student/_avatar.html" with image=teacher.photo label=teacher.registry.full_name %}
+      <div>
+        <p class="font-semibold">{{ teacher.registry.full_name|default:_("Course teacher") }}</p>
+        <p class="text-sm text-muted">{% translate "Course teacher" %}</p>
+      </div>
+    </div>
+  </div>
+  <div class="stub-tear">
+    {% if entry.state == "pending" %}
+      {% translate "Pending" as label %}{% include "components/badge.html" with variant="pending" label=label %}
+      <a class="btn btn-primary" href="{% url 'feedback:form' window_id=entry.window.pk offering_id=offering.pk %}">{% translate "Give feedback" %}</a>
+    {% elif entry.state == "submitted" %}
+      <div class="seal" aria-hidden="true"><span>{% translate "Sealed" %}</span>{% icon "check" %}</div>
+      <span class="text-sm font-semibold text-success">{% translate "Submitted" %}</span>
+    {% elif entry.state == "closed" %}
+      {% translate "Window closed" as label %}{% include "components/badge.html" with variant="closed" label=label %}
+    {% elif entry.state == "upcoming" %}
+      {% blocktranslate with when=entry.window.opens_at|date:"j M Y, H:i" asvar label %}Opens {{ when }}{% endblocktranslate %}{% include "components/badge.html" with variant="info" icon="calendar" label=label %}
+    {% else %}
+      {% translate "No round yet" as label %}{% include "components/badge.html" with variant="closed" label=label %}
+    {% endif %}
+  </div>
+</article>
+{% endwith %}

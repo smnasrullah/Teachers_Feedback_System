@@ -1,10 +1,30 @@
 from django.urls import path
 
-from . import filter_views, question_views, window_views
+from . import filter_views, question_views, student_views, window_views
 
 app_name = "feedback"
 
 urlpatterns = [
+    path(
+        "feedback/<int:window_id>/<int:offering_id>/",
+        student_views.feedback_form,
+        name="form",
+    ),
+    path(
+        "feedback/<int:window_id>/<int:offering_id>/draft/",
+        student_views.draft,
+        name="draft",
+    ),
+    path(
+        "feedback/<int:window_id>/<int:offering_id>/check/<int:question_id>/",
+        student_views.precheck,
+        name="precheck",
+    ),
+    path(
+        "feedback/<int:window_id>/<int:offering_id>/done/",
+        student_views.done,
+        name="done",
+    ),
     path("manage/questions/", question_views.question_list, name="questions"),
     path("manage/questions/new/", question_views.question_create, name="question_create"),
     path("manage/questions/order/", question_views.question_reorder, name="question_reorder"),

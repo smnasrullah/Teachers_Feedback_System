@@ -4,12 +4,17 @@ Validation here is user experience only; the services re-check everything.
 """
 
 from django import forms
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.forms import StyledForm
+from apps.accounts.models import Theme
 from apps.accounts.services import otp, signup, twofactor
 from apps.accounts.services.passwords import validate_account_password
+from apps.core.uploads import SafeImageField
+
+NICKNAME_MAX_LENGTH = 50
 
 OTP_ATTRS = {
     "inputmode": "numeric",
@@ -182,3 +187,27 @@ class ConfirmPasswordForm(StyledForm):
         if not self.user.check_password(password):
             raise ValidationError(_("The password is not correct."), code="invalid")
         return password
+
+
+class ProfileForm(StyledForm):
+    """The only things a person may change about themselves (nothing academic)."""
+
+    nickname = forms.CharField(
+        label=_("Nickname"),
+        required=False,
+        max_length=NICKNAME_MAX_LENGTH,
+        help_text=_("Shown on your own pages. Do not use your real name or your ID."),
+        widget=forms.TextInput(attrs={"autocomplete": "nickname"}),
+    )
+    avatar = SafeImageField(
+        label=_("Picture"),
+        required=False,
+        widget=forms.FileInput(attrs={"accept": "image/jpeg,image/png,image/webp"}),
+        help_text=_("JPEG, PNG or WebP, up to 2 MB. It is re-encoded before it is stored."),
+    )
+    remove_avatar = forms.BooleanField(label=_("Remove my picture"), required=False)
+    language = forms.ChoiceField(label=_("Language"), choices=settings.LANGUAGES)
+    theme = forms.ChoiceField(label=_("Theme"), choices=Theme.choices)
+
+    def clean_nickname(self):
+        return " ".join(self.cleaned_data["nickname"].split())

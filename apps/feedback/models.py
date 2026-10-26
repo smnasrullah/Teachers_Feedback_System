@@ -212,10 +212,11 @@ class FeedbackWindow(models.Model):
         course = offering.course
         if offering.semester_id != self.semester_id:
             return False
-        departments = set(self.departments.values_list("pk", flat=True))
+        # ``.all()`` so a prefetch (the student dashboard checks many rounds) is used.
+        departments = {department.pk for department in self.departments.all()}
         if departments and course.department_id not in departments:
             return False
-        level_terms = set(self.level_terms.values_list("pk", flat=True))
+        level_terms = {level_term.pk for level_term in self.level_terms.all()}
         return not level_terms or course.level_term_id in level_terms
 
 

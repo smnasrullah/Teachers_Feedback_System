@@ -1,0 +1,22 @@
+{# Params: item (a FormQuestion), window, offering. Every answer control is a native input. #}
+{% load i18n ui %}
+<section class="fq{% if item.errors %} is-invalid{% endif %}" id="{{ item.field }}-box" data-question{% if item.question.required %} data-required{% endif %} aria-labelledby="{{ item.field }}-title">
+  <p class="fq-no">{% blocktranslate with n=item.number %}Question {{ n }}{% endblocktranslate %}{% if not item.question.required %} · {% translate "optional" %}{% endif %}</p>
+  <h3 id="{{ item.field }}-title">{{ item.text }}</h3>
+  {% if item.kind == "rating" %}
+    {% include "components/star_rating.html" with name=item.field label=item.text value=item.value required=item.question.required invalid=item.errors %}
+    <div class="rate-scale" aria-hidden="true"><span>{% translate "Poor" %}</span><span>{% translate "Excellent" %}</span></div>
+  {% elif item.kind == "text" %}
+    <textarea class="textarea" id="{{ item.field }}" name="{{ item.field }}" rows="4" maxlength="2000" aria-labelledby="{{ item.field }}-title" aria-describedby="{{ item.field }}-hint {{ item.field }}-check"
+      hx-post="{% url 'feedback:precheck' window_id=window.pk offering_id=offering.pk question_id=item.question.pk %}" hx-trigger="change" hx-target="#{{ item.field }}-check" hx-swap="innerHTML" hx-params="{{ item.field }}">{{ item.value }}</textarea>
+    <p class="field-hint" id="{{ item.field }}-hint">{% translate "Be specific and respectful. Do not write names, phone numbers or ID numbers." %}</p>
+    <div id="{{ item.field }}-check" aria-live="polite"></div>
+  {% else %}
+    <div class="fq-seg" role="radiogroup" aria-labelledby="{{ item.field }}-title"{% if item.question.required %} aria-required="true"{% endif %}{% if item.errors %} aria-invalid="true"{% endif %}>
+      {% for value, label in item.options %}
+      <input type="radio" name="{{ item.field }}" id="{{ item.field }}-{{ forloop.counter }}" value="{{ value }}"{% if item.value == value %} checked{% endif %}><label for="{{ item.field }}-{{ forloop.counter }}">{{ label }}</label>
+      {% endfor %}
+    </div>
+  {% endif %}
+  <div class="fq-err" role="alert"{% if not item.errors %} hidden{% endif %}>{% icon "alert" %}<span>{% if item.errors %}{{ item.errors|join:" " }}{% else %}{% translate "Please answer this question." %}{% endif %}</span></div>
+</section>

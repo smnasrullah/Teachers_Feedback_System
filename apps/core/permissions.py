@@ -12,6 +12,7 @@ from functools import wraps
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.db import models
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 
@@ -63,13 +64,20 @@ def _validated(roles: Iterable[str]) -> frozenset[str]:
 
 
 def _gate(request, allowed: frozenset[str]):
-    """Login redirect for anonymous users, 403 for the wrong role, ``None`` when allowed."""
+    """Login redirect for anonymous users, 403 for the wrong role, ``None`` when allowed.
+
+    An HTMX request that lost its session gets a full-page redirect to the login page
+    instead of the login page swapped into a fragment.
+    """
     # Imported here: auth.views resolves the user model on import, which model modules
     # (they need ``Role``) cannot wait for.
     from django.contrib.auth.views import redirect_to_login
 
     if not request.user.is_authenticated:
-        return redirect_to_login(request.get_full_path())
+        login = redirect_to_login(request.get_full_path())
+        if request.headers.get("HX-Request"):
+            return HttpResponse(status=401, headers={"HX-Redirect": login.url})
+        return login
     if user_roles(request.user).isdisjoint(allowed):
         raise PermissionDenied
     return None

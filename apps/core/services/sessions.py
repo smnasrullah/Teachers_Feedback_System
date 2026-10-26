@@ -15,6 +15,8 @@ AUTH_AT_KEY = "_tfs_auth_at"
 SEEN_AT_KEY = "_tfs_seen_at"
 # Set when this login passed a second factor (TOTP or recovery code).
 SECOND_FACTOR_KEY = "_tfs_second_factor_at"
+# Set when this login signed another device out: when that device had signed in (epoch seconds).
+NEW_DEVICE_KEY = "_tfs_replaced_device_at"
 MAX_USER_AGENT = 255
 # Write the last-seen time at most this often to avoid a session save on every request.
 SEEN_AT_RESOLUTION = 60
@@ -35,15 +37,21 @@ def start(request, user) -> None:
     request.session[AUTH_AT_KEY] = now
     request.session[SEEN_AT_KEY] = now
     ip = client_ip(request)
+    device = {
+        "ip": None if ip == UNKNOWN_IP else ip,
+        "user_agent": request.META.get("HTTP_USER_AGENT", "")[:MAX_USER_AGENT],
+    }
+    previous = ActiveSession.objects.filter(user=user).first()
+    if previous is not None and (previous.ip, previous.user_agent) != tuple(device.values()):
+        request.session[NEW_DEVICE_KEY] = int(previous.created_at.timestamp())
     ActiveSession.objects.update_or_create(
-        user=user,
-        defaults={
-            "login_id": login_id,
-            "created_at": timezone.now(),
-            "ip": None if ip == UNKNOWN_IP else ip,
-            "user_agent": request.META.get("HTTP_USER_AGENT", "")[:MAX_USER_AGENT],
-        },
+        user=user, defaults={"login_id": login_id, "created_at": timezone.now(), **device}
     )
+
+
+def pop_replaced_device(request) -> int | None:
+    """When the device this login signed out had signed in, once; ``None`` if there was none."""
+    return request.session.pop(NEW_DEVICE_KEY, None)
 
 
 def mark_second_factor(request) -> None:

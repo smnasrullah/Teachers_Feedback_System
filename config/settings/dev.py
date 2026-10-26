@@ -6,6 +6,8 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]", "testserver"]
 # Django admin is a development convenience only; it is never installed in production.
 INSTALLED_APPS = ["django.contrib.admin", *INSTALLED_APPS]  # noqa: F405
 ACCESS_POLICY_EXEMPT_NAMESPACES = ["admin"]  # admin guards itself with is_staff
+# Uploaded avatars and photos are served by the dev server only (a proxy serves them in production).
+ACCESS_POLICY_EXEMPT_VIEWS = [*ACCESS_POLICY_EXEMPT_VIEWS, "media"]  # noqa: F405
 
 # Codes are printed to the server console instead of being sent.
 OTP_BACKENDS = {

@@ -1,0 +1,22 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "My profile" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<section class="card grid gap-4 max-w-xl" aria-labelledby="profile-title">
+  <h1 id="profile-title">{% translate "My profile" %}</h1>
+  <p class="field-hint">{% translate "Only these details can be changed here. Your department, batch and level are set by the university." %}</p>
+  <div class="flex items-center gap-4">
+    {% include "student/_avatar.html" with user=request.user large=True %}
+    <p class="num font-semibold">{{ request.user.username }}</p>
+  </div>
+  <form method="post" enctype="multipart/form-data" class="grid gap-4" novalidate>
+    {% csrf_token %}
+    {% include "components/form_errors.html" with form=form %}
+    {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-primary">{% translate "Save profile" %}</button>
+      <a class="btn btn-ghost" href="{% url 'accounts:account' %}">{% translate "Cancel" %}</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

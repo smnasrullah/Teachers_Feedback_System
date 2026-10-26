@@ -26,12 +26,6 @@ def dashboard(request):
 
 
 @require_GET
-@role_required(Role.STUDENT)
-def dashboard_student(request):
-    return _placeholder(request, _("Student dashboard"))
-
-
-@require_GET
 @role_required(Role.TEACHER)
 def dashboard_teacher(request):
     return _placeholder(request, _("Teacher dashboard"))

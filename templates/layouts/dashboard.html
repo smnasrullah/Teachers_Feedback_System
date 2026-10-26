@@ -3,15 +3,18 @@
 {% comment %}
 Authenticated shell. Views provide `nav_items` (list of {label, url, icon, current} or {group}),
 optionally `user_menu`, `logout_url`, `notifications`, `unread_count`.
+Students get a single column without sidebar or bottom bar: their pages link to each other.
 {% endcomment %}
 {% block body %}
 {% include "components/navbar.html" with user_name=request.user.get_username|default:"" %}
-<div class="shell">
-  {% include "components/sidebar.html" with items=nav_items %}
+{% with solo=request.user.role|stringformat:"s" %}
+<div class="shell{% if solo == 'student' %} shell-solo{% endif %}">
+  {% if solo != "student" %}{% include "components/sidebar.html" with items=nav_items %}{% endif %}
   <main id="main" class="main-pane" tabindex="-1">
     {% block breadcrumb %}{% endblock %}
     {% block content %}{% endblock %}
   </main>
 </div>
-{% include "components/bottom_nav.html" with items=nav_items %}
+{% if solo != "student" %}{% include "components/bottom_nav.html" with items=nav_items %}{% endif %}
+{% endwith %}
 {% endblock %}

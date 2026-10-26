@@ -15,6 +15,18 @@
     </dl>
   </section>
 
+  <section class="card grid gap-3" aria-labelledby="profile-title">
+    <h2 id="profile-title" class="text-lg">{% translate "Profile" %}</h2>
+    <div class="flex items-center gap-4">
+      {% include "student/_avatar.html" with image=request.user.avatar label=request.user.nickname|default:request.user.username large=True %}
+      <dl class="grid gap-1">
+        <div><dt class="text-muted text-sm">{% translate "Nickname" %}</dt><dd>{{ request.user.nickname|default:"—" }}</dd></div>
+        <div><dt class="text-muted text-sm">{% translate "Language" %}</dt><dd>{{ request.user.get_language_display }} · {{ request.user.get_theme_display }}</dd></div>
+      </dl>
+    </div>
+    <div><a class="btn btn-ghost" href="{% url 'accounts:profile' %}">{% icon "edit" %}{% translate "Edit profile" %}</a></div>
+  </section>
+
   <section class="card grid gap-3" aria-labelledby="security-title">
     <h2 id="security-title" class="text-lg">{% translate "Security" %}</h2>
     <p>

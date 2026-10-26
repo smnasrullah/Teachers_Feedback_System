@@ -1,0 +1,1 @@
+{% load ui %}<span class="draft-status{% if failed %} draft-status-failed{% endif %}">{% if failed %}{% icon "alert" %}{% else %}{% icon "check" %}{% endif %}{{ message }}</span>

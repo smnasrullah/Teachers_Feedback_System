@@ -4,6 +4,8 @@ from django import template
 from django.template.loader import render_to_string
 from django.utils.html import format_html
 
+from apps.core.services.localize import pick
+
 register = template.Library()
 
 
@@ -67,3 +69,16 @@ def elided_pages(page_obj):
     paginator = page_obj.paginator
     pages = paginator.get_elided_page_range(page_obj.number, on_each_side=1, on_ends=1)
     return [None if page == paginator.ELLIPSIS else page for page in pages]
+
+
+@register.filter
+def localized(obj, field):
+    """``{{ course|localized:"title" }}``: the Bangla column (``title_bn``) when the page is
+    in Bangla and it is filled in, else the English one."""
+    return pick(getattr(obj, field, ""), getattr(obj, f"{field}_bn", ""))
+
+
+@register.filter
+def initials(name):
+    """Up to two capital letters from a person's name, for a picture-less avatar."""
+    return "".join(word[0] for word in str(name).split()[:2]).upper()

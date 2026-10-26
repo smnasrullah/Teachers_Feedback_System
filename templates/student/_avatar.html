@@ -1,0 +1,2 @@
+{# Params: image (an ImageField file, may be empty), label (a name for the initials), large #}
+{% load ui %}<span class="avatar{% if large %} avatar-lg{% endif %}" aria-hidden="true">{% if image %}<img src="{{ image.url }}" alt="" loading="lazy">{% else %}{{ label|initials|default:"?" }}{% endif %}</span>

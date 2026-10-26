@@ -425,10 +425,8 @@ msgstr "দীর্ঘক্ষণ নিষ্ক্রিয় থাকা�
 msgid "Your session has expired. Please sign in again."
 msgstr "আপনার সেশনের মেয়াদ শেষ হয়েছে। অনুগ্রহ করে আবার সাইন ইন করুন।"
 
-msgid "You were signed out because your account signed in on another device."
-msgstr ""
-"আপনার অ্যাকাউন্ট অন্য একটি ডিভাইসে সাইন ইন করায় এখানে আপনাকে সাইন আউট করা "
-"হয়েছে।"
+msgid "You were signed out because your account signed in on another device. If that was not you, sign in again and change your password."
+msgstr "আপনার অ্যাকাউন্ট অন্য একটি ডিভাইসে সাইন ইন করায় আপনাকে সাইন আউট করা হয়েছে। সেটি আপনি না হলে আবার সাইন ইন করে পাসওয়ার্ড বদলান।"
 
 msgid "Too many requests"
 msgstr "অনেক বেশি অনুরোধ"
@@ -3065,3 +3063,271 @@ msgstr "কিছু চিহ্নিত হয়নি"
 
 msgid "No comment has needed cleaning of abusive words."
 msgstr "কোনো মন্তব্য থেকে গালিগালাজ বাদ দেওয়ার প্রয়োজন হয়নি।"
+
+msgid "My courses"
+msgstr "আমার কোর্সসমূহ"
+
+msgid "Add a nickname"
+msgstr "ডাকনাম যোগ করুন"
+
+msgid "Login name"
+msgstr "লগইন নাম"
+
+msgid "Closes in"
+msgstr "শেষ হতে বাকি"
+
+msgid "Opens in"
+msgstr "শুরু হতে বাকি"
+
+msgid "days"
+msgstr "দিন"
+
+msgid "hours"
+msgstr "ঘণ্টা"
+
+msgid "min"
+msgstr "মিনিট"
+
+msgid "Round time used"
+msgstr "রাউন্ডের সময় কতটা কেটেছে"
+
+msgid "No feedback round has been announced for this semester yet."
+msgstr "এই সেমিস্টারের জন্য এখনও কোনো মতামত রাউন্ড ঘোষণা করা হয়নি।"
+
+msgid "Your feedback is anonymous"
+msgstr "আপনার মতামত বেনামি"
+
+msgid "Teachers see only combined results, and only after the round closes. Nobody can see who wrote what."
+msgstr "শিক্ষকরা শুধু সম্মিলিত ফলাফল দেখেন, তাও রাউন্ড শেষ হওয়ার পর। কে কী লিখেছেন তা কেউ দেখতে পারে না।"
+
+msgid "Your courses this semester"
+msgstr "এই সেমিস্টারে আপনার কোর্স"
+
+msgid "No current semester"
+msgstr "বর্তমান কোনো সেমিস্টার নেই"
+
+msgid "Your courses will appear here when the university starts a semester."
+msgstr "বিশ্ববিদ্যালয় সেমিস্টার শুরু করলে আপনার কোর্সগুলো এখানে দেখা যাবে।"
+
+msgid "You are not enrolled in any course this semester"
+msgstr "এই সেমিস্টারে আপনি কোনো কোর্সে নথিভুক্ত নন"
+
+msgid "If this looks wrong, please contact your department office. They enroll students in courses."
+msgstr "এটি ভুল মনে হলে অনুগ্রহ করে আপনার বিভাগীয় অফিসের সাথে যোগাযোগ করুন। তারাই শিক্ষার্থীদের কোর্সে নথিভুক্ত করে।"
+
+msgid "Your account was signed in on another device (since %(when)s). We signed that device out. If that was not you, <a href=\"%(password_url)s\">change your password</a> now."
+msgstr "আপনার অ্যাকাউন্টে অন্য একটি ডিভাইসে সাইন ইন ছিল (%(when)s থেকে)। আমরা সেই ডিভাইস সাইন আউট করে দিয়েছি। সেটি আপনি না হলে এখনই <a href=\"%(password_url)s\">পাসওয়ার্ড বদলান</a>।"
+
+msgid "Closed on %(when)s"
+msgstr "%(when)s তারিখে শেষ হয়েছে"
+
+msgid "%(d)s days %(h)s hours %(m)s minutes"
+msgstr "%(d)s দিন %(h)s ঘণ্টা %(m)s মিনিট"
+
+msgid "Course teacher"
+msgstr "কোর্স শিক্ষক"
+
+msgid "Window closed"
+msgstr "সময়সীমা শেষ"
+
+msgid "No round yet"
+msgstr "এখনও রাউন্ড নেই"
+
+msgid "%(credit)s credits"
+msgstr "%(credit)s ক্রেডিট"
+
+msgid "Opens %(when)s"
+msgstr "%(when)s খুলবে"
+
+msgid "optional"
+msgstr "ঐচ্ছিক"
+
+msgid "Be specific and respectful. Do not write names, phone numbers or ID numbers."
+msgstr "নির্দিষ্ট ও ভদ্রভাবে লিখুন। নাম, ফোন নম্বর বা আইডি নম্বর লিখবেন না।"
+
+msgid "Please answer this question."
+msgstr "অনুগ্রহ করে এই প্রশ্নের উত্তর দিন।"
+
+msgid "Question %(n)s"
+msgstr "প্রশ্ন %(n)s"
+
+msgid "Anonymous"
+msgstr "বেনামি"
+
+msgid "Required questions answered"
+msgstr "আবশ্যিক প্রশ্নের উত্তর দেওয়া হয়েছে"
+
+msgid "Do not write your name or personal details. Offensive words are removed automatically."
+msgstr "নিজের নাম বা ব্যক্তিগত তথ্য লিখবেন না। আপত্তিকর শব্দ স্বয়ংক্রিয়ভাবে মুছে ফেলা হয়।"
+
+msgid "Your answers are saved as a draft while you work. Only one device can be signed in: signing in elsewhere ends this session, and your saved draft is waiting for you."
+msgstr "আপনি লেখার সময় উত্তরগুলো খসড়া হিসেবে সংরক্ষিত হয়। একসাথে একটি ডিভাইসেই সাইন ইন থাকা যায়: অন্য কোথাও সাইন ইন করলে এই সেশন শেষ হয়ে যাবে, আর আপনার সংরক্ষিত খসড়া অপেক্ষায় থাকবে।"
+
+msgid "Please answer the {count} highlighted questions before you submit."
+msgstr "জমা দেওয়ার আগে চিহ্নিত {count}টি প্রশ্নের উত্তর দিন।"
+
+msgid "Save draft"
+msgstr "খসড়া সংরক্ষণ"
+
+msgid "Review and submit"
+msgstr "দেখে জমা দিন"
+
+msgid "Final and anonymous"
+msgstr "চূড়ান্ত ও বেনামি"
+
+msgid "You cannot change your answers after submitting."
+msgstr "জমা দেওয়ার পর উত্তর বদলানো যাবে না।"
+
+msgid "Your name and ID are never stored with your answers."
+msgstr "আপনার নাম ও আইডি উত্তরের সাথে সংরক্ষিত হয় না।"
+
+msgid "The teacher sees combined results after the round closes."
+msgstr "রাউন্ড শেষ হলে শিক্ষক সম্মিলিত ফলাফল দেখবেন।"
+
+msgid "Enter your password to confirm it is you"
+msgstr "আপনি নিজেই জমা দিচ্ছেন নিশ্চিত করতে পাসওয়ার্ড দিন"
+
+msgid "Go back"
+msgstr "ফিরে যান"
+
+msgid "Submit feedback"
+msgstr "মতামত জমা দিন"
+
+msgid "<span class=\"num\" data-answered>0</span> of %(total)s required answered"
+msgstr "<span class=\"num\" data-answered>0</span> / %(total)sটি আবশ্যিক প্রশ্নের উত্তর দেওয়া হয়েছে"
+
+msgid "Feedback for %(name)s"
+msgstr "%(name)s-এর জন্য মতামত"
+
+msgid "%(round)s, %(semester)s. Questions marked required must be answered. You can give feedback once for this course in this round."
+msgstr "%(round)s, %(semester)s। আবশ্যিক চিহ্নিত প্রশ্নের উত্তর দিতে হবে। এই রাউন্ডে এই কোর্সের জন্য একবারই মতামত দেওয়া যায়।"
+
+msgid "You have already given feedback"
+msgstr "আপনি ইতোমধ্যে মতামত দিয়েছেন"
+
+msgid "Thank you. Feedback for a course can be given once in a round, and it cannot be changed afterwards."
+msgstr "ধন্যবাদ। একটি রাউন্ডে কোর্সের জন্য একবারই মতামত দেওয়া যায় এবং পরে তা বদলানো যায় না।"
+
+msgid "This round has not opened yet"
+msgstr "এই রাউন্ড এখনও শুরু হয়নি"
+
+msgid "This round is closed"
+msgstr "এই রাউন্ড শেষ হয়েছে"
+
+msgid "Back to my courses"
+msgstr "আমার কোর্সে ফিরে যান"
+
+msgid "Feedback opens on %(when)s. Come back then."
+msgstr "%(when)s তারিখে মতামত শুরু হবে। তখন আবার আসুন।"
+
+msgid "Feedback closed on %(when)s and can no longer be given."
+msgstr "%(when)s তারিখে মতামত গ্রহণ শেষ হয়েছে, আর মতামত দেওয়া যাবে না।"
+
+msgid "Thank you"
+msgstr "ধন্যবাদ"
+
+msgid "Thank you!"
+msgstr "ধন্যবাদ!"
+
+msgid "Teachers see only combined results, and only after the round closes."
+msgstr "শিক্ষকরা শুধু সম্মিলিত ফলাফল দেখেন, তাও রাউন্ড শেষ হওয়ার পর।"
+
+msgid "Your feedback for %(title)s was submitted. It is final and anonymous."
+msgstr "%(title)s-এর জন্য আপনার মতামত জমা হয়েছে। এটি চূড়ান্ত ও বেনামি।"
+
+msgid "Checking too often. Wait a moment and try again."
+msgstr "খুব ঘন ঘন যাচাই হচ্ছে। একটু অপেক্ষা করে আবার চেষ্টা করুন।"
+
+msgid "This is what will be saved:"
+msgstr "এটাই সংরক্ষিত হবে:"
+
+msgid "Nothing would be left of this answer. Please rewrite it."
+msgstr "এই উত্তরের কিছুই থাকবে না। অনুগ্রহ করে নতুন করে লিখুন।"
+
+msgid "Looks fine."
+msgstr "ঠিক আছে।"
+
+msgid "My profile"
+msgstr "আমার প্রোফাইল"
+
+msgid "Only these details can be changed here. Your department, batch and level are set by the university."
+msgstr "এখানে শুধু এই তথ্যগুলো বদলানো যায়। আপনার বিভাগ, ব্যাচ ও লেভেল বিশ্ববিদ্যালয় নির্ধারণ করে।"
+
+msgid "Save profile"
+msgstr "প্রোফাইল সংরক্ষণ করুন"
+
+msgid "Profile"
+msgstr "প্রোফাইল"
+
+msgid "Edit profile"
+msgstr "প্রোফাইল সম্পাদনা"
+
+msgid "The password is not correct. Your answers are still here."
+msgstr "পাসওয়ার্ড সঠিক নয়। আপনার উত্তরগুলো এখানেই আছে।"
+
+msgid "Too many wrong passwords. Please wait a few minutes before you try again."
+msgstr "অনেকবার ভুল পাসওয়ার্ড দেওয়া হয়েছে। অনুগ্রহ করে কয়েক মিনিট অপেক্ষা করে আবার চেষ্টা করুন।"
+
+msgid "The questions changed while you were answering. Please check your answers."
+msgstr "আপনি উত্তর দেওয়ার সময় প্রশ্নগুলো বদলে গেছে। অনুগ্রহ করে উত্তরগুলো দেখে নিন।"
+
+msgid "Saving too often. Wait a moment."
+msgstr "খুব ঘন ঘন সংরক্ষণ হচ্ছে। একটু অপেক্ষা করুন।"
+
+msgid "Draft saved"
+msgstr "খসড়া সংরক্ষিত হয়েছে"
+
+msgid "Strongly disagree"
+msgstr "একেবারেই একমত নই"
+
+msgid "Disagree"
+msgstr "একমত নই"
+
+msgid "Neutral"
+msgstr "নিরপেক্ষ"
+
+msgid "Agree"
+msgstr "একমত"
+
+msgid "Strongly agree"
+msgstr "সম্পূর্ণ একমত"
+
+msgid "More questions"
+msgstr "আরও প্রশ্ন"
+
+msgid "Shown on your own pages. Do not use your real name or your ID."
+msgstr "শুধু আপনার নিজের পাতায় দেখানো হয়। আসল নাম বা আইডি ব্যবহার করবেন না।"
+
+msgid "Picture"
+msgstr "ছবি"
+
+msgid "Remove my picture"
+msgstr "আমার ছবি সরিয়ে দিন"
+
+msgid "Theme"
+msgstr "থিম"
+
+msgid "Same as my device"
+msgstr "ডিভাইসের মতো"
+
+msgid "Light"
+msgstr "হালকা"
+
+msgid "Dark"
+msgstr "গাঢ়"
+
+msgid "theme"
+msgstr "থিম"
+
+msgid "Your profile was saved."
+msgstr "আপনার প্রোফাইল সংরক্ষিত হয়েছে।"
+
+msgid "%(n)s waiting for you"
+msgid_plural "%(n)s waiting for you"
+msgstr[0] "%(n)sটি বাকি"
+msgstr[1] "%(n)sটি বাকি"
+
+msgid "%(n)s course is still waiting for your feedback."
+msgid_plural "%(n)s courses are still waiting for your feedback."
+msgstr[0] "%(n)sটি কোর্স এখনও আপনার মতামতের অপেক্ষায় আছে।"
+msgstr[1] "%(n)sটি কোর্স এখনও আপনার মতামতের অপেক্ষায় আছে।"

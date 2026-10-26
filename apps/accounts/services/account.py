@@ -17,6 +17,42 @@ def active_sessions(user: User) -> list[ActiveSession]:
     return list(ActiveSession.objects.filter(user=user))
 
 
+PROFILE_FIELDS = ("nickname", "language", "theme")
+
+
+@transaction.atomic
+def update_profile(request, user: User, data: dict) -> list[str]:
+    """Save the editable profile fields and return the names that changed (audited).
+
+    ``data`` holds the validated form values; a new ``avatar`` replaces the old file and
+    ``remove_avatar`` clears it.
+    """
+    changed = [name for name in PROFILE_FIELDS if getattr(user, name) != data[name]]
+    for name in changed:
+        setattr(user, name, data[name])
+    old_avatar = user.avatar.name if user.avatar else ""
+    if data.get("avatar"):
+        user.avatar = data["avatar"]
+        changed.append("avatar")
+    elif data.get("remove_avatar") and old_avatar:
+        user.avatar = ""
+        changed.append("avatar")
+    if not changed:
+        return []
+    user.save(update_fields=changed)
+    if "avatar" in changed and old_avatar:
+        transaction.on_commit(lambda: user.avatar.storage.delete(old_avatar))
+    audit.record(
+        "account.profile_updated",
+        request=request,
+        actor=user,
+        target=user,
+        department_id=user.department_id,
+        metadata={"changed": changed},
+    )
+    return changed
+
+
 def change_password(request, user: User, new_password: str) -> None:
     """Set a new password and keep only the current session signed in."""
     validate_account_password(new_password, user)

@@ -1,0 +1,11 @@
+{% load i18n ui %}
+{% if limited %}<p class="callout" role="status">{% icon "alert" %}<span>{% translate "Checking too often. Wait a moment and try again." %}</span></p>
+{% elif result and result.reasons %}
+<div class="callout" role="status">{% icon "alert" %}<div class="grid gap-2">
+  <ul>{% for message in result.messages %}<li>{{ message }}</li>{% endfor %}</ul>
+  {% if result.text %}<p><strong>{% translate "This is what will be saved:" %}</strong> {{ result.text }}</p>
+  {% else %}<p><strong>{% translate "Nothing would be left of this answer. Please rewrite it." %}</strong></p>{% endif %}
+</div></div>
+{% elif result %}
+<p class="field-hint">{% icon "check" %} {% translate "Looks fine." %}</p>
+{% endif %}

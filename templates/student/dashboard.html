@@ -1,0 +1,79 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "My courses" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+{% if replaced_device_at %}
+<p class="callout callout-alert" role="status">{% icon "alert" %}<span>{% url 'accounts:password_change' as password_url %}{% blocktranslate with when=replaced_device_at|date:"j M Y, H:i" %}Your account was signed in on another device (since {{ when }}). We signed that device out. If that was not you, <a href="{{ password_url }}">change your password</a> now.{% endblocktranslate %}</span></p>
+{% endif %}
+<div class="dash-grid">
+  <div class="dash-side">
+    <section class="card" aria-labelledby="profile-name">
+      <div class="flex items-center gap-4">
+        {% include "student/_avatar.html" with image=request.user.avatar label=request.user.nickname|default:request.user.username large=True %}
+        <div class="min-w-0">
+          <h1 id="profile-name" class="text-2xl">{% if request.user.nickname %}{{ request.user.nickname }}{% else %}{% translate "Student" %}{% endif %}</h1>
+          <p class="text-sm text-muted">{% if request.user.nickname %}{% translate "Student" %}{% else %}<a href="{% url 'accounts:profile' %}">{% translate "Add a nickname" %}</a>{% endif %}</p>
+        </div>
+      </div>
+      <dl class="profile-meta">
+        <div><dt>{% translate "Department" %}</dt><dd>{{ profile.registry.department|localized:"name" }}</dd></div>
+        {% if profile.batch %}<div><dt>{% translate "Batch" %}</dt><dd>{{ profile.batch.name }}</dd></div>{% endif %}
+        <div><dt>{% translate "Level/term" %}</dt><dd>{{ profile.level_term|localized:"name" }}</dd></div>
+        {% if dashboard.semester %}<div><dt>{% translate "Semester" %}</dt><dd>{{ dashboard.semester.name }}</dd></div>{% endif %}
+        <div><dt>{% translate "Login name" %}</dt><dd class="num">{{ request.user.username }}</dd></div>
+        {% if own_id %}<div><dt>{% translate "Student ID" %}</dt><dd class="num">{{ own_id }}</dd></div>{% endif %}
+      </dl>
+      {% with round=dashboard.round %}
+      <div class="round-box">
+        {% if round %}
+        <div class="flex items-center gap-5">
+          {% include "components/progress_ring.html" with done=round.done total=round.total %}
+          <div>
+            <p class="font-semibold">{{ round.window.name }}</p>
+            <p class="text-sm text-muted">
+              {% if round.status == "open" %}{% translate "Closes in" %}
+              {% elif round.status == "upcoming" %}{% translate "Opens in" %}
+              {% else %}{% blocktranslate with when=round.window.closes_at|date:"j M Y" %}Closed on {{ when }}{% endblocktranslate %}{% endif %}
+            </p>
+          </div>
+        </div>
+        {% if round.countdown %}
+        <div class="countdown" role="timer" aria-label="{% blocktranslate with d=round.countdown.days h=round.countdown.hours m=round.countdown.minutes %}{{ d }} days {{ h }} hours {{ m }} minutes{% endblocktranslate %}">
+          <div><b class="num">{{ round.countdown.days }}</b><span>{% translate "days" %}</span></div>
+          <div><b class="num">{{ round.countdown.hours }}</b><span>{% translate "hours" %}</span></div>
+          <div><b class="num">{{ round.countdown.minutes }}</b><span>{% translate "min" %}</span></div>
+        </div>
+        {% if round.status == "open" %}{% translate "Round time used" as elapsed_label %}{% include "components/meter.html" with value=round.elapsed_percent label=elapsed_label %}{% endif %}
+        {% endif %}
+        {% else %}
+        <p class="text-muted">{% translate "No feedback round has been announced for this semester yet." %}</p>
+        {% endif %}
+      </div>
+      {% endwith %}
+    </section>
+    <section class="card card-flat privacy-note" aria-labelledby="privacy-title">
+      {% icon "shield" %}
+      <div>
+        <p class="font-semibold" id="privacy-title">{% translate "Your feedback is anonymous" %}</p>
+        <p class="text-sm text-muted">{% translate "Teachers see only combined results, and only after the round closes. Nobody can see who wrote what." %}</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="grid gap-4 content-start" aria-labelledby="courses-title">
+    <div class="flex flex-wrap items-center gap-3">
+      <h2 id="courses-title" class="flex-1 text-xl">{% translate "Your courses this semester" %}</h2>
+      {% if dashboard.waiting %}{% blocktranslate count n=dashboard.waiting asvar waiting_label %}{{ n }} waiting for you{% plural %}{{ n }} waiting for you{% endblocktranslate %}{% include "components/badge.html" with variant="pending" label=waiting_label %}{% endif %}
+    </div>
+    {% if not dashboard.semester %}
+    <div class="card">{% translate "No current semester" as empty_title %}{% translate "Your courses will appear here when the university starts a semester." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="calendar" %}</div>
+    {% elif not dashboard.entries %}
+    <div class="card">{% translate "You are not enrolled in any course this semester" as empty_title %}{% translate "If this looks wrong, please contact your department office. They enroll students in courses." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="book" %}</div>
+    {% else %}
+    <div class="course-list">
+      {% for entry in dashboard.entries %}{% include "student/_course_card.html" %}{% endfor %}
+    </div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
