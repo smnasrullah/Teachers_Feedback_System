@@ -1,0 +1,33 @@
+{% load i18n %}{% get_current_language as LANGUAGE_CODE %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <title>{{ export.title }}</title>
+</head>
+<body>
+  <h1>{{ export.title }}</h1>
+  <p class="subtitle">{{ export.subtitle }}</p>
+  {% for notice in export.notices %}<p class="notice">{{ notice }}</p>{% endfor %}
+  {% for chart in export.charts %}
+  <section>
+    <h3>{{ chart.title }}</h3>
+    {% if chart.scores %}
+    {% include "reports/pdf/_score_bars.html" with bars=chart.bars %}
+    {% else %}
+    {% include "reports/_bars.html" with rows=chart.bars stars=chart.stars %}
+    {% endif %}
+  </section>
+  {% endfor %}
+  {% for table in export.tables %}
+  <section>
+    <h2>{{ table.title }}</h2>
+    <table>
+      <thead><tr>{% for header in table.headers %}<th scope="col">{{ header }}</th>{% endfor %}</tr></thead>
+      <tbody>
+        {% for row in table.rows %}<tr>{% for value in row %}<td>{{ value|default_if_none:"" }}</td>{% endfor %}</tr>{% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% endfor %}
+</body>
+</html>

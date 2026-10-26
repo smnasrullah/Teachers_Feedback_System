@@ -1,0 +1,7 @@
+{# Params: xlsx, csv, pdf (download URLs). #}
+{% load i18n ui %}
+<div class="flex flex-wrap items-center gap-2 no-print" role="group" aria-label="{% translate 'Download this report' %}">
+  <a class="btn btn-ghost" href="{{ xlsx }}">{% icon "file" %}{% translate "Excel" %}</a>
+  <a class="btn btn-ghost" href="{{ csv }}">{% icon "file" %}{% translate "CSV" %}</a>
+  <a class="btn btn-ghost" href="{{ pdf }}">{% icon "file" %}{% translate "PDF" %}</a>
+</div>

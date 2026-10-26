@@ -4136,3 +4136,147 @@ msgid "%(n)s comment to review"
 msgid_plural "%(n)s comments to review"
 msgstr[0] "%(n)s টি মন্তব্য পর্যালোচনার অপেক্ষায়"
 msgstr[1] "%(n)s টি মন্তব্য পর্যালোচনার অপেক্ষায়"
+
+#: apps/reports/services/exports
+msgid "Action note written"
+msgstr "কার্যব্যবস্থার নোট লেখা হয়েছে"
+
+#: apps/reports/services/exports
+msgid "Alert threshold"
+msgstr "সতর্কতার সীমা"
+
+#: apps/reports/services/exports
+msgid "Answer"
+msgstr "উত্তর"
+
+#: apps/reports/services/exports
+msgid "Answers"
+msgstr "উত্তরসমূহ"
+
+#: apps/reports/services/exports
+msgid "Average rating by course"
+msgstr "কোর্স অনুযায়ী গড় রেটিং"
+
+#: apps/reports/services/exports
+msgid "Average rating by department"
+msgstr "বিভাগ অনুযায়ী গড় রেটিং"
+
+#: apps/reports/services/exports
+msgid "Below threshold"
+msgstr "সীমার নিচে"
+
+#: apps/reports/services/exports
+msgid "Best rated courses"
+msgstr "সর্বোচ্চ রেটিংয়ের কোর্স"
+
+#: apps/reports/services/exports
+msgid "CSV"
+msgstr "CSV"
+
+#: apps/reports/services/exports
+msgid "Categories"
+msgstr "বিভাগসমূহ"
+
+#: apps/reports/services/exports
+msgid "Categories by course"
+msgstr "কোর্স অনুযায়ী ক্যাটাগরি"
+
+#: apps/reports/services/exports
+msgid "Comment"
+msgstr "মন্তব্য"
+
+#: apps/reports/services/exports
+msgid "Comments"
+msgstr "মন্তব্যসমূহ"
+
+#: apps/reports/services/exports
+msgid "Course code"
+msgstr "কোর্স কোড"
+
+#: apps/reports/services/exports
+msgid "Course title"
+msgstr "কোর্সের নাম"
+
+#: apps/reports/services/exports
+msgid "Department report"
+msgstr "বিভাগের প্রতিবেদন"
+
+#: apps/reports/services/exports
+msgid "Download this report"
+msgstr "এই প্রতিবেদন ডাউনলোড করুন"
+
+#: apps/reports/services/exports
+msgid "Enrolled students"
+msgstr "নিবন্ধিত শিক্ষার্থী"
+
+#: apps/reports/services/exports
+msgid "Excel"
+msgstr "Excel"
+
+#: apps/reports/services/exports
+msgid "Field"
+msgstr "বিষয়"
+
+#: apps/reports/services/exports
+msgid "Lowest rated courses"
+msgstr "সর্বনিম্ন রেটিংয়ের কোর্স"
+
+#: apps/reports/services/exports
+msgid "No."
+msgstr "নং"
+
+#: apps/reports/services/exports
+msgid "Note"
+msgstr "টীকা"
+
+#: apps/reports/services/exports
+msgid "Overall average"
+msgstr "সামগ্রিক গড়"
+
+#: apps/reports/services/exports
+msgid "PDF"
+msgstr "PDF"
+
+#: apps/reports/services/exports
+msgid "PDF files cannot be made on this server right now."
+msgstr "এই মুহূর্তে এই সার্ভারে PDF ফাইল তৈরি করা যাচ্ছে না।"
+
+#: apps/reports/services/exports
+msgid "Pending students"
+msgstr "অপেক্ষমাণ শিক্ষার্থী"
+
+#: apps/reports/services/exports
+msgid "Rank"
+msgstr "অবস্থান"
+
+#: apps/reports/services/exports
+msgid "Rating"
+msgstr "রেটিং"
+
+#: apps/reports/services/exports
+msgid "Response rate (%)"
+msgstr "সাড়ার হার (%)"
+
+#: apps/reports/services/exports
+msgid "Score"
+msgstr "স্কোর"
+
+#: apps/reports/services/exports
+msgid "Share (%)"
+msgstr "অংশ (%)"
+
+#: apps/reports/services/exports
+msgid "Students of other departments pending"
+msgstr "অন্য বিভাগের অপেক্ষমাণ শিক্ষার্থী"
+
+#: apps/reports/services/exports
+msgid "Students pending"
+msgstr "অপেক্ষমাণ শিক্ষার্থী"
+
+#: apps/reports/services/exports
+msgid "University report"
+msgstr "বিশ্ববিদ্যালয়ের প্রতিবেদন"
+
+#: apps/reports/services/exports
+msgid "Value"
+msgstr "মান"

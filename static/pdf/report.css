@@ -1,0 +1,74 @@
+/* PDF reports (WeasyPrint). Colours come from static/src/tokens.css, loaded before this file.
+   The fonts are local TTFs, so Bangla is embedded in the file and needs nothing on the reader's
+   machine. Bars are the same SVG/CSS markup as the on-screen report; no JavaScript. */
+@font-face {
+  font-family: "TFS Latin";
+  font-weight: 400;
+  src: url("../fonts/pdf/PlusJakartaSans-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "TFS Latin";
+  font-weight: 700;
+  src: url("../fonts/pdf/PlusJakartaSans-Bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "TFS Bangla";
+  font-weight: 400;
+  src: url("../fonts/pdf/HindSiliguri-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "TFS Bangla";
+  font-weight: 700;
+  src: url("../fonts/pdf/HindSiliguri-Bold.ttf") format("truetype");
+}
+
+@page {
+  size: A4;
+  margin: 16mm 14mm 18mm;
+  @bottom-right {
+    content: counter(page) " / " counter(pages);
+    font-family: "TFS Latin", "TFS Bangla", sans-serif;
+    font-size: 8pt;
+    color: var(--muted);
+  }
+}
+
+html {
+  font-family: "TFS Latin", "TFS Bangla", sans-serif;
+  font-size: 10pt;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--surface);
+}
+h1 { font-size: 18pt; margin: 0 0 2mm; color: var(--primary); }
+h2 { font-size: 12pt; margin: 8mm 0 2mm; break-after: avoid; }
+h3 { font-size: 10pt; margin: 4mm 0 1mm; break-after: avoid; }
+.subtitle { color: var(--muted); margin: 0 0 4mm; }
+.notice {
+  border: 0.3mm solid var(--warning);
+  background: var(--warning-soft);
+  padding: 2mm 3mm;
+  margin: 3mm 0;
+}
+table { width: 100%; border-collapse: collapse; margin: 0 0 3mm; }
+th, td {
+  border: 0.2mm solid var(--border);
+  padding: 1mm 2mm;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+  font-size: 9pt;
+}
+th { background: var(--primary-soft); font-weight: 700; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+.num { font-variant-numeric: tabular-nums; }
+
+.dist { list-style: none; margin: 0 0 3mm; padding: 0; break-inside: avoid; }
+.dist-line { display: flex; align-items: center; gap: 3mm; margin: 0.8mm 0; }
+.dist-line > .label { width: 38mm; }
+.dist-line > .num { width: 28mm; }
+.bar { flex: 1; height: 3mm; }
+.bar-track { fill: var(--border); }
+.bar-val { fill: var(--primary); }
+.text-muted { color: var(--muted); }

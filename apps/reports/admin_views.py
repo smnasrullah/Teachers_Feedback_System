@@ -3,6 +3,7 @@ wide by design and the figures themselves are held back by ``apps.analytics``.""
 
 from django.shortcuts import render
 from django.utils import timezone
+from django.utils.http import urlencode
 from django.views.decorators.http import require_GET
 
 from apps.core.permissions import Role, role_required
@@ -50,5 +51,6 @@ def analytics(request):
             "department_chart": university.department_chart(report.departments),
             "round_open": window.is_open(now),
             "closes_at": window.closes_at,
+            "export_query": f"?{urlencode({**request.GET.dict(), 'round': window.pk})}",
         }
     return render(request, "admin_panel/analytics.html", context)

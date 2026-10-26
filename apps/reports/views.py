@@ -31,7 +31,7 @@ def _course_url(offering, window) -> str:
     return reverse("reports:course", args=[offering.pk, window.pk])
 
 
-def _load(request, offering_id, window_id):
+def load_course(request, offering_id, window_id):
     """The offering and round, after the access check; access must not depend on the round."""
     offering = get_object_or_404(
         CourseOffering.objects.select_related("course__department", "semester", "teacher"),
@@ -83,7 +83,7 @@ def overview(request):
 @require_GET
 @role_required(*READERS)
 def course(request, offering_id, window_id):
-    offering, window, access = _load(request, offering_id, window_id)
+    offering, window, access = load_course(request, offering_id, window_id)
     report = teacher.build_report(offering, window, request.user, focus=_focus(request))
     crumbs = [{"label": offering.course.code}]
     if access.can_write_note:
@@ -104,7 +104,7 @@ def course(request, offering_id, window_id):
 @role_required(*READERS)
 def comments(request, offering_id, window_id, question_id):
     """One question's comment list: a fragment for HTMX, the whole page otherwise."""
-    offering, window, access = _load(request, offering_id, window_id)
+    offering, window, access = load_course(request, offering_id, window_id)
     question = get_object_or_404(Question, pk=question_id, question_type=QuestionType.TEXT)
     if not request.headers.get("HX-Request"):
         query = request.GET.copy()
@@ -128,7 +128,7 @@ def comments(request, offering_id, window_id, question_id):
 @require_GET
 @role_required(*READERS)
 def print_view(request, offering_id, window_id):
-    offering, window, _access = _load(request, offering_id, window_id)
+    offering, window, _access = load_course(request, offering_id, window_id)
     report = teacher.build_report(offering, window, request.user, everything=True)
     return render(request, "reports/print.html", {"report": report})
 
@@ -136,7 +136,7 @@ def print_view(request, offering_id, window_id):
 @require_POST
 @role_required(Role.TEACHER)
 def save_note(request, offering_id, window_id):
-    offering, window, access = _load(request, offering_id, window_id)
+    offering, window, access = load_course(request, offering_id, window_id)
     if not access.can_write_note:
         raise PermissionDenied
     if not window.has_closed(timezone.now()):
@@ -154,7 +154,7 @@ def save_note(request, offering_id, window_id):
 @role_required(Role.TEACHER)
 def report_comment(request, offering_id, window_id):
     """Send one comment of the teacher's own course to the Admin's moderation queue."""
-    offering, window, access = _load(request, offering_id, window_id)
+    offering, window, access = load_course(request, offering_id, window_id)
     if not access.can_write_note:
         raise PermissionDenied
     reported = review.report(

@@ -40,6 +40,8 @@
   <section class="card grid gap-3" aria-labelledby="pending-title">
     <div class="flex flex-wrap items-center gap-3">
       <h2 id="pending-title" class="flex-1 text-xl">{% blocktranslate count n=total %}{{ n }} student of your department has not submitted{% plural %}{{ n }} students of your department have not submitted{% endblocktranslate %}</h2>
+      {% url 'reports:export_pending' 'xlsx' as xlsx_url %}{% url 'reports:export_pending' 'csv' as csv_url %}{% url 'reports:export_pending' 'pdf' as pdf_url %}
+      {% include "reports/_export_links.html" with xlsx=xlsx_url|add:export_query csv=csv_url|add:export_query pdf=pdf_url|add:export_query %}
       {% if chosen and round_open %}
       <form method="post" action="{% url 'reports:hod_remind' %}?{{ filter_query }}">
         {% csrf_token %}

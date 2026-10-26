@@ -11,6 +11,8 @@
     <div class="flex flex-wrap items-center gap-3">
       <h2 class="flex-1 text-xl">{% translate "Answers, question by question" %}</h2>
       <a class="btn btn-ghost no-print" href="{% url 'reports:print' report.offering.pk report.window.pk %}">{% icon "print" %}{% translate "Print view" %}</a>
+      {% url 'reports:export_course' report.offering.pk report.window.pk 'xlsx' as xlsx_url %}{% url 'reports:export_course' report.offering.pk report.window.pk 'csv' as csv_url %}{% url 'reports:export_course' report.offering.pk report.window.pk 'pdf' as pdf_url %}
+      {% include "reports/_export_links.html" with xlsx=xlsx_url csv=csv_url pdf=pdf_url %}
     </div>
     {% for block in report.blocks %}{% include "reports/_question.html" %}{% endfor %}
   </div>
