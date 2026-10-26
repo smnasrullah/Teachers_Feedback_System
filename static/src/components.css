@@ -1907,6 +1907,16 @@
   .bar-val {
     fill: var(--primary);
   }
+  .bar-mark {
+    fill: var(--text);
+  }
+  .cat-line {
+    display: grid;
+    grid-template-columns: minmax(64px, 30%) minmax(0, 1fr) minmax(64px, auto);
+    gap: 12px;
+    align-items: center;
+    font-size: var(--text-sm);
+  }
   .comment-search {
     display: flex;
     flex-wrap: wrap;

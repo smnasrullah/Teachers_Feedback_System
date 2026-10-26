@@ -4787,11 +4787,11 @@ msgstr "কেন আপনি ভরসা করতে পারেন"
 msgid "Your answers carry no name, ID or time."
 msgstr "আপনার উত্তরে কোনো নাম, আইডি বা সময় থাকে না।"
 
-msgid "Encrypted"
-msgstr "এনক্রিপ্টেড"
+msgid "Protected data"
+msgstr "সুরক্ষিত তথ্য"
 
-msgid "Sensitive personal data is stored encrypted."
-msgstr "সংবেদনশীল ব্যক্তিগত তথ্য এনক্রিপ্ট করে রাখা হয়।"
+msgid "Student IDs, contact details and comments are encrypted in the database. Passwords are hashed."
+msgstr "শিক্ষার্থী আইডি, যোগাযোগের তথ্য ও মন্তব্য ডাটাবেসে এনক্রিপ্ট করা থাকে। পাসওয়ার্ড হ্যাশ করে রাখা হয়।"
 
 msgid "One voice per course"
 msgstr "প্রতি কোর্সে একটি মতামত"

@@ -1,6 +1,6 @@
-{# Params: report. Category radar, round trend, strengths and improvements, department average, word cloud. #}
+{# Params: report. Category radar (5+ categories) or category bars, round trend, strengths and improvements, department average, word cloud. #}
 {% load i18n ui %}
-{% if report.radar %}
+{% if report.radar and report.categories|length >= 5 %}
 <section class="card grid gap-3" aria-labelledby="radar-title">
   <h3 id="radar-title" class="text-lg">{% translate "Scores by category" %}</h3>
   {% include "components/chart.html" with chart_id="radar" config=report.radar summary=report.radar_summary %}
@@ -9,11 +9,24 @@
 {% if report.categories %}
 <section class="card grid gap-3" aria-labelledby="categories-title">
   <h3 id="categories-title" class="text-lg">{% translate "Category scores" %}</h3>
+  {% if report.categories|length >= 5 %}
   <ul class="dist">
     {% for row in report.categories %}
     <li class="flex justify-between gap-3"><span>{{ row.name }}</span><span class="num">{{ row.score|floatformat:1 }}{% if row.department is not None %} <span class="text-sm text-muted">{% blocktranslate with value=row.department|floatformat:1 %}(department {{ value }}){% endblocktranslate %}</span>{% endif %}</span></li>
     {% endfor %}
   </ul>
+  {% else %}
+  <ul class="dist" data-category-bars>
+    {% for row in report.categories %}
+    {% widthratio row.score 5 100 as score_pct %}
+    <li class="cat-line">
+      <span>{{ row.name }}</span>
+      <svg class="bar" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><rect class="bar-track" width="100" height="10"/><rect class="bar-val" width="{{ score_pct }}" height="10"/>{% if row.department is not None %}{% widthratio row.department 5 100 as dept_pct %}<rect class="bar-mark" x="{{ dept_pct|add:'-1' }}" width="2" height="10"/>{% endif %}</svg>
+      <span class="num">{{ row.score|floatformat:1 }}{% if row.department is not None %} <span class="text-sm text-muted">{% blocktranslate with value=row.department|floatformat:1 %}(department {{ value }}){% endblocktranslate %}</span>{% endif %}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
 </section>
 {% endif %}
 <section class="card grid gap-3" aria-labelledby="trend-title">

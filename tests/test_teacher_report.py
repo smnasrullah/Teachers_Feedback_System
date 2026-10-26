@@ -278,10 +278,28 @@ class TestReportContent:
         )
         world.submit(5, window=earlier, rating=3)
         html = page(teacher_client, world.url())
-        assert 'id="radar-data"' in html
-        assert "Department average" in html
+        assert 'id="radar-data"' not in html
+        assert html.count('class="bar-mark"') == 3
+        assert "(department 3.0)" in html
         assert 'id="trend-data"' in html
         assert "above the department average" in html or "below the department average" in html
+
+    def test_five_categories_draw_the_radar_and_fewer_draw_bars(self, teacher_client, world):
+        world.submit(6, rating=4)
+        few = page(teacher_client, world.url())
+        assert 'id="radar-data"' not in few
+        assert "data-category-bars" in few
+        for name in ("Delivery", "Fairness"):
+            category = QuestionCategory.objects.get_or_create(name=name)[0]
+            question = make_question(
+                QuestionType.RATING, order=7, category=category, text=f"Rate {name}"
+            )
+            for response in FeedbackResponse.objects.filter(offering=world.offering):
+                Answer.objects.create(response=response, question=question, int_value=4)
+        analytics.invalidate(world.window)
+        many = page(teacher_client, world.url())
+        assert 'id="radar-data"' in many
+        assert "data-category-bars" not in many
 
     def test_department_scores_need_two_teachers_and_enough_answers(self, world):
         world.submit(6, rating=4)
