@@ -138,6 +138,21 @@ def user_nav_items(user, current: str = "") -> list[dict]:
                 "icon": "book",
             }
         )
+    if getattr(user, "is_hod", False):
+        entries += [
+            {
+                "key": "pending",
+                "label": _("Pending feedback"),
+                "url": reverse("reports:hod_pending"),
+                "icon": "list",
+            },
+            {
+                "key": "audit",
+                "label": _("Department audit log"),
+                "url": reverse("reports:hod_audit"),
+                "icon": "shield",
+            },
+        ]
     if getattr(user, "role", None) == Role.ADMIN:
         entries += admin_nav_items()
     entries += [

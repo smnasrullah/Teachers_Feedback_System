@@ -1,0 +1,48 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Department audit log" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-4">
+  <div>
+    <h1 class="text-2xl">{% translate "Department audit log" %}</h1>
+    <p class="text-muted">{{ department|localized:"name" }}</p>
+  </div>
+  <p class="callout" role="note">{% icon "shield" %}<span>{% translate "Actions by staff that concern your department. Students' own actions are not listed." %}</span></p>
+  <form method="get" class="flex flex-wrap items-end gap-3" aria-label="{% translate 'Filter the log' %}">
+    <div class="field">
+      <label class="field-label" for="action">{% translate "Action" %}</label>
+      <select class="select" id="action" name="action">
+        <option value="">{% translate "All actions" %}</option>
+        {% for option in actions %}<option value="{{ option }}"{% if option == action %} selected{% endif %}>{{ option }}</option>{% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-ghost">{% translate "Filter" %}</button>
+  </form>
+  <section class="card grid gap-3">
+    {% if page_obj.object_list %}
+    <table class="data-table" role="table">
+      <caption class="sr-only">{% translate "Audit events of the department, newest first" %}</caption>
+      <thead role="rowgroup"><tr role="row">
+        <th scope="col" role="columnheader">{% translate "Date" %}</th>
+        <th scope="col" role="columnheader">{% translate "Who" %}</th>
+        <th scope="col" role="columnheader">{% translate "Action" %}</th>
+        <th scope="col" role="columnheader">{% translate "Object" %}</th>
+      </tr></thead>
+      <tbody role="rowgroup">
+        {% for event in page_obj.object_list %}
+        <tr role="row">
+          <td role="cell" data-label="{% translate 'Date' %}" class="num">{{ event.created_at|date:"j M Y, H:i" }}</td>
+          <td role="cell" data-label="{% translate 'Who' %}">{{ event.actor_username|default:"—" }}{% if event.actor_role %} <span class="text-sm text-muted">({{ event.actor_role }})</span>{% endif %}</td>
+          <td role="cell" data-label="{% translate 'Action' %}">{{ event.action }}</td>
+          <td role="cell" data-label="{% translate 'Object' %}">{{ event.object_type|default:"—" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% include "components/pagination.html" with page_obj=page_obj query=page_query %}
+    {% else %}
+    {% translate "Nothing recorded" as empty_title %}{% translate "No events concern your department yet." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="shield" %}
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

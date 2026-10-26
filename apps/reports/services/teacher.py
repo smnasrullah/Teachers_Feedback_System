@@ -82,14 +82,14 @@ class Report:
 
     @property
     def radar_summary(self) -> str:
-        return _chart_summary(self.radar)
+        return chart_summary(self.radar)
 
     @property
     def trend_summary(self) -> str:
-        return _chart_summary(self.trend)
+        return chart_summary(self.trend)
 
 
-def _chart_summary(config) -> str:
+def chart_summary(config) -> str:
     """The numbers of a chart as one sentence, for its text alternative."""
     if not config:
         return ""
@@ -106,11 +106,9 @@ def _chart_summary(config) -> str:
 # --- rounds and the overview -----------------------------------------------------------------
 
 
-def rounds_for(profile, now) -> list[FeedbackWindow]:
-    """Started, active rounds that cover at least one offering of the teacher, newest first."""
-    offerings = list(
-        CourseOffering.objects.filter(teacher=profile).select_related("course", "semester")
-    )
+def rounds_covering(offerings, now) -> list[FeedbackWindow]:
+    """Started, active rounds that cover at least one of ``offerings``, newest first."""
+    offerings = list(offerings.select_related("course", "semester"))
     windows = (
         FeedbackWindow.objects.filter(
             semester__in={offering.semester for offering in offerings},
@@ -121,6 +119,11 @@ def rounds_for(profile, now) -> list[FeedbackWindow]:
         .prefetch_related("departments", "level_terms")
     )
     return [w for w in windows if any(w.covers(offering) for offering in offerings)]
+
+
+def rounds_for(profile, now) -> list[FeedbackWindow]:
+    """Rounds that cover at least one offering of the teacher."""
+    return rounds_covering(CourseOffering.objects.filter(teacher=profile), now)
 
 
 def pick_round(rounds, requested_id, now) -> FeedbackWindow | None:
@@ -289,10 +292,8 @@ def _radar(categories) -> dict | None:
     }
 
 
-def _trend(offering, viewer, now) -> dict | None:
-    points = analytics.trend(
-        teacher=offering.teacher, course=offering.course, viewer=viewer, now=now
-    )
+def trend_chart(points) -> dict | None:
+    """Line chart of round averages, or ``None`` until two rounds have results."""
     if isinstance(points, InsufficientData) or len(points) < MIN_TREND_POINTS:
         return None
     return {
@@ -307,6 +308,12 @@ def _trend(offering, viewer, now) -> dict | None:
         ],
         "scale": {"min": 1, "max": SCALE_MAX},
     }
+
+
+def _trend(offering, viewer, now) -> dict | None:
+    return trend_chart(
+        analytics.trend(teacher=offering.teacher, course=offering.course, viewer=viewer, now=now)
+    )
 
 
 def build_report(offering, window, viewer, now=None, *, focus=None, everything=False) -> Report:

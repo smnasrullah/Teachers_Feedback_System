@@ -208,6 +208,9 @@ SECOND_FACTOR_PENDING_SECONDS = 10 * 60
 # Results and comment lists stay hidden below this many responses (never fewer than 3).
 MIN_RESPONSES = env.int("MIN_RESPONSES", default=5)
 
+# A course average below this raises an alert card on the head of department's overview.
+LOW_RATING_THRESHOLD = env.float("LOW_RATING_THRESHOLD", default=3.5)
+
 # Whether a student sees their own student ID on their pages (off: the ID is never shown to them).
 SHOW_OWN_ID_TO_STUDENT = env.bool("SHOW_OWN_ID_TO_STUDENT", default=False)
 

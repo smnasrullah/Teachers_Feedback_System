@@ -1,0 +1,84 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui identity %}
+{% block title %}{% translate "Pending feedback" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-4">
+  <div>
+    <h1 class="text-2xl">{% translate "Pending feedback" %}</h1>
+    <p class="text-muted">{{ department|localized:"name" }}{% if window %}, {{ window.semester.name }}, {{ window.name }}{% endif %}</p>
+  </div>
+
+  {% if not window %}
+  <div class="card">{% translate "No feedback round yet" as empty_title %}{% translate "The list appears once a feedback round has started for your department." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="calendar" %}</div>
+  {% else %}
+  <form method="get" class="flex flex-wrap items-end gap-3" aria-label="{% translate 'Filter the list' %}">
+    <div class="field">
+      <label class="field-label" for="round">{% translate "Round" %}</label>
+      <select class="select" id="round" name="round">
+        {% for option in rounds %}<option value="{{ option.pk }}"{% if option.pk == window.pk %} selected{% endif %}>{{ option.semester.name }} · {{ option.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label" for="course">{% translate "Course" %}</label>
+      <select class="select" id="course" name="course">
+        <option value="">{% translate "All courses" %}</option>
+        {% for offering in offerings %}<option value="{{ offering.pk }}"{% if offering.pk == chosen.pk %} selected{% endif %}>{{ offering.course.code }}{% if offering.section %} ({{ offering.section }}){% endif %}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label" for="level">{% translate "Level/term of the student" %}</label>
+      <select class="select" id="level" name="level">
+        <option value="">{% translate "All levels/terms" %}</option>
+        {% for option in level_terms %}<option value="{{ option.pk }}"{% if option.pk == level_term.pk %} selected{% endif %}>{{ option|localized:"name" }}</option>{% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-ghost">{% translate "Filter" %}</button>
+  </form>
+
+  <p class="callout" role="note">{% icon "lock" %}<span>{% translate "Student IDs are visible to the Admin and to the head of the student's own department only." %}</span></p>
+
+  <section class="card grid gap-3" aria-labelledby="pending-title">
+    <div class="flex flex-wrap items-center gap-3">
+      <h2 id="pending-title" class="flex-1 text-xl">{% blocktranslate count n=total %}{{ n }} student of your department has not submitted{% plural %}{{ n }} students of your department have not submitted{% endblocktranslate %}</h2>
+      {% if chosen and round_open %}
+      <form method="post" action="{% url 'reports:hod_remind' %}?{{ filter_query }}">
+        {% csrf_token %}
+        <input type="hidden" name="window" value="{{ window.pk }}">
+        <input type="hidden" name="offering" value="{{ chosen.pk }}">
+        <button type="submit" class="btn btn-primary">{% icon "send" %}{% translate "Remind everyone pending in this course" %}</button>
+      </form>
+      {% endif %}
+    </div>
+    {% if others %}
+    <p class="text-sm text-muted">{% blocktranslate count n=others %}{{ n }} student of another department has not submitted. Their IDs are shown to their own head of department only.{% plural %}{{ n }} students of other departments have not submitted. Their IDs are shown to their own heads of department only.{% endblocktranslate %}</p>
+    {% endif %}
+    {% if not round_open %}<p class="callout" role="status">{% icon "clock" %}<span>{% translate "This round is not open, so reminders cannot be sent." %}</span></p>{% endif %}
+
+    {% if page_obj.object_list %}
+    <ul class="list-rows">
+      {% for row in page_obj.object_list %}
+      <li class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <span class="idcode num">{{ row.student|student_id:request.user }}</span>
+          <div class="text-sm text-muted">{{ row.offering.course.code }}{% if row.offering.section %} ({{ row.offering.section }}){% endif %}, {{ row.student.level_term|localized:"name" }}</div>
+        </div>
+        {% if round_open %}
+        <form method="post" action="{% url 'reports:hod_remind' %}?{{ filter_query }}&amp;page={{ page_obj.number }}">
+          {% csrf_token %}
+          <input type="hidden" name="window" value="{{ window.pk }}">
+          <input type="hidden" name="offering" value="{{ row.offering.pk }}">
+          <input type="hidden" name="student" value="{{ row.student.pk }}">
+          <button type="submit" class="btn btn-ghost">{% icon "send" %}<span>{% translate "Remind" %}</span><span class="sr-only">{{ row.student|student_id:request.user }}, {{ row.offering.course.code }}</span></button>
+        </form>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% include "components/pagination.html" with page_obj=page_obj query=page_query %}
+    {% else %}
+    {% translate "Nobody is pending" as empty_title %}{% translate "Every student of your department in this selection has submitted." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="check" %}
+    {% endif %}
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

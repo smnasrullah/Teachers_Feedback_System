@@ -6,7 +6,7 @@ from django.views.decorators.http import require_GET
 
 from apps.accounts.services.login import landing_url
 from apps.accounts.views.account import EVERYONE
-from apps.core.permissions import HOD, Role, role_required
+from apps.core.permissions import Role, role_required
 from apps.core.services.navigation import user_nav_items
 
 
@@ -29,12 +29,6 @@ def dashboard(request):
 @role_required(Role.TEACHER)
 def dashboard_teacher(request):
     return _placeholder(request, _("Teacher dashboard"))
-
-
-@require_GET
-@role_required(HOD)
-def dashboard_hod(request):
-    return _placeholder(request, _("Head of department dashboard"))
 
 
 @require_GET

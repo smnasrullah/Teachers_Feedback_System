@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views
+from . import hod_views, views
 
 app_name = "reports"
 
@@ -22,4 +22,7 @@ urlpatterns = [
         views.save_note,
         name="note",
     ),
+    path("hod/pending/", hod_views.pending, name="hod_pending"),
+    path("hod/pending/remind/", hod_views.remind, name="hod_remind"),
+    path("hod/audit/", hod_views.audit, name="hod_audit"),
 ]

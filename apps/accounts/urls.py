@@ -1,6 +1,7 @@
 from django.urls import path
 
 from apps.feedback.student_views import dashboard as student_dashboard
+from apps.reports.hod_views import overview as hod_dashboard
 
 from .views import account, auth, dashboards, profile, recovery, registry, signup, twofactor, users
 
@@ -26,7 +27,7 @@ urlpatterns = [
     path("dashboard/", dashboards.dashboard, name="dashboard"),
     path("dashboard/student/", student_dashboard, name="dashboard_student"),
     path("dashboard/teacher/", dashboards.dashboard_teacher, name="dashboard_teacher"),
-    path("dashboard/hod/", dashboards.dashboard_hod, name="dashboard_hod"),
+    path("dashboard/hod/", hod_dashboard, name="dashboard_hod"),
     path("dashboard/admin/", dashboards.dashboard_admin, name="dashboard_admin"),
     path("account/", account.account_home, name="account"),
     path("account/profile/", profile.profile_edit, name="profile"),

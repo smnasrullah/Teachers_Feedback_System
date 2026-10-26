@@ -1,0 +1,170 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n static ui %}
+{% block title %}{% translate "Department overview" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block head %}{% if overview.trend %}<script src="{% static 'vendor/chart.umd.min.js' %}" nonce="{{ csp_nonce }}" defer></script><script src="{% static 'js/charts.js' %}" nonce="{{ csp_nonce }}" defer></script>{% endif %}{% endblock %}
+{% block content %}
+<div class="grid gap-4">
+  <div class="flex flex-wrap items-end gap-3">
+    <div class="flex-1">
+      <h1 class="text-2xl">{% translate "Department overview" %}</h1>
+      <p class="text-muted">{{ department|localized:"name" }}{% if window %}, {{ window.semester.name }}, {{ window.name }}{% endif %}</p>
+    </div>
+    {% translate "This department only" as scope_label %}{% include "components/badge.html" with variant="info" icon="eye" label=scope_label %}
+  </div>
+
+  {% if not window %}
+  <div class="card">{% translate "No feedback round yet" as empty_title %}{% translate "The overview appears once a feedback round has started for your department." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="calendar" %}</div>
+  {% else %}
+  <form method="get" class="flex flex-wrap items-end gap-3" aria-label="{% translate 'Choose round and alert level' %}">
+    <div class="field">
+      <label class="field-label" for="round">{% translate "Round" %}</label>
+      <select class="select" id="round" name="round">
+        {% for option in rounds %}<option value="{{ option.pk }}"{% if option.pk == window.pk %} selected{% endif %}>{{ option.semester.name }} · {{ option.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label" for="below">{% translate "Alert below" %}</label>
+      <input class="input num" id="below" name="below" type="number" inputmode="decimal" min="1" max="5" step="0.1" value="{{ threshold|stringformat:'.1f' }}">
+    </div>
+    <button type="submit" class="btn btn-ghost">{% translate "Show" %}</button>
+  </form>
+
+  <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="{% translate 'Summary' %}">
+    {% blocktranslate count n=overview.teachers asvar teachers_note %}{{ n }} teacher{% plural %}{{ n }} teachers{% endblocktranslate %}
+    {% translate "Courses this round" as courses_label %}{% include "components/stat_tile.html" with label=courses_label value=overview.offerings delta=teachers_note icon="book" %}
+    {% if round_open %}
+    {% translate "Round closes" as closes_label %}{% include "components/stat_tile.html" with label=closes_label value=closes_at|timeuntil icon="clock" %}
+    {% else %}
+    {% translate "Round" as closes_label %}{% translate "Closed" as closed_value %}{% blocktranslate with when=window.closes_at|date:"j M Y" asvar closed_note %}Closed on {{ when }}{% endblocktranslate %}{% include "components/stat_tile.html" with label=closes_label value=closed_value delta=closed_note icon="lock" %}
+    {% endif %}
+    {% translate "Response rate" as rate_label %}
+    {% if overview.rate.percent is not None %}
+    {% blocktranslate with submitted=overview.rate.submitted enrolled=overview.rate.enrolled asvar rate_note %}{{ submitted }} of {{ enrolled }} responded{% endblocktranslate %}
+    {% include "components/stat_tile.html" with label=rate_label value=overview.rate.percent|floatformat:0|add:"%" delta=rate_note icon="users" %}
+    {% else %}
+    {% translate "Not shown yet" as hidden_value %}{% include "components/stat_tile.html" with label=rate_label value=hidden_value icon="lock" %}
+    {% endif %}
+    {% translate "Department average" as average_label %}
+    {% if overview.average.average is not None %}
+    {% include "components/stat_tile.html" with label=average_label value=overview.average.average|floatformat:1 icon="star" %}
+    {% else %}
+    {% translate "Not shown yet" as hidden_value %}{% include "components/stat_tile.html" with label=average_label value=hidden_value icon="lock" %}
+    {% endif %}
+  </section>
+  {% if overview.average.message %}<p class="callout" role="status">{% icon "lock" %}<span>{{ overview.average.message }}</span></p>{% endif %}
+
+  <nav class="flex flex-wrap gap-3" aria-label="{% translate 'Quick actions' %}">
+    <a class="btn btn-ghost" href="{% url 'reports:hod_pending' %}?round={{ window.pk }}">{% icon "list" %}{% translate "Pending feedback" %}</a>
+    <a class="btn btn-ghost" href="{% url 'reports:overview' %}">{% icon "book" %}{% translate "My courses" %}</a>
+    <a class="btn btn-ghost" href="{% url 'reports:hod_audit' %}">{% icon "shield" %}{% translate "Department audit log" %}</a>
+  </nav>
+
+  {% if overview.alerts %}
+  <section aria-labelledby="alerts-title" class="grid gap-3">
+    <h2 id="alerts-title" class="text-xl">{% blocktranslate with value=threshold|floatformat:1 %}Courses below {{ value }}{% endblocktranslate %}</h2>
+    <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      {% for row in overview.alerts %}
+      <article class="card callout-alert grid gap-2">
+        <div class="flex items-center justify-between gap-2">
+          {% translate "Low rating" as alert_label %}{% include "components/badge.html" with variant="alert" label=alert_label %}
+          <span class="big num">{{ row.summary.average|floatformat:1 }}</span>
+        </div>
+        <h3 class="text-lg"><a href="{% url 'reports:course' row.offering.pk window.pk %}">{{ row.offering.course|localized:"title" }}</a></h3>
+        <p class="text-sm text-muted">{{ row.offering.course.code }} · {{ row.offering.teacher.registry.full_name|default:"—" }}</p>
+        <p class="text-sm">{% if row.note %}{% translate "The teacher has written an action note." %}{% else %}{% translate "No action note yet." %}{% endif %}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="card grid gap-3" aria-labelledby="ranking-title">
+    <h2 id="ranking-title" class="text-xl">{% translate "Course ranking" %}</h2>
+    {% if overview.rows %}
+    <table class="data-table" role="table">
+      <caption class="sr-only">{% translate "Courses of the department by average rating" %}</caption>
+      <thead role="rowgroup"><tr role="row">
+        <th scope="col" role="columnheader" class="cell-num">#</th>
+        <th scope="col" role="columnheader">{% translate "Course" %}</th>
+        <th scope="col" role="columnheader">{% translate "Teacher" %}</th>
+        <th scope="col" role="columnheader">{% translate "Average" %}</th>
+        <th scope="col" role="columnheader" class="cell-num">{% translate "Response rate" %}</th>
+        <th scope="col" role="columnheader">{% translate "Notes" %}</th>
+      </tr></thead>
+      <tbody role="rowgroup">
+        {% for row in overview.rows %}
+        <tr role="row">
+          <td role="cell" data-label="#" class="cell-num">{{ row.rank|default:"–" }}</td>
+          <td role="cell" data-label="{% translate 'Course' %}"><a href="{% url 'reports:course' row.offering.pk window.pk %}">{{ row.offering.course.code }}{% if row.offering.section %} ({{ row.offering.section }}){% endif %}</a></td>
+          <td role="cell" data-label="{% translate 'Teacher' %}">{{ row.offering.teacher.registry.full_name|default:"—" }}</td>
+          <td role="cell" data-label="{% translate 'Average' %}">
+            {% if row.summary.average is not None %}
+            <span class="flex items-center gap-2">{% blocktranslate with value=row.summary.average|floatformat:1 asvar stars_label %}{{ value }} out of 5{% endblocktranslate %}{% include "reports/_stars.html" with value=row.summary.average label=stars_label %}<b class="num">{{ row.summary.average|floatformat:1 }}</b></span>
+            {% else %}<span class="text-sm text-muted">{{ row.summary.notice }}</span>{% endif %}
+          </td>
+          <td role="cell" data-label="{% translate 'Response rate' %}" class="cell-num">{% if row.summary.rate %}{{ row.summary.rate.percent|floatformat:0 }}%{% else %}–{% endif %}</td>
+          <td role="cell" data-label="{% translate 'Notes' %}">
+            {% if row.low %}{% translate "Below alert level" as low_label %}{% include "components/badge.html" with variant="alert" label=low_label %}{% endif %}
+            {% if row.note %}<a href="{% url 'reports:course' row.offering.pk window.pk %}#action-taken">{% translate "Action note" %}</a>{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    {% translate "No courses in this round" as empty_title %}{% translate "Your department has no course that this round covers." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="book" %}
+    {% endif %}
+  </section>
+
+  <section class="card grid gap-3" aria-labelledby="heat-title">
+    <h2 id="heat-title" class="text-xl">{% translate "Scores by category" %}</h2>
+    {% if overview.heatmap.rows %}
+    <div class="table-scroll">
+      <table class="heat">
+        <caption class="sr-only">{% translate "Average score of each course in each question category" %}</caption>
+        <thead><tr>
+          <th scope="col"><span class="sr-only">{% translate "Course" %}</span></th>
+          {% for name in overview.heatmap.categories %}<th scope="col">{{ name }}</th>{% endfor %}
+        </tr></thead>
+        <tbody>
+          {% for heat in overview.heatmap.rows %}
+          <tr>
+            <th scope="row">{{ heat.summary.offering.course.code }}{% if heat.summary.offering.section %} ({{ heat.summary.offering.section }}){% endif %}</th>
+            {% for cell in heat.cells %}<td class="{% if cell %}heat-{{ cell.level }} {% endif %}num">{% if cell %}{{ cell.score|floatformat:1 }}{% else %}–{% endif %}</td>{% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="text-sm text-muted">{% translate "Category scores appear once a course has results." %}</p>
+    {% endif %}
+  </section>
+
+  <section class="card grid gap-3" aria-labelledby="trend-title">
+    <h2 id="trend-title" class="text-xl">{% translate "Department average by round" %}</h2>
+    {% if overview.trend %}
+    {% include "components/chart.html" with chart_id="trend" config=overview.trend summary=overview.trend_summary %}
+    {% else %}
+    <p class="text-sm text-muted">{% translate "The trend appears once two rounds have results." %}</p>
+    {% endif %}
+  </section>
+
+  <section class="card grid gap-3" aria-labelledby="notes-title">
+    <h2 id="notes-title" class="text-xl">{% translate "Action taken" %}</h2>
+    {% if overview.noted %}
+    <ul class="grid gap-3">
+      {% for row in overview.noted %}
+      <li class="grid gap-1">
+        <a href="{% url 'reports:course' row.offering.pk window.pk %}#action-taken">{{ row.offering.course.code }} · {{ row.offering.teacher.registry.full_name|default:"—" }}</a>
+        <p class="whitespace-pre-line text-sm">{{ row.note.text|truncatewords:60 }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="text-sm text-muted">{% translate "No teacher has written an action note for this round." %}</p>
+    {% endif %}
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

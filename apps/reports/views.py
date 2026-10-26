@@ -15,7 +15,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
 
 from apps.academics.models import CourseOffering
-from apps.core.permissions import Role, has_role, role_required
+from apps.core.permissions import HOD, Role, has_role, role_required
 from apps.core.services.navigation import user_nav_items
 from apps.feedback.models import FeedbackWindow, Question, QuestionType
 from apps.reports.forms import ActionNoteForm
@@ -85,8 +85,10 @@ def course(request, offering_id, window_id):
     offering, window, access = _load(request, offering_id, window_id)
     report = teacher.build_report(offering, window, request.user, focus=_focus(request))
     crumbs = [{"label": offering.course.code}]
-    if has_role(request.user, Role.TEACHER):
+    if access.can_write_note:
         crumbs.insert(0, {"label": _("My courses"), "url": reverse("reports:overview")})
+    elif has_role(request.user, HOD):
+        crumbs.insert(0, {"label": _("Department"), "url": reverse("accounts:dashboard_hod")})
     context = {
         "nav_items": user_nav_items(request.user, "courses"),
         "crumbs": crumbs,

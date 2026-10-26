@@ -3600,3 +3600,183 @@ msgid "%(n)s response"
 msgid_plural "%(n)s responses"
 msgstr[0] "%(n)s জন উত্তর দিয়েছেন"
 msgstr[1] "%(n)s জন উত্তর দিয়েছেন"
+
+msgid "Department overview"
+msgstr "বিভাগের সারসংক্ষেপ"
+
+msgid "This department only"
+msgstr "শুধু এই বিভাগ"
+
+msgid "The overview appears once a feedback round has started for your department."
+msgstr "আপনার বিভাগের জন্য মতামত রাউন্ড শুরু হলে সারসংক্ষেপ এখানে দেখা যাবে।"
+
+msgid "Alert below"
+msgstr "সতর্কতা (এর নিচে)"
+
+msgid "Courses this round"
+msgstr "এই রাউন্ডের কোর্স"
+
+msgid "Round closes"
+msgstr "রাউন্ড শেষ হবে"
+
+msgid "Response rate"
+msgstr "অংশগ্রহণের হার"
+
+msgid "Not shown yet"
+msgstr "এখনও দেখানো হচ্ছে না"
+
+msgid "Pending feedback"
+msgstr "অপেক্ষমাণ মতামত"
+
+msgid "Department audit log"
+msgstr "বিভাগের অডিট লগ"
+
+msgid "Low rating"
+msgstr "কম রেটিং"
+
+msgid "The teacher has written an action note."
+msgstr "শিক্ষক গৃহীত ব্যবস্থার নোট লিখেছেন।"
+
+msgid "No action note yet."
+msgstr "এখনও গৃহীত ব্যবস্থার নোট নেই।"
+
+msgid "Course ranking"
+msgstr "কোর্স র‍্যাংকিং"
+
+msgid "Courses of the department by average rating"
+msgstr "গড় রেটিং অনুযায়ী বিভাগের কোর্স"
+
+msgid "Notes"
+msgstr "নোট"
+
+msgid "Below alert level"
+msgstr "সতর্কতার সীমার নিচে"
+
+msgid "Action note"
+msgstr "গৃহীত ব্যবস্থার নোট"
+
+msgid "Your department has no course that this round covers."
+msgstr "এই রাউন্ডের আওতায় আপনার বিভাগের কোনো কোর্স নেই।"
+
+msgid "Average score of each course in each question category"
+msgstr "প্রতিটি প্রশ্ন বিভাগে প্রতিটি কোর্সের গড় স্কোর"
+
+msgid "Category scores appear once a course has results."
+msgstr "কোনো কোর্সের ফলাফল পাওয়া গেলে বিভাগ অনুযায়ী স্কোর এখানে দেখা যাবে।"
+
+msgid "Department average by round"
+msgstr "রাউন্ড অনুযায়ী বিভাগের গড়"
+
+msgid "The trend appears once two rounds have results."
+msgstr "দুটি রাউন্ডের ফলাফল পাওয়া গেলে ধারা এখানে দেখা যাবে।"
+
+msgid "No teacher has written an action note for this round."
+msgstr "এই রাউন্ডের জন্য কোনো শিক্ষক গৃহীত ব্যবস্থার নোট লেখেননি।"
+
+msgid "%(submitted)s of %(enrolled)s responded"
+msgstr "%(enrolled)s জনের মধ্যে %(submitted)s জন উত্তর দিয়েছেন"
+
+msgid "Courses below %(value)s"
+msgstr "%(value)s এর নিচের কোর্স"
+
+msgid "The list appears once a feedback round has started for your department."
+msgstr "আপনার বিভাগের জন্য মতামত রাউন্ড শুরু হলে তালিকা এখানে দেখা যাবে।"
+
+msgid "Level/term of the student"
+msgstr "শিক্ষার্থীর লেভেল/টার্ম"
+
+msgid "Filter"
+msgstr "ফিল্টার"
+
+msgid "Student IDs are visible to the Admin and to the head of the student's own department only."
+msgstr "শিক্ষার্থী আইডি শুধু অ্যাডমিন ও শিক্ষার্থীর নিজ বিভাগের প্রধান দেখতে পান।"
+
+msgid "Remind everyone pending in this course"
+msgstr "এই কোর্সের সব অপেক্ষমাণ শিক্ষার্থীকে রিমাইন্ড করুন"
+
+msgid "This round is not open, so reminders cannot be sent."
+msgstr "রাউন্ডটি চালু নেই, তাই রিমাইন্ডার পাঠানো যাবে না।"
+
+msgid "Remind"
+msgstr "রিমাইন্ড"
+
+msgid "Nobody is pending"
+msgstr "কেউ অপেক্ষমাণ নেই"
+
+msgid "Every student of your department in this selection has submitted."
+msgstr "এই নির্বাচনে আপনার বিভাগের সব শিক্ষার্থী মতামত জমা দিয়েছেন।"
+
+msgid "Actions by staff that concern your department. Students' own actions are not listed."
+msgstr "আপনার বিভাগ সংক্রান্ত কর্মীদের কার্যক্রম। শিক্ষার্থীদের নিজস্ব কার্যক্রম তালিকাভুক্ত নয়।"
+
+msgid "All actions"
+msgstr "সব কার্যক্রম"
+
+msgid "Audit events of the department, newest first"
+msgstr "বিভাগের অডিট ইভেন্ট, নতুনগুলো আগে"
+
+msgid "Date"
+msgstr "তারিখ"
+
+msgid "Who"
+msgstr "কে"
+
+msgid "Object"
+msgstr "লক্ষ্য"
+
+msgid "Nothing recorded"
+msgstr "কিছু নথিভুক্ত হয়নি"
+
+msgid "No events concern your department yet."
+msgstr "আপনার বিভাগ সংক্রান্ত কোনো ইভেন্ট এখনও নেই।"
+
+msgid "Too many reminders at once. Wait a moment."
+msgstr "একসাথে অনেক রিমাইন্ডার। একটু অপেক্ষা করুন।"
+
+msgid "Reminders can only be sent while the round is open."
+msgstr "রিমাইন্ডার শুধু রাউন্ড চালু থাকা অবস্থায় পাঠানো যায়।"
+
+msgid "The reminder was queued."
+msgstr "রিমাইন্ডার সারিতে রাখা হয়েছে।"
+
+msgid "requested at"
+msgstr "অনুরোধের সময়"
+
+msgid "processed at"
+msgstr "প্রক্রিয়ার সময়"
+
+msgid "reminder request"
+msgstr "রিমাইন্ডার অনুরোধ"
+
+msgid "reminder requests"
+msgstr "রিমাইন্ডার অনুরোধ"
+
+msgid "Choose round and alert level"
+msgstr "রাউন্ড ও সতর্কতার সীমা বেছে নিন"
+
+msgid "Summary"
+msgstr "সারাংশ"
+
+msgid "Quick actions"
+msgstr "দ্রুত কাজ"
+
+msgid "Filter the list"
+msgstr "তালিকা ফিল্টার করুন"
+
+msgid "Filter the log"
+msgstr "লগ ফিল্টার করুন"
+
+msgid "%(n)s teacher"
+msgid_plural "%(n)s teachers"
+msgstr[0] "%(n)s জন শিক্ষক"
+msgstr[1] "%(n)s জন শিক্ষক"
+
+msgid "%(n)s student of your department has not submitted"
+msgid_plural "%(n)s students of your department have not submitted"
+msgstr[0] "আপনার বিভাগের %(n)s জন শিক্ষার্থী এখনও জমা দেননি"
+msgstr[1] "আপনার বিভাগের %(n)s জন শিক্ষার্থী এখনও জমা দেননি"
+
+msgid "%(n)s student of another department has not submitted. Their IDs are shown to their own head of department only."
+msgid_plural "%(n)s students of other departments have not submitted. Their IDs are shown to their own heads of department only."
+msgstr[0] "অন্য বিভাগের %(n)s জন শিক্ষার্থী এখনও জমা দেননি। তাদের আইডি শুধু তাদের নিজ বিভাগের প্রধান দেখতে পান।"
+msgstr[1] "অন্য বিভাগের %(n)s জন শিক্ষার্থী এখনও জমা দেননি। তাদের আইডি শুধু তাদের নিজ বিভাগের প্রধান দেখতে পান।"
