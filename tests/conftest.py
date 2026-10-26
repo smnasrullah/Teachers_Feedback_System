@@ -1,7 +1,23 @@
 import pytest
 from django.core.cache import cache
+from django.db import connection
 
 from tests import outbox
+
+POSTGRES_ONLY = pytest.mark.skip(
+    reason=(
+        "needs PostgreSQL (set DATABASE_URL=postgres://...): SQLite ignores select_for_update "
+        "and serialises every writer, so a parallel test proves nothing there"
+    )
+)
+
+
+def pytest_collection_modifyitems(config, items):
+    if connection.vendor == "postgresql":
+        return
+    for item in items:
+        if item.get_closest_marker("postgres"):
+            item.add_marker(POSTGRES_ONLY)
 
 
 @pytest.fixture(autouse=True)

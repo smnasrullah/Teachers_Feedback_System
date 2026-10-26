@@ -2572,3 +2572,167 @@ msgstr[0] ""
 msgstr[1] ""
 "%(count)s টি ফেল কোর্স পরের সেমিস্টারে অফার করা হয়নি; সেই রিটেক পরে হাতে "
 "ভর্তি করুন।"
+
+msgid "Rating (1-5)"
+msgstr "রেটিং (১-৫)"
+
+msgid "Agreement (1-5)"
+msgstr "সম্মতি (১-৫)"
+
+msgid "Choice"
+msgstr "বাছাই"
+
+msgid "Yes / no"
+msgstr "হ্যাঁ / না"
+
+msgid "Text"
+msgstr "লেখা"
+
+msgid "All courses"
+msgstr "সব কোর্স"
+
+msgid "Theory courses"
+msgstr "তত্ত্বীয় কোর্স"
+
+msgid "Lab courses"
+msgstr "ল্যাব কোর্স"
+
+msgid "text"
+msgstr "লেখা"
+
+msgid "text (Bangla)"
+msgstr "লেখা (বাংলা)"
+
+msgid "options"
+msgstr "বিকল্পসমূহ"
+
+msgid "Choice questions only: a list of {\"value\", \"en\", \"bn\"} objects."
+msgstr "শুধু বাছাই-প্রশ্নের জন্য: {\"value\", \"en\", \"bn\"} অবজেক্টের তালিকা।"
+
+msgid "applies to"
+msgstr "প্রযোজ্য"
+
+msgid "version"
+msgstr "সংস্করণ"
+
+msgid "replaces"
+msgstr "যেটির বদলে"
+
+msgid "question"
+msgstr "প্রশ্ন"
+
+msgid "questions"
+msgstr "প্রশ্নসমূহ"
+
+msgid "Only choice questions have options."
+msgstr "শুধু বাছাই-প্রশ্নেরই বিকল্প থাকে।"
+
+msgid "A choice question needs at least two options with distinct values."
+msgstr "বাছাই-প্রশ্নে ভিন্ন ভিন্ন মানের অন্তত দুটি বিকল্প লাগে।"
+
+msgid "opens at"
+msgstr "খোলার সময়"
+
+msgid "closes at"
+msgstr "বন্ধের সময়"
+
+msgid "Leave empty for every department (the course's department counts)."
+msgstr "সব বিভাগের জন্য ফাঁকা রাখুন (কোর্সের বিভাগ ধরা হয়)।"
+
+msgid "Leave empty for every level/term (the course's level/term counts)."
+msgstr "সব লেভেল/টার্মের জন্য ফাঁকা রাখুন (কোর্সের লেভেল/টার্ম ধরা হয়)।"
+
+msgid "feedback round"
+msgstr "মতামত রাউন্ড"
+
+msgid "feedback rounds"
+msgstr "মতামত রাউন্ডসমূহ"
+
+msgid "This semester already has a round with this name."
+msgstr "এই সেমিস্টারে এই নামে একটি রাউন্ড আগে থেকেই আছে।"
+
+msgid "The round must close after it opens."
+msgstr "রাউন্ডটি খোলার পরেই বন্ধ হতে হবে।"
+
+msgid "submission receipt"
+msgstr "জমার রসিদ"
+
+msgid "submission receipts"
+msgstr "জমার রসিদসমূহ"
+
+msgid "feedback response"
+msgstr "মতামতপত্র"
+
+msgid "feedback responses"
+msgstr "মতামতপত্রসমূহ"
+
+msgid "rating"
+msgstr "রেটিং"
+
+msgid "choice"
+msgstr "বাছাই"
+
+msgid "comment"
+msgstr "মন্তব্য"
+
+msgid "answer"
+msgstr "উত্তর"
+
+msgid "answers"
+msgstr "উত্তরসমূহ"
+
+msgid "answers so far"
+msgstr "এ পর্যন্ত দেওয়া উত্তর"
+
+msgid "updated at"
+msgstr "হালনাগাদের সময়"
+
+msgid "draft"
+msgstr "খসড়া"
+
+msgid "drafts"
+msgstr "খসড়াসমূহ"
+
+msgid "Confirm your password again, then submit."
+msgstr "আবার আপনার পাসওয়ার্ড নিশ্চিত করুন, তারপর জমা দিন।"
+
+msgid "You have already given feedback for this course in this round."
+msgstr "এই রাউন্ডে এই কোর্সের জন্য আপনি আগেই মতামত দিয়েছেন।"
+
+msgid "This feedback round is not open."
+msgstr "এই মতামত রাউন্ডটি খোলা নেই।"
+
+msgid "This course is not part of this feedback round."
+msgstr "এই কোর্সটি এই মতামত রাউন্ডের অন্তর্ভুক্ত নয়।"
+
+msgid "You are not enrolled in this course."
+msgstr "আপনি এই কোর্সে নিবন্ধিত নন।"
+
+msgid "The questions changed after this form was opened. Reload the page and answer again."
+msgstr "ফর্মটি খোলার পর প্রশ্ন বদলেছে। পাতাটি আবার লোড করে উত্তর দিন।"
+
+msgid "This question needs an answer."
+msgstr "এই প্রশ্নের উত্তর দিতে হবে।"
+
+#, python-format
+msgid "Choose a value from %(low)d to %(high)d."
+msgstr "%(low)d থেকে %(high)d-এর মধ্যে একটি মান বেছে নিন।"
+
+msgid "Answer yes or no."
+msgstr "হ্যাঁ অথবা না উত্তর দিন।"
+
+msgid "Choose one of the options."
+msgstr "বিকল্পগুলোর একটি বেছে নিন।"
+
+msgid "This question cannot be answered."
+msgstr "এই প্রশ্নের উত্তর দেওয়া যায় না।"
+
+msgid "Enter text."
+msgstr "লেখা লিখুন।"
+
+#, python-format
+msgid "Keep the answer under %(limit)d characters."
+msgstr "উত্তর %(limit)d অক্ষরের মধ্যে রাখুন।"
+
+msgid "Nothing was left of this answer after it was cleaned. Please rewrite it."
+msgstr "পরিশোধনের পর এই উত্তরের কিছুই অবশিষ্ট থাকেনি। অনুগ্রহ করে আবার লিখুন।"

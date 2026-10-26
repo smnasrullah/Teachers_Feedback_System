@@ -17,6 +17,11 @@ from django.core.signals import setting_changed
 from django.db import models
 from django.dispatch import receiver
 
+# A Fernet token carries its creation time in clear. Anonymous content must not reveal when
+# it was written, so its tokens are stamped with this fixed instant (decryption never checks
+# token age, and MultiFernet.rotate keeps the stamp).
+TIMELESS_AT = 0
+
 
 class DecryptionError(Exception):
     """A stored value could not be decrypted with any configured key."""
@@ -48,8 +53,11 @@ def _reset_key_caches(*, setting, **kwargs):
         _blind_index_key.cache_clear()
 
 
-def encrypt(value: str) -> str:
-    return _multi_fernet().encrypt(value.encode()).decode()
+def encrypt(value: str, *, timeless: bool = False) -> str:
+    fernet = _multi_fernet()
+    data = value.encode()
+    token = fernet.encrypt_at_time(data, TIMELESS_AT) if timeless else fernet.encrypt(data)
+    return token.decode()
 
 
 def decrypt(token: str) -> str:
@@ -89,6 +97,7 @@ class EncryptedFieldMixin:
     are allowed; use a separate blind-index column for equality and uniqueness."""
 
     _forbidden_options = ("primary_key", "unique", "db_index")
+    timeless = False
 
     def __init__(self, *args, **kwargs):
         for option in self._forbidden_options:
@@ -118,11 +127,17 @@ class EncryptedFieldMixin:
         value = super().get_prep_value(value)
         if value is None:
             return None
-        return encrypt(str(value))
+        return encrypt(str(value), timeless=self.timeless)
 
 
 class EncryptedTextField(EncryptedFieldMixin, models.TextField):
     pass
+
+
+class TimelessEncryptedTextField(EncryptedTextField):
+    """For anonymous rows: the ciphertext does not reveal when it was written."""
+
+    timeless = True
 
 
 class EncryptedCharField(EncryptedFieldMixin, models.CharField):

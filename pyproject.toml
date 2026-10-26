@@ -19,6 +19,7 @@ DJANGO_SETTINGS_MODULE = "config.settings.test"
 python_files = ["test_*.py"]
 testpaths = ["tests", "apps"]
 addopts = "-ra --strict-markers"
+markers = ["postgres: needs PostgreSQL row locks; skipped on other databases"]
 
 [tool.coverage.run]
 source = ["apps", "config"]

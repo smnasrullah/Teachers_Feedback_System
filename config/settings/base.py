@@ -204,6 +204,9 @@ TOTP_ISSUER = "Teacher Feedback System"
 # A password-checked login waits this long for its second factor.
 SECOND_FACTOR_PENDING_SECONDS = 10 * 60
 
+# Results and comment lists stay hidden below this many responses (never fewer than 3).
+MIN_RESPONSES = env.int("MIN_RESPONSES", default=5)
+
 LOGGING = build_logging_config(
     json_logs=env.bool("LOG_JSON", default=False), level=env("LOG_LEVEL", default="INFO")
 )
