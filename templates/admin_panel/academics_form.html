@@ -1,0 +1,22 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% if obj %}{% blocktranslate with what=screen.singular %}Edit {{ what }}{% endblocktranslate %}{% else %}{% blocktranslate with what=screen.singular %}Add {{ what }}{% endblocktranslate %}{% endif %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <header class="grid gap-2">
+    <a class="btn btn-ghost w-fit" href="{% url 'academics:list' screen.key %}">{% icon "chevron-left" %}{% blocktranslate with what=screen.title %}Back to {{ what }}{% endblocktranslate %}</a>
+    <h1>{% if obj %}{% blocktranslate with what=screen.singular %}Edit {{ what }}{% endblocktranslate %}{% else %}{% blocktranslate with what=screen.singular %}Add {{ what }}{% endblocktranslate %}{% endif %}</h1>
+  </header>
+
+  <form method="post" novalidate class="card grid gap-4">
+    {% csrf_token %}
+    {% include "components/form_errors.html" with form=form %}
+    {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-primary">{% translate "Save" %}</button>
+      <a class="btn btn-ghost" href="{% url 'academics:list' screen.key %}">{% translate "Cancel" %}</a>
+      {% if obj %}<a class="btn btn-danger ml-auto" href="{% url 'academics:delete' screen.key obj.pk %}">{% translate "Delete" %}</a>{% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

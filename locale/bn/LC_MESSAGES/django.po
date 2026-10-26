@@ -36,7 +36,9 @@ msgid "required"
 msgstr "আবশ্যক"
 
 msgid "Anonymous by design. Student feedback is never linked to a person."
-msgstr "বেনামি থাকাই এর নকশা। শিক্ষার্থীর মতামত কখনো কোনো ব্যক্তির সঙ্গে যুক্ত হয় না।"
+msgstr ""
+"বেনামি থাকাই এর নকশা। শিক্ষার্থীর মতামত কখনো কোনো ব্যক্তির সঙ্গে যুক্ত হয় "
+"না।"
 
 msgid "Language"
 msgstr "ভাষা"
@@ -135,10 +137,15 @@ msgid "Anonymous by design"
 msgstr "বেনামি থাকাই নকশা"
 
 msgid "Tell your teachers what helps you learn — without your name attached."
-msgstr "কীসে আপনার শেখা সহজ হয় তা শিক্ষকদের জানান — আপনার নাম প্রকাশ না করেই।"
+msgstr ""
+"কীসে আপনার শেখা সহজ হয় তা শিক্ষকদের জানান — আপনার নাম প্রকাশ না করেই।"
 
-msgid "Each semester, students rate their courses and teachers in short rounds. Teachers see only combined results, and only after the round closes."
-msgstr "প্রতি সেমিস্টারে শিক্ষার্থীরা ছোট ছোট রাউন্ডে কোর্স ও শিক্ষকদের মূল্যায়ন করেন। শিক্ষকরা শুধু সম্মিলিত ফলাফল দেখেন, তাও রাউন্ড শেষ হওয়ার পর।"
+msgid ""
+"Each semester, students rate their courses and teachers in short rounds. "
+"Teachers see only combined results, and only after the round closes."
+msgstr ""
+"প্রতি সেমিস্টারে শিক্ষার্থীরা ছোট ছোট রাউন্ডে কোর্স ও শিক্ষকদের মূল্যায়ন "
+"করেন। শিক্ষকরা শুধু সম্মিলিত ফলাফল দেখেন, তাও রাউন্ড শেষ হওয়ার পর।"
 
 msgid "Log in to give feedback"
 msgstr "মতামত দিতে লগ ইন করুন"
@@ -161,40 +168,66 @@ msgstr "ড. শিরিন আক্তার"
 msgid "Join with your student ID"
 msgstr "শিক্ষার্থী আইডি দিয়ে যোগ দিন"
 
-msgid "Sign up once with your student ID and the code from your department, then verify with a one-time code."
-msgstr "একবার শিক্ষার্থী আইডি ও বিভাগ থেকে পাওয়া কোড দিয়ে নিবন্ধন করুন, তারপর এককালীন কোড দিয়ে যাচাই করুন।"
+msgid ""
+"Sign up once with your student ID and the code from your department, then "
+"verify with a one-time code."
+msgstr ""
+"একবার শিক্ষার্থী আইডি ও বিভাগ থেকে পাওয়া কোড দিয়ে নিবন্ধন করুন, তারপর "
+"এককালীন কোড দিয়ে যাচাই করুন।"
 
 msgid "Answer a short form"
 msgstr "একটি ছোট ফর্ম পূরণ করুন"
 
-msgid "When a round opens, rate each course with stars and add comments if you like. You can save a draft."
-msgstr "রাউন্ড শুরু হলে প্রতিটি কোর্সে তারা দিয়ে রেটিং দিন, চাইলে মন্তব্য লিখুন। খসড়া সংরক্ষণও করা যায়।"
+msgid ""
+"When a round opens, rate each course with stars and add comments if you "
+"like. You can save a draft."
+msgstr ""
+"রাউন্ড শুরু হলে প্রতিটি কোর্সে তারা দিয়ে রেটিং দিন, চাইলে মন্তব্য লিখুন। "
+"খসড়া সংরক্ষণও করা যায়।"
 
 msgid "Submit and get your seal"
 msgstr "জমা দিন ও সিল পান"
 
-msgid "After you submit, your course is sealed. Nobody can change it, and nobody can see who wrote it."
-msgstr "জমা দেওয়ার পর কোর্সটি সিল হয়ে যায়। কেউ তা বদলাতে পারে না, আর কে লিখেছেন তাও কেউ দেখতে পারে না।"
+msgid ""
+"After you submit, your course is sealed. Nobody can change it, and nobody "
+"can see who wrote it."
+msgstr ""
+"জমা দেওয়ার পর কোর্সটি সিল হয়ে যায়। কেউ তা বদলাতে পারে না, আর কে লিখেছেন "
+"তাও কেউ দেখতে পারে না।"
 
 msgid "Teachers improve"
 msgstr "শিক্ষকরা উন্নতি করেন"
 
-msgid "When the round closes, teachers and department heads see combined results and act on them."
-msgstr "রাউন্ড শেষ হলে শিক্ষক ও বিভাগীয় প্রধানরা সম্মিলিত ফলাফল দেখে পদক্ষেপ নেন।"
+msgid ""
+"When the round closes, teachers and department heads see combined results "
+"and act on them."
+msgstr ""
+"রাউন্ড শেষ হলে শিক্ষক ও বিভাগীয় প্রধানরা সম্মিলিত ফলাফল দেখে পদক্ষেপ নেন।"
 
 msgid "Our anonymity promise"
 msgstr "আমাদের বেনামিত্বের প্রতিশ্রুতি"
 
-msgid "Your answers are stored separately from your account. There is no link between who you are and what you wrote."
-msgstr "আপনার উত্তর অ্যাকাউন্ট থেকে আলাদাভাবে সংরক্ষিত হয়। আপনি কে আর কী লিখেছেন — এ দুয়ের মধ্যে কোনো যোগসূত্র নেই।"
+msgid ""
+"Your answers are stored separately from your account. There is no link "
+"between who you are and what you wrote."
+msgstr ""
+"আপনার উত্তর অ্যাকাউন্ট থেকে আলাদাভাবে সংরক্ষিত হয়। আপনি কে আর কী লিখেছেন — "
+"এ দুয়ের মধ্যে কোনো যোগসূত্র নেই।"
 
-msgid "The system records only that you submitted for a course, never when or what."
-msgstr "সিস্টেম শুধু রাখে যে আপনি কোনো কোর্সে জমা দিয়েছেন — কখন বা কী লিখেছেন, তা কখনোই নয়।"
+msgid ""
+"The system records only that you submitted for a course, never when or what."
+msgstr ""
+"সিস্টেম শুধু রাখে যে আপনি কোনো কোর্সে জমা দিয়েছেন — কখন বা কী লিখেছেন, তা "
+"কখনোই নয়।"
 
-msgid "Results appear only after the round closes, and only when enough students have answered."
-msgstr "ফলাফল শুধু রাউন্ড শেষ হওয়ার পর এবং যথেষ্ট শিক্ষার্থী উত্তর দিলেই দেখা যায়।"
+msgid ""
+"Results appear only after the round closes, and only when enough students "
+"have answered."
+msgstr ""
+"ফলাফল শুধু রাউন্ড শেষ হওয়ার পর এবং যথেষ্ট শিক্ষার্থী উত্তর দিলেই দেখা যায়।"
 
-msgid "Comments are screened for abusive language before teachers can read them."
+msgid ""
+"Comments are screened for abusive language before teachers can read them."
 msgstr "শিক্ষকরা পড়ার আগে মন্তব্যগুলো অশালীন ভাষার জন্য যাচাই করা হয়।"
 
 msgid "Who uses it"
@@ -230,31 +263,49 @@ msgstr "সচরাচর জিজ্ঞাসা"
 msgid "Can my teacher see what I wrote?"
 msgstr "আমার শিক্ষক কি আমার লেখা দেখতে পারেন?"
 
-msgid "Teachers see comments without any name or ID, and only after the round closes. If fewer than five students answered, nothing is shown at all."
-msgstr "শিক্ষকরা নাম বা আইডি ছাড়া মন্তব্য দেখেন, তাও রাউন্ড শেষ হওয়ার পর। পাঁচজনের কম শিক্ষার্থী উত্তর দিলে কিছুই দেখানো হয় না।"
+msgid ""
+"Teachers see comments without any name or ID, and only after the round "
+"closes. If fewer than five students answered, nothing is shown at all."
+msgstr ""
+"শিক্ষকরা নাম বা আইডি ছাড়া মন্তব্য দেখেন, তাও রাউন্ড শেষ হওয়ার পর। পাঁচজনের"
+" কম শিক্ষার্থী উত্তর দিলে কিছুই দেখানো হয় না।"
 
 msgid "Do I have to give feedback?"
 msgstr "মতামত দেওয়া কি বাধ্যতামূলক?"
 
-msgid "Feedback is requested for every course, but your answers are always your own choice. You can save a draft and come back until the round ends."
-msgstr "প্রতিটি কোর্সের জন্য মতামত চাওয়া হয়, তবে উত্তর সবসময় আপনার নিজের সিদ্ধান্ত। রাউন্ড শেষ না হওয়া পর্যন্ত খসড়া রেখে পরে ফিরে আসতে পারেন।"
+msgid ""
+"Feedback is requested for every course, but your answers are always your own"
+" choice. You can save a draft and come back until the round ends."
+msgstr ""
+"প্রতিটি কোর্সের জন্য মতামত চাওয়া হয়, তবে উত্তর সবসময় আপনার নিজের "
+"সিদ্ধান্ত। রাউন্ড শেষ না হওয়া পর্যন্ত খসড়া রেখে পরে ফিরে আসতে পারেন।"
 
 msgid "Can I change my feedback after submitting?"
 msgstr "জমা দেওয়ার পর কি মতামত বদলানো যায়?"
 
-msgid "No. Submission is final so that results can be trusted. Please review your answers before you confirm."
-msgstr "না। ফলাফল বিশ্বাসযোগ্য রাখতে জমা দেওয়া চূড়ান্ত। নিশ্চিত করার আগে উত্তরগুলো দেখে নিন।"
+msgid ""
+"No. Submission is final so that results can be trusted. Please review your "
+"answers before you confirm."
+msgstr ""
+"না। ফলাফল বিশ্বাসযোগ্য রাখতে জমা দেওয়া চূড়ান্ত। নিশ্চিত করার আগে উত্তরগুলো"
+" দেখে নিন।"
 
 msgid "What if I forget my password?"
 msgstr "পাসওয়ার্ড ভুলে গেলে কী করব?"
 
-msgid "Use the forgot password option on the login page. We send a one-time code to the contact you registered with."
-msgstr "লগইন পাতায় পাসওয়ার্ড ভুলে গেছি অপশনটি ব্যবহার করুন। নিবন্ধনের সময় দেওয়া যোগাযোগে আমরা একটি এককালীন কোড পাঠাই।"
+msgid ""
+"Use the forgot password option on the login page. We send a one-time code to"
+" the contact you registered with."
+msgstr ""
+"লগইন পাতায় পাসওয়ার্ড ভুলে গেছি অপশনটি ব্যবহার করুন। নিবন্ধনের সময় দেওয়া "
+"যোগাযোগে আমরা একটি এককালীন কোড পাঠাই।"
 
 msgid "Who can see my student ID?"
 msgstr "আমার শিক্ষার্থী আইডি কারা দেখতে পারেন?"
 
-msgid "Only administrators and the head of your own department. Teachers never see it."
+msgid ""
+"Only administrators and the head of your own department. Teachers never see "
+"it."
 msgstr "শুধু অ্যাডমিন এবং আপনার নিজের বিভাগের প্রধান। শিক্ষকরা কখনো দেখেন না।"
 
 msgid "Access denied"
@@ -263,8 +314,12 @@ msgstr "প্রবেশাধিকার নেই"
 msgid "You don't have access to this page"
 msgstr "এই পাতায় আপনার প্রবেশাধিকার নেই"
 
-msgid "Your account is not allowed to see this. If you think this is a mistake, please contact your department office."
-msgstr "আপনার অ্যাকাউন্টে এটি দেখার অনুমতি নেই। ভুল মনে হলে বিভাগীয় অফিসে যোগাযোগ করুন।"
+msgid ""
+"Your account is not allowed to see this. If you think this is a mistake, "
+"please contact your department office."
+msgstr ""
+"আপনার অ্যাকাউন্টে এটি দেখার অনুমতি নেই। ভুল মনে হলে বিভাগীয় অফিসে যোগাযোগ "
+"করুন।"
 
 msgid "Page not found"
 msgstr "পাতা পাওয়া যায়নি"
@@ -272,7 +327,8 @@ msgstr "পাতা পাওয়া যায়নি"
 msgid "We can't find that page"
 msgstr "আমরা সেই পাতাটি খুঁজে পাচ্ছি না"
 
-msgid "The link may be old or mistyped. Go back to the home page and try again."
+msgid ""
+"The link may be old or mistyped. Go back to the home page and try again."
 msgstr "লিংকটি পুরনো বা ভুল হতে পারে। হোম পাতায় ফিরে আবার চেষ্টা করুন।"
 
 msgid "Something went wrong"
@@ -287,8 +343,12 @@ msgstr "আপনার মতামত ও তথ্য নিরাপদ আ�
 msgid "Back to home"
 msgstr "হোমে ফিরুন"
 
-msgid "Your feedback is anonymous. Teachers see only combined results, and only after the round closes."
-msgstr "আপনার মতামত বেনামি। শিক্ষকরা শুধু সম্মিলিত ফলাফল দেখেন, তাও রাউন্ড শেষ হওয়ার পর।"
+msgid ""
+"Your feedback is anonymous. Teachers see only combined results, and only "
+"after the round closes."
+msgstr ""
+"আপনার মতামত বেনামি। শিক্ষকরা শুধু সম্মিলিত ফলাফল দেখেন, তাও রাউন্ড শেষ "
+"হওয়ার পর।"
 
 msgid "Dashboard"
 msgstr "ড্যাশবোর্ড"
@@ -366,7 +426,9 @@ msgid "Your session has expired. Please sign in again."
 msgstr "আপনার সেশনের মেয়াদ শেষ হয়েছে। অনুগ্রহ করে আবার সাইন ইন করুন।"
 
 msgid "You were signed out because your account signed in on another device."
-msgstr "আপনার অ্যাকাউন্ট অন্য একটি ডিভাইসে সাইন ইন করায় এখানে আপনাকে সাইন আউট করা হয়েছে।"
+msgstr ""
+"আপনার অ্যাকাউন্ট অন্য একটি ডিভাইসে সাইন ইন করায় এখানে আপনাকে সাইন আউট করা "
+"হয়েছে।"
 
 msgid "Too many requests"
 msgstr "অনেক বেশি অনুরোধ"
@@ -374,8 +436,12 @@ msgstr "অনেক বেশি অনুরোধ"
 msgid "Please slow down"
 msgstr "অনুগ্রহ করে একটু ধীরে চেষ্টা করুন"
 
-msgid "You tried this too many times in a short while. Wait a few minutes, then try again."
-msgstr "অল্প সময়ের মধ্যে আপনি অনেকবার চেষ্টা করেছেন। কয়েক মিনিট অপেক্ষা করে আবার চেষ্টা করুন।"
+msgid ""
+"You tried this too many times in a short while. Wait a few minutes, then try"
+" again."
+msgstr ""
+"অল্প সময়ের মধ্যে আপনি অনেকবার চেষ্টা করেছেন। কয়েক মিনিট অপেক্ষা করে আবার "
+"চেষ্টা করুন।"
 
 msgid "user"
 msgstr "ব্যবহারকারী"
@@ -437,8 +503,14 @@ msgstr "অডিট ঘটনা"
 msgid "audit events"
 msgstr "অডিট ঘটনাসমূহ"
 
-msgid "Re-encrypt all encrypted columns with the first key in FIELD_ENCRYPTION_KEYS. Prepend the new key, run this, then remove the old key."
-msgstr "FIELD_ENCRYPTION_KEYS-এর প্রথম কী দিয়ে সব এনক্রিপ্ট করা কলাম পুনরায় এনক্রিপ্ট করে। নতুন কী তালিকার শুরুতে যোগ করুন, এটি চালান, তারপর পুরোনো কী সরান।"
+msgid ""
+"Re-encrypt all encrypted columns with the first key in "
+"FIELD_ENCRYPTION_KEYS. Prepend the new key, run this, then remove the old "
+"key."
+msgstr ""
+"FIELD_ENCRYPTION_KEYS-এর প্রথম কী দিয়ে সব এনক্রিপ্ট করা কলাম পুনরায় "
+"এনক্রিপ্ট করে। নতুন কী তালিকার শুরুতে যোগ করুন, এটি চালান, তারপর পুরোনো কী "
+"সরান।"
 
 msgid "%(label)s: %(count)d rows re-encrypted"
 msgstr "%(label)s: %(count)d টি সারি পুনরায় এনক্রিপ্ট করা হয়েছে"
@@ -458,8 +530,12 @@ msgstr "এটি আগের ঘটনার সাথে যুক্ত ন�
 msgid "its content does not match its hash (row was altered)"
 msgstr "এর বিষয়বস্তু হ্যাশের সাথে মেলে না (সারি পরিবর্তন করা হয়েছে)"
 
-msgid "Audit chain broken at event %(id)d: %(reason)s. %(count)d earlier events intact."
-msgstr "%(id)d নম্বর ঘটনায় অডিট চেইন ভাঙা: %(reason)s। এর আগের %(count)d টি ঘটনা অক্ষত।"
+msgid ""
+"Audit chain broken at event %(id)d: %(reason)s. %(count)d earlier events "
+"intact."
+msgstr ""
+"%(id)d নম্বর ঘটনায় অডিট চেইন ভাঙা: %(reason)s। এর আগের %(count)d টি ঘটনা "
+"অক্ষত।"
 
 msgid "%(count)d entry was re-activated."
 msgid_plural "%(count)d entries were re-activated."
@@ -471,8 +547,12 @@ msgid_plural "%(count)d entries were revoked."
 msgstr[0] "%(count)d টি এন্ট্রি বাতিল করা হয়েছে।"
 msgstr[1] "%(count)d টি এন্ট্রি বাতিল করা হয়েছে।"
 
-msgid "A head of department sees student IDs and names of their own department. Naming a new head replaces the current one."
-msgstr "বিভাগীয় প্রধান নিজের বিভাগের শিক্ষার্থীদের আইডি ও নাম দেখতে পান। নতুন প্রধান নির্ধারণ করলে বর্তমান প্রধান প্রতিস্থাপিত হন।"
+msgid ""
+"A head of department sees student IDs and names of their own department. "
+"Naming a new head replaces the current one."
+msgstr ""
+"বিভাগীয় প্রধান নিজের বিভাগের শিক্ষার্থীদের আইডি ও নাম দেখতে পান। নতুন "
+"প্রধান নির্ধারণ করলে বর্তমান প্রধান প্রতিস্থাপিত হন।"
 
 msgid "Academic status"
 msgstr "একাডেমিক অবস্থা"
@@ -489,8 +569,14 @@ msgstr "নির্বাচিত এন্ট্রির উপর কাজ
 msgid "Activation code"
 msgstr "অ্যাক্টিভেশন কোড"
 
-msgid "Activation codes are shown only once, in the downloaded CSV file. Only a hash is stored, so a lost code cannot be recovered: generate a new one instead."
-msgstr "অ্যাক্টিভেশন কোড শুধু একবার, ডাউনলোড করা CSV ফাইলে দেখানো হয়। কেবল হ্যাশ সংরক্ষিত থাকে, তাই হারানো কোড ফিরে পাওয়া যায় না; এর বদলে নতুন কোড তৈরি করুন।"
+msgid ""
+"Activation codes are shown only once, in the downloaded CSV file. Only a "
+"hash is stored, so a lost code cannot be recovered: generate a new one "
+"instead."
+msgstr ""
+"অ্যাক্টিভেশন কোড শুধু একবার, ডাউনলোড করা CSV ফাইলে দেখানো হয়। কেবল হ্যাশ "
+"সংরক্ষিত থাকে, তাই হারানো কোড ফিরে পাওয়া যায় না; এর বদলে নতুন কোড তৈরি "
+"করুন।"
 
 msgid "Active"
 msgstr "সক্রিয়"
@@ -564,8 +650,12 @@ msgstr "কোডের মেয়াদ (দিন)"
 msgid "Contact e-mail: "
 msgstr "যোগাযোগের ই-মেইল: "
 
-msgid "Create an Admin account interactively. There is no public signup for Admins; two-factor authentication is set up at the first login."
-msgstr "ইন্টারঅ্যাক্টিভভাবে একটি অ্যাডমিন অ্যাকাউন্ট তৈরি করুন। অ্যাডমিনের জন্য কোনো পাবলিক সাইনআপ নেই; প্রথম লগইনে দ্বি-স্তর যাচাই (টু-ফ্যাক্টর) সেট করা হয়।"
+msgid ""
+"Create an Admin account interactively. There is no public signup for Admins;"
+" two-factor authentication is set up at the first login."
+msgstr ""
+"ইন্টারঅ্যাক্টিভভাবে একটি অ্যাডমিন অ্যাকাউন্ট তৈরি করুন। অ্যাডমিনের জন্য কোনো"
+" পাবলিক সাইনআপ নেই; প্রথম লগইনে দ্বি-স্তর যাচাই (টু-ফ্যাক্টর) সেট করা হয়।"
 
 msgid "Department to head"
 msgstr "যে বিভাগের প্রধান হবেন"
@@ -592,7 +682,8 @@ msgid "Enter an ID of 3 to 32 letters, digits, dots, slashes or hyphens."
 msgstr "৩ থেকে ৩২টি অক্ষর, সংখ্যা, ডট, স্ল্যাশ বা হাইফেনের একটি আইডি দিন।"
 
 msgid "Exact ID or username. Names are encrypted and cannot be searched."
-msgstr "সঠিক আইডি বা ইউজারনেম। নাম এনক্রিপ্টেড থাকায় নাম দিয়ে খোঁজা যায় না।"
+msgstr ""
+"সঠিক আইডি বা ইউজারনেম। নাম এনক্রিপ্টেড থাকায় নাম দিয়ে খোঁজা যায় না।"
 
 msgid "Expired"
 msgstr "মেয়াদ শেষ"
@@ -634,13 +725,19 @@ msgid "Issued by the system and never changes."
 msgstr "সিস্টেম থেকে দেওয়া হয়, কখনও বদলায় না।"
 
 msgid "JPEG, PNG or WebP, up to 2 MB. It is re-encoded before it is stored."
-msgstr "JPEG, PNG বা WebP, সর্বোচ্চ ২ এমবি। সংরক্ষণের আগে ছবিটি নতুন করে এনকোড করা হয়।"
+msgstr ""
+"JPEG, PNG বা WebP, সর্বোচ্চ ২ এমবি। সংরক্ষণের আগে ছবিটি নতুন করে এনকোড করা "
+"হয়।"
 
 msgid "Level/Term"
 msgstr "লেভেল/টার্ম"
 
-msgid "Making a teacher an Admin gives access to every student ID and removes any head-of-department role."
-msgstr "শিক্ষককে অ্যাডমিন করলে তিনি সব শিক্ষার্থীর আইডি দেখতে পাবেন এবং বিভাগীয় প্রধানের দায়িত্ব সরে যাবে।"
+msgid ""
+"Making a teacher an Admin gives access to every student ID and removes any "
+"head-of-department role."
+msgstr ""
+"শিক্ষককে অ্যাডমিন করলে তিনি সব শিক্ষার্থীর আইডি দেখতে পাবেন এবং বিভাগীয় "
+"প্রধানের দায়িত্ব সরে যাবে।"
 
 msgid "New registry entry"
 msgstr "নতুন রেজিস্ট্রি এন্ট্রি"
@@ -744,8 +841,10 @@ msgstr "দাবি করা এন্ট্রির আইডি বদল�
 msgid "The filters are not valid."
 msgstr "ফিল্টারগুলো সঠিক নয়।"
 
-msgid "The head of department was assigned and the previous head was replaced."
-msgstr "বিভাগীয় প্রধান নিয়োগ দেওয়া হয়েছে এবং আগের প্রধান প্রতিস্থাপিত হয়েছেন।"
+msgid ""
+"The head of department was assigned and the previous head was replaced."
+msgstr ""
+"বিভাগীয় প্রধান নিয়োগ দেওয়া হয়েছে এবং আগের প্রধান প্রতিস্থাপিত হয়েছেন।"
 
 msgid "The head of department was assigned."
 msgstr "বিভাগীয় প্রধান নিয়োগ দেওয়া হয়েছে।"
@@ -780,7 +879,8 @@ msgstr "এই অ্যাকাউন্টের ভূমিকা বদল
 msgid "This batch belongs to a different program."
 msgstr "এই ব্যাচ অন্য একটি প্রোগ্রামের।"
 
-msgid "This password is too short. It must contain at least %(min)d characters."
+msgid ""
+"This password is too short. It must contain at least %(min)d characters."
 msgstr "পাসওয়ার্ডটি অনেক ছোট। কমপক্ষে %(min)d টি অক্ষর থাকতে হবে।"
 
 msgid "This program belongs to a different department."
@@ -808,7 +908,9 @@ msgid "Upload a valid JPEG, PNG or WebP image."
 msgstr "সঠিক JPEG, PNG বা WebP ছবি আপলোড করুন।"
 
 msgid "Use at least three of: lower case, upper case, digits and symbols."
-msgstr "ছোট হাতের অক্ষর, বড় হাতের অক্ষর, সংখ্যা ও চিহ্নের মধ্যে অন্তত তিনটি ব্যবহার করুন।"
+msgstr ""
+"ছোট হাতের অক্ষর, বড় হাতের অক্ষর, সংখ্যা ও চিহ্নের মধ্যে অন্তত তিনটি ব্যবহার"
+" করুন।"
 
 msgid "Used"
 msgstr "ব্যবহৃত"
@@ -997,8 +1099,12 @@ msgstr "আপনার অ্যাকাউন্ট তৈরি করুন
 msgid "Current password"
 msgstr "বর্তমান পাসওয়ার্ড"
 
-msgid "Delete finished one-time code challenges, and the contacts they hold, after a day."
-msgstr "সম্পন্ন হওয়া ওয়ান-টাইম কোড এবং তাতে থাকা যোগাযোগের তথ্য একদিন পরে মুছে ফেলুন।"
+msgid ""
+"Delete finished one-time code challenges, and the contacts they hold, after "
+"a day."
+msgstr ""
+"সম্পন্ন হওয়া ওয়ান-টাইম কোড এবং তাতে থাকা যোগাযোগের তথ্য একদিন পরে মুছে "
+"ফেলুন।"
 
 msgid "Deleted %(count)d one-time codes."
 msgstr "%(count)d টি ওয়ান-টাইম কোড মুছে ফেলা হয়েছে।"
@@ -1012,8 +1118,12 @@ msgstr "ইমেইল ঠিকানা"
 msgid "E-mail address or phone number"
 msgstr "ইমেইল ঠিকানা বা ফোন নম্বর"
 
-msgid "Enter the 6-digit code from your authenticator app. If you lost your phone, enter one of your recovery codes instead."
-msgstr "আপনার অথেন্টিকেটর অ্যাপের ৬ অঙ্কের কোডটি দিন। ফোন হারিয়ে গেলে এর বদলে একটি রিকভারি কোড দিন।"
+msgid ""
+"Enter the 6-digit code from your authenticator app. If you lost your phone, "
+"enter one of your recovery codes instead."
+msgstr ""
+"আপনার অথেন্টিকেটর অ্যাপের ৬ অঙ্কের কোডটি দিন। ফোন হারিয়ে গেলে এর বদলে একটি "
+"রিকভারি কোড দিন।"
 
 msgid "Enter the 6-digit code the app shows."
 msgstr "অ্যাপে দেখানো ৬ অঙ্কের কোডটি দিন।"
@@ -1048,11 +1158,18 @@ msgstr "আমি কোডগুলো সংরক্ষণ করেছি"
 msgid "ID and code"
 msgstr "আইডি ও কোড"
 
-msgid "If the details match an account, we sent a 6-digit code to its contact."
-msgstr "তথ্য কোনো অ্যাকাউন্টের সাথে মিললে আমরা তার যোগাযোগ মাধ্যমে ৬ অঙ্কের একটি কোড পাঠিয়েছি।"
+msgid ""
+"If the details match an account, we sent a 6-digit code to its contact."
+msgstr ""
+"তথ্য কোনো অ্যাকাউন্টের সাথে মিললে আমরা তার যোগাযোগ মাধ্যমে ৬ অঙ্কের একটি কোড"
+" পাঠিয়েছি।"
 
-msgid "Install an authenticator app (for example Google Authenticator, Microsoft Authenticator or Aegis)."
-msgstr "একটি অথেন্টিকেটর অ্যাপ ইনস্টল করুন (যেমন Google Authenticator, Microsoft Authenticator বা Aegis)।"
+msgid ""
+"Install an authenticator app (for example Google Authenticator, Microsoft "
+"Authenticator or Aegis)."
+msgstr ""
+"একটি অথেন্টিকেটর অ্যাপ ইনস্টল করুন (যেমন Google Authenticator, Microsoft "
+"Authenticator বা Aegis)।"
 
 msgid "It expires in 5 minutes."
 msgstr "এটি ৫ মিনিট পরে মেয়াদোত্তীর্ণ হবে।"
@@ -1081,8 +1198,12 @@ msgstr "কোনো সক্রিয় সাইন-ইন নথিভু�
 msgid "No more codes can be sent. Start again."
 msgstr "আর কোড পাঠানো যাবে না। আবার শুরু করুন।"
 
-msgid "Only one device can be signed in at a time: logging in elsewhere signs this one out."
-msgstr "একসাথে শুধু একটি ডিভাইসে সাইন-ইন থাকা যায়: অন্য কোথাও লগইন করলে এটি সাইন-আউট হয়ে যাবে।"
+msgid ""
+"Only one device can be signed in at a time: logging in elsewhere signs this "
+"one out."
+msgstr ""
+"একসাথে শুধু একটি ডিভাইসে সাইন-ইন থাকা যায়: অন্য কোথাও লগইন করলে এটি সাইন-"
+"আউট হয়ে যাবে।"
 
 msgid "Password"
 msgstr "পাসওয়ার্ড"
@@ -1091,7 +1212,8 @@ msgid "Password reset"
 msgstr "পাসওয়ার্ড রিসেট"
 
 msgid "Please sign in again and complete two-factor authentication."
-msgstr "অনুগ্রহ করে আবার সাইন-ইন করুন এবং টু-ফ্যাক্টর অথেন্টিকেশন সম্পন্ন করুন।"
+msgstr ""
+"অনুগ্রহ করে আবার সাইন-ইন করুন এবং টু-ফ্যাক্টর অথেন্টিকেশন সম্পন্ন করুন।"
 
 msgid "Please wait %(seconds)d seconds before asking for a new code."
 msgstr "নতুন কোড চাওয়ার আগে অনুগ্রহ করে %(seconds)d সেকেন্ড অপেক্ষা করুন।"
@@ -1108,11 +1230,17 @@ msgstr "নতুন পাসওয়ার্ডটি আবার দিন
 msgid "Reset your password"
 msgstr "আপনার পাসওয়ার্ড রিসেট করুন"
 
-msgid "Save these codes now, somewhere safe and apart from your phone. Each works once if you lose your authenticator. They are shown only this time."
-msgstr "এই কোডগুলো এখনই নিরাপদ জায়গায়, ফোন থেকে আলাদা করে সংরক্ষণ করুন। অথেন্টিকেটর হারালে প্রতিটি কোড একবার করে কাজ করবে। কোডগুলো শুধু এই একবারই দেখানো হয়।"
+msgid ""
+"Save these codes now, somewhere safe and apart from your phone. Each works "
+"once if you lose your authenticator. They are shown only this time."
+msgstr ""
+"এই কোডগুলো এখনই নিরাপদ জায়গায়, ফোন থেকে আলাদা করে সংরক্ষণ করুন। "
+"অথেন্টিকেটর হারালে প্রতিটি কোড একবার করে কাজ করবে। কোডগুলো শুধু এই একবারই "
+"দেখানো হয়।"
 
 msgid "Scan this QR code with the app, or type the key below into it."
-msgstr "অ্যাপ দিয়ে এই QR কোড স্ক্যান করুন, অথবা নিচের কী-টি অ্যাপে টাইপ করুন।"
+msgstr ""
+"অ্যাপ দিয়ে এই QR কোড স্ক্যান করুন, অথবা নিচের কী-টি অ্যাপে টাইপ করুন।"
 
 msgid "Security"
 msgstr "নিরাপত্তা"
@@ -1156,8 +1284,12 @@ msgstr "শিক্ষকের ড্যাশবোর্ড"
 msgid "That code is not correct."
 msgstr "কোডটি সঠিক নয়।"
 
-msgid "The ID or code is not valid, or it has already been used. Check both and try again."
-msgstr "আইডি বা কোডটি সঠিক নয়, অথবা আগেই ব্যবহার করা হয়েছে। দুটোই পরীক্ষা করে আবার চেষ্টা করুন।"
+msgid ""
+"The ID or code is not valid, or it has already been used. Check both and try"
+" again."
+msgstr ""
+"আইডি বা কোডটি সঠিক নয়, অথবা আগেই ব্যবহার করা হয়েছে। দুটোই পরীক্ষা করে আবার"
+" চেষ্টা করুন।"
 
 msgid "The code your department gave you, like XXXX-XXXX-XXXX."
 msgstr "আপনার বিভাগ থেকে পাওয়া কোড, যেমন XXXX-XXXX-XXXX।"
@@ -1189,20 +1321,30 @@ msgstr "এই ডিভাইস"
 msgid "This e-mail address or phone number cannot be used. Try another."
 msgstr "এই ইমেইল ঠিকানা বা ফোন নম্বরটি ব্যবহার করা যাবে না। অন্যটি দিন।"
 
-msgid "This is the name you log in with. It is not your student or teacher ID, and it never changes."
-msgstr "এই নামে আপনি লগইন করেন। এটি আপনার শিক্ষার্থী বা শিক্ষক আইডি নয়, এবং কখনও বদলায় না।"
+msgid ""
+"This is the name you log in with. It is not your student or teacher ID, and "
+"it never changes."
+msgstr ""
+"এই নামে আপনি লগইন করেন। এটি আপনার শিক্ষার্থী বা শিক্ষক আইডি নয়, এবং কখনও "
+"বদলায় না।"
 
-msgid "This page will show your work here once the next parts of the system are ready."
+msgid ""
+"This page will show your work here once the next parts of the system are "
+"ready."
 msgstr "ব্যবস্থার পরবর্তী অংশগুলো প্রস্তুত হলে আপনার কাজ এখানে দেখা যাবে।"
 
 msgid "This reset link has expired. Start again."
 msgstr "রিসেটের সময় শেষ হয়ে গেছে। আবার শুরু করুন।"
 
 msgid "Too many attempts. Please wait a few minutes and try again."
-msgstr "অনেকবার চেষ্টা করা হয়েছে। অনুগ্রহ করে কয়েক মিনিট অপেক্ষা করে আবার চেষ্টা করুন।"
+msgstr ""
+"অনেকবার চেষ্টা করা হয়েছে। অনুগ্রহ করে কয়েক মিনিট অপেক্ষা করে আবার চেষ্টা "
+"করুন।"
 
 msgid "Too many failed attempts. Please try again in %(minutes)d minutes."
-msgstr "অনেকবার ব্যর্থ চেষ্টা হয়েছে। অনুগ্রহ করে %(minutes)d মিনিট পরে আবার চেষ্টা করুন।"
+msgstr ""
+"অনেকবার ব্যর্থ চেষ্টা হয়েছে। অনুগ্রহ করে %(minutes)d মিনিট পরে আবার চেষ্টা "
+"করুন।"
 
 msgid "Too many wrong attempts. Send a new code."
 msgstr "অনেকবার ভুল দেওয়া হয়েছে। নতুন কোড পাঠান।"
@@ -1216,8 +1358,12 @@ msgstr "টু-ফ্যাক্টর বন্ধ করুন"
 msgid "Turn on and continue"
 msgstr "চালু করে চালিয়ে যান"
 
-msgid "Two-factor authentication adds a 6-digit code from your phone to every login."
-msgstr "টু-ফ্যাক্টর অথেন্টিকেশনে প্রতিটি লগইনে আপনার ফোন থেকে একটি ৬ অঙ্কের কোড লাগে।"
+msgid ""
+"Two-factor authentication adds a 6-digit code from your phone to every "
+"login."
+msgstr ""
+"টু-ফ্যাক্টর অথেন্টিকেশনে প্রতিটি লগইনে আপনার ফোন থেকে একটি ৬ অঙ্কের কোড "
+"লাগে।"
 
 msgid "Two-factor authentication is off."
 msgstr "টু-ফ্যাক্টর অথেন্টিকেশন বন্ধ আছে।"
@@ -1258,8 +1404,11 @@ msgstr "আমরা এখানে ৬ অঙ্কের কোড পাঠ�
 msgid "We sent a 6-digit code. It expires in 5 minutes."
 msgstr "আমরা ৬ অঙ্কের একটি কোড পাঠিয়েছি। এটি ৫ মিনিট পরে মেয়াদোত্তীর্ণ হবে।"
 
-msgid "We will send a 6-digit code to the e-mail address or phone you verified when you signed up."
-msgstr "সাইন-আপের সময় যাচাই করা ইমেইল ঠিকানা বা ফোনে আমরা ৬ অঙ্কের একটি কোড পাঠাব।"
+msgid ""
+"We will send a 6-digit code to the e-mail address or phone you verified when"
+" you signed up."
+msgstr ""
+"সাইন-আপের সময় যাচাই করা ইমেইল ঠিকানা বা ফোনে আমরা ৬ অঙ্কের একটি কোড পাঠাব।"
 
 msgid "Where should we send your verification code?"
 msgstr "যাচাইয়ের কোড কোথায় পাঠাব?"
@@ -1267,20 +1416,31 @@ msgstr "যাচাইয়ের কোড কোথায় পাঠাব
 msgid "Where you are signed in"
 msgstr "যেখানে আপনি সাইন-ইন আছেন"
 
-msgid "Write it down. You log in with this username and your password, not with your ID. You can always see it on your account page."
-msgstr "এটি লিখে রাখুন। আপনি আইডি দিয়ে নয়, এই ইউজারনেম ও পাসওয়ার্ড দিয়ে লগইন করবেন। আপনার অ্যাকাউন্ট পেজেও সবসময় এটি দেখতে পাবেন।"
+msgid ""
+"Write it down. You log in with this username and your password, not with "
+"your ID. You can always see it on your account page."
+msgstr ""
+"এটি লিখে রাখুন। আপনি আইডি দিয়ে নয়, এই ইউজারনেম ও পাসওয়ার্ড দিয়ে লগইন "
+"করবেন। আপনার অ্যাকাউন্ট পেজেও সবসময় এটি দেখতে পাবেন।"
 
 msgid "You have been logged out."
 msgstr "আপনি লগ আউট করেছেন।"
 
 msgid "You signed in with a recovery code. %(left)d recovery codes are left."
-msgstr "আপনি রিকভারি কোড দিয়ে সাইন-ইন করেছেন। আর %(left)d টি রিকভারি কোড বাকি আছে।"
+msgstr ""
+"আপনি রিকভারি কোড দিয়ে সাইন-ইন করেছেন। আর %(left)d টি রিকভারি কোড বাকি আছে।"
 
 msgid "You were signed out on every device."
 msgstr "সব ডিভাইসে আপনাকে সাইন-আউট করা হয়েছে।"
 
-msgid "Your Teacher Feedback System code is %(code)s. It expires in %(minutes)d minutes. If you did not ask for it, ignore this message and tell nobody the code."
-msgstr "আপনার শিক্ষক মূল্যায়ন ব্যবস্থার কোড %(code)s। এটি %(minutes)d মিনিট পরে মেয়াদোত্তীর্ণ হবে। আপনি না চেয়ে থাকলে এই বার্তা উপেক্ষা করুন এবং কোডটি কাউকে বলবেন না।"
+msgid ""
+"Your Teacher Feedback System code is %(code)s. It expires in %(minutes)d "
+"minutes. If you did not ask for it, ignore this message and tell nobody the "
+"code."
+msgstr ""
+"আপনার শিক্ষক মূল্যায়ন ব্যবস্থার কোড %(code)s। এটি %(minutes)d মিনিট পরে "
+"মেয়াদোত্তীর্ণ হবে। আপনি না চেয়ে থাকলে এই বার্তা উপেক্ষা করুন এবং কোডটি "
+"কাউকে বলবেন না।"
 
 msgid "Your account is ready"
 msgstr "আপনার অ্যাকাউন্ট তৈরি হয়েছে"
@@ -1306,11 +1466,17 @@ msgstr "আপনার পাসওয়ার্ড পরিবর্তন 
 msgid "Your recovery codes"
 msgstr "আপনার রিকভারি কোড"
 
-msgid "Your role can see student identities, so two-factor authentication is required before you continue."
-msgstr "আপনার ভূমিকায় শিক্ষার্থীদের পরিচয় দেখা যায়, তাই চালিয়ে যাওয়ার আগে টু-ফ্যাক্টর অথেন্টিকেশন আবশ্যক।"
+msgid ""
+"Your role can see student identities, so two-factor authentication is "
+"required before you continue."
+msgstr ""
+"আপনার ভূমিকায় শিক্ষার্থীদের পরিচয় দেখা যায়, তাই চালিয়ে যাওয়ার আগে "
+"টু-ফ্যাক্টর অথেন্টিকেশন আবশ্যক।"
 
-msgid "Your role requires two-factor authentication, so it cannot be turned off."
-msgstr "আপনার ভূমিকায় টু-ফ্যাক্টর অথেন্টিকেশন আবশ্যক, তাই এটি বন্ধ করা যাবে না।"
+msgid ""
+"Your role requires two-factor authentication, so it cannot be turned off."
+msgstr ""
+"আপনার ভূমিকায় টু-ফ্যাক্টর অথেন্টিকেশন আবশ্যক, তাই এটি বন্ধ করা যাবে না।"
 
 msgid "Your sign-up code"
 msgstr "আপনার সাইন-আপ কোড"
@@ -1354,3 +1520,208 @@ msgid "You can ask for a new code in %(seconds)s second."
 msgid_plural "You can ask for a new code in %(seconds)s seconds."
 msgstr[0] "আপনি %(seconds)s সেকেন্ড পরে নতুন কোড চাইতে পারবেন।"
 msgstr[1] "আপনি %(seconds)s সেকেন্ড পরে নতুন কোড চাইতে পারবেন।"
+
+msgid "start date"
+msgstr "শুরুর তারিখ"
+
+msgid "end date"
+msgstr "শেষের তারিখ"
+
+msgid "current semester"
+msgstr "চলমান সেমিস্টার"
+
+msgid "semester"
+msgstr "সেমিস্টার"
+
+msgid "semesters"
+msgstr "সেমিস্টারসমূহ"
+
+msgid "Theory"
+msgstr "তত্ত্বীয়"
+
+msgid "Lab"
+msgstr "ল্যাব"
+
+msgid "title"
+msgstr "শিরোনাম"
+
+msgid "title (Bangla)"
+msgstr "শিরোনাম (বাংলা)"
+
+msgid "credit"
+msgstr "ক্রেডিট"
+
+msgid "elective"
+msgstr "ঐচ্ছিক"
+
+msgid "course"
+msgstr "কোর্স"
+
+msgid "courses"
+msgstr "কোর্সসমূহ"
+
+msgid "course offering"
+msgstr "কোর্স অফারিং"
+
+msgid "course offerings"
+msgstr "কোর্স অফারিংসমূহ"
+
+msgid "teacher"
+msgstr "শিক্ষক"
+
+msgid "This department already has a program with this code."
+msgstr "এই বিভাগে এই কোডের একটি প্রোগ্রাম আগেই আছে।"
+
+msgid "This program already has a batch with this name."
+msgstr "এই প্রোগ্রামে এই নামের একটি ব্যাচ আগেই আছে।"
+
+msgid "Only one semester can be the current one."
+msgstr "একটি সেমিস্টারই চলমান হতে পারে।"
+
+msgid "The end date must be after the start date."
+msgstr "শেষের তারিখ অবশ্যই শুরুর তারিখের পরে হতে হবে।"
+
+msgid "This department already has a course with this code."
+msgstr "এই বিভাগে এই কোডের একটি কোর্স আগেই আছে।"
+
+msgid "The credit must be greater than zero."
+msgstr "ক্রেডিট অবশ্যই শূন্যের বেশি হতে হবে।"
+
+msgid "The program must belong to the course's department."
+msgstr "প্রোগ্রামটি অবশ্যই কোর্সের বিভাগের হতে হবে।"
+
+msgid "This course is already offered in this semester with this section."
+msgstr "এই কোর্স এই সেমিস্টারে এই সেকশনে আগেই অফার করা হয়েছে।"
+
+msgid "Making this the current semester ends the previous one."
+msgstr "এটিকে চলমান সেমিস্টার করলে আগেরটি আর চলমান থাকবে না।"
+
+msgid "Service course"
+msgstr "সার্ভিস কোর্স"
+
+msgid ""
+"Tick to confirm when the teacher belongs to another department than the "
+"course."
+msgstr "শিক্ষক কোর্সের বিভাগ থেকে ভিন্ন বিভাগের হলে নিশ্চিত করতে টিক দিন।"
+
+msgid ""
+"This teacher belongs to %(teacher_department)s but the course belongs to "
+"%(course_department)s. Tick the box to confirm a service course."
+msgstr ""
+"এই শিক্ষক %(teacher_department)s বিভাগের, কিন্তু কোর্সটি "
+"%(course_department)s বিভাগের। সার্ভিস কোর্স হিসেবে নিশ্চিত করতে বাক্সে টিক "
+"দিন।"
+
+msgid "All"
+msgstr "সব"
+
+msgid "Yes"
+msgstr "হ্যাঁ"
+
+msgid "No"
+msgstr "না"
+
+msgid "Departments"
+msgstr "বিভাগসমূহ"
+
+msgid "Programs"
+msgstr "প্রোগ্রামসমূহ"
+
+msgid "Batches"
+msgstr "ব্যাচসমূহ"
+
+msgid "Levels/terms"
+msgstr "লেভেল/টার্মসমূহ"
+
+msgid "Semesters"
+msgstr "সেমিস্টারসমূহ"
+
+msgid "Course offerings"
+msgstr "কোর্স অফারিংসমূহ"
+
+msgid "Code"
+msgstr "কোড"
+
+msgid "Name"
+msgstr "নাম"
+
+msgid "Name (Bangla)"
+msgstr "নাম (বাংলা)"
+
+msgid "Order"
+msgstr "ক্রম"
+
+msgid "Start date"
+msgstr "শুরুর তারিখ"
+
+msgid "End date"
+msgstr "শেষের তারিখ"
+
+msgid "Current"
+msgstr "চলমান"
+
+msgid "Title"
+msgstr "শিরোনাম"
+
+msgid "Credit"
+msgstr "ক্রেডিট"
+
+msgid "Level/term"
+msgstr "লেভেল/টার্ম"
+
+msgid "Elective"
+msgstr "ঐচ্ছিক"
+
+msgid "Semester"
+msgstr "সেমিস্টার"
+
+msgid "The %(what)s was deleted."
+msgstr "%(what)s মুছে ফেলা হয়েছে।"
+
+msgid "The %(what)s was saved."
+msgstr "%(what)s সংরক্ষণ করা হয়েছে।"
+
+msgid ""
+"This %(what)s cannot be deleted because it is still used by: %(blockers)s."
+msgstr ""
+"এই %(what)s মুছে ফেলা যাবে না, কারণ এটি এখনও ব্যবহৃত হচ্ছে: %(blockers)s।"
+
+msgid "Academics"
+msgstr "একাডেমিক"
+
+msgid "Delete"
+msgstr "মুছুন"
+
+msgid "Delete %(what)s"
+msgstr "%(what)s মুছুন"
+
+msgid ""
+"Delete “%(name)s”? This cannot be undone. A record that other records still "
+"use cannot be deleted."
+msgstr ""
+"“%(name)s” মুছবেন? এটি ফেরানো যাবে না। অন্য রেকর্ড যে রেকর্ড ব্যবহার করছে তা"
+" মুছে ফেলা যায় না।"
+
+msgid "Edit %(what)s"
+msgstr "%(what)s সম্পাদনা"
+
+msgid "Add %(what)s"
+msgstr "%(what)s যোগ করুন"
+
+msgid "Back to %(what)s"
+msgstr "%(what)s-এ ফিরুন"
+
+msgid "Actions"
+msgstr "কার্যক্রম"
+
+msgid "Edit"
+msgstr "সম্পাদনা"
+
+msgid "Filter %(what)s"
+msgstr "%(what)s ফিল্টার করুন"
+
+msgid "Nothing found"
+msgstr "কিছু পাওয়া যায়নি"
+
+msgid "Add a record, or change the filters."
+msgstr "একটি রেকর্ড যোগ করুন, অথবা ফিল্টার বদলান।"

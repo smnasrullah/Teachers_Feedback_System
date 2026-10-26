@@ -1,0 +1,16 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% blocktranslate with what=screen.singular %}Delete {{ what }}{% endblocktranslate %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6 max-w-3xl">
+  <h1>{% blocktranslate with what=screen.singular %}Delete {{ what }}{% endblocktranslate %}</h1>
+  <form method="post" class="card grid gap-4">
+    {% csrf_token %}
+    <p>{% blocktranslate with name=obj %}Delete “{{ name }}”? This cannot be undone. A record that other records still use cannot be deleted.{% endblocktranslate %}</p>
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-danger">{% translate "Delete" %}</button>
+      <a class="btn btn-ghost" href="{% url 'academics:edit' screen.key obj.pk %}">{% translate "Cancel" %}</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

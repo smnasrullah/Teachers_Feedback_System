@@ -3,6 +3,7 @@
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
+from apps.academics.screens import SCREENS
 from apps.core.permissions import Role
 
 
@@ -22,6 +23,16 @@ def admin_nav_items(current: str = "") -> list[dict]:
             "url": reverse("accounts:user_list"),
             "icon": "users",
         },
+        {"group": _("Academics")},
+        *(
+            {
+                "key": f"academics-{screen.key}",
+                "label": screen.title,
+                "url": reverse("academics:list", kwargs={"entity": screen.key}),
+                "icon": screen.icon,
+            }
+            for screen in SCREENS.values()
+        ),
     ]
     return [{**entry, "current": entry.get("key") == current} for entry in entries]
 

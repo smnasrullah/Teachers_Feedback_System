@@ -9,6 +9,7 @@ from apps.accounts.models import AcademicStatus, IdRegistry, IdType, RegistrySta
 from apps.accounts.services import registry as registry_service
 from apps.accounts.services.identifiers import clean_registry_id
 from apps.accounts.services.roles import CHANGEABLE_ROLES
+from apps.core.forms import StyledFormMixin
 from apps.core.permissions import Role
 from apps.core.uploads import SafeImageField
 
@@ -16,22 +17,8 @@ DEFAULT_CODE_VALID_DAYS = 14
 MAX_CODE_VALID_DAYS = 90
 
 
-class StyledForm(forms.Form):
-    """Gives every widget the design-system class that matches its kind."""
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            widget = field.widget
-            if isinstance(widget, forms.CheckboxInput):
-                css = "check"
-            elif isinstance(widget, forms.Select):
-                css = "select"
-            elif isinstance(widget, forms.Textarea):
-                css = "textarea"
-            else:
-                css = "input"
-            widget.attrs.setdefault("class", css)
+class StyledForm(StyledFormMixin, forms.Form):
+    """A plain form with design-system widget classes."""
 
 
 class RegistryFilterForm(StyledForm):

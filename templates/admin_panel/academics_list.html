@@ -1,0 +1,44 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{{ screen.title }} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-6">
+  <header class="flex flex-wrap items-center justify-between gap-3">
+    <h1>{{ screen.title }}</h1>
+    <a class="btn btn-primary" href="{% url 'academics:create' screen.key %}">{% icon "edit" %}{% blocktranslate with what=screen.singular %}Add {{ what }}{% endblocktranslate %}</a>
+  </header>
+
+  {% if filter_form.fields %}
+  <form method="get" class="card grid gap-4 sm:grid-cols-2 lg:grid-cols-4" role="search" aria-label="{% blocktranslate with what=screen.title %}Filter {{ what }}{% endblocktranslate %}">
+    {% for field in filter_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div class="flex items-end gap-3">
+      <button type="submit" class="btn btn-primary">{% icon "search" %}{% translate "Apply filters" %}</button>
+      <a class="btn btn-ghost" href="{% url 'academics:list' screen.key %}">{% translate "Reset" %}</a>
+    </div>
+  </form>
+  {% endif %}
+
+  {% if rows %}
+  <table class="data-table" role="table">
+    <caption class="sr-only">{{ screen.title }}</caption>
+    <thead role="rowgroup"><tr role="row">
+      {% for column in screen.columns %}<th scope="col" role="columnheader"{% if column.numeric %} class="cell-num"{% endif %}>{{ column.label }}</th>{% endfor %}
+      <th scope="col" role="columnheader"><span class="sr-only">{% translate "Actions" %}</span></th>
+    </tr></thead>
+    <tbody role="rowgroup">
+    {% for row in rows %}
+      <tr role="row">
+        {% for column, value in row.cells %}
+        <td role="cell" data-label="{{ column.label }}"{% if column.numeric %} class="cell-num"{% endif %}>{% if forloop.first %}<a href="{% url 'academics:edit' screen.key row.obj.pk %}">{{ value }}</a>{% else %}{{ value }}{% endif %}</td>
+        {% endfor %}
+        <td role="cell" data-label="{% translate 'Actions' %}"><a href="{% url 'academics:edit' screen.key row.obj.pk %}">{% translate "Edit" %}</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    {% include "components/empty_state.html" with title=_("Nothing found") text=_("Add a record, or change the filters.") icon="list" %}
+  {% endif %}
+  {% include "components/pagination.html" with page_obj=page_obj query=query %}
+</div>
+{% endblock %}
