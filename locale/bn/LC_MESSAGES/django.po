@@ -4774,3 +4774,189 @@ msgstr "এই রাউন্ডের জন্য আপনার সব ক�
 
 msgid "No distribution yet"
 msgstr "এখনও বণ্টন নেই"
+
+msgid "Honest feedback, kept anonymous."
+msgstr "আপনার মতামত, নিরাপদে বেনামি।"
+
+msgid "Rate your courses and teachers each semester. Teachers see only combined results, after the round closes."
+msgstr "প্রতি সেমিস্টারে আপনার কোর্স ও শিক্ষকদের মূল্যায়ন করুন। রাউন্ড শেষ হওয়ার পরই শিক্ষকেরা শুধু সম্মিলিত ফলাফল দেখেন।"
+
+msgid "Why you can trust it"
+msgstr "কেন আপনি ভরসা করতে পারেন"
+
+msgid "Your answers carry no name, ID or time."
+msgstr "আপনার উত্তরে কোনো নাম, আইডি বা সময় থাকে না।"
+
+msgid "Encrypted"
+msgstr "এনক্রিপ্টেড"
+
+msgid "Sensitive personal data is stored encrypted."
+msgstr "সংবেদনশীল ব্যক্তিগত তথ্য এনক্রিপ্ট করে রাখা হয়।"
+
+msgid "One voice per course"
+msgstr "প্রতি কোর্সে একটি মতামত"
+
+msgid "One feedback per student, per course, per round."
+msgstr "প্রতি শিক্ষার্থীর প্রতি কোর্সে প্রতি রাউন্ডে একটিই মতামত।"
+
+msgid "Results after the round closes"
+msgstr "রাউন্ড শেষ হলে ফলাফল"
+
+msgid "Nobody sees results while a round is still open."
+msgstr "রাউন্ড চলাকালীন কেউ ফলাফল দেখতে পান না।"
+
+msgid "Three steps"
+msgstr "তিন ধাপ"
+
+msgid "Get your ID and code"
+msgstr "আইডি ও কোড নিন"
+
+msgid "Your department gives you a student ID and a sign-up code. Create your account and verify it with a one-time code."
+msgstr "আপনার বিভাগ আপনাকে শিক্ষার্থী আইডি ও সাইন-আপ কোড দেয়। অ্যাকাউন্ট খুলে একবার-ব্যবহারযোগ্য কোড দিয়ে যাচাই করুন।"
+
+msgid "Give feedback once per course"
+msgstr "প্রতি কোর্সে একবার মতামত দিন"
+
+msgid "When a round opens, rate each course with stars and add comments if you like. Submission is final."
+msgstr "রাউন্ড শুরু হলে প্রতিটি কোর্সে তারা দিয়ে রেটিং দিন, চাইলে মন্তব্য লিখুন। জমা দেওয়ার পর আর বদলানো যায় না।"
+
+msgid "Teachers see combined results"
+msgstr "শিক্ষকেরা সম্মিলিত ফলাফল দেখেন"
+
+msgid "After the round closes, teachers see averages and comments without names. Nothing shows if fewer than five students answered."
+msgstr "রাউন্ড শেষ হলে শিক্ষকেরা নাম ছাড়া গড় রেটিং ও মন্তব্য দেখেন। পাঁচজনের কম শিক্ষার্থী উত্তর দিলে কিছুই দেখানো হয় না।"
+
+msgid "Four roles"
+msgstr "চারটি ভূমিকা"
+
+msgid "What each role sees"
+msgstr "কে কী দেখতে পান"
+
+msgid "Every role gets only what it needs, and nothing that could identify who wrote what."
+msgstr "প্রতিটি ভূমিকা শুধু প্রয়োজনীয় তথ্যই পায়, কে কী লিখেছে তা চেনার মতো কিছু নয়।"
+
+msgid "Can see"
+msgstr "দেখতে পান"
+
+msgid "Cannot see"
+msgstr "দেখতে পান না"
+
+msgid "Their own courses and which are still pending."
+msgstr "নিজের কোর্সগুলো এবং কোনগুলো এখনও বাকি।"
+
+msgid "Anyone else's answers, or the results."
+msgstr "অন্য কারও উত্তর বা ফলাফল।"
+
+msgid "Combined ratings and shuffled comments, after the round closes."
+msgstr "রাউন্ড শেষ হওয়ার পর সম্মিলিত রেটিং ও এলোমেলো করা মন্তব্য।"
+
+msgid "Names, student IDs, or who wrote which answer."
+msgstr "নাম, শিক্ষার্থী আইডি, বা কে কোন উত্তর লিখেছে।"
+
+msgid "Department rankings, alerts, and which own-department IDs are still pending."
+msgstr "বিভাগের র‍্যাংকিং, সতর্কতা, এবং নিজ বিভাগের কোন আইডিগুলো এখনও বাকি।"
+
+msgid "Any student's answers, or a link from a ballot to a student."
+msgstr "কোনো শিক্ষার্থীর উত্তর, বা কোনো ব্যালটের সঙ্গে শিক্ষার্থীর যোগসূত্র।"
+
+msgid "Administrator"
+msgstr "প্রশাসক"
+
+msgid "Rounds, enrollments and flagged comment text to moderate."
+msgstr "রাউন্ড, তালিকাভুক্তি এবং যাচাইয়ের জন্য চিহ্নিত মন্তব্য।"
+
+msgid "Who wrote a comment, or which student gave which rating."
+msgstr "কে মন্তব্য লিখেছে, বা কোন শিক্ষার্থী কোন রেটিং দিয়েছে।"
+
+msgid "In plain language"
+msgstr "সহজ ভাষায়"
+
+msgid "A look inside"
+msgstr "ভেতরে এক নজর"
+
+msgid "Each role gets a focused dashboard. Everything below is sample data, not real people or results."
+msgstr "প্রতিটি ভূমিকার জন্য আলাদা ড্যাশবোর্ড। নিচের সবকিছু নমুনা তথ্য, বাস্তব মানুষ বা ফলাফল নয়।"
+
+msgid "Sample data, not real"
+msgstr "নমুনা তথ্য, বাস্তব নয়"
+
+msgid "Home"
+msgstr "হোম"
+
+msgid "Sample round, one course sealed, two waiting."
+msgstr "নমুনা রাউন্ড: একটি কোর্স সিল করা, দুটি বাকি।"
+
+msgid "Sample teacher A"
+msgstr "নমুনা শিক্ষক ক"
+
+msgid "Algorithms"
+msgstr "অ্যালগরিদম"
+
+msgid "Sample teacher B"
+msgstr "নমুনা শিক্ষক খ"
+
+msgid "Operating Systems"
+msgstr "অপারেটিং সিস্টেম"
+
+msgid "Sample teacher C"
+msgstr "নমুনা শিক্ষক গ"
+
+msgid "Overall 4.3 out of 5, from 42 sample responses."
+msgstr "৪২টি নমুনা উত্তরে সার্বিক ৪.৩ (৫-এর মধ্যে)।"
+
+msgid "Clear explanations"
+msgstr "স্পষ্ট ব্যাখ্যা"
+
+msgid "Useful course material"
+msgstr "কার্যকর কোর্স উপকরণ"
+
+msgid "Fair grading"
+msgstr "ন্যায্য মূল্যায়ন"
+
+msgid "Respect in class"
+msgstr "ক্লাসে সম্মানজনক আচরণ"
+
+msgid "Pace of lessons"
+msgstr "পাঠদানের গতি"
+
+msgid "Department heatmap"
+msgstr "বিভাগের হিটম্যাপ"
+
+msgid "Average rating per question. Darker cells are higher."
+msgstr "প্রতি প্রশ্নের গড় রেটিং। গাঢ় ঘরে রেটিং বেশি।"
+
+msgid "University overview"
+msgstr "বিশ্ববিদ্যালয়ের সারসংক্ষেপ"
+
+msgid "Sample figures for one round."
+msgstr "একটি রাউন্ডের নমুনা সংখ্যা।"
+
+msgid "Open rounds"
+msgstr "চলমান রাউন্ড"
+
+msgid "Sample department A"
+msgstr "নমুনা বিভাগ ক"
+
+msgid "Sample department B"
+msgstr "নমুনা বিভাগ খ"
+
+msgid "Sample department C"
+msgstr "নমুনা বিভাগ গ"
+
+msgid "of students responded"
+msgstr "শিক্ষার্থী সাড়া দিয়েছেন"
+
+msgid "Which devices does it work on?"
+msgstr "কোন ডিভাইসে এটি চলে?"
+
+msgid "Any modern phone, tablet or computer browser. Bangla and English are both available, in light or dark mode."
+msgstr "যেকোনো আধুনিক ফোন, ট্যাবলেট বা কম্পিউটারের ব্রাউজারে। বাংলা ও ইংরেজি দুটোই আছে, লাইট বা ডার্ক মোডে।"
+
+msgid "Ready to share honest feedback?"
+msgstr "সৎ মতামত জানাতে প্রস্তুত?"
+
+msgid "Log in with your account, or create one with your student ID and the code from your department."
+msgstr "আপনার অ্যাকাউন্টে লগ ইন করুন, অথবা শিক্ষার্থী আইডি ও বিভাগের কোড দিয়ে নতুন অ্যাকাউন্ট খুলুন।"
+
+msgid "Who sees what"
+msgstr "কে কী দেখে"

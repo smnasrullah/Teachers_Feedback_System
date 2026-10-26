@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
   <script src="{% static 'vendor/htmx.min.js' %}" nonce="{{ csp_nonce }}" defer></script>
   <script src="{% static 'js/htmx-config.js' %}" nonce="{{ csp_nonce }}" defer></script>
+  {% block pre_alpine %}{% endblock %}
   <script src="{% static 'vendor/alpine-csp.min.js' %}" nonce="{{ csp_nonce }}" defer></script>
   <script src="{% static 'js/ui.js' %}" nonce="{{ csp_nonce }}" defer></script>
   {% block head %}{% endblock %}
