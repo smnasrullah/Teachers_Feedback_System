@@ -6,7 +6,20 @@
   <label class="flex items-center gap-3" for="{{ field.id_for_label }}">{{ field }}<span>{{ field.label }}</span></label>
   {% else %}
   <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="req" aria-hidden="true">*</span><span class="sr-only">({% translate "required" %})</span>{% endif %}</label>
+  {% if field.widget_type == "password" %}
+  <div class="pw-wrap">
+    {{ field }}
+    <button type="button" class="pw-toggle" data-pw-toggle aria-pressed="false" aria-label="{% translate 'Show password' %}">{% icon "eye" "pw-show-ico" %}{% icon "eye-off" "pw-hide-ico" %}</button>
+  </div>
+  {% if field.name == "password1" or field.name == "new_password1" %}
+  <div class="pw-strength" data-pw-strength data-score="0" data-level-0="{% translate 'Password strength: enter at least 10 characters' %}" data-level-1="{% translate 'Password strength: weak — add more characters' %}" data-level-2="{% translate 'Password strength: fair — mix letters and numbers' %}" data-level-3="{% translate 'Password strength: good' %}" data-level-4="{% translate 'Password strength: strong' %}">
+    <div class="pw-bars" aria-hidden="true"><span class="pw-bar"></span><span class="pw-bar"></span><span class="pw-bar"></span><span class="pw-bar"></span></div>
+    <span class="pw-strength-label" data-pw-strength-label aria-live="polite">{% translate "Password strength: enter at least 10 characters" %}</span>
+  </div>
+  {% endif %}
+  {% else %}
   {{ field }}
+  {% endif %}
   {% endif %}
   {% if field.help_text %}<p class="field-hint" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</p>{% endif %}
   {% for error in field.errors %}<p class="field-error" role="alert">{% icon "alert-circle" %}{{ error }}</p>{% endfor %}

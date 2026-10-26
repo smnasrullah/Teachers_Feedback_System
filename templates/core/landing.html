@@ -16,21 +16,28 @@
       <a class="btn btn-ghost" href="#how">{% translate "How it works" %}</a>
     </div>
   </div>
-  <div class="grid gap-4" aria-hidden="true">
-    {% translate "CSE 2201, Theory, 3 credits" as sample_code %}
-    {% translate "Database Systems" as sample_title %}
-    {% translate "Dr. Shirin Akter" as sample_teacher %}
-    {% include "components/stub.html" with sealed=True code=sample_code title=sample_title teacher=sample_teacher %}
+  <div class="hero-stack" aria-hidden="true">
+    <div class="hero-stub-back"></div>
+    <div class="hero-stub-mid"></div>
+    <div class="hero-stub-front grid gap-3">
+      {% translate "CSE 2201, Theory, 3 credits" as sample_code %}
+      {% translate "Database Systems" as sample_title %}
+      {% translate "Dr. Shirin Akter" as sample_teacher %}
+      {% include "components/stub.html" with sealed=True animate_seal=True code=sample_code title=sample_title teacher=sample_teacher %}
+      <div class="card card-flat flex items-center justify-between gap-3 text-sm">
+        <span class="text-muted">{% translate "CSE 2203 · Algorithms" %}</span>
+        {% translate "Pending" as pending_label %}{% include "components/badge.html" with variant="pending" label=pending_label %}
+      </div>
+    </div>
   </div>
 </section>
 
 <section class="wrap section" id="how" aria-labelledby="how-title">
   <h2 id="how-title">{% translate "How it works" %}</h2>
-  <div class="grid-cards mt-6">
+  <div class="grid-steps mt-6">
     <div class="card"><div class="step-no num">1</div><h3>{% translate "Join with your student ID" %}</h3><p class="text-muted mt-2">{% translate "Sign up once with your student ID and the code from your department, then verify with a one-time code." %}</p></div>
     <div class="card"><div class="step-no num">2</div><h3>{% translate "Answer a short form" %}</h3><p class="text-muted mt-2">{% translate "When a round opens, rate each course with stars and add comments if you like. You can save a draft." %}</p></div>
-    <div class="card"><div class="step-no num">3</div><h3>{% translate "Submit and get your seal" %}</h3><p class="text-muted mt-2">{% translate "After you submit, your course is sealed. Nobody can change it, and nobody can see who wrote it." %}</p></div>
-    <div class="card"><div class="step-no num">4</div><h3>{% translate "Teachers improve" %}</h3><p class="text-muted mt-2">{% translate "When the round closes, teachers and department heads see combined results and act on them." %}</p></div>
+    <div class="card"><div class="step-no num">3</div><h3>{% translate "Submit and get your seal" %}</h3><p class="text-muted mt-2">{% translate "After you submit, your course is sealed. Teachers see combined results only after the round closes." %}</p></div>
   </div>
 </section>
 
@@ -43,6 +50,29 @@
       <li>{% icon "check" %}<span>{% translate "Results appear only after the round closes, and only when enough students have answered." %}</span></li>
       <li>{% icon "check" %}<span>{% translate "Comments are screened for abusive language before teachers can read them." %}</span></li>
     </ul>
+    <div class="role-matrix">
+      <div class="role-col">
+        <h3>{% icon "award" %}<span>{% translate "Teachers" %}</span></h3>
+        <ul class="checklist text-sm">
+          <li>{% icon "check" %}<span>{% translate "Can see combined ratings and shuffled comments after the round closes." %}</span></li>
+          <li>{% icon "x" "ico-no" %}<span>{% translate "Cannot see student names, IDs, or who wrote which answer." %}</span></li>
+        </ul>
+      </div>
+      <div class="role-col">
+        <h3>{% icon "users" %}<span>{% translate "Department heads" %}</span></h3>
+        <ul class="checklist text-sm">
+          <li>{% icon "check" %}<span>{% translate "Can see department course rankings and which own-department IDs are still pending." %}</span></li>
+          <li>{% icon "x" "ico-no" %}<span>{% translate "Cannot see any student's answers or link a ballot to a student." %}</span></li>
+        </ul>
+      </div>
+      <div class="role-col">
+        <h3>{% icon "settings" %}<span>{% translate "Administrators" %}</span></h3>
+        <ul class="checklist text-sm">
+          <li>{% icon "check" %}<span>{% translate "Can manage rounds, enrollments, and moderate flagged comment text." %}</span></li>
+          <li>{% icon "x" "ico-no" %}<span>{% translate "Cannot see who wrote a comment or connect ratings to a student." %}</span></li>
+        </ul>
+      </div>
+    </div>
   </div>
 </section>
 

@@ -96,6 +96,85 @@
     var dismiss = target.closest("[data-dismiss]");
     if (dismiss) {
       dismiss.closest(".toast").remove();
+      return;
+    }
+
+    var pwToggle = target.closest("[data-pw-toggle]");
+    if (pwToggle) {
+      var wrap = pwToggle.closest(".pw-wrap");
+      var input = wrap && wrap.querySelector("input");
+      if (input) {
+        var shown = input.type === "text";
+        input.type = shown ? "password" : "text";
+        pwToggle.setAttribute("aria-pressed", String(!shown));
+      }
+    }
+  });
+
+  function scorePassword(value) {
+    if (!value) {
+      return 0;
+    }
+    var score = 1;
+    if (value.length >= 10) {
+      score += 1;
+    }
+    if (/[A-Z]/.test(value) && /[a-z]/.test(value) && /\d/.test(value)) {
+      score += 1;
+    }
+    if (value.length >= 14 || /[^A-Za-z0-9]/.test(value)) {
+      score += 1;
+    }
+    return Math.min(4, score);
+  }
+
+  function updatePasswordStrength(input) {
+    var field = input.closest(".field");
+    var meter = field && field.querySelector("[data-pw-strength]");
+    if (!meter) {
+      return;
+    }
+    var score = scorePassword(input.value);
+    meter.setAttribute("data-score", String(score));
+    var label = meter.querySelector("[data-pw-strength-label]");
+    if (label) {
+      label.textContent = meter.getAttribute("data-level-" + score) || "";
+    }
+  }
+
+  document.addEventListener("input", function (event) {
+    if (event.target && event.target.matches('input[autocomplete="new-password"]')) {
+      updatePasswordStrength(event.target);
+    }
+  });
+
+  document.addEventListener("submit", function (event) {
+    var form = event.target;
+    if (!form || event.defaultPrevented) {
+      return;
+    }
+    var btn = form.querySelector('button[type="submit"]');
+    if (btn) {
+      btn.classList.add("is-loading");
+      btn.setAttribute("aria-busy", "true");
+    }
+  });
+
+  document.addEventListener("htmx:beforeRequest", function (event) {
+    var elt = event.detail && event.detail.elt;
+    var btn = elt && (elt.matches("button") ? elt : elt.querySelector('button[type="submit"]'));
+    if (btn) {
+      btn.classList.add("is-loading");
+      btn.setAttribute("aria-busy", "true");
+    }
+  });
+
+  document.addEventListener("htmx:afterRequest", function (event) {
+    var elt = event.detail && event.detail.elt;
+    var btn = elt && (elt.matches("button") ? elt : elt.querySelector('button[type="submit"]'));
+    if (btn) {
+      btn.classList.remove("is-loading");
+      btn.removeAttribute("aria-busy");
     }
   });
 

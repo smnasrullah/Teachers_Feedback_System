@@ -4703,3 +4703,74 @@ msgid "%(n)s unread notification"
 msgid_plural "%(n)s unread notifications"
 msgstr[0] "%(n)s টি অপঠিত বিজ্ঞপ্তি"
 msgstr[1] "%(n)s টি অপঠিত বিজ্ঞপ্তি"
+
+
+#. ui polish
+msgid "Show password"
+msgstr "পাসওয়ার্ড দেখুন"
+
+msgid "Password strength: enter at least 10 characters"
+msgstr "পাসওয়ার্ডের শক্তি: কমপক্ষে ১০টি অক্ষর দিন"
+
+msgid "Password strength: weak — add more characters"
+msgstr "পাসওয়ার্ডের শক্তি: দুর্বল — আরও অক্ষর যোগ করুন"
+
+msgid "Password strength: fair — mix letters and numbers"
+msgstr "পাসওয়ার্ডের শক্তি: মাঝারি — অক্ষর ও সংখ্যা মেশান"
+
+msgid "Password strength: good"
+msgstr "পাসওয়ার্ডের শক্তি: ভালো"
+
+msgid "Password strength: strong"
+msgstr "পাসওয়ার্ডের শক্তি: শক্তিশালী"
+
+msgid "CSE 2203 · Algorithms"
+msgstr "CSE 2203 · অ্যালগরিদম"
+
+msgid "After you submit, your course is sealed. Teachers see combined results only after the round closes."
+msgstr "জমা দেওয়ার পর আপনার কোর্সটি সিল করা হয়। রাউন্ড শেষ হওয়ার পরেই কেবল শিক্ষকরা সম্মিলিত ফলাফল দেখতে পান।"
+
+msgid "Can see combined ratings and shuffled comments after the round closes."
+msgstr "রাউন্ড শেষ হওয়ার পর সম্মিলিত রেটিং ও এলোমেলো মন্তব্য দেখতে পারেন।"
+
+msgid "Cannot see student names, IDs, or who wrote which answer."
+msgstr "শিক্ষার্থীর নাম, আইডি বা কে কোন উত্তর লিখেছেন তা দেখতে পারেন না।"
+
+msgid "Can see department course rankings and which own-department IDs are still pending."
+msgstr "বিভাগের কোর্সের ক্রম এবং নিজ বিভাগের কোন আইডিগুলো এখনো বাকি তা দেখতে পারেন।"
+
+msgid "Cannot see any student's answers or link a ballot to a student."
+msgstr "কোনো শিক্ষার্থীর উত্তর দেখতে বা ব্যালটের সাথে শিক্ষার্থীকে যুক্ত করতে পারেন না।"
+
+msgid "Can manage rounds, enrollments, and moderate flagged comment text."
+msgstr "রাউন্ড, এনরোলমেন্ট পরিচালনা এবং চিহ্নিত মন্তব্যের ভাষা যাচাই করতে পারেন।"
+
+msgid "Cannot see who wrote a comment or connect ratings to a student."
+msgstr "কে মন্তব্য লিখেছেন তা দেখতে বা রেটিংয়ের সাথে শিক্ষার্থীকে যুক্ত করতে পারেন না।"
+
+msgid "Privacy promise"
+msgstr "গোপনীয়তার প্রতিশ্রুতি"
+
+msgid "Private, honest course feedback"
+msgstr "গোপনীয় ও সৎ কোর্স মতামত"
+
+msgid "Answers are stored without your name or student ID."
+msgstr "আপনার নাম বা স্টুডেন্ট আইডি ছাড়াই উত্তর সংরক্ষণ করা হয়।"
+
+msgid "Each submitted course is stamped and sealed."
+msgstr "জমা দেওয়া প্রতিটি কোর্স স্ট্যাম্প দিয়ে সিল করা হয়।"
+
+msgid "Results unlock only when at least 5 students respond."
+msgstr "কমপক্ষে ৫ জন শিক্ষার্থী উত্তর দিলেই কেবল ফলাফল খোলা হয়।"
+
+msgid "One account, one sealed ballot per course each round."
+msgstr "একটি অ্যাকাউন্ট, প্রতি রাউন্ডে প্রতি কোর্সে একটি সিল করা ব্যালট।"
+
+msgid "Ballot sealed"
+msgstr "ব্যালট সিল করা হয়েছে"
+
+msgid "You have completed all your courses for this round."
+msgstr "এই রাউন্ডের জন্য আপনার সব কোর্সের মতামত সম্পন্ন হয়েছে।"
+
+msgid "No distribution yet"
+msgstr "এখনও বণ্টন নেই"

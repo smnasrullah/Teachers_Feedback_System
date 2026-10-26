@@ -1,7 +1,13 @@
-{# Params: label, value, icon, delta, trend (up|down|flat) #}
+{# Params: label, value, icon, delta, trend (up|down|flat), sparkline #}
 {% load ui %}
 <div class="card stat-tile">
-  <div class="stat-label">{% if icon %}{% icon icon %}{% endif %}<span>{{ label }}</span></div>
-  <div class="stat-value num">{{ value }}</div>
+  <div class="stat-head">
+    <div class="stat-label"><span>{{ label }}</span></div>
+    {% if icon %}<span class="stat-ico" aria-hidden="true">{% icon icon %}</span>{% endif %}
+  </div>
+  <div class="stat-row">
+    <div class="stat-value num">{{ value }}</div>
+    {% if sparkline %}<svg class="sparkline" viewBox="0 0 68 24" aria-hidden="true"><polyline points="{{ sparkline }}"/></svg>{% endif %}
+  </div>
   {% if delta %}<div class="stat-delta stat-{{ trend|default:'flat' }}">{% if trend == 'up' %}{% icon "chevron-right" "-rotate-90" %}{% elif trend == 'down' %}{% icon "chevron-right" "rotate-90" %}{% endif %}<span>{{ delta }}</span></div>{% endif %}
 </div>

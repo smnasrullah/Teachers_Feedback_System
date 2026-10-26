@@ -37,7 +37,7 @@
     {% for comment in panel.comments %}
     <div class="comment">
       <p>{{ comment.text }}</p>
-      <div>
+      <div class="flex flex-wrap items-center justify-between gap-2">
         {% if comment.sentiment == "positive" %}<span class="tag tag-positive">{% icon "smile" %}{% translate "Positive" %}</span>
         {% elif comment.sentiment == "negative" %}<span class="tag tag-negative">{% icon "frown" %}{% translate "Needs work" %}</span>
         {% else %}<span class="tag tag-neutral">{% icon "meh" %}{% translate "Neutral" %}</span>{% endif %}

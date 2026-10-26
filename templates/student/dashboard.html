@@ -20,7 +20,7 @@
         {% if profile.batch %}<div><dt>{% translate "Batch" %}</dt><dd>{{ profile.batch.name }}</dd></div>{% endif %}
         <div><dt>{% translate "Level/term" %}</dt><dd>{{ profile.level_term|localized:"name" }}</dd></div>
         {% if dashboard.semester %}<div><dt>{% translate "Semester" %}</dt><dd>{{ dashboard.semester.name }}</dd></div>{% endif %}
-        <div><dt>{% translate "Login name" %}</dt><dd class="num">{{ request.user.username }}</dd></div>
+        <div><dt>{% translate "Login name" %}</dt><dd><span class="username num">{{ request.user.username }}</span></dd></div>
         {% if own_id %}<div><dt>{% translate "Student ID" %}</dt><dd class="num">{{ own_id }}</dd></div>{% endif %}
       </dl>
       {% with round=dashboard.round %}

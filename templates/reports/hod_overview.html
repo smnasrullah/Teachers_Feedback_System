@@ -44,23 +44,23 @@
     {% translate "Response rate" as rate_label %}
     {% if overview.rate.percent is not None %}
     {% blocktranslate with submitted=overview.rate.submitted enrolled=overview.rate.enrolled asvar rate_note %}{{ submitted }} of {{ enrolled }} responded{% endblocktranslate %}
-    {% include "components/stat_tile.html" with label=rate_label value=overview.rate.percent|floatformat:0|add:"%" delta=rate_note icon="users" %}
+    {% include "components/stat_tile.html" with label=rate_label value=overview.rate.percent|floatformat:0|add:"%" delta=rate_note icon="users" sparkline="2,18 18,15 34,12 50,8 66,4" %}
     {% else %}
     {% translate "Not shown yet" as hidden_value %}{% include "components/stat_tile.html" with label=rate_label value=hidden_value icon="lock" %}
     {% endif %}
     {% translate "Department average" as average_label %}
     {% if overview.average.average is not None %}
-    {% include "components/stat_tile.html" with label=average_label value=overview.average.average|floatformat:1 icon="star" %}
+    {% include "components/stat_tile.html" with label=average_label value=overview.average.average|floatformat:1 icon="star" sparkline="2,16 18,14 34,10 50,9 66,5" %}
     {% else %}
     {% translate "Not shown yet" as hidden_value %}{% include "components/stat_tile.html" with label=average_label value=hidden_value icon="lock" %}
     {% endif %}
   </section>
   {% if overview.average.message %}<p class="callout" role="status">{% icon "lock" %}<span>{{ overview.average.message }}</span></p>{% endif %}
 
-  <nav class="flex flex-wrap gap-3" aria-label="{% translate 'Quick actions' %}">
-    <a class="btn btn-ghost" href="{% url 'reports:hod_pending' %}?round={{ window.pk }}">{% icon "list" %}{% translate "Pending feedback" %}</a>
-    <a class="btn btn-ghost" href="{% url 'reports:overview' %}">{% icon "book" %}{% translate "My courses" %}</a>
-    <a class="btn btn-ghost" href="{% url 'reports:hod_audit' %}">{% icon "shield" %}{% translate "Department audit log" %}</a>
+  <nav class="quick-grid" aria-label="{% translate 'Quick actions' %}">
+    <a class="quick-card" href="{% url 'reports:hod_pending' %}?round={{ window.pk }}"><span class="stat-ico" aria-hidden="true">{% icon "list" %}</span><span>{% translate "Pending feedback" %}</span></a>
+    <a class="quick-card" href="{% url 'reports:overview' %}"><span class="stat-ico" aria-hidden="true">{% icon "book" %}</span><span>{% translate "My courses" %}</span></a>
+    <a class="quick-card" href="{% url 'reports:hod_audit' %}"><span class="stat-ico" aria-hidden="true">{% icon "shield" %}</span><span>{% translate "Department audit log" %}</span></a>
   </nav>
 
   {% if overview.alerts %}

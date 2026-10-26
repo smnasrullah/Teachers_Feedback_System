@@ -2,12 +2,26 @@
 {% load i18n ui %}
 {% block title %}{% translate "Thank you" %} · {% translate "Teacher Feedback System" %}{% endblock %}
 {% block content %}
-<section class="card grid gap-4 max-w-xl mx-auto w-full text-center" aria-labelledby="thanks-title">
-  <div class="seal done-seal" aria-hidden="true"><span>{% translate "Sealed" %}</span>{% icon "check" %}</div>
-  <h1 id="thanks-title" class="text-2xl">{% translate "Thank you!" %}</h1>
-  <p>{% blocktranslate with title=offering.course|localized:"title" %}Your feedback for {{ title }} was submitted. It is final and anonymous.{% endblocktranslate %}</p>
-  <p class="text-muted">{% translate "Teachers see only combined results, and only after the round closes." %}</p>
-  {% if waiting %}<p class="font-semibold">{% blocktranslate count n=waiting %}{{ n }} course is still waiting for your feedback.{% plural %}{{ n }} courses are still waiting for your feedback.{% endblocktranslate %}</p>{% endif %}
-  <a class="btn btn-primary justify-self-center" href="{% url 'accounts:dashboard_student' %}">{% translate "Back to my courses" %}</a>
+<section class="max-w-2xl mx-auto w-full grid gap-5" aria-labelledby="thanks-title">
+  <article class="stub stub-sealed">
+    <div class="stub-main grid gap-2">
+      <span class="badge badge-done w-fit">{% icon "shield" %}{% translate "Ballot sealed" %}</span>
+      <h1 id="thanks-title" class="text-2xl">{% translate "Thank you!" %}</h1>
+      <p>{% blocktranslate with title=offering.course|localized:"title" %}Your feedback for {{ title }} was submitted. It is final and anonymous.{% endblocktranslate %}</p>
+      <p class="text-sm text-muted">{% translate "Teachers see only combined results, and only after the round closes." %}</p>
+    </div>
+    <div class="stub-tear">
+      <div class="seal seal-animate done-seal" aria-hidden="true"><span>{% translate "Sealed" %}</span>{% icon "check" %}</div>
+      <span class="text-sm font-semibold text-success">{% translate "Submitted" %}</span>
+    </div>
+  </article>
+  <div class="card flex flex-wrap items-center justify-between gap-4">
+    {% if waiting %}
+    <p class="font-semibold">{% blocktranslate count n=waiting %}{{ n }} course is still waiting for your feedback.{% plural %}{{ n }} courses are still waiting for your feedback.{% endblocktranslate %}</p>
+    {% else %}
+    <p class="text-muted">{% translate "You have completed all your courses for this round." %}</p>
+    {% endif %}
+    <a class="btn btn-primary" href="{% url 'accounts:dashboard_student' %}">{% translate "Back to my courses" %}</a>
+  </div>
 </section>
 {% endblock %}
