@@ -5245,3 +5245,71 @@ msgstr "আপনার মতামত"
 #: templates/core/landing.html:0
 msgid "+1 voice"
 msgstr "+1 মতামত"
+
+#: templates/accounts/login.html:0
+msgid "Demo accounts"
+msgstr "ডেমো অ্যাকাউন্ট"
+
+#: templates/accounts/login.html:0
+msgid "Development only. Run: python manage.py totp_code <username>"
+msgstr "শুধু ডেভেলপমেন্টের জন্য। চালান: python manage.py totp_code <username>"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Development only: create the demo accounts and demo data (safe to run again). Refuses to run unless DEBUG is on and the settings module is config.settings.dev."
+msgstr "শুধু ডেভেলপমেন্টের জন্য: ডেমো অ্যাকাউন্ট ও ডেমো ডেটা তৈরি করে (আবার চালালে ক্ষতি নেই)। DEBUG চালু এবং সেটিংস মডিউল config.settings.dev না হলে চলে না।"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Demo data removed (%(count)d accounts)."
+msgstr "ডেমো ডেটা মুছে ফেলা হয়েছে (%(count)d টি অ্যাকাউন্ট)।"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Demo data is ready (%(count)d new forms submitted)."
+msgstr "ডেমো ডেটা প্রস্তুত (%(count)d টি নতুন ফর্ম জমা হয়েছে)।"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Demo accounts (add the key to an authenticator app: time-based, 6 digits):"
+msgstr "ডেমো অ্যাকাউন্ট (কীটি অথেনটিকেটর অ্যাপে যোগ করুন: সময়ভিত্তিক, ৬ অঙ্ক):"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "setup key"
+msgstr "সেটআপ কী"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "generated, shown only now"
+msgstr "তৈরি করা হয়েছে, শুধু এখনই দেখানো হচ্ছে"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "as given"
+msgstr "আপনার দেওয়া"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Password (%(note)s): %(password)s"
+msgstr "পাসওয়ার্ড (%(note)s): %(password)s"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Passwords are unchanged. Use --password or %(env)s to set them."
+msgstr "পাসওয়ার্ড বদলানো হয়নি। ঠিক করতে --password বা %(env)s ব্যবহার করুন।"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Current code of an account: python manage.py totp_code <username>"
+msgstr "অ্যাকাউন্টের বর্তমান কোড: python manage.py totp_code <username>"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Spare sign-up pairs (student ID + activation code, shown only now):"
+msgstr "সাইন-আপ পরীক্ষার অতিরিক্ত জোড়া (শিক্ষার্থী আইডি + অ্যাক্টিভেশন কোড, শুধু এখনই দেখানো হচ্ছে):"
+
+#: apps/core/services/demo/people.py:0
+msgid "The demo authenticator code was refused. Run the command again."
+msgstr "ডেমো অথেনটিকেটর কোড গ্রহণ করা হয়নি। কমান্ডটি আবার চালান।"
+
+#: apps/core/services/demo/academics.py:0
+msgid "The semester %(name)s is marked as current. The demo needs %(demo)s as the current semester; end that one first or seed an empty database."
+msgstr "%(name)s সেমিস্টারটি বর্তমান হিসেবে চিহ্নিত। ডেমোর জন্য %(demo)s বর্তমান সেমিস্টার হওয়া দরকার; আগে ওটি শেষ করুন বা ফাঁকা ডাটাবেসে চালান।"
+
+#: apps/core/services/demo/academics.py:0
+msgid "The grade scale has no grade %(letters)s, which the demo results use."
+msgstr "গ্রেড স্কেলে %(letters)s গ্রেড নেই, অথচ ডেমো ফলাফলে তা ব্যবহৃত হয়।"
+
+#: apps/core/services/demo/runner.py:0
+msgid "The demo data only exists with DEBUG on and DJANGO_SETTINGS_MODULE=%(module)s."
+msgstr "ডেমো ডেটা শুধু DEBUG চালু এবং DJANGO_SETTINGS_MODULE=%(module)s হলে থাকে।"

@@ -17,5 +17,14 @@
     <a href="{% url 'accounts:username_forgot' %}">{% translate "Forgot your username?" %}</a>
     <a href="{% url 'accounts:signup' %}">{% translate "First time here? Create your account" %}</a>
   </nav>
+  {% if demo_usernames %}
+  <details class="card card-flat text-sm">
+    <summary>{% translate "Demo accounts" %}</summary>
+    <ul class="grid gap-1">
+      {% for username in demo_usernames %}<li><code>{{ username }}</code></li>{% endfor %}
+    </ul>
+    <p class="text-muted">{% translate "Development only. Run: python manage.py totp_code <username>" %}</p>
+  </details>
+  {% endif %}
 </section>
 {% endblock %}

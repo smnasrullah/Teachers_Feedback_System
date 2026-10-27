@@ -13,6 +13,7 @@ from apps.accounts.auth_forms import LoginForm, SecondFactorForm
 from apps.accounts.services import login as login_service
 from apps.accounts.services import twofactor
 from apps.core.permissions import public
+from apps.core.services.demo import constants as demo_constants
 
 GENERIC_LOGIN_ERROR = _lazy("The username or password is not correct.")
 
@@ -50,7 +51,11 @@ def login_view(request):
                 return _after_password(request, user)
             login_service.note_failure(request, username, stage="password")
             form.add_error(None, GENERIC_LOGIN_ERROR)
-    context = {"form": form, "next": login_service.safe_next(request) or ""}
+    context = {
+        "form": form,
+        "next": login_service.safe_next(request) or "",
+        "demo_usernames": demo_constants.USERNAMES if settings.DEBUG else (),
+    }
     return render(request, "accounts/login.html", context, status=status)
 
 

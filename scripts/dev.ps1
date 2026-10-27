@@ -2,7 +2,10 @@
 param(
     [Parameter(Mandatory = $true, Position = 0)]
     [ValidateSet('run', 'test', 'lint', 'fmt', 'migrate', 'reset-db', 'seed', 'messages', 'css')]
-    [string]$Target
+    [string]$Target,
+
+    [Parameter(Position = 1, ValueFromRemainingArguments = $true)]
+    [string[]]$Rest = @()
 )
 
 $ErrorActionPreference = 'Stop'
@@ -33,7 +36,7 @@ switch ($Target) {
     }
     'migrate' { Invoke-Step $py @('manage.py', 'migrate') }
     'reset-db' { Invoke-Step $py @('scripts/reset_dev_db.py') }
-    'seed'    { Invoke-Step $py @('manage.py', 'seed_demo') }
+    'seed'    { Invoke-Step $py (@('manage.py', 'seed_demo') + $Rest) }
     'messages' { Invoke-Step $py @('scripts/compile_messages.py') }
     'css'     { Invoke-Step $py @('manage.py', 'tailwind', 'build') }
 }
