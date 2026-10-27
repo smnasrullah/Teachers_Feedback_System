@@ -155,6 +155,19 @@ def test_component_css_uses_tokens_only():
     assert not re.search(r"\brgba?\(", css)
 
 
+@pytest.mark.parametrize("name", ["art.css", "landing.css", "landing_art.css"])
+def test_page_css_sets_colours_only_through_custom_properties(name):
+    """Literal colours belong in a palette variable, never in a rule or a var() fallback.
+
+    A mask image is the one exception: only its alpha channel matters, so its colour is not themed.
+    """
+    for line in (ROOT / "static/src" / name).read_text(encoding="utf-8").splitlines():
+        declaration = line.strip()
+        if declaration.startswith("--") or "mask-image:" in declaration:
+            continue
+        assert not re.search(r"#[0-9a-fA-F]{3,8}\b|\brgba?\(", declaration), declaration
+
+
 def test_tokens_cover_blueprint_light_and_dark_values():
     css = (ROOT / "static/src/tokens.css").read_text(encoding="utf-8")
 

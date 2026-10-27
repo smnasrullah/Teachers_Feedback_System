@@ -40,6 +40,9 @@
   --art-tint: #0c1544;
   --art-tile: #fff8ea;
   --art-tile-2: #eef6fc;
+  --art-crater: #dcd6b4;
+  --art-star: #ffffff;
+  --art-bulb: #fff3cf;
 }
 
 .dark {
@@ -60,7 +63,8 @@
   --art-tile-2: #1d2a47;
 }
 
-/* Palettes for the six character poses (see people.html). */
+/* Palettes for the six character poses (see people.html); a figure without one wears .p-a. */
+:root,
 .p-a {
   --p-skin: #e6b088;
   --p-hair: #2a1d1b;
@@ -126,13 +130,13 @@
     stroke-linejoin: round;
   }
   .f-skin {
-    fill: var(--p-skin, #e6b088);
+    fill: var(--p-skin);
   }
   .f-top {
-    fill: var(--p-top, #3f7cc4);
+    fill: var(--p-top);
   }
   .f-hair {
-    fill: var(--p-hair, #2a1d1b);
+    fill: var(--p-hair);
   }
   .f-long {
     opacity: var(--p-long, 0);
@@ -152,10 +156,10 @@
     stroke-linejoin: round;
   }
   .f-bot {
-    stroke: var(--p-bot, #2d3a63);
+    stroke: var(--p-bot);
   }
   .f-top-s {
-    stroke: var(--p-top, #3f7cc4);
+    stroke: var(--p-top);
   }
   .f-eye {
     fill: var(--art-line);
@@ -352,14 +356,14 @@
     opacity: 0.4;
   }
   .crater {
-    fill: #dcd6b4;
+    fill: var(--art-crater);
     stroke: none;
   }
   .star {
-    fill: #fff;
+    fill: var(--art-star);
   }
   .bulb {
-    fill: #fff3cf;
+    fill: var(--art-bulb);
   }
   .lit-fill {
     fill: var(--art-lamp);
