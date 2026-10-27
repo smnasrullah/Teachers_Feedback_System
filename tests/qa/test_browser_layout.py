@@ -76,3 +76,36 @@ def test_no_page_scrolls_sideways_on_a_phone(transactional_db, live_server, brow
                 wide.append(f"{role} {reverse(name)}")
         context.close()
     assert not wide, wide
+
+
+SHIFTS = """
+window.__cls = 0;
+new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) if (!entry.hadRecentInput) window.__cls += entry.value;
+}).observe({type: 'layout-shift', buffered: true});
+"""
+CLS_LIMIT = 0.1  # "good" Cumulative Layout Shift
+DESKTOP = {"width": 1440, "height": 900}
+
+
+@pytest.mark.parametrize("viewport", [PHONE, DESKTOP], ids=["phone", "desktop"])
+def test_pages_do_not_jump_while_they_load(transactional_db, live_server, browser, viewport):
+    """A first visit (nothing cached): fonts and the live clock arrive without moving the page."""
+    users = _users()
+    jumps = []
+    for role, names in [("anonymous", ["core:home", "accounts:login"]), *PAGES.items()]:
+        for name in names:
+            context = browser.new_context(
+                viewport=viewport, extra_http_headers={"Accept-Language": "bn"}
+            )
+            context.add_init_script(SHIFTS)
+            if role != "anonymous":
+                context.add_cookies([_session_cookie(users[role], live_server.url)])
+            page = context.new_page()
+            page.goto(live_server.url + reverse(name), wait_until="networkidle")
+            page.wait_for_timeout(300)
+            shift = page.evaluate("window.__cls")
+            if shift > CLS_LIMIT:
+                jumps.append(f"{role} {reverse(name)}: {shift:.2f}")
+            context.close()
+    assert not jumps, jumps

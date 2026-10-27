@@ -9,6 +9,15 @@
   <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
   <title>{% block title %}{% translate "Teacher Feedback System" %}{% endblock %}</title>
   <script src="{% static 'js/theme.js' %}"></script>
+  {# The weights above the fold load with the stylesheet, so text does not jump when they arrive. #}
+  <link rel="preload" as="font" type="font/woff2" href="{% static 'fonts/plus-jakarta-sans-latin-400-normal.woff2' %}" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="{% static 'fonts/plus-jakarta-sans-latin-600-normal.woff2' %}" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="{% static 'fonts/plus-jakarta-sans-latin-700-normal.woff2' %}" crossorigin>
+  {% if LANGUAGE_CODE == "bn" %}
+  <link rel="preload" as="font" type="font/woff2" href="{% static 'fonts/hind-siliguri-bengali-400-normal.woff2' %}" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="{% static 'fonts/hind-siliguri-bengali-600-normal.woff2' %}" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="{% static 'fonts/hind-siliguri-bengali-700-normal.woff2' %}" crossorigin>
+  {% endif %}
   <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
   <script src="{% static 'vendor/htmx.min.js' %}" nonce="{{ csp_nonce }}" defer></script>
   <script src="{% static 'js/htmx-config.js' %}" nonce="{{ csp_nonce }}" defer></script>
