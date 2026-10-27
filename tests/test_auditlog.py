@@ -3,12 +3,13 @@ from io import StringIO
 import pytest
 from django.core.management import CommandError, call_command
 from django.db import DatabaseError, connection, transaction
+from django.urls import reverse
 from django.utils import translation
 
 from apps.auditlog.models import GENESIS_HASH, AuditEvent, AuditLogImmutableError
 from apps.auditlog.services import audit
 from apps.core.permissions import Role
-from tests.factories import make_user
+from tests.factories import make_admin, make_user, sign_in
 
 
 @pytest.fixture
@@ -155,3 +156,14 @@ def test_ipv4_mapped_address_round_trips_through_hash(rf):
     request.user = type("Anon", (), {"is_authenticated": False})()
     audit.record("auth.login_failed", request=request)
     assert audit.verify_chain().ok
+
+
+@pytest.mark.django_db
+def test_audit_page_shows_a_dash_for_empty_metadata_values(web):
+    audit.record("reports.exported", metadata={"report": "university", "department_id": None})
+    sign_in(web, make_admin())
+
+    html = web.get(reverse("auditlog:log")).content.decode()
+
+    assert "report: university, department_id: —" in html
+    assert "None" not in html
