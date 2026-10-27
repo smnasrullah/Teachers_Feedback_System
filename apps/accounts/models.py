@@ -106,6 +106,13 @@ class User(AbstractBaseUser):
         """Lets the development-only Django admin recognise the Admin role."""
         return self.role == Role.ADMIN
 
+    def has_perm(self, perm, obj=None):
+        """Django's permission check, used only by the admin: an active Admin may do everything."""
+        return self.is_active and self.is_staff
+
+    def has_module_perms(self, app_label):
+        return self.is_active and self.is_staff
+
     @cached_property
     def teacher_profile(self):
         return (
