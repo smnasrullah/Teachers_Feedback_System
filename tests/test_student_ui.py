@@ -577,6 +577,20 @@ def test_profile_saves_choices_and_remembers_them(world):
     assert system.cookies["tfs_theme"].value == ""
 
 
+def test_profile_shows_the_users_own_avatar_or_initials(world, settings, tmp_path):
+    settings.MEDIA_ROOT = tmp_path
+    url = reverse("accounts:profile")
+    world.web.post(url, {"nickname": "Tanvir Rahman", "language": "en", "theme": "system"})
+    initials = world.web.get(url).content.decode()
+    assert '<span class="avatar avatar-lg" aria-hidden="true">TR</span>' in initials
+
+    world.web.post(
+        url, {"nickname": "T", "language": "en", "theme": "system", "avatar": png_upload()}
+    )
+    world.user.refresh_from_db()
+    assert f'src="{world.user.avatar.url}"' in world.web.get(url).content.decode()
+
+
 def test_profile_rejects_unknown_language_and_theme(world):
     response = world.web.post(
         reverse("accounts:profile"), {"nickname": "x", "language": "xx", "theme": "neon"}
