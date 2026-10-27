@@ -2,97 +2,191 @@
 {% load i18n static ui %}
 {% block title %}{% translate "Teacher Feedback System" %} — {% translate "Honest, anonymous course feedback" %}{% endblock %}
 {% block pre_alpine %}<script src="{% static 'js/preview.js' %}" nonce="{{ csp_nonce }}" defer></script>{% endblock %}
+{% block head %}<script src="{% static 'js/art.js' %}" nonce="{{ csp_nonce }}" defer></script><script src="{% static 'js/demo.js' %}" nonce="{{ csp_nonce }}" defer></script>{% endblock %}
 {% block nav %}{% include "components/navbar.html" with user_name=request.user.get_username|default:"" anchors=True %}{% endblock %}
 {% block content %}
 {% url 'accounts:login' as login_url %}
 {% url 'accounts:signup' as signup_url %}
+{% include "components/illustrations/people.html" %}
 
-<section class="l-band l-hero" aria-labelledby="hero-title">
-  <span class="shape shape-circle hero-circle" aria-hidden="true"></span>
-  <span class="shape shape-quarter hero-quarter" aria-hidden="true"></span>
-  <div class="l-wrap">
-    <div class="l-grid">
-      <div class="l-hero-copy">
-        <p class="eyebrow">{% translate "Teacher Feedback System" %}</p>
-        <h1 id="hero-title" class="mt-4">{% translate "Honest feedback, kept anonymous." %}</h1>
-        <p class="lead">{% translate "Rate your courses and teachers each semester. Teachers see only combined results, after the round closes." %}</p>
-        <div class="l-cta">
-          {% if login_url %}<a class="btn btn-primary" href="{{ login_url }}">{% translate "Log in" %}</a>{% endif %}
-          {% if signup_url %}<a class="btn btn-ghost" href="{{ signup_url }}">{% translate "Create account" %}</a>{% endif %}
+<section class="a-hero alpona" aria-labelledby="hero-title">
+  <div class="a-wrap a-hero-grid">
+    <div class="a-hero-copy">
+      <p class="eyebrow">{% translate "Teacher Feedback System" %}</p>
+      <h1 id="hero-title">{% translate "Honest feedback, kept anonymous." %}</h1>
+      <p class="lead">{% translate "Rate your courses and teachers each semester. Teachers see only combined results, after the round closes." %}</p>
+      <div class="a-cta">
+        {% if login_url %}<a class="btn btn-primary" href="{{ login_url }}">{% translate "Log in" %}</a>{% endif %}
+        {% if signup_url %}<a class="btn btn-ghost" href="{{ signup_url }}">{% translate "Create account" %}</a>{% endif %}
+      </div>
+      <ul class="a-facts">
+        <li>{% icon "shield" %}{% translate "Anonymous by design" %}</li>
+        <li>{% icon "user" %}{% translate "One voice per course" %}</li>
+        <li>{% icon "calendar" %}{% translate "Results after the round closes" %}</li>
+      </ul>
+    </div>
+    <div class="a-hero-art" data-parallax>
+      <div class="hero-arch">{% include "components/illustrations/scene_campus.html" with enter=True %}</div>
+      <p class="mini-stub" aria-hidden="true"><span>{% icon "shield" %}{% translate "Ballot sealed" %}</span><span>{% icon "check" %}{% translate "Submitted" %}</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="a-sec" id="different" aria-labelledby="different-title">
+  <div class="a-wrap">
+    <div class="a-head">
+      <p class="eyebrow">{% translate "What makes it different" %}</p>
+      <h2 id="different-title" class="a-h2">{% translate "Built so that honesty is safe" %}</h2>
+    </div>
+    <div class="bento">
+      <article class="bento-tile bento-wide reveal">
+        <div class="bento-art">{% include "components/illustrations/bento_anon.html" %}</div>
+        <div><h3>{% translate "Anonymous by design" %}</h3><p>{% translate "Your answers carry no name, ID or time." %}</p></div>
+      </article>
+      <article class="bento-tile reveal [--d:.08s]">
+        <div class="bento-art">{% include "components/illustrations/bento_combined.html" %}</div>
+        <div><h3>{% translate "Combined results only" %}</h3><p>{% translate "Teachers see averages and shuffled comments, never one person's answers." %}</p></div>
+      </article>
+      <article class="bento-tile reveal">
+        <div class="bento-art">{% include "components/illustrations/bento_onevoice.html" %}</div>
+        <div><h3>{% translate "One voice per course" %}</h3><p>{% translate "One feedback per student, per course, per round." %}</p></div>
+      </article>
+      <article class="bento-tile reveal [--d:.08s]">
+        <div class="bento-art">{% include "components/illustrations/bento_closed.html" %}</div>
+        <div><h3>{% translate "Results after the round closes" %}</h3><p>{% translate "Nobody sees results while a round is still open." %}</p></div>
+      </article>
+      <article class="bento-tile reveal [--d:.16s]">
+        <div class="bento-art">{% include "components/illustrations/bento_five.html" %}</div>
+        <div><h3>{% translate "Hidden below five answers" %}</h3><p>{% translate "If fewer than five students answered, no average and no comment is shown." %}</p></div>
+      </article>
+      <article class="bento-tile bento-strip reveal">
+        <div class="bento-art">{% include "components/illustrations/bento_modes.html" %}</div>
+        <div><h3>{% translate "Bangla and English, light and dark" %}</h3><p>{% translate "Any modern phone, tablet or computer browser. Bangla and English are both available, in light or dark mode." %}</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="a-sec a-sec-alt" id="demo" aria-labelledby="demo-title">
+  <div class="a-wrap">
+    <div class="a-head">
+      <p class="eyebrow">{% translate "Try it" %}</p>
+      <h2 id="demo-title" class="a-h2">{% translate "See what your teacher sees" %}</h2>
+      <p class="a-sub">{% translate "Tap some stars, add a comment and watch it join the sample answers. This is a demo with sample data; nothing you type leaves this page." %}</p>
+    </div>
+    <div class="demo" data-demo data-total="41" data-msg-pick="{% translate 'Pick at least one star rating or write a comment first.' %}" data-msg-done="{% translate 'Merged. You are now one of {n} voices, and the teacher cannot tell which one.' %}">
+      <div class="demo-card">
+        <h3>{% translate "Your feedback" %}</h3>
+        <div class="demo-q">
+          <p class="demo-qt">{% translate "Clear explanations" %}</p>
+          {% translate "Clear explanations" as q1 %}{% include "components/star_rating.html" with name="demo_q1" label=q1 %}
         </div>
+        <div class="demo-q">
+          <p class="demo-qt">{% translate "Useful course material" %}</p>
+          {% translate "Useful course material" as q2 %}{% include "components/star_rating.html" with name="demo_q2" label=q2 %}
+        </div>
+        <div class="demo-q">
+          <p class="demo-qt">{% translate "Respect in class" %}</p>
+          {% translate "Respect in class" as q3 %}{% include "components/star_rating.html" with name="demo_q3" label=q3 %}
+        </div>
+        <div class="field">
+          <label class="field-label" for="demo-text">{% translate "A comment (optional)" %}</label>
+          <textarea class="textarea" id="demo-text" rows="3" maxlength="140" data-demo-text></textarea>
+        </div>
+        <div class="a-cta">
+          <button type="button" class="btn btn-primary" data-demo-send>{% icon "shield" %}{% translate "Send anonymously" %}</button>
+          <button type="button" class="btn btn-ghost" data-demo-reset>{% translate "Start over" %}</button>
+        </div>
+        <p class="demo-status" role="status" data-demo-status></p>
       </div>
-      <div class="l-hero-art">
-        <div class="arch-frame">{% include "components/illustrations/campus_line.html" with draw=True crop=True %}</div>
-        <p class="mini-stub" aria-hidden="true"><span>{% icon "shield" %}{% translate "Ballot sealed" %}</span><span>{% icon "check" %}{% translate "Submitted" %}</span></p>
-      </div>
+      <span class="demo-slip" data-demo-slip hidden aria-hidden="true"></span>
+      <aside class="demo-panel reveal" data-demo-panel aria-label="{% translate 'What the teacher sees' %}">
+        <div class="demo-panel-head"><h3>{% translate "What the teacher sees" %}</h3><span class="pv-sample">{% translate "Sample data, not real" %}</span></div>
+        <p class="pv-note">{% blocktranslate with total=41 %}Combined from <b class="num" data-demo-count>{{ total }}</b> sample responses.{% endblocktranslate %}</p>
+        <div class="pv-bars">
+          <div class="pv-bar-row" data-demo-row data-name="demo_q1" data-sum="177" data-n="41"><span>{% translate "Clear explanations" %}</span><b class="num" data-demo-avg>4.3</b><span class="pv-track"><i class="bar-fill [--v:0.863]"></i></span></div>
+          <div class="pv-bar-row" data-demo-row data-name="demo_q2" data-sum="167" data-n="41"><span>{% translate "Useful course material" %}</span><b class="num" data-demo-avg>4.1</b><span class="pv-track"><i class="bar-fill [--v:0.815]"></i></span></div>
+          <div class="pv-bar-row" data-demo-row data-name="demo_q3" data-sum="184" data-n="41"><span>{% translate "Respect in class" %}</span><b class="num" data-demo-avg>4.5</b><span class="pv-track"><i class="bar-fill [--v:0.898]"></i></span></div>
+        </div>
+        <h4 class="demo-sub">{% translate "Comments, shuffled" %}</h4>
+        <ul class="demo-comments" data-demo-comments>
+          <li class="demo-quote"><p>{% translate "The examples in class helped a lot." %}</p><span>{% translate "Anonymous, no name, no time" %}</span></li>
+          <li class="demo-quote"><p>{% translate "Please slow down in the last chapters." %}</p><span>{% translate "Anonymous, no name, no time" %}</span></li>
+          <li class="demo-quote"><p>{% translate "Marking was fair and the rubric was clear." %}</p><span>{% translate "Anonymous, no name, no time" %}</span></li>
+        </ul>
+        <template data-demo-quote><li class="demo-quote"><p></p><span>{% translate "Anonymous, no name, no time" %}</span></li></template>
+        <p class="pv-note">{% translate "With fewer than five responses, nothing would be shown." %}</p>
+      </aside>
     </div>
   </div>
 </section>
 
-<section class="l-band l-blue" aria-labelledby="trust-title">
-  <h2 id="trust-title" class="sr-only">{% translate "Why you can trust it" %}</h2>
-  <div class="l-wrap">
-    <div class="l-grid">
-      <div class="trust-item">{% icon "shield" %}<h3>{% translate "Anonymous by design" %}</h3><p>{% translate "Your answers carry no name, ID or time." %}</p></div>
-      <div class="trust-item">{% icon "lock" %}<h3>{% translate "Protected data" %}</h3><p>{% translate "Student IDs, contact details and comments are encrypted in the database. Passwords are hashed." %}</p></div>
-      <div class="trust-item">{% icon "user" %}<h3>{% translate "One voice per course" %}</h3><p>{% translate "One feedback per student, per course, per round." %}</p></div>
-      <div class="trust-item">{% icon "calendar" %}<h3>{% translate "Results after the round closes" %}</h3><p>{% translate "Nobody sees results while a round is still open." %}</p></div>
+<section class="a-sec" id="how" aria-labelledby="how-title">
+  <div class="a-wrap">
+    <div class="a-head">
+      <p class="eyebrow">{% translate "Four steps" %}</p>
+      <h2 id="how-title" class="a-h2">{% translate "How it works" %}</h2>
     </div>
+    <ol class="tl">
+      <li class="tl-line" aria-hidden="true"><span class="tl-fill"></span></li>
+      <li class="tl-item reveal">
+        <span class="tl-node num" aria-hidden="true">1</span>
+        <div><h3>{% translate "Get your ID and code" %}</h3><p>{% translate "Your department gives you a student ID and a sign-up code. Create your account and link an authenticator app on your phone." %}</p></div>
+        <svg class="tl-fig p-a" viewBox="0 0 64 96" aria-hidden="true" focusable="false"><use href="#fig-read"/></svg>
+      </li>
+      <li class="tl-item reveal">
+        <span class="tl-node num" aria-hidden="true">2</span>
+        <div><h3>{% translate "Give feedback once per course" %}</h3><p>{% translate "When a round opens, rate each course with stars and add comments if you like. Submission is final." %}</p></div>
+        <svg class="tl-fig p-b" viewBox="0 0 64 96" aria-hidden="true" focusable="false"><use href="#fig-ballot"/></svg>
+      </li>
+      <li class="tl-item reveal">
+        <span class="tl-node num" aria-hidden="true">3</span>
+        <div><h3>{% translate "The round closes" %}</h3><p>{% translate "Feedback stops. Only now can results reach teachers and heads of department." %}</p></div>
+        <svg class="tl-fig p-c" viewBox="0 0 64 96" aria-hidden="true" focusable="false"><use href="#fig-think"/></svg>
+      </li>
+      <li class="tl-item reveal">
+        <span class="tl-node num" aria-hidden="true">4</span>
+        <div><h3>{% translate "Teachers see combined results" %}</h3><p>{% translate "After the round closes, teachers see averages and comments without names. Nothing shows if fewer than five students answered." %}</p></div>
+        <svg class="tl-fig p-t" viewBox="0 0 64 96" aria-hidden="true" focusable="false"><use href="#fig-wave"/></svg>
+      </li>
+    </ol>
   </div>
 </section>
 
-<section class="l-band" id="how" aria-labelledby="how-title">
-  <div class="l-wrap l-pad">
-    <div class="l-grid">
-      <div class="l-head">
-        <p class="eyebrow">{% translate "Three steps" %}</p>
-        <h2 id="how-title" class="l-h2">{% translate "How it works" %}</h2>
-      </div>
+<section class="a-sec a-sec-alt" id="roles" aria-labelledby="roles-title">
+  <div class="a-wrap">
+    <div class="a-head">
+      <p class="eyebrow">{% translate "Four roles" %}</p>
+      <h2 id="roles-title" class="a-h2">{% translate "What each role sees" %}</h2>
+      <p class="a-sub">{% translate "Every role gets only what it needs, and nothing that could identify who wrote what." %}</p>
     </div>
-    <div class="l-grid">
-      <div class="l-step"><span class="step-shape num" aria-hidden="true">1</span><h3>{% translate "Get your ID and code" %}</h3><p>{% translate "Your department gives you a student ID and a sign-up code. Create your account and link an authenticator app on your phone." %}</p></div>
-      <div class="l-step"><span class="step-shape is-circle num" aria-hidden="true">2</span><h3>{% translate "Give feedback once per course" %}</h3><p>{% translate "When a round opens, rate each course with stars and add comments if you like. Submission is final." %}</p></div>
-      <div class="l-step"><span class="step-shape is-quarter num" aria-hidden="true">3</span><h3>{% translate "Teachers see combined results" %}</h3><p>{% translate "After the round closes, teachers see averages and comments without names. Nothing shows if fewer than five students answered." %}</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="l-band l-band-alt" id="roles" aria-labelledby="roles-title">
-  <div class="l-wrap l-pad">
-    <div class="l-grid">
-      <div class="l-head">
-        <p class="eyebrow">{% translate "Four roles" %}</p>
-        <h2 id="roles-title" class="l-h2">{% translate "What each role sees" %}</h2>
-        <p class="l-sub">{% translate "Every role gets only what it needs, and nothing that could identify who wrote what." %}</p>
-      </div>
-    </div>
-    <div class="l-grid">
-      <article class="role-card">
-        <span class="role-mark is-circle" aria-hidden="true"></span>
+    <div class="roles">
+      <article class="role-card reveal">
+        <svg class="role-fig p-a" viewBox="0 0 64 96" aria-hidden="true" focusable="false"><use href="#fig-ballot"/></svg>
         <h3>{% translate "Student" %}</h3>
         <h4>{% translate "Can see" %}</h4>
         <ul class="checklist"><li>{% icon "check" %}<span>{% translate "Their own courses and which are still pending." %}</span></li></ul>
         <h4>{% translate "Cannot see" %}</h4>
         <ul class="checklist"><li>{% icon "x" "ico-no" %}<span>{% translate "Anyone else's answers, or the results." %}</span></li></ul>
       </article>
-      <article class="role-card">
-        <span class="role-mark" aria-hidden="true"></span>
+      <article class="role-card reveal [--d:.08s]">
+        <svg class="role-fig p-t" viewBox="0 0 64 96" aria-hidden="true" focusable="false"><use href="#fig-wave"/></svg>
         <h3>{% translate "Teacher" %}</h3>
         <h4>{% translate "Can see" %}</h4>
         <ul class="checklist"><li>{% icon "check" %}<span>{% translate "Combined ratings and shuffled comments, after the round closes." %}</span></li></ul>
         <h4>{% translate "Cannot see" %}</h4>
         <ul class="checklist"><li>{% icon "x" "ico-no" %}<span>{% translate "Names, student IDs, or who wrote which answer." %}</span></li></ul>
       </article>
-      <article class="role-card">
-        <span class="role-mark is-quarter" aria-hidden="true"></span>
+      <article class="role-card reveal [--d:.16s]">
+        <svg class="role-fig p-e" viewBox="0 0 64 96" aria-hidden="true" focusable="false"><use href="#fig-think"/></svg>
         <h3>{% translate "Head of department" %}</h3>
         <h4>{% translate "Can see" %}</h4>
         <ul class="checklist"><li>{% icon "check" %}<span>{% translate "Department rankings, alerts, and which own-department IDs are still pending." %}</span></li></ul>
         <h4>{% translate "Cannot see" %}</h4>
         <ul class="checklist"><li>{% icon "x" "ico-no" %}<span>{% translate "Any student's answers, or a link from a ballot to a student." %}</span></li></ul>
       </article>
-      <article class="role-card">
-        <span class="role-mark is-arch" aria-hidden="true"></span>
+      <article class="role-card reveal [--d:.24s]">
+        <svg class="role-fig p-d" viewBox="0 0 64 96" aria-hidden="true" focusable="false"><use href="#fig-read"/></svg>
         <h3>{% translate "Administrator" %}</h3>
         <h4>{% translate "Can see" %}</h4>
         <ul class="checklist"><li>{% icon "check" %}<span>{% translate "Rounds, enrollments and flagged comment text to moderate." %}</span></li></ul>
@@ -103,158 +197,149 @@
   </div>
 </section>
 
-<section class="l-band l-blue on-band" aria-labelledby="promise-title">
-  <span class="shape shape-circle cta-circle" aria-hidden="true"></span>
-  <div class="l-wrap l-pad pb-0">
-    <div class="l-grid">
-      <div class="promise-copy">
-        <p class="eyebrow">{% translate "In plain language" %}</p>
-        <h2 id="promise-title" class="l-h2">{% translate "Our anonymity promise" %}</h2>
-        <ul class="promise-list">
-          <li>{% icon "check" %}<span>{% translate "Your answers are stored separately from your account. There is no link between who you are and what you wrote." %}</span></li>
-          <li>{% icon "check" %}<span>{% translate "The system records only that you submitted for a course, never when or what." %}</span></li>
-          <li>{% icon "check" %}<span>{% translate "Results appear only after the round closes, and only when enough students have answered." %}</span></li>
-          <li>{% icon "check" %}<span>{% translate "Comments are screened for abusive language before teachers can read them." %}</span></li>
-        </ul>
-      </div>
-      <div class="promise-art">{% include "components/illustrations/campus_line.html" %}</div>
+<section class="a-sec" id="preview" aria-labelledby="preview-title">
+  <div class="a-wrap l-pad-preview">
+    <div class="a-head">
+      <p class="eyebrow">{% translate "Preview" %}</p>
+      <h2 id="preview-title" class="a-h2">{% translate "A look inside" %}</h2>
+      <p class="a-sub">{% translate "Each role gets a focused dashboard. Everything below is sample data, not real people or results." %}</p>
     </div>
-  </div>
-</section>
+    <div x-data="dashPreview">
+      <div class="pv-tabs" role="tablist" aria-label="{% translate 'Dashboard role' %}">
+        <button type="button" role="tab" class="pv-tab" id="pv-tab-student" aria-controls="pv-panel-student" aria-selected="true" :aria-selected="studentSel" :tabindex="studentIdx" data-role="student" @click="pick" @keydown="key">{% translate "Student" %}</button>
+        <button type="button" role="tab" class="pv-tab" id="pv-tab-teacher" aria-controls="pv-panel-teacher" aria-selected="false" tabindex="-1" :aria-selected="teacherSel" :tabindex="teacherIdx" data-role="teacher" @click="pick" @keydown="key">{% translate "Teacher" %}</button>
+        <button type="button" role="tab" class="pv-tab" id="pv-tab-hod" aria-controls="pv-panel-hod" aria-selected="false" tabindex="-1" :aria-selected="hodSel" :tabindex="hodIdx" data-role="hod" @click="pick" @keydown="key">{% translate "Head of department" %}</button>
+        <button type="button" role="tab" class="pv-tab" id="pv-tab-admin" aria-controls="pv-panel-admin" aria-selected="false" tabindex="-1" :aria-selected="adminSel" :tabindex="adminIdx" data-role="admin" @click="pick" @keydown="key">{% translate "Administrator" %}</button>
+      </div>
+      <div class="pv-stage">
+        <div class="pv-frame">
+          <div class="pv-bar" aria-hidden="true"><span class="pv-dot"></span><span class="pv-dot"></span><span class="pv-dot"></span><span class="pv-sample">{% translate "Sample data, not real" %}</span></div>
+          <div class="pv-body">
+            <div class="pv-rail" aria-hidden="true">
+              <span class="is-on">{% icon "home" %}{% translate "Home" %}</span>
+              <span>{% icon "book" %}{% translate "Courses" %}</span>
+              <span>{% icon "chart" %}{% translate "Reports" %}</span>
+              <span>{% icon "settings" %}{% translate "Settings" %}</span>
+            </div>
 
-<section class="l-band" id="preview" aria-labelledby="preview-title">
-  <div class="l-wrap l-pad l-pad-preview">
-    <div class="l-grid">
-      <div class="l-head">
-        <p class="eyebrow">{% translate "Preview" %}</p>
-        <h2 id="preview-title" class="l-h2">{% translate "A look inside" %}</h2>
-        <p class="l-sub">{% translate "Each role gets a focused dashboard. Everything below is sample data, not real people or results." %}</p>
-      </div>
-    </div>
-    <div class="l-grid" x-data="dashPreview">
-      <div class="pv-main-col">
-        <div class="pv-tabs" role="tablist" aria-label="{% translate 'Dashboard role' %}">
-          <button type="button" role="tab" class="pv-tab" id="pv-tab-student" aria-controls="pv-panel-student" aria-selected="true" :aria-selected="studentSel" :tabindex="studentIdx" data-role="student" @click="pick" @keydown="key">{% translate "Student" %}</button>
-          <button type="button" role="tab" class="pv-tab" id="pv-tab-teacher" aria-controls="pv-panel-teacher" aria-selected="false" tabindex="-1" :aria-selected="teacherSel" :tabindex="teacherIdx" data-role="teacher" @click="pick" @keydown="key">{% translate "Teacher" %}</button>
-          <button type="button" role="tab" class="pv-tab" id="pv-tab-hod" aria-controls="pv-panel-hod" aria-selected="false" tabindex="-1" :aria-selected="hodSel" :tabindex="hodIdx" data-role="hod" @click="pick" @keydown="key">{% translate "Head of department" %}</button>
-          <button type="button" role="tab" class="pv-tab" id="pv-tab-admin" aria-controls="pv-panel-admin" aria-selected="false" tabindex="-1" :aria-selected="adminSel" :tabindex="adminIdx" data-role="admin" @click="pick" @keydown="key">{% translate "Administrator" %}</button>
-        </div>
-        <div class="pv-stage">
-          <div class="pv-frame">
-            <div class="pv-bar" aria-hidden="true"><span class="pv-dot"></span><span class="pv-dot"></span><span class="pv-dot"></span><span class="pv-sample">{% translate "Sample data, not real" %}</span></div>
-            <div class="pv-body">
-              <div class="pv-rail" aria-hidden="true">
-                <span class="is-on">{% icon "home" %}{% translate "Home" %}</span>
-                <span>{% icon "book" %}{% translate "Courses" %}</span>
-                <span>{% icon "chart" %}{% translate "Reports" %}</span>
-                <span>{% icon "settings" %}{% translate "Settings" %}</span>
+            <section class="pv-panel" role="tabpanel" id="pv-panel-student" aria-labelledby="pv-tab-student" tabindex="0" :hidden="studentHide">
+              <div><h3 class="pv-title">{% translate "My courses" %}</h3><p class="pv-note">{% translate "Sample round, one course sealed, two waiting." %}</p></div>
+              <div class="pv-stubs">
+                <article class="stub stub-sealed"><div class="stub-main"><p class="text-sm text-muted">ABC 101</p><h4 class="font-semibold">{% translate "Database Systems" %}</h4><p class="text-sm mt-1">{% translate "Sample teacher A" %}</p></div><div class="stub-tear"><span class="badge badge-done">{% icon "check" %}{% translate "Submitted" %}</span></div></article>
+                <article class="stub"><div class="stub-main"><p class="text-sm text-muted">ABC 102</p><h4 class="font-semibold">{% translate "Algorithms" %}</h4><p class="text-sm mt-1">{% translate "Sample teacher B" %}</p></div><div class="stub-tear"><span class="badge badge-pending">{% icon "clock" %}{% translate "Pending" %}</span></div></article>
+                <article class="stub"><div class="stub-main"><p class="text-sm text-muted">XYZ 201</p><h4 class="font-semibold">{% translate "Operating Systems" %}</h4><p class="text-sm mt-1">{% translate "Sample teacher C" %}</p></div><div class="stub-tear"><span class="badge badge-pending">{% icon "clock" %}{% translate "Pending" %}</span></div></article>
               </div>
+            </section>
 
-              <section class="pv-panel" role="tabpanel" id="pv-panel-student" aria-labelledby="pv-tab-student" tabindex="0" :hidden="studentHide">
-                <div><h3 class="pv-title">{% translate "My courses" %}</h3><p class="pv-note">{% translate "Sample round, one course sealed, two waiting." %}</p></div>
-                <div class="pv-stubs">
-                  <article class="stub stub-sealed"><div class="stub-main"><p class="text-sm text-muted">ABC 101</p><h4 class="font-semibold">{% translate "Database Systems" %}</h4><p class="text-sm mt-1">{% translate "Sample teacher A" %}</p></div><div class="stub-tear"><span class="badge badge-done">{% icon "check" %}{% translate "Submitted" %}</span></div></article>
-                  <article class="stub"><div class="stub-main"><p class="text-sm text-muted">ABC 102</p><h4 class="font-semibold">{% translate "Algorithms" %}</h4><p class="text-sm mt-1">{% translate "Sample teacher B" %}</p></div><div class="stub-tear"><span class="badge badge-pending">{% icon "clock" %}{% translate "Pending" %}</span></div></article>
-                  <article class="stub"><div class="stub-main"><p class="text-sm text-muted">XYZ 201</p><h4 class="font-semibold">{% translate "Operating Systems" %}</h4><p class="text-sm mt-1">{% translate "Sample teacher C" %}</p></div><div class="stub-tear"><span class="badge badge-pending">{% icon "clock" %}{% translate "Pending" %}</span></div></article>
-                </div>
-              </section>
+            <section class="pv-panel" role="tabpanel" id="pv-panel-teacher" aria-labelledby="pv-tab-teacher" tabindex="0" hidden :hidden="teacherHide">
+              <div><h3 class="pv-title">{% translate "Database Systems" %}</h3><p class="pv-note num">{% translate "Overall 4.3 out of 5, from 42 sample responses." %}</p></div>
+              <div class="pv-bars">
+                <div class="pv-bar-row"><span>{% translate "Clear explanations" %}</span><b class="num">4.5</b><span class="pv-track"><i class="w-[90%]"></i></span></div>
+                <div class="pv-bar-row"><span>{% translate "Useful course material" %}</span><b class="num">4.2</b><span class="pv-track"><i class="w-[84%]"></i></span></div>
+                <div class="pv-bar-row"><span>{% translate "Fair grading" %}</span><b class="num">4.0</b><span class="pv-track"><i class="w-[80%]"></i></span></div>
+                <div class="pv-bar-row"><span>{% translate "Respect in class" %}</span><b class="num">4.6</b><span class="pv-track"><i class="w-[92%]"></i></span></div>
+                <div class="pv-bar-row"><span>{% translate "Pace of lessons" %}</span><b class="num">3.8</b><span class="pv-track"><i class="w-[76%]"></i></span></div>
+              </div>
+            </section>
 
-              <section class="pv-panel" role="tabpanel" id="pv-panel-teacher" aria-labelledby="pv-tab-teacher" tabindex="0" hidden :hidden="teacherHide">
-                <div><h3 class="pv-title">{% translate "Database Systems" %}</h3><p class="pv-note num">{% translate "Overall 4.3 out of 5, from 42 sample responses." %}</p></div>
-                <div class="pv-bars">
-                  <div class="pv-bar-row"><span>{% translate "Clear explanations" %}</span><b class="num">4.5</b><span class="pv-track"><i class="w-[90%]"></i></span></div>
-                  <div class="pv-bar-row"><span>{% translate "Useful course material" %}</span><b class="num">4.2</b><span class="pv-track"><i class="w-[84%]"></i></span></div>
-                  <div class="pv-bar-row"><span>{% translate "Fair grading" %}</span><b class="num">4.0</b><span class="pv-track"><i class="w-[80%]"></i></span></div>
-                  <div class="pv-bar-row"><span>{% translate "Respect in class" %}</span><b class="num">4.6</b><span class="pv-track"><i class="w-[92%]"></i></span></div>
-                  <div class="pv-bar-row"><span>{% translate "Pace of lessons" %}</span><b class="num">3.8</b><span class="pv-track"><i class="w-[76%]"></i></span></div>
-                </div>
-              </section>
+            <section class="pv-panel" role="tabpanel" id="pv-panel-hod" aria-labelledby="pv-tab-hod" tabindex="0" hidden :hidden="hodHide">
+              <div><h3 class="pv-title">{% translate "Department heatmap" %}</h3><p class="pv-note">{% translate "Average rating per question. Darker cells are higher." %}</p></div>
+              <div class="pv-heat num">
+                <span></span><span>Q1</span><span>Q2</span><span>Q3</span><span>Q4</span><span>Q5</span>
+                <b>ABC 101</b><span class="pv-h5">4.6</span><span class="pv-h4">4.4</span><span class="pv-h5">4.7</span><span class="pv-h4">4.3</span><span class="pv-h4">4.5</span>
+                <b>ABC 102</b><span class="pv-h4">4.2</span><span class="pv-h3">3.9</span><span class="pv-h4">4.1</span><span class="pv-h3">3.8</span><span class="pv-h4">4.0</span>
+                <b>ABC 203</b><span class="pv-h3">3.7</span><span class="pv-h2">3.2</span><span class="pv-h3">3.6</span><span class="pv-h2">3.1</span><span class="pv-h3">3.5</span>
+                <b>XYZ 201</b><span class="pv-h5">4.8</span><span class="pv-h5">4.6</span><span class="pv-h4">4.4</span><span class="pv-h5">4.7</span><span class="pv-h4">4.3</span>
+                <b>XYZ 305</b><span class="pv-h2">3.0</span><span class="pv-h1">2.6</span><span class="pv-h2">3.2</span><span class="pv-h1">2.7</span><span class="pv-h2">3.3</span>
+              </div>
+            </section>
 
-              <section class="pv-panel" role="tabpanel" id="pv-panel-hod" aria-labelledby="pv-tab-hod" tabindex="0" hidden :hidden="hodHide">
-                <div><h3 class="pv-title">{% translate "Department heatmap" %}</h3><p class="pv-note">{% translate "Average rating per question. Darker cells are higher." %}</p></div>
-                <div class="pv-heat num">
-                  <span></span><span>Q1</span><span>Q2</span><span>Q3</span><span>Q4</span><span>Q5</span>
-                  <b>ABC 101</b><span class="pv-h5">4.6</span><span class="pv-h4">4.4</span><span class="pv-h5">4.7</span><span class="pv-h4">4.3</span><span class="pv-h4">4.5</span>
-                  <b>ABC 102</b><span class="pv-h4">4.2</span><span class="pv-h3">3.9</span><span class="pv-h4">4.1</span><span class="pv-h3">3.8</span><span class="pv-h4">4.0</span>
-                  <b>ABC 203</b><span class="pv-h3">3.7</span><span class="pv-h2">3.2</span><span class="pv-h3">3.6</span><span class="pv-h2">3.1</span><span class="pv-h3">3.5</span>
-                  <b>XYZ 201</b><span class="pv-h5">4.8</span><span class="pv-h5">4.6</span><span class="pv-h4">4.4</span><span class="pv-h5">4.7</span><span class="pv-h4">4.3</span>
-                  <b>XYZ 305</b><span class="pv-h2">3.0</span><span class="pv-h1">2.6</span><span class="pv-h2">3.2</span><span class="pv-h1">2.7</span><span class="pv-h2">3.3</span>
-                </div>
-              </section>
-
-              <section class="pv-panel" role="tabpanel" id="pv-panel-admin" aria-labelledby="pv-tab-admin" tabindex="0" hidden :hidden="adminHide">
-                <div><h3 class="pv-title">{% translate "University overview" %}</h3><p class="pv-note">{% translate "Sample figures for one round." %}</p></div>
-                <div class="pv-tiles num">
-                  <div class="pv-tile"><b>78%</b><span>{% translate "Participation" %}</span></div>
-                  <div class="pv-tile"><b>1</b><span>{% translate "Open rounds" %}</span></div>
-                  <div class="pv-tile"><b>3</b><span>{% translate "Comments to review" %}</span></div>
-                  <div class="pv-tile"><b>128</b><span>{% translate "Courses" %}</span></div>
-                </div>
-                <div class="pv-bars">
-                  <div class="pv-bar-row"><span>{% translate "Sample department A" %}</span><b class="num">4.5</b><span class="pv-track"><i class="w-[90%]"></i></span></div>
-                  <div class="pv-bar-row"><span>{% translate "Sample department B" %}</span><b class="num">4.2</b><span class="pv-track"><i class="w-[84%]"></i></span></div>
-                  <div class="pv-bar-row"><span>{% translate "Sample department C" %}</span><b class="num">3.7</b><span class="pv-track"><i class="w-[74%]"></i></span></div>
-                </div>
-              </section>
-            </div>
+            <section class="pv-panel" role="tabpanel" id="pv-panel-admin" aria-labelledby="pv-tab-admin" tabindex="0" hidden :hidden="adminHide">
+              <div><h3 class="pv-title">{% translate "University overview" %}</h3><p class="pv-note">{% translate "Sample figures for one round." %}</p></div>
+              <div class="pv-tiles num">
+                <div class="pv-tile"><b>78%</b><span>{% translate "Participation" %}</span></div>
+                <div class="pv-tile"><b>1</b><span>{% translate "Open rounds" %}</span></div>
+                <div class="pv-tile"><b>3</b><span>{% translate "Comments to review" %}</span></div>
+                <div class="pv-tile"><b>128</b><span>{% translate "Courses" %}</span></div>
+              </div>
+              <div class="pv-bars">
+                <div class="pv-bar-row"><span>{% translate "Sample department A" %}</span><b class="num">4.5</b><span class="pv-track"><i class="w-[90%]"></i></span></div>
+                <div class="pv-bar-row"><span>{% translate "Sample department B" %}</span><b class="num">4.2</b><span class="pv-track"><i class="w-[84%]"></i></span></div>
+                <div class="pv-bar-row"><span>{% translate "Sample department C" %}</span><b class="num">3.7</b><span class="pv-track"><i class="w-[74%]"></i></span></div>
+              </div>
+            </section>
           </div>
-
-          <aside class="pv-float pv-float-dist" aria-label="{% translate 'Sample rating distribution' %}">
-            <h3>{% translate "Rating distribution" %}</h3>
-            <div class="pv-dist num">
-              <span>5</span><span class="pv-track"><i class="w-[43%]"></i></span><b>18</b>
-              <span>4</span><span class="pv-track"><i class="w-[33%]"></i></span><b>14</b>
-              <span>3</span><span class="pv-track"><i class="w-[14%]"></i></span><b>6</b>
-              <span>2</span><span class="pv-track"><i class="w-[7%]"></i></span><b>3</b>
-              <span>1</span><span class="pv-track"><i class="w-[2%]"></i></span><b>1</b>
-            </div>
-          </aside>
-          <aside class="pv-float pv-float-ring" aria-label="{% translate 'Sample participation' %}">
-            <h3>{% translate "Participation" %}</h3>
-            <div class="pv-ring">
-              <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="track" cx="50" cy="50" r="42"/><circle class="val" cx="50" cy="50" r="42" pathLength="100" stroke-dasharray="78 100"/></svg>
-              <p><b class="num text-xl">78%</b><br><span class="text-muted">{% translate "of students responded" %}</span></p>
-            </div>
-          </aside>
         </div>
+
+        <aside class="pv-float pv-float-dist" aria-label="{% translate 'Sample rating distribution' %}">
+          <h3>{% translate "Rating distribution" %}</h3>
+          <div class="pv-dist num">
+            <span>5</span><span class="pv-track"><i class="w-[43%]"></i></span><b>18</b>
+            <span>4</span><span class="pv-track"><i class="w-[33%]"></i></span><b>14</b>
+            <span>3</span><span class="pv-track"><i class="w-[14%]"></i></span><b>6</b>
+            <span>2</span><span class="pv-track"><i class="w-[7%]"></i></span><b>3</b>
+            <span>1</span><span class="pv-track"><i class="w-[2%]"></i></span><b>1</b>
+          </div>
+        </aside>
+        <aside class="pv-float pv-float-ring" aria-label="{% translate 'Sample participation' %}">
+          <h3>{% translate "Participation" %}</h3>
+          <div class="pv-ring">
+            <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="track" cx="50" cy="50" r="42"/><circle class="val" cx="50" cy="50" r="42" pathLength="100" stroke-dasharray="78 100"/></svg>
+            <p><b class="num text-xl">78%</b><br><span class="text-muted">{% translate "of students responded" %}</span></p>
+          </div>
+        </aside>
       </div>
     </div>
   </div>
 </section>
 
-<section class="l-band l-band-alt" id="faq" aria-labelledby="faq-title">
-  <div class="l-wrap l-pad">
-    <div class="l-grid">
-      <div class="faq-head">
-        <p class="eyebrow">{% translate "Questions" %}</p>
-        <h2 id="faq-title" class="l-h2">{% translate "Frequently asked questions" %}</h2>
-      </div>
-      <div class="faq faq-list l-faq">
-        <details><summary>{% translate "Can my teacher see what I wrote?" %}{% icon "chevron-down" %}</summary><p>{% translate "Teachers see comments without any name or ID, and only after the round closes. If fewer than five students answered, nothing is shown at all." %}</p></details>
-        <details><summary>{% translate "Do I have to give feedback?" %}{% icon "chevron-down" %}</summary><p>{% translate "Feedback is requested for every course, but your answers are always your own choice. You can save a draft and come back until the round ends." %}</p></details>
-        <details><summary>{% translate "Can I change my feedback after submitting?" %}{% icon "chevron-down" %}</summary><p>{% translate "No. Submission is final so that results can be trusted. Please review your answers before you confirm." %}</p></details>
-        <details><summary>{% translate "What if I forget my password?" %}{% icon "chevron-down" %}</summary><p>{% translate "Use the forgot password option on the login page with your username and the code from your authenticator app (or a recovery code)." %}</p></details>
-        <details><summary>{% translate "Who can see my student ID?" %}{% icon "chevron-down" %}</summary><p>{% translate "Only administrators and the head of your own department. Teachers never see it." %}</p></details>
-        <details><summary>{% translate "Which devices does it work on?" %}{% icon "chevron-down" %}</summary><p>{% translate "Any modern phone, tablet or computer browser. Bangla and English are both available, in light or dark mode." %}</p></details>
-      </div>
+<section class="a-sec a-band alpona-on-band" id="security" aria-labelledby="promise-title">
+  <div class="a-wrap">
+    <div class="a-head">
+      <p class="eyebrow">{% translate "In plain language" %}</p>
+      <h2 id="promise-title" class="a-h2">{% translate "Our anonymity promise" %}</h2>
+      <p class="a-sub">{% translate "How your answers and your account are protected, without the jargon." %}</p>
+    </div>
+    <div class="sec-grid">
+      <article class="sec-item reveal"><div class="sec-tile">{% include "components/illustrations/sec_unlink.html" %}</div><h3>{% translate "Answers cannot be traced back" %}</h3><p>{% translate "Your answers are stored separately from your account. There is no link between who you are and what you wrote." %}</p></article>
+      <article class="sec-item reveal [--d:.08s]"><div class="sec-tile">{% include "components/illustrations/sec_encrypt.html" %}</div><h3>{% translate "Sensitive data is encrypted" %}</h3><p>{% translate "Student IDs, contact details and comments are encrypted in the database." %}</p></article>
+      <article class="sec-item reveal [--d:.16s]"><div class="sec-tile">{% include "components/illustrations/sec_password.html" %}</div><h3>{% translate "Passwords are hashed" %}</h3><p>{% translate "We never keep your password itself, only a scrambled form that cannot be turned back." %}</p></article>
+      <article class="sec-item reveal"><div class="sec-tile">{% include "components/illustrations/sec_phone.html" %}</div><h3>{% translate "Sign in with an authenticator app" %}</h3><p>{% translate "Every role confirms sign-in with a code from an app on their own phone." %}</p></article>
+      <article class="sec-item reveal [--d:.08s]"><div class="sec-tile">{% include "components/illustrations/sec_nosite.html" %}</div><h3>{% translate "Nothing from other websites" %}</h3><p>{% translate "Fonts, scripts and images all come from this site. No outside trackers or ads are loaded." %}</p></article>
+      <article class="sec-item reveal [--d:.16s]"><div class="sec-tile">{% include "components/illustrations/sec_screen.html" %}</div><h3>{% translate "Comments are screened" %}</h3><p>{% translate "Comments are screened for abusive language before teachers can read them." %}</p></article>
     </div>
   </div>
 </section>
 
-<section class="l-band l-blue on-band" aria-labelledby="cta-title">
-  <span class="shape shape-circle cta-circle" aria-hidden="true"></span>
-  <span class="shape shape-quarter cta-quarter" aria-hidden="true"></span>
-  <div class="l-wrap l-pad">
-    <div class="l-grid">
-      <div class="cta-copy">
-        <h2 id="cta-title" class="l-h2">{% translate "Ready to share honest feedback?" %}</h2>
-        <p class="l-sub">{% translate "Log in with your account, or create one with your student ID and the code from your department." %}</p>
-        <div class="l-cta">
-          {% if login_url %}<a class="btn btn-primary" href="{{ login_url }}">{% translate "Log in" %}</a>{% endif %}
-          {% if signup_url %}<a class="btn btn-ghost" href="{{ signup_url }}">{% translate "Create account" %}</a>{% endif %}
-        </div>
+<section class="a-sec a-sec-alt" id="faq" aria-labelledby="faq-title">
+  <div class="a-wrap a-faq-grid">
+    <div class="a-head">
+      <p class="eyebrow">{% translate "Questions" %}</p>
+      <h2 id="faq-title" class="a-h2">{% translate "Frequently asked questions" %}</h2>
+    </div>
+    <div class="faq faq-list">
+      <details><summary>{% translate "Can my teacher see what I wrote?" %}{% icon "chevron-down" %}</summary><p>{% translate "Teachers see comments without any name or ID, and only after the round closes. If fewer than five students answered, nothing is shown at all." %}</p></details>
+      <details><summary>{% translate "Do I have to give feedback?" %}{% icon "chevron-down" %}</summary><p>{% translate "Feedback is requested for every course, but your answers are always your own choice. You can save a draft and come back until the round ends." %}</p></details>
+      <details><summary>{% translate "Can I change my feedback after submitting?" %}{% icon "chevron-down" %}</summary><p>{% translate "No. Submission is final so that results can be trusted. Please review your answers before you confirm." %}</p></details>
+      <details><summary>{% translate "What if I forget my password?" %}{% icon "chevron-down" %}</summary><p>{% translate "Use the forgot password option on the login page with your username and the code from your authenticator app (or a recovery code)." %}</p></details>
+      <details><summary>{% translate "Who can see my student ID?" %}{% icon "chevron-down" %}</summary><p>{% translate "Only administrators and the head of your own department. Teachers never see it." %}</p></details>
+      <details><summary>{% translate "Which devices does it work on?" %}{% icon "chevron-down" %}</summary><p>{% translate "Any modern phone, tablet or computer browser. Bangla and English are both available, in light or dark mode." %}</p></details>
+    </div>
+  </div>
+</section>
+
+<div class="rick" aria-hidden="true"></div>
+<section class="a-sec a-band alpona-on-band a-cta-band" aria-labelledby="cta-title">
+  <div class="a-wrap a-cta-grid">
+    <div>
+      <h2 id="cta-title" class="a-h2">{% translate "Ready to share honest feedback?" %}</h2>
+      <p class="a-sub">{% translate "Log in with your account, or create one with your student ID and the code from your department." %}</p>
+      <div class="a-cta">
+        {% if login_url %}<a class="btn btn-primary" href="{{ login_url }}">{% translate "Log in" %}</a>{% endif %}
+        {% if signup_url %}<a class="btn btn-ghost" href="{{ signup_url }}">{% translate "Create account" %}</a>{% endif %}
       </div>
     </div>
+    <svg class="cta-fig p-b" viewBox="0 0 64 96" aria-hidden="true" focusable="false"><use href="#fig-celebrate"/></svg>
   </div>
 </section>
 {% endblock %}

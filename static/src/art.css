@@ -1,0 +1,971 @@
+/* Illustration system: palette (extends tokens.css), figure and scene primitives, motion core.
+   Art lives in templates/components/illustrations/ and static/art/; see docs/ART_ASSETS.md.
+   Motion: transform, opacity and stroke-dashoffset only. Loops run only while on screen (art.js adds .is-live). */
+
+/* The scene and anything wrapped in .art-day keep the day palette in both themes. */
+:root,
+.scene,
+.art-day {
+  --art-ink: #2b2a44;
+  --art-line: #2b2a44;
+  --art-paper: #fbf1dc;
+  --art-cream: #f6e8c9;
+  --art-brick: #b8472e;
+  --art-brick-l: #cc5c3d;
+  --art-brick-d: #8f3623;
+  --art-shade: #5b2b2b;
+  --art-dome: #5fa59a;
+  --art-glass: #86b6d8;
+  --art-bloom: #e2492f;
+  --art-leaf: #4a9b5c;
+  --art-leaf-d: #2f7a4a;
+  --art-trunk: #7a5036;
+  --art-sand: #ecd2a0;
+  --art-grass: #7cb867;
+  --art-grass-2: #9bcb7c;
+  --art-sky: #8cc7ee;
+  --art-sky-1: #6fb8ea;
+  --art-sky-2: #bfe3f6;
+  --art-sky-3: #fde5bd;
+  --art-sun: #ffc83d;
+  --art-cloud: #ffffff;
+  --art-far: #b4d3e6;
+  --art-far-2: #9fc4a8;
+  --art-far-3: #a2bfd4;
+  --art-moon: #f4f0d6;
+  --art-lamp: #ffd479;
+  --art-night-1: #101a46;
+  --art-night-2: #27337a;
+  --art-night-3: #54408a;
+  --art-tint: #0c1544;
+  --art-tile: #fff8ea;
+  --art-tile-2: #eef6fc;
+}
+
+.dark {
+  --art-line: #c9d4f2;
+  --art-paper: #eadfc4;
+  --art-cream: #e2d3b0;
+  --art-brick: #c9563a;
+  --art-brick-l: #d8694a;
+  --art-shade: #3a1f2a;
+  --art-dome: #6fb7aa;
+  --art-glass: #5a86b0;
+  --art-leaf: #58ad6b;
+  --art-leaf-d: #3c8d58;
+  --art-grass: #4f8a58;
+  --art-sky: #5d93c4;
+  --art-cloud: #d8e4f4;
+  --art-tile: #222f4d;
+  --art-tile-2: #1d2a47;
+}
+
+/* Palettes for the six character poses (see people.html). */
+.p-a {
+  --p-skin: #e6b088;
+  --p-hair: #2a1d1b;
+  --p-top: #3f7cc4;
+  --p-bot: #2d3a63;
+  --p-long: 0;
+}
+.p-b {
+  --p-skin: #c98f66;
+  --p-hair: #231815;
+  --p-top: #e2492f;
+  --p-bot: #f3e7cb;
+  --p-long: 1;
+}
+.p-c {
+  --p-skin: #f0c8a0;
+  --p-hair: #4a3326;
+  --p-top: #3f9a5a;
+  --p-bot: #3a3f52;
+  --p-long: 0;
+}
+.p-d {
+  --p-skin: #a86f4d;
+  --p-hair: #1b1413;
+  --p-top: #f0b23a;
+  --p-bot: #5c3b6e;
+  --p-long: 1;
+}
+.p-t {
+  --p-skin: #d9a47c;
+  --p-hair: #8b8b94;
+  --p-top: #f3ead8;
+  --p-bot: #6b4a35;
+  --p-long: 0;
+  --p-glass: 1;
+}
+.p-e {
+  --p-skin: #7d5238;
+  --p-hair: #14100f;
+  --p-top: #d6603a;
+  --p-bot: #2b4d6e;
+  --p-long: 0;
+}
+
+@layer components {
+  /* ---- shared drawing vocabulary ---- */
+  .f-skin,
+  .f-top,
+  .f-hair,
+  .f-prop,
+  .f-shoe,
+  .f-smile,
+  .f-eye,
+  .f-glass,
+  .f-tick,
+  .f-dash,
+  .f-c1,
+  .f-c2,
+  .f-c3 {
+    stroke: var(--art-line);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .f-skin {
+    fill: var(--p-skin, #e6b088);
+  }
+  .f-top {
+    fill: var(--p-top, #3f7cc4);
+  }
+  .f-hair {
+    fill: var(--p-hair, #2a1d1b);
+  }
+  .f-long {
+    opacity: var(--p-long, 0);
+  }
+  .f-prop {
+    fill: var(--art-paper);
+  }
+  .f-shoe {
+    fill: var(--art-line);
+  }
+  .f-line,
+  .f-bot,
+  .f-top-s {
+    fill: none;
+    stroke: var(--art-line);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .f-bot {
+    stroke: var(--p-bot, #2d3a63);
+  }
+  .f-top-s {
+    stroke: var(--p-top, #3f7cc4);
+  }
+  .f-eye {
+    fill: var(--art-line);
+    stroke: none;
+  }
+  .f-smile,
+  .f-glass,
+  .f-dash {
+    fill: none;
+  }
+  .f-glass {
+    opacity: var(--p-glass, 0);
+  }
+  .f-tick {
+    fill: none;
+    stroke: var(--art-leaf-d);
+    stroke-width: 2.4;
+  }
+  .f-dash {
+    stroke-dasharray: 2 2;
+  }
+  .f-c1 {
+    fill: var(--art-bloom);
+    stroke: none;
+  }
+  .f-c2 {
+    fill: var(--art-sun);
+    stroke: none;
+  }
+  .f-c3 {
+    fill: var(--art-sky);
+    stroke: none;
+  }
+  .fig {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .c-paper,
+  .c-cream,
+  .c-sky,
+  .c-leaf,
+  .c-leafd,
+  .c-bloom,
+  .c-sun,
+  .c-moon,
+  .c-brick,
+  .c-brickl,
+  .c-shade,
+  .c-dome,
+  .c-glass,
+  .c-trunk,
+  .c-sand,
+  .c-cloud,
+  .c-far,
+  .c-far2,
+  .c-ink {
+    stroke: var(--art-line);
+    stroke-width: 1.4;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .c-paper {
+    fill: var(--art-paper);
+  }
+  .c-cream {
+    fill: var(--art-cream);
+  }
+  .c-sky {
+    fill: var(--art-sky);
+  }
+  .c-leaf {
+    fill: var(--art-leaf);
+  }
+  .c-leafd {
+    fill: var(--art-leaf-d);
+  }
+  .c-bloom {
+    fill: var(--art-bloom);
+  }
+  .c-sun {
+    fill: var(--art-sun);
+  }
+  .c-moon {
+    fill: var(--art-moon);
+  }
+  .c-brick {
+    fill: var(--art-brick);
+  }
+  .c-brickl {
+    fill: var(--art-brick-l);
+  }
+  .c-shade {
+    fill: var(--art-shade);
+  }
+  .c-dome {
+    fill: var(--art-dome);
+  }
+  .c-glass {
+    fill: var(--art-glass);
+  }
+  .c-trunk {
+    fill: var(--art-trunk);
+  }
+  .c-sand {
+    fill: var(--art-sand);
+  }
+  .c-cloud {
+    fill: var(--art-cloud);
+    stroke: none;
+  }
+  .c-ink {
+    fill: var(--art-ink);
+    stroke: none;
+  }
+  .c-grass {
+    fill: var(--art-grass);
+  }
+  .c-grass2 {
+    fill: var(--art-grass-2);
+  }
+  .c-far {
+    fill: var(--art-far);
+    stroke: none;
+  }
+  .c-far2 {
+    fill: var(--art-far-2);
+    stroke: none;
+  }
+  .c-far3 {
+    fill: var(--art-far-3);
+    stroke: none;
+  }
+  .tick,
+  .tick2,
+  .ln,
+  .ln2,
+  .dash,
+  .si,
+  .hand,
+  .bd,
+  .root,
+  .post,
+  .tuft {
+    fill: none;
+    stroke: var(--art-line);
+    stroke-width: 1.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .tick2 {
+    stroke: var(--art-leaf-d);
+    stroke-width: 2.6;
+  }
+  .ln {
+    stroke: var(--art-ink);
+    stroke-width: 2.4;
+    opacity: 0.55;
+  }
+  .ln2 {
+    stroke: var(--art-ink);
+    stroke-width: 2.2;
+    opacity: 0.6;
+  }
+  .dash {
+    stroke: var(--art-ink);
+    stroke-dasharray: 3 3;
+    opacity: 0.5;
+  }
+  .si {
+    stroke-width: 2.4;
+  }
+  .si.c-bloom-s {
+    stroke: var(--art-bloom);
+    stroke-width: 3.6;
+  }
+  .hand {
+    stroke: var(--art-ink);
+    stroke-width: 1.8;
+  }
+  .bd {
+    stroke-width: 1.6;
+  }
+  .root,
+  .tuft {
+    stroke-width: 1.2;
+  }
+  .post {
+    stroke-width: 2.4;
+  }
+  .sandl {
+    stroke: var(--art-trunk);
+    opacity: 0.4;
+  }
+  .crater {
+    fill: #dcd6b4;
+    stroke: none;
+  }
+  .star {
+    fill: #fff;
+  }
+  .bulb {
+    fill: #fff3cf;
+  }
+  .lit-fill {
+    fill: var(--art-lamp);
+  }
+  .bento-svg,
+  .secico {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .bento-svg {
+    max-height: 150px;
+  }
+  .bn-glyph {
+    font-size: 26px;
+    font-weight: 700;
+    fill: var(--art-ink);
+  }
+
+  /* ---- campus scene: layers, day/night crossfade ---- */
+  .scene {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .sd1 {
+    stop-color: var(--art-sky-1);
+  }
+  .sd2 {
+    stop-color: var(--art-sky-2);
+  }
+  .sd3 {
+    stop-color: var(--art-sky-3);
+  }
+  .sn1 {
+    stop-color: var(--art-night-1);
+  }
+  .sn2 {
+    stop-color: var(--art-night-2);
+  }
+  .sn3 {
+    stop-color: var(--art-night-3);
+  }
+  .gs {
+    stop-color: var(--art-sun);
+  }
+  .gm {
+    stop-color: var(--art-moon);
+  }
+  .gl {
+    stop-color: var(--art-lamp);
+  }
+  .scene .day,
+  .scene .night,
+  .scene .tint,
+  .scene .sun,
+  .scene .lit {
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s cubic-bezier(0.5, 0, 0.3, 1);
+  }
+  .scene .night {
+    opacity: 0;
+  }
+  .scene g.night {
+    transform: translateY(36px);
+  }
+  .scene .tint {
+    fill: var(--art-tint);
+    opacity: 0;
+  }
+  .scene .lit {
+    opacity: 0;
+  }
+  .dark .scene .day {
+    opacity: 0;
+  }
+  .dark .scene .night,
+  .dark .scene .lit {
+    opacity: 1;
+  }
+  .dark .scene g.night {
+    transform: none;
+  }
+  .dark .scene .tint {
+    opacity: 0.5;
+  }
+  .dark .scene .sun {
+    transform: translate(70px, 320px);
+    opacity: 0;
+  }
+  .px {
+    transition: transform 0.35s ease-out;
+  }
+  .px-1 {
+    transform: translate3d(calc(var(--px, 0) * 5px), 0, 0);
+  }
+  .px-2 {
+    transform: translate3d(calc(var(--px, 0) * 9px), 0, 0);
+  }
+  .px-3 {
+    transform: translate3d(calc(var(--px, 0) * 15px), 0, 0);
+  }
+
+  /* resting poses: the static scene (reduced motion, no JS) */
+  .birds {
+    transform: translate(300px, 150px);
+  }
+  .bird {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .wk1 {
+    transform: translateX(96px);
+  }
+  .wk2 {
+    transform: translateX(350px);
+  }
+  .wk3 {
+    transform: translateX(150px);
+  }
+  .hh {
+    transform: rotate(100deg);
+  }
+  .hm {
+    transform: rotate(-36deg);
+  }
+  .hand {
+    transform-origin: 383px 242px;
+  }
+  .sk {
+    transform-origin: 50px 446px;
+  }
+  .sb {
+    transform-origin: 444px 452px;
+  }
+  .pt {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* ---- ambient loops (paused until art.js says the art is on screen) ---- */
+  .art-js .live,
+  .art-js .live * {
+    animation-play-state: paused;
+  }
+  .art-js .live.is-live,
+  .art-js .live.is-live * {
+    animation-play-state: running;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :root:not([data-motion="off"]) {
+      .cl1 {
+        animation: drift 26s ease-in-out infinite alternate;
+      }
+      .cl2 {
+        animation: drift 34s ease-in-out infinite alternate-reverse;
+      }
+      .cl3 {
+        animation: drift 30s ease-in-out infinite alternate;
+      }
+      .birds {
+        animation: fly 46s linear infinite;
+      }
+      .bird {
+        animation: flap 0.5s ease-in-out infinite alternate;
+      }
+      .b2 {
+        animation-delay: -0.2s;
+      }
+      .b3 {
+        animation-delay: -0.35s;
+      }
+      .wk1 {
+        animation: walk-r 34s linear infinite -9s;
+      }
+      .wk2 {
+        animation: walk-l 40s linear infinite -22s;
+      }
+      .wk3 {
+        animation: walk-r 50s linear infinite -30s;
+      }
+      .walker use {
+        animation: bob 0.55s ease-in-out infinite alternate;
+      }
+      .hm {
+        animation: clock-m 90s linear infinite;
+      }
+      .hh {
+        animation: clock-h 1080s linear infinite;
+      }
+      .sk {
+        animation: sway 6s ease-in-out infinite alternate;
+      }
+      .sb {
+        animation: sway 7.5s ease-in-out infinite alternate-reverse;
+      }
+      .p1 {
+        animation: fall 8s ease-in infinite;
+      }
+      .p2 {
+        animation: fall 9.5s ease-in infinite -3s;
+      }
+      .p3 {
+        animation: fall 7.5s ease-in infinite -5s;
+      }
+      .p4 {
+        animation: fall 10s ease-in infinite -7s;
+      }
+      &.dark .star {
+        animation: twinkle 3.2s ease-in-out infinite alternate;
+      }
+      &.dark .star:nth-child(3n) {
+        animation-duration: 4.4s;
+        animation-delay: -1s;
+      }
+      &.dark .star:nth-child(3n + 1) {
+        animation-duration: 2.6s;
+        animation-delay: -2s;
+      }
+      .scene.enter .L {
+        animation: rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      }
+      .scene.enter .L2 {
+        animation-delay: 0.12s;
+      }
+      .scene.enter .L3 {
+        animation-delay: 0.24s;
+      }
+      .scene.enter .L4 {
+        animation-delay: 0.1s;
+      }
+      .scene.enter .L5 {
+        animation-delay: 0.4s;
+      }
+
+      /* bento + security icons */
+      .bn-name {
+        animation: bn-name 6s ease-in-out infinite;
+      }
+      .bn-pop {
+        animation: bn-pop 6s ease-in-out infinite;
+      }
+      .bn-bar {
+        animation: bn-bar 5s ease-in-out infinite;
+      }
+      .bar2 {
+        animation-delay: 0.18s;
+      }
+      .bar3 {
+        animation-delay: 0.36s;
+      }
+      .bn-dot {
+        animation: bn-dot 5s ease-in-out infinite;
+      }
+      .d2 {
+        animation-delay: 0.18s;
+      }
+      .d3 {
+        animation-delay: 0.36s;
+      }
+      .bn-drop {
+        animation: bn-drop 4s ease-in infinite;
+      }
+      .bn-chart {
+        animation: bn-chart 6s ease-in-out infinite;
+      }
+      .bn-lock {
+        animation: bn-lock 6s ease-in-out infinite;
+      }
+      .bn-dot5 {
+        animation: bn-dot5 6s ease-in-out infinite;
+      }
+      .e2 {
+        animation-delay: 0.4s;
+      }
+      .e3 {
+        animation-delay: 0.8s;
+      }
+      .e4 {
+        animation-delay: 1.2s;
+      }
+      .e5 {
+        animation-delay: 1.6s;
+      }
+      .bn-bar5 {
+        animation: bn-bar5 6s ease-in-out infinite;
+      }
+      .bn-sun {
+        animation: bn-sun 8s ease-in-out infinite;
+      }
+      .bn-moon {
+        animation: bn-moon 8s ease-in-out infinite;
+      }
+      .g1 {
+        animation: bn-sun 8s ease-in-out infinite;
+      }
+      .g2 {
+        animation: bn-moon 8s ease-in-out infinite;
+      }
+      .sec-code {
+        animation: pulse 2.4s ease-in-out infinite;
+      }
+      .sec-flow {
+        animation: dashflow 1.4s linear infinite;
+      }
+    }
+    :root:not([data-motion="off"]).dark .scene .night {
+      transition-duration: 0.6s;
+    }
+
+    /* draw-on for security icons and the timeline, once, when they scroll into view */
+    :root:not([data-motion="off"]).art-js .reveal .draw {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      transition: stroke-dashoffset 1s ease 0.2s;
+    }
+    :root:not([data-motion="off"]).art-js .reveal .draw.d2 {
+      transition-delay: 0.7s;
+    }
+    :root:not([data-motion="off"]).art-js .reveal.is-in .draw {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* reduced motion or the in-app switch: a calm static scene, no crossfade */
+  @media (prefers-reduced-motion: reduce) {
+    .scene *,
+    .live *,
+    .px {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+  :root[data-motion="off"] .scene *,
+  :root[data-motion="off"] .live *,
+  :root[data-motion="off"] .px {
+    animation: none !important;
+    transition: none !important;
+  }
+  /* resting state of the loops that start from nothing */
+  .bn-name,
+  .bn-dot,
+  .g2,
+  .bn-moon {
+    opacity: 0;
+  }
+
+  @keyframes drift {
+    to {
+      transform: translateX(36px);
+    }
+  }
+  @keyframes fly {
+    0% {
+      transform: translate(-80px, 160px);
+    }
+    22%,
+    100% {
+      transform: translate(570px, 96px);
+    }
+  }
+  @keyframes flap {
+    to {
+      transform: scaleY(0.45);
+    }
+  }
+  @keyframes walk-r {
+    from {
+      transform: translateX(-60px);
+    }
+    to {
+      transform: translateX(520px);
+    }
+  }
+  @keyframes walk-l {
+    from {
+      transform: translateX(530px);
+    }
+    to {
+      transform: translateX(-60px);
+    }
+  }
+  @keyframes bob {
+    to {
+      transform: translateY(-2px);
+    }
+  }
+  @keyframes clock-m {
+    from {
+      transform: rotate(-36deg);
+    }
+    to {
+      transform: rotate(324deg);
+    }
+  }
+  @keyframes clock-h {
+    from {
+      transform: rotate(100deg);
+    }
+    to {
+      transform: rotate(460deg);
+    }
+  }
+  @keyframes sway {
+    from {
+      transform: rotate(-0.9deg);
+    }
+    to {
+      transform: rotate(0.9deg);
+    }
+  }
+  @keyframes fall {
+    0% {
+      transform: translate(0, 0) rotate(0);
+      opacity: 1;
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
+      transform: translate(18px, 64px) rotate(170deg);
+      opacity: 0;
+    }
+  }
+  @keyframes twinkle {
+    from {
+      opacity: 0.35;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+  }
+  @keyframes bn-name {
+    0%,
+    25% {
+      opacity: 1;
+      transform: none;
+    }
+    55%,
+    100% {
+      opacity: 0;
+      transform: translateX(-26px);
+    }
+  }
+  @keyframes bn-pop {
+    0%,
+    40% {
+      opacity: 0;
+      transform: scale(0.7);
+    }
+    55%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes bn-bar {
+    0% {
+      transform: scaleX(0.08);
+    }
+    40%,
+    88% {
+      transform: scaleX(1);
+    }
+    100% {
+      transform: scaleX(0.08);
+    }
+  }
+  @keyframes bn-dot {
+    0% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    34% {
+      opacity: 1;
+      transform: translateX(96px);
+    }
+    38%,
+    100% {
+      opacity: 0;
+      transform: translateX(96px);
+    }
+  }
+  @keyframes bn-drop {
+    0% {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    15% {
+      opacity: 1;
+    }
+    60%,
+    100% {
+      opacity: 1;
+      transform: translateY(42px);
+    }
+  }
+  @keyframes bn-chart {
+    0%,
+    45% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    65%,
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes bn-lock {
+    0%,
+    40% {
+      transform: none;
+    }
+    55%,
+    100% {
+      transform: translateY(-9px);
+    }
+  }
+  @keyframes bn-dot5 {
+    0% {
+      opacity: 0.2;
+      transform: scale(0.7);
+    }
+    12%,
+    78% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0.2;
+      transform: scale(0.7);
+    }
+  }
+  @keyframes bn-bar5 {
+    0%,
+    35% {
+      transform: scaleX(0.04);
+    }
+    55%,
+    88% {
+      transform: scaleX(1);
+    }
+    100% {
+      transform: scaleX(0.04);
+    }
+  }
+  @keyframes bn-sun {
+    0%,
+    40% {
+      opacity: 1;
+    }
+    50%,
+    90% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes bn-moon {
+    0%,
+    40% {
+      opacity: 0;
+    }
+    50%,
+    90% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes pulse {
+    50% {
+      opacity: 0.35;
+    }
+  }
+  @keyframes dashflow {
+    to {
+      stroke-dashoffset: -14;
+    }
+  }
+
+  .bn-bar,
+  .bn-bar5 {
+    transform-box: fill-box;
+    transform-origin: left center;
+  }
+  .bn-pop,
+  .bn-dot5 {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .sec-flow {
+    stroke-dasharray: 3 4;
+  }
+  .sec-code {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+}

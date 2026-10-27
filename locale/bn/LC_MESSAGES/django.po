@@ -4447,7 +4447,6 @@ msgid_plural "%(n)s unread notifications"
 msgstr[0] "%(n)s টি অপঠিত বিজ্ঞপ্তি"
 msgstr[1] "%(n)s টি অপঠিত বিজ্ঞপ্তি"
 
-
 #. ui polish
 msgid "Show password"
 msgstr "পাসওয়ার্ড দেখুন"
@@ -4470,8 +4469,12 @@ msgstr "পাসওয়ার্ডের শক্তি: শক্তিশ
 msgid "CSE 2203 · Algorithms"
 msgstr "CSE 2203 · অ্যালগরিদম"
 
-msgid "After you submit, your course is sealed. Teachers see combined results only after the round closes."
-msgstr "জমা দেওয়ার পর আপনার কোর্সটি সিল করা হয়। রাউন্ড শেষ হওয়ার পরেই কেবল শিক্ষকরা সম্মিলিত ফলাফল দেখতে পান।"
+msgid ""
+"After you submit, your course is sealed. Teachers see combined results only "
+"after the round closes."
+msgstr ""
+"জমা দেওয়ার পর আপনার কোর্সটি সিল করা হয়। রাউন্ড শেষ হওয়ার পরেই কেবল শিক্ষকরা "
+"সম্মিলিত ফলাফল দেখতে পান।"
 
 msgid "Can see combined ratings and shuffled comments after the round closes."
 msgstr "রাউন্ড শেষ হওয়ার পর সম্মিলিত রেটিং ও এলোমেলো মন্তব্য দেখতে পারেন।"
@@ -4479,17 +4482,25 @@ msgstr "রাউন্ড শেষ হওয়ার পর সম্মিল�
 msgid "Cannot see student names, IDs, or who wrote which answer."
 msgstr "শিক্ষার্থীর নাম, আইডি বা কে কোন উত্তর লিখেছেন তা দেখতে পারেন না।"
 
-msgid "Can see department course rankings and which own-department IDs are still pending."
-msgstr "বিভাগের কোর্সের ক্রম এবং নিজ বিভাগের কোন আইডিগুলো এখনো বাকি তা দেখতে পারেন।"
+msgid ""
+"Can see department course rankings and which own-department IDs are still "
+"pending."
+msgstr ""
+"বিভাগের কোর্সের ক্রম এবং নিজ বিভাগের কোন আইডিগুলো এখনো বাকি তা দেখতে পারেন।"
 
 msgid "Cannot see any student's answers or link a ballot to a student."
-msgstr "কোনো শিক্ষার্থীর উত্তর দেখতে বা ব্যালটের সাথে শিক্ষার্থীকে যুক্ত করতে পারেন না।"
+msgstr ""
+"কোনো শিক্ষার্থীর উত্তর দেখতে বা ব্যালটের সাথে শিক্ষার্থীকে যুক্ত করতে পারেন "
+"না।"
 
 msgid "Can manage rounds, enrollments, and moderate flagged comment text."
-msgstr "রাউন্ড, এনরোলমেন্ট পরিচালনা এবং চিহ্নিত মন্তব্যের ভাষা যাচাই করতে পারেন।"
+msgstr ""
+"রাউন্ড, এনরোলমেন্ট পরিচালনা এবং চিহ্নিত মন্তব্যের ভাষা যাচাই করতে পারেন।"
 
 msgid "Cannot see who wrote a comment or connect ratings to a student."
-msgstr "কে মন্তব্য লিখেছেন তা দেখতে বা রেটিংয়ের সাথে শিক্ষার্থীকে যুক্ত করতে পারেন না।"
+msgstr ""
+"কে মন্তব্য লিখেছেন তা দেখতে বা রেটিংয়ের সাথে শিক্ষার্থীকে যুক্ত করতে পারেন "
+"না।"
 
 msgid "Privacy promise"
 msgstr "গোপনীয়তার প্রতিশ্রুতি"
@@ -4521,8 +4532,12 @@ msgstr "এখনও বণ্টন নেই"
 msgid "Honest feedback, kept anonymous."
 msgstr "আপনার মতামত, নিরাপদে বেনামি।"
 
-msgid "Rate your courses and teachers each semester. Teachers see only combined results, after the round closes."
-msgstr "প্রতি সেমিস্টারে আপনার কোর্স ও শিক্ষকদের মূল্যায়ন করুন। রাউন্ড শেষ হওয়ার পরই শিক্ষকেরা শুধু সম্মিলিত ফলাফল দেখেন।"
+msgid ""
+"Rate your courses and teachers each semester. Teachers see only combined "
+"results, after the round closes."
+msgstr ""
+"প্রতি সেমিস্টারে আপনার কোর্স ও শিক্ষকদের মূল্যায়ন করুন। রাউন্ড শেষ হওয়ার "
+"পরই শিক্ষকেরা শুধু সম্মিলিত ফলাফল দেখেন।"
 
 msgid "Why you can trust it"
 msgstr "কেন আপনি ভরসা করতে পারেন"
@@ -4533,8 +4548,12 @@ msgstr "আপনার উত্তরে কোনো নাম, আইডি 
 msgid "Protected data"
 msgstr "সুরক্ষিত তথ্য"
 
-msgid "Student IDs, contact details and comments are encrypted in the database. Passwords are hashed."
-msgstr "শিক্ষার্থী আইডি, যোগাযোগের তথ্য ও মন্তব্য ডাটাবেসে এনক্রিপ্ট করা থাকে। পাসওয়ার্ড হ্যাশ করে রাখা হয়।"
+msgid ""
+"Student IDs, contact details and comments are encrypted in the database. "
+"Passwords are hashed."
+msgstr ""
+"শিক্ষার্থী আইডি, যোগাযোগের তথ্য ও মন্তব্য ডাটাবেসে এনক্রিপ্ট করা থাকে। "
+"পাসওয়ার্ড হ্যাশ করে রাখা হয়।"
 
 msgid "One voice per course"
 msgstr "প্রতি কোর্সে একটি মতামত"
@@ -4557,14 +4576,22 @@ msgstr "আইডি ও কোড নিন"
 msgid "Give feedback once per course"
 msgstr "প্রতি কোর্সে একবার মতামত দিন"
 
-msgid "When a round opens, rate each course with stars and add comments if you like. Submission is final."
-msgstr "রাউন্ড শুরু হলে প্রতিটি কোর্সে তারা দিয়ে রেটিং দিন, চাইলে মন্তব্য লিখুন। জমা দেওয়ার পর আর বদলানো যায় না।"
+msgid ""
+"When a round opens, rate each course with stars and add comments if you "
+"like. Submission is final."
+msgstr ""
+"রাউন্ড শুরু হলে প্রতিটি কোর্সে তারা দিয়ে রেটিং দিন, চাইলে মন্তব্য লিখুন। "
+"জমা দেওয়ার পর আর বদলানো যায় না।"
 
 msgid "Teachers see combined results"
 msgstr "শিক্ষকেরা সম্মিলিত ফলাফল দেখেন"
 
-msgid "After the round closes, teachers see averages and comments without names. Nothing shows if fewer than five students answered."
-msgstr "রাউন্ড শেষ হলে শিক্ষকেরা নাম ছাড়া গড় রেটিং ও মন্তব্য দেখেন। পাঁচজনের কম শিক্ষার্থী উত্তর দিলে কিছুই দেখানো হয় না।"
+msgid ""
+"After the round closes, teachers see averages and comments without names. "
+"Nothing shows if fewer than five students answered."
+msgstr ""
+"রাউন্ড শেষ হলে শিক্ষকেরা নাম ছাড়া গড় রেটিং ও মন্তব্য দেখেন। পাঁচজনের কম "
+"শিক্ষার্থী উত্তর দিলে কিছুই দেখানো হয় না।"
 
 msgid "Four roles"
 msgstr "চারটি ভূমিকা"
@@ -4572,8 +4599,12 @@ msgstr "চারটি ভূমিকা"
 msgid "What each role sees"
 msgstr "কে কী দেখতে পান"
 
-msgid "Every role gets only what it needs, and nothing that could identify who wrote what."
-msgstr "প্রতিটি ভূমিকা শুধু প্রয়োজনীয় তথ্যই পায়, কে কী লিখেছে তা চেনার মতো কিছু নয়।"
+msgid ""
+"Every role gets only what it needs, and nothing that could identify who "
+"wrote what."
+msgstr ""
+"প্রতিটি ভূমিকা শুধু প্রয়োজনীয় তথ্যই পায়, কে কী লিখেছে তা চেনার মতো কিছু "
+"নয়।"
 
 msgid "Can see"
 msgstr "দেখতে পান"
@@ -4593,7 +4624,8 @@ msgstr "রাউন্ড শেষ হওয়ার পর সম্মি�
 msgid "Names, student IDs, or who wrote which answer."
 msgstr "নাম, শিক্ষার্থী আইডি, বা কে কোন উত্তর লিখেছে।"
 
-msgid "Department rankings, alerts, and which own-department IDs are still pending."
+msgid ""
+"Department rankings, alerts, and which own-department IDs are still pending."
 msgstr "বিভাগের র‍্যাংকিং, সতর্কতা, এবং নিজ বিভাগের কোন আইডিগুলো এখনও বাকি।"
 
 msgid "Any student's answers, or a link from a ballot to a student."
@@ -4614,8 +4646,12 @@ msgstr "সহজ ভাষায়"
 msgid "A look inside"
 msgstr "ভেতরে এক নজর"
 
-msgid "Each role gets a focused dashboard. Everything below is sample data, not real people or results."
-msgstr "প্রতিটি ভূমিকার জন্য আলাদা ড্যাশবোর্ড। নিচের সবকিছু নমুনা তথ্য, বাস্তব মানুষ বা ফলাফল নয়।"
+msgid ""
+"Each role gets a focused dashboard. Everything below is sample data, not "
+"real people or results."
+msgstr ""
+"প্রতিটি ভূমিকার জন্য আলাদা ড্যাশবোর্ড। নিচের সবকিছু নমুনা তথ্য, বাস্তব মানুষ"
+" বা ফলাফল নয়।"
 
 msgid "Sample data, not real"
 msgstr "নমুনা তথ্য, বাস্তব নয়"
@@ -4689,14 +4725,22 @@ msgstr "শিক্ষার্থী সাড়া দিয়েছেন"
 msgid "Which devices does it work on?"
 msgstr "কোন ডিভাইসে এটি চলে?"
 
-msgid "Any modern phone, tablet or computer browser. Bangla and English are both available, in light or dark mode."
-msgstr "যেকোনো আধুনিক ফোন, ট্যাবলেট বা কম্পিউটারের ব্রাউজারে। বাংলা ও ইংরেজি দুটোই আছে, লাইট বা ডার্ক মোডে।"
+msgid ""
+"Any modern phone, tablet or computer browser. Bangla and English are both "
+"available, in light or dark mode."
+msgstr ""
+"যেকোনো আধুনিক ফোন, ট্যাবলেট বা কম্পিউটারের ব্রাউজারে। বাংলা ও ইংরেজি দুটোই "
+"আছে, লাইট বা ডার্ক মোডে।"
 
 msgid "Ready to share honest feedback?"
 msgstr "সৎ মতামত জানাতে প্রস্তুত?"
 
-msgid "Log in with your account, or create one with your student ID and the code from your department."
-msgstr "আপনার অ্যাকাউন্টে লগ ইন করুন, অথবা শিক্ষার্থী আইডি ও বিভাগের কোড দিয়ে নতুন অ্যাকাউন্ট খুলুন।"
+msgid ""
+"Log in with your account, or create one with your student ID and the code "
+"from your department."
+msgstr ""
+"আপনার অ্যাকাউন্টে লগ ইন করুন, অথবা শিক্ষার্থী আইডি ও বিভাগের কোড দিয়ে নতুন "
+"অ্যাকাউন্ট খুলুন।"
 
 msgid "Who sees what"
 msgstr "কে কী দেখে"
@@ -5006,3 +5050,194 @@ msgid "%(left)s recovery code left"
 msgid_plural "%(left)s recovery codes left"
 msgstr[0] "%(left)sটি রিকভারি কোড বাকি"
 msgstr[1] "%(left)sটি রিকভারি কোড বাকি"
+
+#: templates/core/landing.html:0
+msgid "A comment (optional)"
+msgstr "মন্তব্য (ঐচ্ছিক)"
+
+#: templates/core/landing.html:0
+msgid "Anonymous, no name, no time"
+msgstr "বেনামি, নাম নেই, সময় নেই"
+
+#: templates/core/landing.html:0
+msgid "Answers cannot be traced back"
+msgstr "উত্তর থেকে আপনাকে চেনা যায় না"
+
+#: templates/core/landing.html:0
+msgid "Bangla and English, light and dark"
+msgstr "বাংলা ও ইংরেজি, আলো ও অন্ধকার মোড"
+
+#: templates/core/landing.html:0
+msgid "Built so that honesty is safe"
+msgstr "যেন সৎ মতামত নিরাপদ থাকে"
+
+#: templates/core/landing.html:0
+msgid ""
+"Combined from <b class=\"num\" data-demo-count>%(total)s</b> sample "
+"responses."
+msgstr ""
+"মোট <b class=\"num\" data-demo-count>%(total)s</b>টি নমুনা মতামত মিলিয়ে "
+"দেখানো হচ্ছে।"
+
+#: templates/core/landing.html:0
+msgid "Combined results only"
+msgstr "শুধু সম্মিলিত ফলাফল"
+
+#: templates/core/landing.html:0
+msgid "Comments are screened"
+msgstr "মন্তব্য যাচাই করা হয়"
+
+#: templates/core/landing.html:0
+msgid "Comments, shuffled"
+msgstr "মন্তব্য, এলোমেলো করে সাজানো"
+
+#: templates/core/landing.html:0
+msgid "Dashboard role"
+msgstr "ড্যাশবোর্ডের ভূমিকা"
+
+#: templates/core/landing.html:0
+msgid ""
+"Every role confirms sign-in with a code from an app on their own phone."
+msgstr ""
+"প্রতিটি ভূমিকার ব্যবহারকারী নিজের ফোনের অ্যাপের কোড দিয়ে লগ ইন নিশ্চিত "
+"করেন।"
+
+#: templates/core/landing.html:0
+msgid ""
+"Feedback stops. Only now can results reach teachers and heads of department."
+msgstr ""
+"মতামত দেওয়া বন্ধ হয়। এখন থেকেই শুধু শিক্ষক ও বিভাগীয় প্রধান ফলাফল দেখতে "
+"পারেন।"
+
+#: templates/core/landing.html:0
+msgid ""
+"Fonts, scripts and images all come from this site. No outside trackers or "
+"ads are loaded."
+msgstr ""
+"ফন্ট, স্ক্রিপ্ট ও ছবি সবই এই সাইট থেকেই আসে। বাইরের কোনো ট্র্যাকার বা "
+"বিজ্ঞাপন লোড হয় না।"
+
+#: templates/core/landing.html:0
+msgid "Four steps"
+msgstr "চারটি ধাপ"
+
+#: templates/core/landing.html:0
+msgid "Hidden below five answers"
+msgstr "পাঁচটির কম উত্তরে লুকানো থাকে"
+
+#: templates/core/landing.html:0
+msgid "How your answers and your account are protected, without the jargon."
+msgstr "আপনার উত্তর ও অ্যাকাউন্ট কীভাবে সুরক্ষিত থাকে, সহজ ভাষায়।"
+
+#: templates/core/landing.html:0
+msgid ""
+"If fewer than five students answered, no average and no comment is shown."
+msgstr "পাঁচজনের কম শিক্ষার্থী উত্তর দিলে কোনো গড় বা মন্তব্য দেখানো হয় না।"
+
+#: templates/core/landing.html:0
+msgid "Marking was fair and the rubric was clear."
+msgstr "নম্বর দেওয়া ন্যায্য ছিল এবং মূল্যায়নের মানদণ্ড স্পষ্ট ছিল।"
+
+#: templates/core/landing.html:0
+msgid ""
+"Merged. You are now one of {n} voices, and the teacher cannot tell which "
+"one."
+msgstr ""
+"মিলে গেছে। আপনি এখন {n}টি মতামতের একটি, আর শিক্ষক বুঝতে পারবেন না কোনটি "
+"আপনার।"
+
+#: templates/core/landing.html:0
+msgid "Nothing from other websites"
+msgstr "অন্য ওয়েবসাইট থেকে কিছু আসে না"
+
+#: templates/core/landing.html:0
+msgid "Passwords are hashed"
+msgstr "পাসওয়ার্ড হ্যাশ করা হয়"
+
+#: templates/core/landing.html:0
+msgid "Pick at least one star rating or write a comment first."
+msgstr "আগে অন্তত একটি তারা রেটিং দিন বা একটি মন্তব্য লিখুন।"
+
+#: templates/core/landing.html:0
+msgid "Please slow down in the last chapters."
+msgstr "শেষের অধ্যায়গুলো একটু ধীরে পড়ালে ভালো হয়।"
+
+#: templates/core/landing.html:0
+msgid "Sample participation"
+msgstr "নমুনা অংশগ্রহণ"
+
+#: templates/core/landing.html:0
+msgid "Sample rating distribution"
+msgstr "নমুনা রেটিং বণ্টন"
+
+#: templates/core/landing.html:0
+msgid "See what your teacher sees"
+msgstr "দেখুন আপনার শিক্ষক কী দেখেন"
+
+#: templates/core/landing.html:0
+msgid "Send anonymously"
+msgstr "বেনামে পাঠান"
+
+#: templates/core/landing.html:0
+msgid "Sensitive data is encrypted"
+msgstr "গোপনীয় তথ্য এনক্রিপ্ট করা থাকে"
+
+#: templates/core/landing.html:0
+msgid "Sign in with an authenticator app"
+msgstr "অথেনটিকেটর অ্যাপ দিয়ে লগ ইন"
+
+#: templates/core/landing.html:0
+msgid ""
+"Student IDs, contact details and comments are encrypted in the database."
+msgstr ""
+"শিক্ষার্থীর আইডি, যোগাযোগের তথ্য ও মন্তব্য ডেটাবেসে এনক্রিপ্ট করে রাখা হয়।"
+
+#: templates/core/landing.html:0
+msgid ""
+"Tap some stars, add a comment and watch it join the sample answers. This is "
+"a demo with sample data; nothing you type leaves this page."
+msgstr ""
+"কয়েকটি তারায় চাপ দিন, একটি মন্তব্য লিখুন এবং দেখুন সেটি নমুনা উত্তরগুলোর "
+"সঙ্গে কীভাবে মিশে যায়। এটি নমুনা তথ্যের ডেমো; আপনি যা লিখবেন তা এই পাতার "
+"বাইরে যায় না।"
+
+#: templates/core/landing.html:0
+msgid ""
+"Teachers see averages and shuffled comments, never one person's answers."
+msgstr "শিক্ষকেরা গড় ও এলোমেলো করা মন্তব্য দেখেন, কখনও একজনের উত্তর নয়।"
+
+#: templates/core/landing.html:0
+msgid "The examples in class helped a lot."
+msgstr "ক্লাসের উদাহরণগুলো খুব সাহায্য করেছে।"
+
+#: templates/core/landing.html:0
+msgid "The round closes"
+msgstr "রাউন্ড শেষ হয়"
+
+#: templates/core/landing.html:0
+msgid "Try it"
+msgstr "নিজে চেষ্টা করুন"
+
+#: templates/core/landing.html:0
+msgid ""
+"We never keep your password itself, only a scrambled form that cannot be "
+"turned back."
+msgstr ""
+"আমরা আপনার পাসওয়ার্ড নিজে কখনও রাখি না, শুধু একটি এলোমেলো রূপ রাখি যা আর "
+"আগের রূপে ফেরানো যায় না।"
+
+#: templates/core/landing.html:0
+msgid "What makes it different"
+msgstr "কেন এটি আলাদা"
+
+#: templates/core/landing.html:0
+msgid "What the teacher sees"
+msgstr "শিক্ষক যা দেখেন"
+
+#: templates/core/landing.html:0
+msgid "With fewer than five responses, nothing would be shown."
+msgstr "পাঁচটির কম মতামত হলে কিছুই দেখানো হতো না।"
+
+#: templates/core/landing.html:0
+msgid "Your feedback"
+msgstr "আপনার মতামত"

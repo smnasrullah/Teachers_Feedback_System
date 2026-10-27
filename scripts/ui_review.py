@@ -142,6 +142,16 @@ def _enrolment_session(department) -> str:
     return client.cookies["sessionid"].value
 
 
+def _scroll_through(page):
+    """Visit the whole page once so scroll-triggered reveals have played, then return to the top."""
+    height = page.evaluate("document.documentElement.scrollHeight")
+    for y in range(0, height, 500):
+        page.evaluate(f"window.scrollTo(0, {y})")
+        page.wait_for_timeout(120)
+    page.evaluate("window.scrollTo(0, 0)")
+    page.wait_for_timeout(900)
+
+
 def pages(urls):
     def reverse(name, *args):
         from django.urls import reverse as dj_reverse
@@ -243,6 +253,8 @@ def main():
                         page.on("pageerror", lambda e, tag=tag: problems.append((tag, str(e))))
                         page.goto(f"http://127.0.0.1:{PORT}{path}", wait_until="networkidle")
                         page.wait_for_timeout(1900 if name == "landing" else 150)
+                        if name == "landing":
+                            _scroll_through(page)
                         overflow = page.evaluate(
                             "document.documentElement.scrollWidth > innerWidth"
                         )

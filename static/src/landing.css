@@ -1,4 +1,4 @@
-/* Campus line-art, geometric landing page, dashboard preview, split auth layout. Tokens only (static/src/tokens.css). */
+/* Campus line-art (auth panel), dashboard preview, split auth layout. Tokens only (static/src/tokens.css). */
 
 @layer components {
   /* ---- line-art illustrations ---- */
@@ -77,81 +77,7 @@
     }
   }
 
-  /* ---- landing: bands, 12-column hairline grid, geometric blocks ---- */
-  .l-band {
-    position: relative;
-    overflow: hidden;
-    background: var(--bg);
-    color: var(--text);
-  }
-  .l-band-alt {
-    background: var(--surface);
-    border-block: 1px solid var(--border);
-  }
-  .l-blue {
-    background: var(--band);
-    color: var(--on-band);
-  }
-  .l-blue h2,
-  .l-blue h3 {
-    color: var(--on-band);
-  }
-  .l-blue .text-muted,
-  .l-blue .l-sub {
-    color: var(--on-band-muted);
-  }
-  .l-blue :focus-visible {
-    outline-color: var(--on-band);
-  }
-  .l-blue a:not(.btn) {
-    color: var(--on-band);
-  }
-  .l-blue .btn-primary {
-    background: var(--on-band);
-    color: var(--band);
-  }
-  .l-blue .btn-primary:hover {
-    background: var(--on-band-muted);
-  }
-  .l-blue .btn-ghost {
-    color: var(--on-band);
-    border-color: var(--line-on-band);
-  }
-  .l-blue .btn-ghost:hover {
-    background: var(--band-2);
-  }
-  .l-wrap {
-    position: relative;
-    width: 100%;
-    max-width: 1120px;
-    margin-inline: auto;
-    padding-inline: 16px;
-  }
-  .l-wrap::before {
-    content: "";
-    position: absolute;
-    inset: 0 16px;
-    pointer-events: none;
-    background: linear-gradient(to right, var(--grid-line) 1px, transparent 1px) 0 0 / 25% 100%;
-    border-inline-end: 1px solid var(--grid-line);
-  }
-  .l-blue .l-wrap::before {
-    background-image: linear-gradient(to right, var(--grid-line-on-band) 1px, transparent 1px);
-    border-inline-end-color: var(--grid-line-on-band);
-  }
-  .l-grid {
-    position: relative;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-  .l-grid > * {
-    min-width: 0;
-    grid-column: 1 / -1;
-    padding-inline: 12px;
-  }
-  .l-pad {
-    padding-block: 56px;
-  }
+  /* ---- landing helpers shared with landing_art.css: eyebrow, ballot stub, role cards, dashboard preview ---- */
   .eyebrow {
     display: inline-flex;
     align-items: center;
@@ -165,110 +91,6 @@
     width: 10px;
     height: 10px;
     background: currentColor;
-  }
-  .l-blue .eyebrow {
-    color: var(--on-band-muted);
-  }
-  .l-h2 {
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-top: 12px;
-  }
-  .l-sub {
-    margin-top: 12px;
-    color: var(--muted);
-    max-width: 52ch;
-  }
-
-  .shape {
-    position: absolute;
-    pointer-events: none;
-    z-index: 0;
-  }
-  .shape-circle {
-    border-radius: 50%;
-    background: var(--primary-soft);
-  }
-  .shape-quarter {
-    background: var(--band);
-    border-radius: 100% 0 0 0;
-  }
-  .shape-square {
-    background: var(--primary);
-  }
-  .l-blue .shape-circle {
-    background: var(--band-2);
-  }
-  .l-blue .shape-quarter {
-    background: var(--band-2);
-  }
-
-  /* hero */
-  .l-hero {
-    padding-top: 40px;
-  }
-  .l-hero .l-grid {
-    align-items: end;
-    row-gap: 40px;
-  }
-  .l-hero h1 {
-    font-size: 40px;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.12;
-  }
-  html[lang="bn"] .l-hero h1 {
-    line-height: 1.3;
-  }
-  .l-hero .lead {
-    margin-top: 20px;
-    font-size: 18px;
-    max-width: 44ch;
-  }
-  .l-cta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 28px;
-  }
-  .l-hero-copy {
-    position: relative;
-    z-index: 1;
-    padding-bottom: 8px;
-  }
-  .l-hero-art {
-    position: relative;
-    z-index: 1;
-  }
-  .hero-circle {
-    width: 280px;
-    height: 280px;
-    inset-inline-end: -40px;
-    top: 4%;
-  }
-  .hero-quarter {
-    width: 96px;
-    height: 96px;
-    inset-inline-start: 16px;
-    bottom: 0;
-  }
-  .arch-frame {
-    position: relative;
-    width: min(100%, 400px);
-    margin-inline: auto;
-    aspect-ratio: 4 / 5;
-    border-radius: 999px 999px 0 0;
-    background: var(--surface);
-    border: 1px solid var(--border-input);
-    outline: 1px solid var(--grid-line);
-    outline-offset: 8px;
-    overflow: hidden;
-    display: grid;
-    align-items: end;
-  }
-  .arch-frame .campus-line {
-    height: 100%;
   }
   .mini-stub {
     position: absolute;
@@ -295,64 +117,6 @@
     color: var(--success);
   }
 
-  /* trust strip */
-  .trust-item {
-    display: grid;
-    gap: 6px;
-    align-content: start;
-    padding-block: 20px;
-  }
-  .trust-item + .trust-item {
-    border-top: 1px solid var(--grid-line-on-band);
-  }
-  .trust-item .ico {
-    width: 22px;
-    height: 22px;
-    margin-bottom: 6px;
-  }
-  .trust-item h3 {
-    font-size: var(--text-base);
-    font-weight: 700;
-  }
-  .trust-item p {
-    font-size: var(--text-sm);
-    color: var(--on-band-muted);
-  }
-
-  /* how it works */
-  .l-step {
-    display: grid;
-    gap: 12px;
-    align-content: start;
-    padding-block: 20px;
-    border-top: 1px solid var(--border);
-  }
-  .step-shape {
-    width: 56px;
-    height: 56px;
-    display: grid;
-    place-items: center;
-    background: var(--primary);
-    color: var(--on-primary);
-    font-size: var(--text-xl);
-    font-weight: 700;
-  }
-  .step-shape.is-circle {
-    border-radius: 50%;
-  }
-  .step-shape.is-quarter {
-    border-radius: 100% 0 0 0;
-    place-items: end start;
-    padding: 0 0 8px 12px;
-  }
-  .l-step h3 {
-    font-size: var(--text-xl);
-  }
-  .l-step p {
-    color: var(--muted);
-  }
-
-  /* role cards */
   .role-card {
     display: grid;
     gap: 14px;
@@ -368,21 +132,6 @@
   .role-card h3 {
     font-size: var(--text-xl);
   }
-  .role-mark {
-    width: 40px;
-    height: 40px;
-    background: var(--primary-soft);
-    border: 1px solid var(--primary);
-  }
-  .role-mark.is-circle {
-    border-radius: 50%;
-  }
-  .role-mark.is-quarter {
-    border-radius: 100% 0 0 0;
-  }
-  .role-mark.is-arch {
-    border-radius: 999px 999px 0 0;
-  }
   .role-card h4 {
     font-size: var(--text-sm);
     font-weight: 700;
@@ -394,29 +143,6 @@
   }
   .role-card .checklist .ico {
     margin-top: 3px;
-  }
-
-  /* anonymity */
-  .promise-list {
-    list-style: none;
-    padding: 0;
-    margin: 28px 0 0;
-    display: grid;
-    gap: 0;
-  }
-  .promise-list li {
-    display: grid;
-    grid-template-columns: 28px minmax(0, 1fr);
-    gap: 12px;
-    padding-block: 16px;
-    border-top: 1px solid var(--grid-line-on-band);
-  }
-  .promise-list .ico {
-    margin-top: 4px;
-  }
-  .promise-art {
-    margin-top: 40px;
-    align-self: end;
   }
 
   /* dashboard preview */
@@ -670,26 +396,6 @@
     stroke-linecap: round;
   }
 
-  /* FAQ on the landing grid */
-  .l-faq details:first-of-type {
-    margin-top: 0;
-  }
-
-  /* final CTA */
-  .cta-circle {
-    width: 320px;
-    height: 320px;
-    inset-inline-end: -120px;
-    top: -80px;
-  }
-  .cta-quarter {
-    width: 140px;
-    height: 140px;
-    inset-inline-start: 0;
-    bottom: 0;
-    transform: scaleX(-1);
-  }
-
   /* ---- split auth layout ---- */
   .auth-split {
     display: grid;
@@ -747,68 +453,6 @@
   }
 
   @media (min-width: 768px) {
-    .l-wrap::before {
-      background-size: calc(100% / 12) 100%;
-    }
-    .l-grid {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-    }
-    .l-pad {
-      padding-block: 88px;
-    }
-    .l-h2 {
-      font-size: 38px;
-    }
-    .l-hero {
-      padding-top: 72px;
-    }
-    .l-hero h1 {
-      font-size: 56px;
-    }
-    .hero-circle {
-      width: 460px;
-      height: 460px;
-      inset-inline-end: -80px;
-      top: -24px;
-    }
-    .hero-quarter {
-      width: 140px;
-      height: 140px;
-    }
-    .l-hero-copy {
-      grid-column: 1 / span 7;
-      padding-bottom: 176px;
-    }
-    .l-hero-art {
-      grid-column: 8 / -1;
-      padding-bottom: 0;
-    }
-    .trust-item {
-      grid-column: span 6;
-    }
-    .trust-item + .trust-item {
-      border-top: 0;
-    }
-    .trust-item:nth-child(n + 3) {
-      border-top: 1px solid var(--grid-line-on-band);
-    }
-    .l-head {
-      grid-column: 1 / span 7;
-      margin-bottom: 24px;
-    }
-    .l-step {
-      grid-column: span 4;
-    }
-    .role-card {
-      grid-column: span 6;
-    }
-    .promise-copy {
-      grid-column: 1 / span 6;
-    }
-    .promise-art {
-      grid-column: 7 / -1;
-      margin-top: 0;
-    }
     .pv-body {
       grid-template-columns: 168px minmax(0, 1fr);
       min-height: 380px;
@@ -821,15 +465,6 @@
     }
     .pv-tiles {
       grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-    .faq-head {
-      grid-column: 1 / span 4;
-    }
-    .faq-list {
-      grid-column: 5 / -1;
-    }
-    .cta-copy {
-      grid-column: 1 / span 8;
     }
     .auth-split {
       grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
@@ -849,15 +484,6 @@
     }
   }
   @media (min-width: 1100px) {
-    .trust-item {
-      grid-column: span 3;
-    }
-    .trust-item:nth-child(n + 3) {
-      border-top: 0;
-    }
-    .role-card {
-      grid-column: span 3;
-    }
     .pv-stage {
       padding-inline-end: 128px;
     }
