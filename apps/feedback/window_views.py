@@ -68,7 +68,12 @@ def window_edit(request, pk):
 @never_cache
 @role_required(Role.ADMIN)
 def window_preview(request, pk):
-    window = get_object_or_404(FeedbackWindow.objects.select_related("semester"), pk=pk)
+    window = get_object_or_404(
+        FeedbackWindow.objects.select_related("semester").prefetch_related(
+            "departments", "level_terms"
+        ),
+        pk=pk,
+    )
     offerings = [
         offering
         for offering in CourseOffering.objects.filter(semester=window.semester).select_related(
