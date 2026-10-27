@@ -73,6 +73,7 @@ FOCUS_STATE = """() => {
   const box = el.getBoundingClientRect();
   return {
     id: String(window.__qaIds.get(el)),
+    segmented: ['date', 'time', 'datetime-local', 'month', 'week'].includes(el.type),
     key: el.tagName + '#' + el.id + '.' + el.className + '@' + (el.getAttribute('href') || ''),
     visible: visible,
     shown: box.width > 0 && box.height > 0,
@@ -137,7 +138,8 @@ def _keyboard(page) -> list[str]:
     for _ in range(TAB_PRESSES):
         page.keyboard.press("Tab")
         state = page.evaluate(FOCUS_STATE)
-        if state is None:
+        # Tab moves through the day/month/year parts of a date field: not a trap.
+        if state is None or state["segmented"]:
             continue
         if state["shown"] and not state["visible"]:
             problems.append(f"focus not visible on {state['key'][:90]}")
@@ -176,7 +178,11 @@ def _check_links(context, page, walk: Walk) -> list[str]:
         if key not in walk.checked_links:
             response = context.request.get(href, max_redirects=0)
             walk.checked_links[key] = response.status
-        if walk.checked_links[key] >= 400 and walk.checked_links[key] not in {403}:
+        status = walk.checked_links[key]
+        # 503 on a PDF is the designed answer of a server without WeasyPrint's native libraries.
+        if status == 503 and path.endswith(".pdf"):
+            continue
+        if status >= 400 and status != 403:
             problems.append(f"broken link {path} -> {walk.checked_links[key]}")
     return problems
 
