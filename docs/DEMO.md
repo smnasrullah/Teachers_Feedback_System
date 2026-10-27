@@ -37,15 +37,14 @@ Linux/CI: `make seed` and `make seed ARGS="--reset"`.
 | `demo_hod` | Teacher, head of CSE | Also teaches Discrete Mathematics (Fall) and Linear Algebra (Spring). |
 | `demo_student` | Student, CSE, Level 2 Term 1 | Nickname "Demo Student"; enrolled in all six Level 2 Term 1 courses of Fall 2026. |
 
-Every account signs in with its authenticator. Add each printed setup key to an authenticator app
-(time-based, 6 digits), or read the current code from the terminal:
-
-```powershell
-python manage.py totp_code demo_student
-```
+On this machine in development the three accounts sign in with **username and password only**:
+no authenticator code is asked (see "Password-only demo login" in `docs/SECURITY.md` for the guard
+rails). The authenticator is still enrolled, so a real-flow test works: add a printed setup key to
+an app, or read a code with `python manage.py totp_code <username>`. The spare sign-up students
+(`DEMO-S014`, `DEMO-S015`) are ordinary accounts once claimed and always ask for the code.
 
 On the login page (only while `DEBUG` is on) a collapsed "Demo accounts" box lists the three
-usernames and this hint. It never shows a password or a key.
+usernames and says they sign in with password only. It never shows a password or a key.
 
 ## What the data contains
 
@@ -71,7 +70,7 @@ usernames and this hint. It never shows a password or a key.
 
 ## Tour: student (`demo_student`)
 
-1. Sign in; the dashboard lists six Fall 2026 courses: two Sealed (submitted), four Pending.
+1. Sign in (password only); the dashboard lists six Fall 2026 courses: two Sealed (submitted), four Pending.
 2. Open a pending course. Answer the questions; theory and lab courses ask different ones.
 3. Save a draft, reload the page, and see the draft come back.
 4. Submit (the page asks you to confirm the password again) and see the course become Sealed.

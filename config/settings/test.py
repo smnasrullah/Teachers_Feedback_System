@@ -7,6 +7,9 @@ os.environ.setdefault("BLIND_INDEX_KEY", "test-blind-index-key-0123456789abcdef"
 
 from .dev import *  # noqa: F403
 
+# Tests turn the demo shortcut on explicitly; it is never on by accident.
+DEMO_SKIP_SECOND_FACTOR = False
+
 # Test-only models (encrypted fields) live in tests/testapp.
 INSTALLED_APPS = [*INSTALLED_APPS, "tests.testapp"]  # noqa: F405
 

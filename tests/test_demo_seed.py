@@ -252,7 +252,7 @@ def test_the_login_page_lists_the_demo_usernames_only_in_development(db, setting
     settings.DEBUG = True
     html = web.get(reverse("accounts:login")).content.decode()
     assert all(username in html for username in demo.USERNAMES)
-    assert "totp_code" in html
+    assert "sign in with password only" in html
     settings.DEBUG = False
     html = web.get(reverse("accounts:login")).content.decode()
     assert not any(username in html for username in demo.USERNAMES)

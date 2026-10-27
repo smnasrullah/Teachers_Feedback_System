@@ -4,6 +4,8 @@ from django.core.exceptions import ImproperlyConfigured
 
 from .encryption import blind_index, encrypt
 
+DEV_SETTINGS = "config.settings.dev"
+
 
 @register(Tags.security)
 def check_encryption_keys(app_configs, **kwargs):
@@ -27,3 +29,18 @@ def check_encryption_keys(app_configs, **kwargs):
             )
         )
     return errors
+
+
+@register(Tags.security)
+def check_demo_second_factor(app_configs, **kwargs):
+    if settings.DEMO_SKIP_SECOND_FACTOR and (
+        not settings.DEBUG or settings.SETTINGS_MODULE != DEV_SETTINGS
+    ):
+        return [
+            Error(
+                "DEMO_SKIP_SECOND_FACTOR may only be on with DEBUG on and "
+                f"DJANGO_SETTINGS_MODULE={DEV_SETTINGS}.",
+                id="core.E004",
+            )
+        ]
+    return []

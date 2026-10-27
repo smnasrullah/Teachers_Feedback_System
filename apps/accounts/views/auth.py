@@ -60,6 +60,10 @@ def login_view(request):
 
 
 def _after_password(request, user):
+    if login_service.is_demo_account(request, user):
+        next_url = login_service.safe_next(request)
+        login_service.complete_demo_login(request, user)
+        return redirect(next_url or login_service.landing_url(user))
     login_service.begin_pending(request, user, login_service.safe_next(request))
     if login_service.next_step(user) is login_service.NextStep.CODE:
         return redirect("accounts:login_second_factor")

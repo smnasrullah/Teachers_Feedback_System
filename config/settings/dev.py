@@ -9,6 +9,8 @@ ACCESS_POLICY_EXEMPT_NAMESPACES = ["admin"]  # admin guards itself with is_staff
 # Uploaded avatars and photos are served by the dev server only (a proxy serves them in production).
 ACCESS_POLICY_EXEMPT_VIEWS = [*ACCESS_POLICY_EXEMPT_VIEWS, "media"]  # noqa: F405
 
+DEMO_SKIP_SECOND_FACTOR = True
+
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
 

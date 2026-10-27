@@ -17,14 +17,20 @@ from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 
 from apps.accounts.models import User
+from apps.auditlog.models import AuditEvent
 from apps.auditlog.services import audit
+from apps.core.checks import DEV_SETTINGS
 from apps.core.encryption import blind_index
+from apps.core.net import client_ip
 from apps.core.permissions import HOD, Role, primary_role
 from apps.core.services import sessions
 
 PENDING_KEY = "_tfs_pending_login"
 MODEL_BACKEND = "django.contrib.auth.backends.ModelBackend"
 USERNAME_PURPOSE = "audit.username"
+DEMO_PREFIX = "demo_"
+DEMO_ID_PREFIX = "DEMO-"
+LOOPBACK = frozenset({"127.0.0.1", "::1"})
 DASHBOARDS = {
     Role.ADMIN.value: "accounts:dashboard_admin",
     HOD: "accounts:dashboard_hod",
@@ -71,6 +77,42 @@ def complete_login(request, user: User) -> None:
     request.session.pop(PENDING_KEY, None)
     sessions.mark_second_factor(request)
     audit.record("auth.login", request=request, actor=user, department_id=user.department_id)
+
+
+def is_demo_account(request, user: User) -> bool:
+    """Whether ``user`` is a ``seed_demo`` account signing in from this machine in development.
+
+    Every condition must hold: the flag, DEBUG, the dev settings module, a ``demo_`` username,
+    a ``DEMO-`` registry row (the Admin has none, so ``seed_demo``'s own ``admin.created``
+    event stands in), a loopback peer address and no forwarding header (a tunnel or proxy).
+    """
+    if not (
+        settings.DEMO_SKIP_SECOND_FACTOR
+        and settings.DEBUG
+        and settings.SETTINGS_MODULE == DEV_SETTINGS
+        and user.username.startswith(DEMO_PREFIX)
+        and request.META.get("REMOTE_ADDR") in LOOPBACK
+        and client_ip(request) in LOOPBACK
+        and "HTTP_X_FORWARDED_FOR" not in request.META
+    ):
+        return False
+    if user.role == Role.ADMIN:
+        return AuditEvent.objects.filter(
+            action="admin.created",
+            object_type=user._meta.label_lower,
+            object_id=str(user.pk),
+            metadata__via="seed_demo",
+        ).exists()
+    registry = getattr(user, "registry", None)
+    return registry is not None and registry.external_id.startswith(DEMO_ID_PREFIX)
+
+
+def complete_demo_login(request, user: User) -> None:
+    """Sign a demo account in on its password alone and audit that the code was skipped."""
+    complete_login(request, user)
+    audit.record(
+        "auth.login_demo_bypass", request=request, actor=user, department_id=user.department_id
+    )
 
 
 def landing_url(user: User) -> str:

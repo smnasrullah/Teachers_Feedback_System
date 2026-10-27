@@ -82,6 +82,24 @@ recovery codes stay valid.
 **and** `settings.SETTINGS_MODULE == "config.settings.dev"`; under `config.settings.test` or
 `config.settings.prod` it exits with an error and prints nothing.
 
+## Password-only demo login (development only)
+
+`seed_demo` accounts (`demo_admin`, `demo_hod`, `demo_student`) skip the authenticator code at
+login, so a local demo is usable. **Never enable `DEMO_SKIP_SECOND_FACTOR` outside local
+development.** It is `False` in `base.py` and `True` only in `dev.py`. The login service
+(`login.is_demo_account`) honours it only when all of these hold:
+
+- the flag, `DEBUG` and `SETTINGS_MODULE == "config.settings.dev"`;
+- the username starts with `demo_` and the account is tied to a `DEMO-` registry row (the Admin
+  has none, so the `admin.created` audit event written by `seed_demo` stands in);
+- the peer address (`REMOTE_ADDR`) is `127.0.0.1` or `::1`, and no `X-Forwarded-For` header is
+  present, so a LAN, tunnel or proxy never qualifies.
+
+The password, lockout and rate limits still apply; the session is a normal fully authenticated one;
+each such login writes the audit event `auth.login_demo_bypass`. System check `core.E004` is an
+error when the flag is on with `DEBUG` off or another settings module, so production cannot start
+with it. Real accounts (including any made by `create_admin`) are never affected.
+
 ## Removed
 
 The e-mail/SMS one-time-code system (the `OneTimeCode` model, its delivery task and backends, the

@@ -103,3 +103,11 @@ def test_django_admin_not_installed_in_prod():
     )
     assert result.returncode == 0, result.stderr
     assert result.stdout.strip().endswith("False")
+
+
+def test_demo_second_factor_skip_is_off_in_prod_settings():
+    result = run_with_prod_settings(
+        "shell", "-c", "from django.conf import settings; print(settings.DEMO_SKIP_SECOND_FACTOR)"
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip().endswith("False")

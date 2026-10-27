@@ -5251,8 +5251,8 @@ msgid "Demo accounts"
 msgstr "ডেমো অ্যাকাউন্ট"
 
 #: templates/accounts/login.html:0
-msgid "Development only. Run: python manage.py totp_code <username>"
-msgstr "শুধু ডেভেলপমেন্টের জন্য। চালান: python manage.py totp_code <username>"
+msgid "Demo accounts sign in with password only"
+msgstr "ডেমো অ্যাকাউন্ট শুধু পাসওয়ার্ড দিয়ে ঢোকে"
 
 #: apps/core/management/commands/seed_demo.py:0
 msgid "Development only: create the demo accounts and demo data (safe to run again). Refuses to run unless DEBUG is on and the settings module is config.settings.dev."
