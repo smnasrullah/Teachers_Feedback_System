@@ -50,17 +50,11 @@ PROGRAM_NAMES = {
     ),
 }
 
-BENGALI_DIGITS = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
+# (level, term, order); the term is stored as a number and shown as a Roman numeral.
 LEVEL_TERMS = tuple(
-    (
-        f"Level {level} Term {term}",
-        f"লেভেল {level} টার্ম {term}".translate(BENGALI_DIGITS),
-        (level - 1) * 2 + term,
-    )
-    for level in range(1, 5)
-    for term in (1, 2)
+    (level, term, (level - 1) * 2 + term) for level in range(1, 5) for term in (1, 2)
 )
-L1T2, L2T1, L2T2 = "Level 1 Term 2", "Level 2 Term 1", "Level 2 Term 2"
+L1T2, L2T1, L2T2 = (1, 2), (2, 1), (2, 2)
 
 
 @dataclass(frozen=True)
@@ -71,7 +65,7 @@ class CourseSpec:
     title_bn: str
     credit: str
     kind: str
-    level: str
+    level: tuple[int, int]
 
 
 COURSES = (
@@ -101,7 +95,7 @@ COURSES = (
     CourseSpec(CSE, "CSE-1205", "Electrical Circuits", "বৈদ্যুতিক বর্তনী", "3.0", "theory", L1T2),
     CourseSpec(EEE, "EEE-2101", "Circuit Analysis", "বর্তনী বিশ্লেষণ", "3.0", "theory", L2T1),
     CourseSpec(EEE, "EEE-2102", "Circuit Analysis Lab", "বর্তনী বিশ্লেষণ ল্যাব", "1.5", "lab", L2T1),
-    # No offering: it only gives the EEE curriculum a level after Level 2 Term 1 (promotion ladder).
+    # No offering: it only gives the EEE curriculum a level after Level 2 Term I (promotion ladder).
     CourseSpec(EEE, "EEE-2201", "Electronic Devices", "ইলেকট্রনিক ডিভাইস", "3.0", "theory", L2T2),
 )
 COURSE_CODES = tuple(course.code for course in COURSES)

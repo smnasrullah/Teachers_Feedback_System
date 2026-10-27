@@ -11,7 +11,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from apps.core.services.localize import localize_digits
+from apps.core.services.localize import BANGLA_DIGITS, localize_digits, pick, to_roman
 
 
 class Department(models.Model):
@@ -76,23 +76,40 @@ class Batch(models.Model):
 
 
 class LevelTerm(models.Model):
-    """One step of the curriculum (for example "Level 2, Term 1").
+    """One step of the curriculum (for example "Level 2, Term II").
 
     How many exist is data, not code: the admin defines as many ordered rows as the
-    university's scheme needs. ``order`` is unique and drives promotion order.
+    university's scheme needs. ``order`` is unique and drives promotion order. The term is
+    stored as a number and shown as a Roman numeral; the name is built from the two numbers.
     """
 
-    name = models.CharField(_("name"), max_length=50)
-    name_bn = models.CharField(_("name (Bangla)"), max_length=50, blank=True)
+    level = models.PositiveSmallIntegerField(_("level"))
+    term = models.PositiveSmallIntegerField(_("term"))
     order = models.PositiveSmallIntegerField(_("order"), unique=True)
 
     class Meta:
         ordering = ["order"]
         verbose_name = _("level/term")
         verbose_name_plural = _("levels/terms")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["level", "term"],
+                name="unique_level_term",
+                violation_error_message=_("This level and term already exist."),
+            )
+        ]
 
     def __str__(self):
-        return self.name
+        return pick(self.name, self.name_bn)
+
+    @property
+    def name(self) -> str:
+        return f"Level {self.level} Term {to_roman(self.term)}"
+
+    @property
+    def name_bn(self) -> str:
+        level = str(self.level).translate(BANGLA_DIGITS)
+        return f"লেভেল {level} টার্ম {to_roman(self.term)}"
 
 
 class Season(models.TextChoices):

@@ -15,7 +15,7 @@ from django.urls import reverse
 from django.utils import timezone
 from PIL import Image
 
-from apps.academics.models import CourseType
+from apps.academics.models import CourseType, LevelTerm
 from apps.accounts.models import User
 from apps.auditlog.models import AuditEvent
 from apps.core.models import ActiveSession
@@ -655,3 +655,13 @@ def test_the_replaced_device_is_told_what_happened(web):
     assert response.redirect_chain[0][0].startswith(reverse("accounts:login"))
     html = response.content.decode()
     assert "signed in on another device" in html and "change your password" in html
+
+
+@pytest.mark.parametrize(
+    ("language", "shown"), [("en", "Level 3 Term II"), ("bn", "লেভেল ৩ টার্ম II")]
+)
+def test_dashboard_shows_the_term_in_roman_numerals(world, language, shown):
+    world.profile.level_term = LevelTerm.objects.create(level=3, term=2, order=99)
+    world.profile.save()
+    world.web.defaults["HTTP_ACCEPT_LANGUAGE"] = language
+    assert shown in dashboard(world.web).content.decode()

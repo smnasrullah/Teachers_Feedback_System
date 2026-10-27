@@ -36,7 +36,7 @@ PASSWORD_GROUPS = (
     "-_!@#",
 )
 MAX_PASSWORD_TRIES = 20
-CSE_LEVELS = (c.L1T2,) * len(c.CSE_STUDENT_IDS)  # promoted to Level 2 Term 1 by the seeder
+CSE_LEVELS = (c.L1T2,) * len(c.CSE_STUDENT_IDS)  # promoted to Level 2 Term I by the seeder
 EEE_LEVELS = (c.L2T1,) * c.EEE_FINAL_YEAR + (c.L2T2,)
 
 

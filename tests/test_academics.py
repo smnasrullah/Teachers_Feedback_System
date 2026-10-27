@@ -196,7 +196,7 @@ class TestScreens:
         create("programs", {"department": department.pk, "code": "BSC", "name": "B.Sc."})
         program = department.programs.get()
         create("batches", {"program": program.pk, "name": "2026"})
-        create("level-terms", {"name": "Level 1 Term 1", "order": 1})
+        create("level-terms", {"level": 1, "term": 1, "order": 1})
         level_term = LevelTermFactory._meta.model.objects.get(order=1)
         create(
             "semesters",

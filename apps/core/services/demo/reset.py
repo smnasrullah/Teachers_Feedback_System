@@ -86,7 +86,10 @@ def delete_all() -> int:
     _delete_unused(Batch.objects.filter(name=c.BATCH_NAME, program__code=c.PROGRAM_CODE))
     _delete_unused(Program.objects.filter(code=c.PROGRAM_CODE))
     _delete_unused(Semester.objects.filter(demo_semesters))
-    _delete_unused(LevelTerm.objects.filter(name__in=[name for name, _bn, _order in c.LEVEL_TERMS]))
+    demo_level_terms = Q()
+    for level, term, _order in c.LEVEL_TERMS:
+        demo_level_terms |= Q(level=level, term=term)
+    _delete_unused(LevelTerm.objects.filter(demo_level_terms))
     _delete_unused(Department.objects.filter(code__in=[code for code, _en, _bn in c.DEPARTMENTS]))
     bank = question_bank.parse(BANK_FILE.read_text(encoding="utf-8"))
     _delete_unused(Question.objects.filter(text__in=[row.text for row in bank.questions]))

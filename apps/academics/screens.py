@@ -180,9 +180,8 @@ SCREENS: dict[str, Screen] = {
             columns=(
                 Column(_("Order"), lambda o: str(o.order), numeric=True),
                 Column(_("Name"), lambda o: o.name),
-                Column(_("Name (Bangla)"), lambda o: o.name_bn or "—"),
+                Column(_("Name (Bangla)"), lambda o: o.name_bn),
             ),
-            search=("name", "name_bn"),
             icon="list",
         ),
         Screen(
@@ -220,7 +219,7 @@ SCREENS: dict[str, Screen] = {
                 Column(_("Type"), lambda o: o.get_course_type_display()),
                 Column(_("Department"), lambda o: o.department.code),
                 Column(_("Program"), lambda o: o.program.code),
-                Column(_("Level/term"), lambda o: o.level_term.name),
+                Column(_("Level/term"), lambda o: str(o.level_term)),
                 Column(_("Elective"), lambda o: yes_no(o.is_elective)),
             ),
             search=("code", "title", "title_bn"),

@@ -4,7 +4,7 @@ from django import template
 from django.template.loader import render_to_string
 from django.utils.html import format_html
 
-from apps.core.services.localize import pick
+from apps.core.services.localize import pick, to_roman
 
 register = template.Library()
 
@@ -76,6 +76,12 @@ def localized(obj, field):
     """``{{ course|localized:"title" }}``: the Bangla column (``title_bn``) when the page is
     in Bangla and it is filled in, else the English one."""
     return pick(getattr(obj, field, ""), getattr(obj, f"{field}_bn", ""))
+
+
+@register.filter
+def roman(number):
+    """``{{ term|roman }}``: 1..10 as I..X, anything else as it is, nothing as empty."""
+    return to_roman(number)
 
 
 @register.filter

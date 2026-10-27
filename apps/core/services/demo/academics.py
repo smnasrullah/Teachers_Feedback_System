@@ -1,7 +1,7 @@
 """Demo academic data: departments down to offerings, enrolments, published results, promotion.
 
 Structure rows are looked up by their natural key first, so a database that already has a
-``CSE`` department or a "Level 2 Term 1" simply reuses it. Grades are saved and promotion is
+``CSE`` department or a "Level 2 Term I" simply reuses it. Grades are saved and promotion is
 applied through the real services (so they are audited), and a step that was done before is
 skipped, which keeps a second run from changing anything.
 """
@@ -35,22 +35,22 @@ class Structure:
     departments: dict[str, Department]
     programs: dict[str, Program]
     batches: dict[str, Batch]
-    level_terms: dict[str, LevelTerm]
+    level_terms: dict[tuple[int, int], LevelTerm]
     semesters: dict[tuple[str, int], Semester]
     courses: dict[str, Course]
 
 
-def _level_terms() -> dict[str, LevelTerm]:
+def _level_terms() -> dict[tuple[int, int], LevelTerm]:
     taken = set(LevelTerm.objects.values_list("order", flat=True))
     found = {}
-    for name, name_bn, order in c.LEVEL_TERMS:
-        level_term = LevelTerm.objects.filter(name=name).first()
+    for level, term, order in c.LEVEL_TERMS:
+        level_term = LevelTerm.objects.filter(level=level, term=term).first()
         if level_term is None:
             if order in taken:  # the owner's own scheme uses this position: go after it
                 order = max(taken) + 1
             taken.add(order)
-            level_term = LevelTerm.objects.create(name=name, name_bn=name_bn, order=order)
-        found[name] = level_term
+            level_term = LevelTerm.objects.create(level=level, term=term, order=order)
+        found[level, term] = level_term
     return found
 
 
@@ -118,7 +118,7 @@ def ensure_offerings(structure: Structure, teachers: dict) -> dict[tuple, Course
 
 
 def enroll_winter(offerings, cse, eee) -> None:
-    """The previous semester's classes: all CSE students in the four Level 1 Term 2 courses,
+    """The previous semester's classes: all CSE students in the four Level 1 Term II courses,
     all EEE students in the two EEE courses."""
     rows = [
         Enrollment(student_profile=student, offering=offerings[c.WINTER, code])

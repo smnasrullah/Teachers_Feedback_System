@@ -182,7 +182,7 @@ def test_the_student_has_two_sealed_and_four_pending_forms(seeded):
     assert states.count(portal.CourseState.PENDING) == (
         len(demo.SUMMER_COURSES) - len(demo.DEMO_STUDENT_SEALED)
     )
-    assert profile.level_term.name == demo.L2T1
+    assert (profile.level_term.level, profile.level_term.term) == demo.L2T1
     assert profile.enrollments.filter(offering__semester__in=semesters.ongoing()).count() == len(
         demo.SUMMER_COURSES
     )

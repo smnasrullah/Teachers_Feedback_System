@@ -84,7 +84,7 @@ class World:
     def __init__(self, *, next_offerings=True):
         self.department = DepartmentFactory(code="CSE")
         self.program = ProgramFactory(department=self.department, code="BSC")
-        self.l1, self.l2 = LevelTermFactory(name="L1T1"), LevelTermFactory(name="L1T2")
+        self.l1, self.l2 = LevelTermFactory(level=1, term=1), LevelTermFactory(level=1, term=2)
         today = semesters.today()
         self.s1 = make_semester(
             season="winter",

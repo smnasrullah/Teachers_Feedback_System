@@ -32,7 +32,7 @@
         <td role="cell" data-label="{% translate 'Full name' %}">{{ student.visible_full_name|default:"—" }}</td>
         <td role="cell" data-label="{% translate 'Department' %}">{{ student.program.department.code }}</td>
         <td role="cell" data-label="{% translate 'Program' %}">{{ student.program.code }}</td>
-        <td role="cell" data-label="{% translate 'Level/term' %}">{{ student.level_term.name }}</td>
+        <td role="cell" data-label="{% translate 'Level/term' %}">{{ student.level_term|localized:"name" }}</td>
         <td role="cell" data-label="{% translate 'Section' %}">{{ student.section|default:"—" }}</td>
       </tr>
     {% endfor %}

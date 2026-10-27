@@ -11,6 +11,8 @@ from django.urls import reverse
 from django.utils import timezone, translation
 from openpyxl import load_workbook
 
+from apps.academics.models import LevelTerm
+from apps.accounts.models import StudentProfile
 from apps.analytics import services as analytics
 from apps.auditlog.models import AuditEvent
 from apps.reports.services import exports
@@ -298,6 +300,14 @@ class TestPendingExport:
         closed.enroll(closed.department, external_id=OWN_ID)
         sign_in(web, closed.hod)
         assert len([c for c in cells(web.get(self.url())) if c.startswith("2101")]) == 1
+
+    def test_the_term_is_a_roman_numeral(self, web, closed):
+        closed.enroll(closed.department, external_id=OWN_ID)
+        StudentProfile.objects.update(
+            level_term=LevelTerm.objects.create(level=3, term=2, order=99)
+        )
+        sign_in(web, closed.hod)
+        assert "Level 3 Term II" in cells(web.get(self.url()))
 
     def test_course_filter_and_foreign_course_refused(self, web, closed):
         closed.enroll(closed.department, external_id=OWN_ID)

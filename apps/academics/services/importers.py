@@ -10,6 +10,7 @@ Audit events carry counts only: never an ID, a name or an activation code.
 
 import csv
 import io
+import re
 from dataclasses import dataclass, field
 from datetime import timedelta
 from decimal import Decimal, InvalidOperation
@@ -46,6 +47,7 @@ from apps.accounts.services.identifiers import clean_registry_id
 from apps.accounts.services.registry import IssuedCode
 from apps.auditlog.services import audit
 from apps.core.csv_safe import clean_cell
+from apps.core.services.localize import ASCII_DIGITS, parse_term
 from apps.enrollment.models import Enrollment, EnrollmentStatus
 
 MAX_BYTES = 5 * 1024 * 1024
@@ -55,6 +57,7 @@ BULK_BATCH = 1000
 DEFAULT_CODE_VALID_DAYS = 14
 TRUE_WORDS = frozenset({"1", "yes", "y", "true"})
 FALSE_WORDS = frozenset({"", "0", "no", "n", "false"})
+LEVEL_TERM = re.compile(r"level\s*(?P<level>\d+)\s*[,/-]?\s*term\s*(?P<term>\w+)", re.IGNORECASE)
 
 
 class ImportRejected(ValidationError):
@@ -127,11 +130,11 @@ class _Lookups:
         return {(p.department_id, p.code.casefold()): p for p in Program.objects.all()}
 
     @cached_property
-    def level_terms(self) -> dict[str, list[LevelTerm]]:
-        found: dict[str, list[LevelTerm]] = {}
-        for level_term in LevelTerm.objects.all():
-            found.setdefault(level_term.name.casefold(), []).append(level_term)
-        return found
+    def level_terms(self) -> dict[tuple[int, int], LevelTerm]:
+        return {
+            (level_term.level, level_term.term): level_term
+            for level_term in LevelTerm.objects.all()
+        }
 
     @cached_property
     def batches(self) -> dict[tuple[int, str], Batch]:
@@ -171,17 +174,16 @@ class _Lookups:
             ) from None
 
     def level_term(self, row: dict) -> LevelTerm:
+        """ "Level 2 Term II" or "Level 2 Term 2" (any case, Bangla digits too)."""
         value = _text(row, "level_term", max_length=50, required=True)
-        matches = self.level_terms.get(value.casefold(), [])
-        if not matches:
+        match = LEVEL_TERM.fullmatch(value.translate(ASCII_DIGITS).strip())
+        term = parse_term(match["term"]) if match else None
+        try:
+            return self.level_terms[int(match["level"]), term]
+        except (KeyError, TypeError):
             raise RowInvalid(
                 "level_term", _("Unknown level/term “%(value)s”.") % {"value": _shown(value)}
-            )
-        if len(matches) > 1:
-            raise RowInvalid(
-                "level_term", _("More than one level/term is named “%(value)s”.") % {"value": value}
-            )
-        return matches[0]
+            ) from None
 
     def batch(self, row: dict, program: Program) -> Batch | None:
         value = _text(row, "batch", max_length=50)
@@ -332,8 +334,8 @@ class StudentImporter(_RegistryImporter):
     required = ("student_id", "department", "program", "level_term")
     optional = ("full_name", "batch", "section")
     sample = (
-        ("2101001", "CSE", "BSC-CSE", "Level 1 Term 1", "Rahim Uddin", "2021", "A"),
-        ("2101002", "CSE", "BSC-CSE", "Level 1 Term 1", "", "", ""),
+        ("2101001", "CSE", "BSC-CSE", "Level 1 Term I", "Rahim Uddin", "2021", "A"),
+        ("2101002", "CSE", "BSC-CSE", "Level 1 Term I", "", "", ""),
     )
 
     def profile(self, row, department):
@@ -370,8 +372,8 @@ class CourseImporter(Importer):
     required = ("department", "code", "title", "credit", "program", "level_term")
     optional = ("title_bn", "type", "elective")
     sample = (
-        ("CSE", "CSE101", "Programming Basics", "3", "BSC-CSE", "Level 1 Term 1", "", "theory", ""),
-        ("CSE", "CSE102", "Programming Lab", "1.5", "BSC-CSE", "Level 1 Term 1", "", "lab", "no"),
+        ("CSE", "CSE101", "Programming Basics", "3", "BSC-CSE", "Level 1 Term I", "", "theory", ""),
+        ("CSE", "CSE102", "Programming Lab", "1.5", "BSC-CSE", "Level 1 Term I", "", "lab", "no"),
     )
 
     def __init__(self, **options):

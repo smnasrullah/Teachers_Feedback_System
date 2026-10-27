@@ -50,7 +50,8 @@ class LevelTermFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = LevelTerm
 
-    name = factory.Sequence(lambda n: f"Level {n}")
+    level = factory.Sequence(lambda n: n + 10)  # clear of the levels tests ask for by number
+    term = 1
     order = factory.Sequence(lambda n: n + 1)
 
 

@@ -58,7 +58,7 @@ def world():
     """One department with a program, a level/term and a current semester."""
     department = DepartmentFactory(code="CSE")
     program = ProgramFactory(department=department, code="BSC")
-    level_term = LevelTermFactory(name="Level 1 Term 1")
+    level_term = LevelTermFactory(level=1, term=1)
     return department, program, level_term, make_semester(current=True, season="summer", year=2026)
 
 
@@ -681,3 +681,28 @@ class TestMissingEnrollment:
         ).content.decode()
         assert "2101002" in page
         assert "2101001" not in page
+
+
+class TestLevelTermCell:
+    def test_term_is_accepted_as_a_number_or_a_roman_numeral(self, world, admin):
+        _, program, _, _ = world
+        second = LevelTermFactory(level=1, term=2)
+        result = run(
+            "students",
+            student_rows(
+                "2101001,CSE,BSC,Level 1 Term 2,,,",
+                "2101002,CSE,BSC,level 1 term ii,,,",
+                "2101003,CSE,BSC,LEVEL 1 TERM I,,,",
+            ),
+            admin,
+        )
+        assert (result.ok, result.created) == (True, 3)
+        profiles = StudentProfile.objects.filter(program=program)
+        assert profiles.filter(level_term=second).count() == 2
+
+    @pytest.mark.parametrize(
+        "cell", ["Level 1 Term III", "Level 1 Term", "Level 1 Term 0", "Term II"]
+    )
+    def test_other_cells_are_unknown(self, world, admin, cell):
+        result = run("students", student_rows(f"2101001,CSE,BSC,{cell},,,"), admin)
+        assert result.ok is False

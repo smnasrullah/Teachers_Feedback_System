@@ -5351,3 +5351,15 @@ msgstr "%(name)s · শেষ %(end)s"
 
 msgid "No semester is running today"
 msgstr "আজ কোনো সেমিস্টার চলছে না"
+
+msgid "level"
+msgstr "লেভেল"
+
+msgid "term"
+msgstr "টার্ম"
+
+msgid "This level and term already exist."
+msgstr "এই লেভেল ও টার্ম আগেই আছে।"
+
+msgid "Type the number, such as 2. It is shown as a Roman numeral (II)."
+msgstr "সংখ্যাটি লিখুন, যেমন 2। এটি রোমান সংখ্যায় (II) দেখানো হয়।"

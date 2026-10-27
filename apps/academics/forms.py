@@ -47,7 +47,8 @@ class BatchForm(StyledModelForm):
 class LevelTermForm(StyledModelForm):
     class Meta:
         model = LevelTerm
-        fields = ["name", "name_bn", "order"]
+        fields = ["level", "term", "order"]
+        help_texts = {"term": _("Type the number, such as 2. It is shown as a Roman numeral (II).")}
 
 
 class SemesterForm(StyledModelForm):
