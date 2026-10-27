@@ -481,6 +481,33 @@
   .wk3 {
     transform: translateX(150px);
   }
+  .L5 use {
+    transform: scale(var(--ws, 1));
+  }
+  .L5 .p-t {
+    transform-origin: 269px 479px;
+  }
+  .wk1 use {
+    transform-origin: 28px 552px;
+  }
+  .wk2 use {
+    transform-origin: 26px 548px;
+  }
+  .wk3 use {
+    transform-origin: 19px 503px;
+  }
+  /* small screens: the arch is narrow, so the figures grow and the extra reader steps out */
+  @media (max-width: 480px) {
+    .scene {
+      --ws: 1.6;
+    }
+    .L5 > .p-d {
+      display: none;
+    }
+    .wk3 {
+      display: none;
+    }
+  }
   .hh {
     transform: rotate(100deg);
   }
@@ -744,8 +771,11 @@
     }
   }
   @keyframes bob {
+    from {
+      transform: scale(var(--ws, 1));
+    }
     to {
-      transform: translateY(-2px);
+      transform: translateY(-2px) scale(var(--ws, 1));
     }
   }
   @keyframes clock-m {

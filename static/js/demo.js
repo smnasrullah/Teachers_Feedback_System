@@ -94,11 +94,34 @@
       done();
     };
   }
+  function cue(anchor) {
+    if (motionOff()) {
+      return;
+    }
+    var label = document.createElement("span");
+    label.className = "demo-plus";
+    label.setAttribute("aria-hidden", "true");
+    label.textContent = host.getAttribute("data-msg-plus");
+    anchor.appendChild(label);
+    label.addEventListener("animationend", function () {
+      label.remove();
+    });
+  }
+  function mark(row) {
+    row.classList.add("is-changed");
+    if (!motionOff()) {
+      window.setTimeout(function () {
+        row.classList.remove("is-changed");
+      }, 2600);
+    }
+  }
   function merge() {
     rows.forEach(function (row, index) {
       var stars = picked(index);
       if (stars) {
         countUp(index, (base[index].sum + stars) / (base[index].n + 1));
+        mark(row);
+        cue(host.querySelector("input[name='" + row.getAttribute("data-name") + "']").closest(".demo-q"));
       }
     });
     var text = comment.value.trim();
@@ -106,6 +129,9 @@
       var item = quote.content.firstElementChild.cloneNode(true);
       item.querySelector("p").textContent = text;
       item.classList.add("is-new");
+      if (!rows.some(function (_, index) { return picked(index) > 0; })) {
+        cue(comment.closest(".field"));
+      }
       list.insertBefore(item, list.children[Math.floor(Math.random() * (list.children.length + 1))] || null);
     }
     countOut.textContent = fmt(total + 1, 0);
@@ -137,6 +163,9 @@
       out.textContent = out.getAttribute("data-initial");
     });
     comment.value = "";
+    rows.forEach(function (row) {
+      row.classList.remove("is-changed");
+    });
     list.querySelectorAll(".is-new").forEach(function (item) {
       item.remove();
     });

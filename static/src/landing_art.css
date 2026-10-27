@@ -239,8 +239,41 @@
     font-weight: 700;
   }
   .demo-q {
+    position: relative;
     display: grid;
     gap: 2px;
+  }
+  .demo .field {
+    position: relative;
+  }
+  .demo-plus {
+    position: absolute;
+    inset-inline-start: 4px;
+    top: 28px;
+    padding: 2px 10px;
+    border: 1px solid var(--success);
+    border-radius: 999px;
+    background: var(--success-soft);
+    color: var(--success);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    pointer-events: none;
+    animation: plus-float 1.5s ease-out both;
+  }
+  .pv-bar-row.is-changed b {
+    display: inline-block;
+    padding-inline: 6px;
+    border-radius: 6px;
+    background: var(--success-soft);
+    color: var(--success);
+    animation: avg-pop 0.5s ease-out;
+  }
+  .pv-bar-row.is-changed b::before {
+    content: "+1 \00b7 ";
+  }
+  .pv-bar-row.is-changed .pv-track {
+    outline: 2px solid var(--success);
+    outline-offset: 2px;
   }
   .demo-qt {
     font-weight: 600;
@@ -525,6 +558,34 @@
       opacity: 0;
       transform: translateY(8px) scale(0.98);
     }
+  }
+  @keyframes plus-float {
+    0% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-34px);
+    }
+  }
+  @keyframes avg-pop {
+    40% {
+      transform: scale(1.25);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .demo-plus,
+    .pv-bar-row.is-changed b {
+      animation: none;
+    }
+  }
+  :root[data-motion="off"] .demo-plus,
+  :root[data-motion="off"] .pv-bar-row.is-changed b {
+    animation: none;
   }
   @keyframes faq-in {
     from {

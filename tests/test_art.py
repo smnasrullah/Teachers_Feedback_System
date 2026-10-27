@@ -59,6 +59,15 @@ def test_motion_is_switched_off_by_reduced_motion_and_the_in_app_switch():
     assert "animation-timeline: view()" in landing
 
 
+def test_scene_figures_grow_on_small_screens_and_the_demo_cue_has_a_reduced_motion_twin():
+    css = (ROOT / "static/src/art.css").read_text(encoding="utf-8")
+    landing = (ROOT / "static/src/landing_art.css").read_text(encoding="utf-8")
+
+    assert "@media (max-width: 480px)" in css and "--ws: 1.6" in css
+    assert ".demo-plus" in landing and ".pv-bar-row.is-changed" in landing
+    assert chr(0) not in landing
+
+
 @pytest.mark.parametrize("language", ["bn", "en"])
 def test_landing_carries_the_scene_demo_and_no_external_assets(client, language):
     client.cookies["django_language"] = language

@@ -5241,3 +5241,7 @@ msgstr "পাঁচটির কম মতামত হলে কিছুই �
 #: templates/core/landing.html:0
 msgid "Your feedback"
 msgstr "আপনার মতামত"
+
+#: templates/core/landing.html:0
+msgid "+1 voice"
+msgstr "+1 মতামত"
