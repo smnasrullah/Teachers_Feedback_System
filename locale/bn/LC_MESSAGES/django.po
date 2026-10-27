@@ -5403,3 +5403,12 @@ msgstr "দিন"
 
 msgid "{days} days, {hours} hours, {minutes} minutes"
 msgstr "{days} দিন, {hours} ঘণ্টা, {minutes} মিনিট"
+
+msgid "Account help"
+msgstr "অ্যাকাউন্ট সহায়তা"
+
+msgid "Sign-up progress"
+msgstr "সাইন-আপের অগ্রগতি"
+
+msgid "On this page"
+msgstr "এই পাতায়"
