@@ -5363,3 +5363,27 @@ msgstr "এই লেভেল ও টার্ম আগেই আছে।"
 
 msgid "Type the number, such as 2. It is shown as a Roman numeral (II)."
 msgstr "সংখ্যাটি লিখুন, যেমন 2। এটি রোমান সংখ্যায় (II) দেখানো হয়।"
+
+msgid "All my courses"
+msgstr "আমার সব কোর্স"
+
+msgid "No courses this semester"
+msgstr "এই সেমিস্টারে কোনো কোর্স নেই"
+
+msgid "The courses you teach in the running semester appear here."
+msgstr "চলমান সেমিস্টারে আপনি যে কোর্সগুলো পড়ান, সেগুলো এখানে দেখা যাবে।"
+
+msgid "Closes on %(when)s. Results appear after it closes."
+msgstr "%(when)s তারিখে শেষ হবে। শেষ হওয়ার পর ফলাফল দেখা যাবে।"
+
+msgid "Opens on %(when)s."
+msgstr "%(when)s তারিখে শুরু হবে।"
+
+msgid "Open the report"
+msgstr "রিপোর্ট খুলুন"
+
+msgid "No feedback round covers this course yet."
+msgstr "এখনো কোনো ফিডব্যাক রাউন্ড এই কোর্সটি অন্তর্ভুক্ত করেনি।"
+
+msgid "Fill in"
+msgstr "পূরণ করুন"

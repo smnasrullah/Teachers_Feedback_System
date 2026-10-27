@@ -195,6 +195,8 @@ SECOND_FACTOR_PENDING_SECONDS = 10 * 60
 # Development only (dev.py turns it on; a system check refuses it anywhere else): the demo
 # accounts of ``seed_demo`` sign in from this machine with a password alone.
 DEMO_SKIP_SECOND_FACTOR = False
+# Development only: the password ``seed_demo`` set on the demo accounts, shown on the login page.
+DEMO_PASSWORD = ""
 
 # Results and comment lists stay hidden below this many responses (never fewer than 3).
 MIN_RESPONSES = env.int("MIN_RESPONSES", default=5)

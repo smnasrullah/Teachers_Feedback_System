@@ -260,15 +260,18 @@ def test_the_promotion_preview_shows_every_outcome(seeded):
         assert label in html
 
 
-def test_the_login_page_lists_the_demo_usernames_only_in_development(db, settings):
+def test_the_login_page_lists_the_demo_accounts_only_in_development(db, settings):
     web = Client(HTTP_ACCEPT_LANGUAGE="en")
     settings.DEBUG = True
+    settings.SETTINGS_MODULE = "config.settings.dev"  # set last: each override resets it
     html = web.get(reverse("accounts:login")).content.decode()
     assert all(username in html for username in demo.USERNAMES)
+    assert html.count("data-fill-username=") == len(demo.USERNAMES)
     assert "sign in with password only" in html
     settings.DEBUG = False
     html = web.get(reverse("accounts:login")).content.decode()
     assert not any(username in html for username in demo.USERNAMES)
+    assert "data-fill-username" not in html
 
 
 def test_every_demo_account_can_log_in_with_its_authenticator(seeded):
@@ -341,3 +344,109 @@ def test_the_anonymity_structure_still_holds_after_seeding(seeded):
     assert {field.name for field in answer._meta.concrete_fields}.isdisjoint(
         {"created_at", "updated_at", "ip", "user"}
     )
+
+
+# --- the demo teacher ------------------------------------------------------------------------
+
+
+def test_the_demo_teacher_teaches_in_the_heads_department_and_the_students_courses(seeded):
+    teacher = User.objects.get(username=demo.TEACHER)
+    head = User.objects.get(username=demo.HOD)
+    assert teacher.registry.external_id.startswith(demo.ID_PREFIX)
+    assert teacher.totp_enabled
+    assert teacher.teacher_profile.registry.department == head.teacher_profile.hod_department
+    student = User.objects.get(username=demo.STUDENT).student_profile
+    taught = CourseOffering.objects.filter(teacher=teacher.teacher_profile)
+    assert {o.course.code for o in taught} == set(demo.DEMO_TEACHER_COURSES)
+    assert all(o.semester.status(timezone.localdate()) == "ongoing" for o in taught)
+    assert student.enrollments.filter(offering__in=taught).count() == len(taught)
+
+
+def test_the_closed_round_has_enough_answers_for_every_demo_teacher_course(seeded):
+    early = round_named(demo.SUMMER_EARLY_ROUND)
+    assert early.has_closed(timezone.now())
+    assert round_named(demo.SUMMER_ROUND).is_open(timezone.now())
+    for code in demo.DEMO_TEACHER_COURSES:
+        count = FeedbackResponse.objects.filter(
+            offering=offering(demo.SUMMER, code), window=early
+        ).count()
+        assert count >= anonymity.min_responses() + demo.EARLY_EXTRA_RESPONSES
+
+
+def test_the_teacher_dashboard_lists_only_own_courses_and_their_rounds(seeded):
+    html = signed_in(demo.TEACHER).get(reverse("accounts:dashboard_teacher")).content.decode()
+    for code in demo.DEMO_TEACHER_COURSES:
+        assert code in html
+    for code in set(demo.SUMMER_COURSES) - set(demo.DEMO_TEACHER_COURSES):
+        assert code not in html
+    for code in (*demo.WINTER_CSE_COURSES, *demo.WINTER_EEE_COURSES):
+        assert code not in html
+    assert demo.SUMMER_ROUND in html
+    assert demo.SUMMER_EARLY_ROUND in html
+    assert "responded" in html
+    assert "Results appear after it closes" in html
+
+
+def test_the_open_round_gives_the_teacher_no_figures(seeded):
+    teacher = User.objects.get(username=demo.TEACHER)
+    open_round = round_named(demo.SUMMER_ROUND)
+    own = offering(demo.SUMMER, demo.DEMO_TEACHER_COURSES[0])
+    client = signed_in(demo.TEACHER)
+    report = client.get(reverse("reports:course", args=[own.pk, open_round.pk]))
+    assert report.status_code == 200
+    summary = teacher_report.summarize(own, open_round, teacher, timezone.now())
+    assert summary.average is None
+    assert summary.rate is None
+    assert not report.context["report"].blocks
+
+
+def test_the_teacher_report_has_questions_in_order_ratings_topics_and_comments(seeded):
+    own = offering(demo.SUMMER, demo.DEMO_TEACHER_COURSES[0])
+    early = round_named(demo.SUMMER_EARLY_ROUND)
+    response = signed_in(demo.TEACHER).get(reverse("reports:course", args=[own.pk, early.pk]))
+    assert response.status_code == 200
+    report = response.context["report"]
+    numbers = [block.number for block in report.blocks]
+    assert numbers == list(range(1, len(numbers) + 1))
+    rated = [block for block in report.blocks if block.kind in analytics.RATED_TYPES]
+    assert rated
+    assert all(block.average is not None for block in rated)
+    assert report.categories
+    comments = [block for block in report.blocks if block.panel is not None]
+    assert any(block.panel.comments for block in comments)
+
+
+def test_a_teacher_cannot_open_another_teachers_report(seeded):
+    client = signed_in(demo.TEACHER)
+    early = round_named(demo.SUMMER_EARLY_ROUND)
+    winter = round_named(demo.WINTER_ROUND)
+    foreign = (
+        (offering(demo.SUMMER, "CSE-2105"), early),
+        (offering(demo.SUMMER, "CSE-2107"), early),
+        (offering(demo.WINTER, "CSE-1201"), winter),
+    )
+    for target, window in foreign:
+        urls = [
+            reverse("reports:course", args=[target.pk, window.pk]),
+            reverse("reports:print", args=[target.pk, window.pk]),
+            reverse("reports:export_course", args=[target.pk, window.pk, "csv"]),
+        ]
+        assert [client.get(url).status_code for url in urls] == [403, 403, 403], target
+
+
+def test_no_student_name_or_id_reaches_the_teacher(seeded):
+    client = signed_in(demo.TEACHER)
+    own = offering(demo.SUMMER, demo.DEMO_TEACHER_COURSES[0])
+    early = round_named(demo.SUMMER_EARLY_ROUND)
+    pages = [
+        client.get(reverse("accounts:dashboard_teacher")),
+        client.get(reverse("reports:overview"), {"round": early.pk}),
+        client.get(reverse("reports:course", args=[own.pk, early.pk])),
+        client.get(reverse("reports:print", args=[own.pk, early.pk])),
+        client.get(reverse("reports:export_course", args=[own.pk, early.pk, "csv"])),
+    ]
+    forbidden = (*demo.all_registry_ids(), *demo.CSE_STUDENT_NAMES, *demo.EEE_STUDENT_NAMES)
+    for response in pages:
+        assert response.status_code == 200
+        body = response.content.decode("utf-8", errors="replace")
+        assert not any(term in body for term in forbidden)

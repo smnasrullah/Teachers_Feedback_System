@@ -25,7 +25,7 @@ class Command(BaseCommand):
         )
         parser.add_argument(
             "--password",
-            help=f"Password of the three demo accounts (else ${PASSWORD_ENV}, else a random one).",
+            help=f"Password of the four demo accounts (else ${PASSWORD_ENV}, else a random one).",
         )
 
     @no_translations  # operator output stays readable on code-page consoles

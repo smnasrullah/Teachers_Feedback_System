@@ -16,8 +16,9 @@ scripts/dev.ps1 run
 Linux/CI: `make seed` and `make seed ARGS="--reset"`.
 
 - Running it twice changes nothing. A step that was done is skipped, so you can run it after a reset
-  or after the database was migrated again.
-- The password, the three authenticator setup keys and two spare sign-up pairs are printed to the
+  or after the database was migrated again. A database seeded before `demo_teacher` existed gets it,
+  and Data Structures and its Lab move to it from the other demo teachers.
+- The password, the four authenticator setup keys and two spare sign-up pairs are printed to the
   terminal at the end, and nowhere else (no file, no log, no audit event). The setup keys are
   printed on every run; the password only when it was generated or given; the spare pairs only
   right after they were created (use `--reset` and seed again for new ones).
@@ -35,23 +36,31 @@ Linux/CI: `make seed` and `make seed ARGS="--reset"`.
 | --- | --- | --- |
 | `demo_admin` | Admin | Sees every screen and every department. |
 | `demo_hod` | Teacher, head of CSE | Also teaches Discrete Mathematics (Fall) and Linear Algebra (Spring). |
+| `demo_teacher` | Teacher, CSE | Teaches Data Structures and Data Structures Lab in Summer 2026 (`demo_student` is enrolled in both). Sees only the reports of those two courses. |
 | `demo_student` | Student, CSE, Level 2 Term 1 | Nickname "Demo Student"; enrolled in all six Level 2 Term 1 courses of Summer 2026. |
 
-On this machine in development the three accounts sign in with **username and password only**:
+On this machine in development the four accounts sign in with **username and password only**:
 no authenticator code is asked (see "Password-only demo login" in `docs/SECURITY.md` for the guard
 rails). The authenticator is still enrolled, so a real-flow test works: add a printed setup key to
 an app, or read a code with `python manage.py totp_code <username>`. The spare sign-up students
 (`DEMO-S014`, `DEMO-S015`) are ordinary accounts once claimed and always ask for the code.
 
-On the login page (only while `DEBUG` is on) a collapsed "Demo accounts" box lists the three
-usernames and says they sign in with password only. It never shows a password or a key.
+On the login page (only with `DEBUG` on **and** `config.settings.dev`) a collapsed "Demo accounts"
+box lists the four usernames with their roles and a "Fill in" button for each (a small external
+script, no inline JS). The box shows the password too when the `DEMO_PASSWORD` environment variable
+(or `.env` entry) holds it, which is also what `seed_demo` reads; it is shown only while it still
+fits the demo accounts, so a stale value never appears. Set `DEMO_PASSWORD` in `.env` to see it. It
+never shows an authenticator key, and under production-like settings neither the box nor the
+password is in the page.
 
 ## What the data contains
 
 - Departments CSE and EEE (EEE proves cross-department denial), one program and batch each.
 - **Summer 2026** (current, 1 July 2026 to 30 January 2027; the start date is a placeholder
   until the real one is known, and the admin can change both dates): six CSE Level 2 Term 1 courses (theory and lab) and an **open** round,
-  "Summer 2026 mid-term feedback". `demo_student` has two forms sealed and four pending; most other
+  "Summer 2026 mid-term feedback", and a **closed** one, "Summer 2026 early feedback" (1 to 15
+  August 2026), where each `demo_teacher` course has `MIN_RESPONSES` + 2 anonymous responses from
+  synthetic students (never `demo_student` or the two spare students). `demo_student` has two forms sealed and four pending; most other
   students have some pending, and the two spare students have none.
 - **Winter 2026** (previous): four CSE Level 1 Term 2 courses and two EEE courses with published
   results, and a **closed** round, "Winter 2026 end-of-term feedback". Every CSE offering has at
@@ -59,7 +68,7 @@ usernames and says they sign in with password only. It never shows a password or
 - 15 CSE students (including `demo_student`) were promoted from Spring through the real promotion
   service. Six EEE students are still waiting: Promotion shows promote, retain, promote with
   retakes and graduate for Winter 2026.
-- Four more teachers, 14 + 6 synthetic students (`DEMO-S002` ... `DEMO-S015`, `DEMO-E001` ...
+- Five more teachers (`DEMO-T002` ... `DEMO-T006`), 14 + 6 synthetic students (`DEMO-S002` ... `DEMO-S015`, `DEMO-E001` ...
   `DEMO-E006`) with unused activation codes. The last two CSE students (`DEMO-S014`, `DEMO-S015`)
   are the spare pairs for testing a real sign-up at `/signup/`.
 - A demo question bank of 19 questions in 6 categories (rating, agreement, choice, yes/no, text;
@@ -82,6 +91,19 @@ usernames and says they sign in with password only. It never shows a password or
 9. **Must not be visible:** other students' answers, or who wrote any comment.
 10. Edit the URL to a course you are not enrolled in (an EEE offering): you get 404, not the form.
 
+## Tour: teacher (`demo_teacher`)
+
+1. Sign in (password only); the dashboard lists the two courses of the running semester, each with
+   its rounds: the open one shows its closing date and no figures, the closed one shows the average
+   rating and how many responded, with a link to the report.
+2. Open the closed round's report: questions in order, the average and distribution of every rating
+   question, the topic radar, the word cloud and the comments (cleaned, shuffled, no names or times).
+3. Save an "action taken" note; download the CSV or print view.
+4. Teacher > My courses: the same courses by round.
+5. **Must not be visible:** any student name or ID; the open round's results; another teacher's
+   course (`/teacher/courses/<other offering>/<round>/` answers 403).
+6. **Must not be visible:** any figure or comment of a group below `MIN_RESPONSES`.
+
 ## Tour: head of department (`demo_hod`)
 
 1. Sign in; the HOD dashboard shows the department overview (pick the closed Winter 2026 round).
@@ -99,7 +121,7 @@ usernames and says they sign in with password only. It never shows a password or
 ## Tour: admin (`demo_admin`)
 
 1. Sign in; the dashboard shows people, participation of the open round and alerts.
-2. Registry: 26 `DEMO-` IDs; the spare students show an active activation code.
+2. Registry: 27 `DEMO-` IDs; the spare students show an active activation code.
 3. Academics > Courses/Offerings and Teaching: reassign a teacher.
 4. Results and Promotion: choose Winter 2026 and read the four outcomes; set an override.
 5. Rounds and Questions: open the two rounds and the 19 questions.

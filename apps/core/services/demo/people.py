@@ -1,4 +1,4 @@
-"""Demo people: the three login accounts, the teachers and the synthetic students.
+"""Demo people: the four login accounts, the teachers and the synthetic students.
 
 Everything goes through the services the real screens use (registry, activation codes,
 sign-up), so the accounts are indistinguishable from ones created by hand. Passwords and
@@ -44,6 +44,7 @@ EEE_LEVELS = (c.L2T1,) * c.EEE_FINAL_YEAR + (c.L2T2,)
 class Cast:
     admin: User
     hod: User
+    teacher: User
     student: User
     teachers: dict[str, TeacherProfile]
     cse: list[StudentProfile]  # in ID order; the first is demo_student
@@ -52,7 +53,7 @@ class Cast:
 
 
 def generate_password() -> str:
-    """A random password that passes the strict rule (Admin and HOD accounts use it)."""
+    """A random password that passes the strict rule (the demo accounts use it)."""
     alphabet = "".join(PASSWORD_GROUPS)
     for _attempt in range(MAX_PASSWORD_TRIES):
         chars = [secrets.choice(group) for group in PASSWORD_GROUPS]
@@ -128,8 +129,9 @@ def _login_for(registry, username, password, actor) -> User:
     return user
 
 
-def _teachers(structure: Structure, actor, password) -> tuple[dict, User]:
-    profiles, hod = {}, None
+def _teachers(structure: Structure, actor, password) -> tuple[dict, dict[str, User]]:
+    """The teacher profiles by key, and the login accounts (head and demo teacher) by key."""
+    profiles, logins = {}, {}
     for spec in c.TEACHERS:
         department = structure.departments[spec.department]
         head = {"is_hod": True, "hod_department": department} if spec.key == "hod" else {}
@@ -142,9 +144,9 @@ def _teachers(structure: Structure, actor, password) -> tuple[dict, User]:
             actor,
         )
         profiles[spec.key] = registry.teacher_profile
-        if spec.key == "hod":
-            hod = _login_for(registry, c.HOD, password, actor)
-    return profiles, hod
+        if spec.key in c.LOGIN_KEYS:
+            logins[spec.key] = _login_for(registry, c.LOGIN_KEYS[spec.key], password, actor)
+    return profiles, logins
 
 
 def _students(structure: Structure, department, ids, names, levels, actor):
@@ -171,7 +173,7 @@ def _students(structure: Structure, department, ids, names, levels, actor):
 
 def build(structure: Structure, actor: User, password: str | None) -> Cast:
     """Create whatever of the cast is missing and return all of it."""
-    teachers, hod = _teachers(structure, actor, password)
+    teachers, logins = _teachers(structure, actor, password)
     cse, cse_new = _students(
         structure, c.CSE, c.CSE_STUDENT_IDS, c.CSE_STUDENT_NAMES, CSE_LEVELS, actor
     )
@@ -189,4 +191,4 @@ def build(structure: Structure, actor: User, password: str | None) -> Cast:
         for item in issued
         if item.registry.external_id in spare_ids
     )
-    return Cast(actor, hod, student, teachers, cse, eee, spares)
+    return Cast(actor, logins["hod"], logins["demo"], student, teachers, cse, eee, spares)

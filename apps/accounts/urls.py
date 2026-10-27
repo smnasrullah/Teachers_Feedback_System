@@ -3,6 +3,7 @@ from django.urls import path
 from apps.feedback.student_views import dashboard as student_dashboard
 from apps.reports.admin_views import home as admin_dashboard
 from apps.reports.hod_views import overview as hod_dashboard
+from apps.reports.views import dashboard as teacher_dashboard
 
 from .views import account, auth, dashboards, profile, recovery, registry, signup, twofactor, users
 
@@ -21,7 +22,7 @@ urlpatterns = [
     path("username/forgot/", recovery.username_forgot, name="username_forgot"),
     path("dashboard/", dashboards.dashboard, name="dashboard"),
     path("dashboard/student/", student_dashboard, name="dashboard_student"),
-    path("dashboard/teacher/", dashboards.dashboard_teacher, name="dashboard_teacher"),
+    path("dashboard/teacher/", teacher_dashboard, name="dashboard_teacher"),
     path("dashboard/hod/", hod_dashboard, name="dashboard_hod"),
     path("dashboard/admin/", admin_dashboard, name="dashboard_admin"),
     path("account/", account.account_home, name="account"),

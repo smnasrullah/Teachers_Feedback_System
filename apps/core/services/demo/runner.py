@@ -57,7 +57,7 @@ def _teacher_means(cast) -> dict[int, float]:
 @transaction.atomic
 def seed(password: str | None = None) -> Report:
     """Create the demo data that is missing. ``password`` (checked against the strict rule) is
-    set on the three accounts; without one, a random password is made when any is missing."""
+    set on the four accounts; without one, a random password is made when any is missing."""
     require_development()
     generated = password is None and User.objects.filter(username__in=USERNAMES).count() < len(
         USERNAMES
@@ -69,17 +69,20 @@ def seed(password: str | None = None) -> Report:
     structure = academics.ensure_structure()
     admin = people.ensure_admin(password)
     cast = people.build(structure, admin, password)
-    for user in (cast.admin, cast.hod, cast.student):
+    for user in (cast.admin, cast.hod, cast.teacher, cast.student):
         people.sync_password(user, password)
     offerings = academics.ensure_offerings(structure, cast.teachers)
     academics.enroll_winter(offerings, cast.cse, cast.eee)
     academics.publish_results(offerings, cast.cse, cast.eee, admin)
     academics.promote_cse(structure.semesters[constants.WINTER], cast.cse, admin)
     feedback.ensure_bank(admin)
-    closed, open_ = feedback.ensure_rounds(structure)
+    closed, early, open_ = feedback.ensure_rounds(structure)
     means = _teacher_means(cast)
     closed_new = feedback.submit_all(
         closed, feedback.closed_round_items(closed, offerings, cast.cse, cast.eee), means
+    )
+    early_new = feedback.submit_all(
+        early, feedback.early_round_items(early, offerings, cast.cse), means
     )
     open_new = feedback.submit_all(
         open_, feedback.open_round_items(open_, offerings, cast.cse), means
@@ -98,4 +101,6 @@ def seed(password: str | None = None) -> Report:
         Account(user.username, twofactor.manual_key(user.totp_secret))
         for user in User.objects.filter(username__in=USERNAMES).order_by("username")
     )
-    return Report(accounts, password, generated, cast.spare_codes, closed_new + open_new)
+    return Report(
+        accounts, password, generated, cast.spare_codes, closed_new + early_new + open_new
+    )

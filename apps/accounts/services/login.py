@@ -15,6 +15,7 @@ from django.contrib.auth import login
 from django.contrib.auth.signals import user_login_failed
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.models import User
 from apps.auditlog.models import AuditEvent
@@ -24,6 +25,7 @@ from apps.core.encryption import blind_index
 from apps.core.net import client_ip
 from apps.core.permissions import HOD, Role, primary_role
 from apps.core.services import sessions
+from apps.core.services.demo import constants as demo
 
 PENDING_KEY = "_tfs_pending_login"
 MODEL_BACKEND = "django.contrib.auth.backends.ModelBackend"
@@ -37,6 +39,12 @@ DASHBOARDS = {
     Role.TEACHER.value: "accounts:dashboard_teacher",
     Role.STUDENT.value: "accounts:dashboard_student",
 }
+DEMO_ROLES = (
+    (demo.ADMIN, _("Administrator")),
+    (demo.HOD, _("Head of department")),
+    (demo.TEACHER, _("Teacher")),
+    (demo.STUDENT, _("Student")),
+)
 
 
 class NextStep(StrEnum):
@@ -113,6 +121,17 @@ def complete_demo_login(request, user: User) -> None:
     audit.record(
         "auth.login_demo_bypass", request=request, actor=user, department_id=user.department_id
     )
+
+
+def demo_box() -> dict | None:
+    """What the dev-only "Demo accounts" box of the login page shows, or ``None`` outside
+    development. The password appears only while it is still the demo accounts' password."""
+    if not (settings.DEBUG and settings.SETTINGS_MODULE == DEV_SETTINGS):
+        return None
+    password = settings.DEMO_PASSWORD
+    sample = User.objects.filter(username=demo.STUDENT).first()
+    matches = bool(password) and sample is not None and sample.check_password(password)
+    return {"accounts": DEMO_ROLES, "password": password if matches else ""}
 
 
 def landing_url(user: User) -> str:

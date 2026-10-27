@@ -25,7 +25,7 @@ from apps.feedback.models import (
     QuestionType,
     SubmissionReceipt,
 )
-from apps.feedback.services import question_bank, review
+from apps.feedback.services import anonymity, question_bank, review
 from apps.feedback.services.submit import NO, YES, submit_feedback
 from apps.reports.models import ActionNote
 from apps.reports.services import teacher as teacher_report
@@ -77,15 +77,29 @@ def ensure_bank(actor) -> bool:
     return True
 
 
-def ensure_rounds(structure: Structure) -> tuple[FeedbackWindow, FeedbackWindow]:
-    """The closed round of the previous semester and the open round of the current one."""
+def _local(day):
+    return datetime.combine(day, time.min, tzinfo=timezone.get_default_timezone())
+
+
+def ensure_rounds(structure: Structure) -> tuple[FeedbackWindow, FeedbackWindow, FeedbackWindow]:
+    """The closed round of the previous semester, and the current semester's closed early round
+    and open round."""
     now = timezone.now()
-    zone = timezone.get_default_timezone()
-    opens, closes = (datetime.combine(day, time.min, tzinfo=zone) for day in c.WINTER_ROUND_DATES)
     closed = FeedbackWindow.objects.get_or_create(
         semester=structure.semesters[c.WINTER],
         name=c.WINTER_ROUND,
-        defaults={"opens_at": opens, "closes_at": closes},
+        defaults={
+            "opens_at": _local(c.WINTER_ROUND_DATES[0]),
+            "closes_at": _local(c.WINTER_ROUND_DATES[1]),
+        },
+    )[0]
+    early = FeedbackWindow.objects.get_or_create(
+        semester=structure.semesters[c.SUMMER],
+        name=c.SUMMER_EARLY_ROUND,
+        defaults={
+            "opens_at": _local(c.SUMMER_EARLY_ROUND_DATES[0]),
+            "closes_at": _local(c.SUMMER_EARLY_ROUND_DATES[1]),
+        },
     )[0]
     open_ = FeedbackWindow.objects.get_or_create(
         semester=structure.semesters[c.SUMMER],
@@ -95,7 +109,7 @@ def ensure_rounds(structure: Structure) -> tuple[FeedbackWindow, FeedbackWindow]
             "closes_at": now + timedelta(days=SUMMER_ROUND_CLOSES_DAYS),
         },
     )[0]
-    return closed, open_
+    return closed, early, open_
 
 
 # --- who submits ------------------------------------------------------------------------------
@@ -123,6 +137,21 @@ def closed_round_items(window, offerings, cse, eee) -> list[Item]:
                     )
                 )
     return items
+
+
+def early_round_items(window, offerings, cse) -> list[Item]:
+    """Summer's closed round: the demo teacher's courses, answered by enough synthetic students.
+
+    Neither ``demo_student`` (whose forms stay as the dashboard shows them) nor the spare
+    sign-up students take part.
+    """
+    pool = cse[1 : len(cse) - c.SPARE_STUDENTS]
+    count = min(anonymity.min_responses() + c.EARLY_EXTRA_RESPONSES, len(pool))
+    return [
+        Item(student, offerings[c.SUMMER, code], f"{window.name}:{index}:{code}")
+        for code in c.DEMO_TEACHER_COURSES
+        for index, student in enumerate(pool[:count], start=1)
+    ]
 
 
 def open_round_items(window, offerings, cse) -> list[Item]:

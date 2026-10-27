@@ -13,7 +13,7 @@ from apps.core.checks import check_demo_second_factor
 from apps.core.permissions import Role
 from apps.core.services.demo import constants as demo
 from tests.auth_helpers import enable_totp
-from tests.factories import claim, make_admin, make_student, make_user
+from tests.factories import claim, make_admin, make_student, make_teacher, make_user
 from tests.test_demo_seed import PASSWORD, seed
 
 LOOPBACK = {"REMOTE_ADDR": "127.0.0.1"}
@@ -102,7 +102,9 @@ def test_real_users_always_get_the_code_prompt(db, dev):
     enable_totp(user)
     admin = make_admin(PASSWORD)
     enable_totp(admin)
-    for account in (user, admin):
+    teacher = claim(make_teacher(), PASSWORD)
+    enable_totp(teacher)
+    for account in (user, admin, teacher):
         _client, response = sign_in(account.username, **LOOPBACK)
         assert asks_for_code(response)
 
@@ -149,3 +151,38 @@ def test_the_check_runs_with_the_system_checks(settings):
 def test_the_helper_is_closed_by_default(rf, db):
     request = rf.get("/", **LOOPBACK)
     assert not login_service.is_demo_account(request, make_user("demo_x", Role.STUDENT))
+
+
+def test_the_demo_teacher_signs_in_with_the_password_only_from_loopback(seeded, dev):
+    _client, response = sign_in(demo.TEACHER, **LOOPBACK)
+    assert not asks_for_code(response)
+    _client, response = sign_in(demo.TEACHER, REMOTE_ADDR="192.168.1.20")
+    assert asks_for_code(response)
+
+
+def test_the_login_box_shows_the_password_only_in_development(seeded, dev, settings):
+    settings.DEMO_PASSWORD = PASSWORD
+    settings.SETTINGS_MODULE = "config.settings.dev"  # set last: each override resets it
+    url = reverse("accounts:login")
+    html = Client(HTTP_ACCEPT_LANGUAGE="en").get(url).content.decode()
+    assert html.count(PASSWORD) == len(demo.USERNAMES) + 1  # per "Fill in" button, and once shown
+    for label in ("Administrator", "Head of department", "Teacher", "Student"):
+        assert label in html
+    settings.DEBUG = False
+    for module in ("config.settings.dev", "config.settings.prod"):
+        settings.SETTINGS_MODULE = module
+        html = Client(HTTP_ACCEPT_LANGUAGE="en").get(url).content.decode()
+        assert PASSWORD not in html
+        assert "Demo accounts" not in html
+    settings.DEBUG = True
+    settings.SETTINGS_MODULE = "config.settings.test"
+    html = Client(HTTP_ACCEPT_LANGUAGE="en").get(url).content.decode()
+    assert PASSWORD not in html
+
+
+def test_a_stale_password_is_never_shown(seeded, dev, settings):
+    settings.DEMO_PASSWORD = "Not-The-Demo-Pass-1!"
+    settings.SETTINGS_MODULE = "config.settings.dev"  # set last: each override resets it
+    html = Client(HTTP_ACCEPT_LANGUAGE="en").get(reverse("accounts:login")).content.decode()
+    assert "Not-The-Demo-Pass-1!" not in html
+    assert "data-fill-username" in html

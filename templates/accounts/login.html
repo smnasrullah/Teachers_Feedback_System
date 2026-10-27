@@ -1,6 +1,7 @@
 {% extends "layouts/auth.html" %}
-{% load i18n ui %}
+{% load i18n static ui %}
 {% block title %}{% translate "Log in" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block head %}{% if demo %}<script src="{% static 'js/demo_login.js' %}" nonce="{{ csp_nonce }}" defer></script>{% endif %}{% endblock %}
 {% block content %}
 <section class="card grid gap-4" aria-labelledby="login-title">
   <h1 id="login-title">{% translate "Log in" %}</h1>
@@ -17,12 +18,18 @@
     <a href="{% url 'accounts:username_forgot' %}">{% translate "Forgot your username?" %}</a>
     <a href="{% url 'accounts:signup' %}">{% translate "First time here? Create your account" %}</a>
   </nav>
-  {% if demo_usernames %}
-  <details class="card card-flat text-sm">
+  {% if demo %}
+  <details class="card card-flat text-sm" data-demo-login>
     <summary>{% translate "Demo accounts" %}</summary>
-    <ul class="grid gap-1">
-      {% for username in demo_usernames %}<li><code>{{ username }}</code></li>{% endfor %}
+    <ul class="grid gap-2">
+      {% for username, role in demo.accounts %}
+      <li class="flex flex-wrap items-center gap-2">
+        <span class="flex-1"><code>{{ username }}</code> <span class="text-muted">{{ role }}</span></span>
+        <button type="button" class="btn btn-ghost" data-fill-username="{{ username }}"{% if demo.password %} data-fill-password="{{ demo.password }}"{% endif %}>{% translate "Fill in" %}</button>
+      </li>
+      {% endfor %}
     </ul>
+    {% if demo.password %}<p>{% translate "Password" %}: <code>{{ demo.password }}</code></p>{% endif %}
     <p class="text-muted">{% translate "Demo accounts sign in with password only" %}</p>
   </details>
   {% endif %}

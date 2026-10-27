@@ -1,21 +1,11 @@
-"""Landing pages per role. The teacher page is still a placeholder."""
+"""The landing redirect. Each role's dashboard lives in the app that owns its data."""
 
-from django.shortcuts import redirect, render
-from django.utils.translation import gettext as _
+from django.shortcuts import redirect
 from django.views.decorators.http import require_GET
 
 from apps.accounts.services.login import landing_url
 from apps.accounts.views.account import EVERYONE
-from apps.core.permissions import Role, role_required
-from apps.core.services.navigation import user_nav_items
-
-
-def _placeholder(request, title: str):
-    return render(
-        request,
-        "accounts/dashboard.html",
-        {"title": title, "nav_items": user_nav_items(request.user, "dashboard")},
-    )
+from apps.core.permissions import role_required
 
 
 @require_GET
@@ -23,9 +13,3 @@ def _placeholder(request, title: str):
 def dashboard(request):
     """Send each role to its own dashboard."""
     return redirect(landing_url(request.user))
-
-
-@require_GET
-@role_required(Role.TEACHER)
-def dashboard_teacher(request):
-    return _placeholder(request, _("Teacher dashboard"))

@@ -7,9 +7,14 @@ structure by the codes and names listed here.
 from dataclasses import dataclass
 from datetime import date
 
-ADMIN, HOD, STUDENT = "demo_admin", "demo_hod", "demo_student"
-USERNAMES = (ADMIN, HOD, STUDENT)
-NICKNAMES = {ADMIN: "Demo Admin", HOD: "Demo HOD", STUDENT: "Demo Student"}
+ADMIN, HOD, TEACHER, STUDENT = "demo_admin", "demo_hod", "demo_teacher", "demo_student"
+USERNAMES = (ADMIN, HOD, TEACHER, STUDENT)
+NICKNAMES = {
+    ADMIN: "Demo Admin",
+    HOD: "Demo HOD",
+    TEACHER: "Demo Teacher",
+    STUDENT: "Demo Student",
+}
 ID_PREFIX = "DEMO-"
 CODE_VALID_DAYS = 30
 SPARE_STUDENTS = 2  # the last CSE students keep an unused code for testing the real sign-up
@@ -24,14 +29,17 @@ SEMESTER_DATES = {
 }
 WINTER_ROUND = "Winter 2026 end-of-term feedback"
 SUMMER_ROUND = "Summer 2026 mid-term feedback"
-# The previous semester's round, at fixed local dates inside it.
+SUMMER_EARLY_ROUND = "Summer 2026 early feedback"
+# The closed rounds, at fixed local dates inside their semesters.
 WINTER_ROUND_DATES = (date(2026, 6, 1), date(2026, 6, 15))
+SUMMER_EARLY_ROUND_DATES = (date(2026, 8, 1), date(2026, 8, 15))
 SEMESTERS = (WINTER, SUMMER)
 # ``--reset`` also removes the rounds an older demo made, before semesters were Winter/Summer
 # (the migration turned their "Spring 2026" and "Fall 2026" into Winter and Summer 2026).
 ROUNDS = (
     WINTER_ROUND,
     SUMMER_ROUND,
+    SUMMER_EARLY_ROUND,
     "Spring 2026 end-of-term feedback",
     "Fall 2026 mid-term feedback",
 )
@@ -113,16 +121,20 @@ class TeacherSpec:
 
 TEACHERS = (
     TeacherSpec("hod", "DEMO-T001", "Prof. Dr. Demo Head", "Professor and Head", CSE, 4.3),
+    TeacherSpec("demo", "DEMO-T006", "Demo Teacher", "Lecturer", CSE, 3.8),
     TeacherSpec("t2", "DEMO-T002", "Dr. Shirin Akhter", "Associate Professor", CSE, 4.0),
     TeacherSpec("t3", "DEMO-T003", "Md. Habibur Rahman", "Assistant Professor", CSE, 3.5),
     TeacherSpec("t4", "DEMO-T004", "Nasrin Sultana", "Lecturer", CSE, 2.6),
     TeacherSpec("t5", "DEMO-T005", "Dr. Anwar Hossain", "Associate Professor", EEE, 3.9),
 )
 
+# The teachers with a login of their own: key -> username.
+LOGIN_KEYS = {"hod": HOD, "demo": TEACHER}
+
 # course code -> teacher key, per semester
 SUMMER_TEACHING = {
-    "CSE-2101": "t2",
-    "CSE-2102": "t3",
+    "CSE-2101": "demo",
+    "CSE-2102": "demo",
     "CSE-2103": "t4",
     "CSE-2104": "t4",
     "CSE-2105": "hod",
@@ -138,6 +150,7 @@ WINTER_TEACHING = {
 }
 
 SUMMER_COURSES = tuple(SUMMER_TEACHING)
+DEMO_TEACHER_COURSES = tuple(code for code, key in SUMMER_TEACHING.items() if key == "demo")
 WINTER_CSE_COURSES = tuple(code for code in WINTER_TEACHING if code.startswith(f"{CSE}-"))
 WINTER_EEE_COURSES = tuple(code for code in WINTER_TEACHING if code.startswith(f"{EEE}-"))
 
@@ -186,6 +199,7 @@ CSE_GRADE_WEIGHTS = (("A+", 2), ("A", 3), ("A-", 3), ("B+", 3), ("B", 2), ("B-",
 CSE_WINTER_RESPONSES = (15, 13, 11, 9)
 EEE_WINTER_RESPONSES = (3, 4)
 OPEN_SUBMIT_SHARE = 0.6
+EARLY_EXTRA_RESPONSES = 2  # answers above ``MIN_RESPONSES`` per demo_teacher offering
 DEMO_STUDENT_SEALED = ("CSE-2101", "CSE-2103")
 # (CSE student index, course code) pairs whose comment contains abusive words.
 ABUSIVE = (

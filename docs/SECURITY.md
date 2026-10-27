@@ -84,7 +84,7 @@ recovery codes stay valid.
 
 ## Password-only demo login (development only)
 
-`seed_demo` accounts (`demo_admin`, `demo_hod`, `demo_student`) skip the authenticator code at
+`seed_demo` accounts (`demo_admin`, `demo_hod`, `demo_teacher`, `demo_student`) skip the authenticator code at
 login, so a local demo is usable. **Never enable `DEMO_SKIP_SECOND_FACTOR` outside local
 development.** It is `False` in `base.py` and `True` only in `dev.py`. The login service
 (`login.is_demo_account`) honours it only when all of these hold:
@@ -99,6 +99,10 @@ The password, lockout and rate limits still apply; the session is a normal fully
 each such login writes the audit event `auth.login_demo_bypass`. System check `core.E004` is an
 error when the flag is on with `DEBUG` off or another settings module, so production cannot start
 with it. Real accounts (including any made by `create_admin`) are never affected.
+
+The login page's "Demo accounts" box (usernames, roles, "Fill in" buttons and, when `DEMO_PASSWORD`
+still matches the demo accounts, the password) is rendered only with `DEBUG` on and
+`SETTINGS_MODULE == "config.settings.dev"`; `DEMO_PASSWORD` is empty in `base.py` and `test.py`.
 
 ## Removed
 

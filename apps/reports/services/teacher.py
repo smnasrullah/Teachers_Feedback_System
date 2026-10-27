@@ -12,10 +12,18 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 
 from apps.academics.models import CourseOffering
+from apps.academics.services import semesters
 from apps.analytics import services as analytics
 from apps.analytics.services import InsufficientData
 from apps.core.services.localize import pick
-from apps.feedback.models import SCALE_MAX, Answer, FeedbackWindow, Question, QuestionType
+from apps.feedback.models import (
+    SCALE_MAX,
+    Answer,
+    FeedbackWindow,
+    Question,
+    QuestionType,
+    WindowStatus,
+)
 from apps.reports.models import ActionNote
 from apps.reports.services.comments import CommentPanel, CommentQuery, comment_panel
 
@@ -63,6 +71,21 @@ class CourseSummary:
     average: float | None = None
     rate: analytics.ResponseRate | None = None
     pending: int | None = None
+
+
+@dataclass(frozen=True)
+class RoundLine:
+    """One round of a course on the dashboard; only a closed one carries figures."""
+
+    window: FeedbackWindow
+    status: str
+    summary: CourseSummary | None = None
+
+
+@dataclass(frozen=True)
+class DashboardCourse:
+    offering: CourseOffering
+    rounds: tuple[RoundLine, ...]
 
 
 @dataclass(frozen=True)
@@ -177,6 +200,36 @@ def overview(profile, window, viewer, now) -> list[CourseSummary]:
         for offering in offerings
         if window.covers(offering)
     ]
+
+
+def dashboard(profile, viewer, now) -> list[DashboardCourse]:
+    """The teacher's own courses of the semester running today, each with its rounds.
+
+    An upcoming or open round gives its status and dates only; a closed one adds the summary,
+    which itself holds back groups below the response threshold.
+    """
+    current = semesters.ongoing()
+    offerings = list(
+        CourseOffering.objects.filter(teacher=profile, semester__in=current)
+        .select_related("course", "semester")
+        .order_by("course__code", "section")
+    )
+    windows = list(
+        FeedbackWindow.objects.filter(semester__in=current, is_active=True)
+        .prefetch_related("departments", "level_terms")
+        .order_by("opens_at")
+    )
+    courses = []
+    for offering in offerings:
+        lines = []
+        for window in (w for w in windows if w.covers(offering)):
+            status = window.status(now)
+            summary = None
+            if status == WindowStatus.CLOSED:
+                summary = summarize(offering, window, viewer, now)
+            lines.append(RoundLine(window, status, summary))
+        courses.append(DashboardCourse(offering, tuple(lines)))
+    return courses
 
 
 # --- one course ------------------------------------------------------------------------------

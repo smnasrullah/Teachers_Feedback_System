@@ -10,6 +10,8 @@ ACCESS_POLICY_EXEMPT_NAMESPACES = ["admin"]  # admin guards itself with is_staff
 ACCESS_POLICY_EXEMPT_VIEWS = [*ACCESS_POLICY_EXEMPT_VIEWS, "media"]  # noqa: F405
 
 DEMO_SKIP_SECOND_FACTOR = True
+# The same variable ``seed_demo`` reads; the login page shows it only while it still matches.
+DEMO_PASSWORD = env("DEMO_PASSWORD", default="")  # noqa: F405
 
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True

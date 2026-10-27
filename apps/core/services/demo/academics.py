@@ -106,14 +106,21 @@ def ensure_structure() -> Structure:
 def ensure_offerings(structure: Structure, teachers: dict) -> dict[tuple, CourseOffering]:
     """Every offering as ``((season, year), course code) -> offering``."""
     offerings = {}
+    demo_teachers = {profile.pk for profile in teachers.values()}
     for semester, teaching in ((c.SUMMER, c.SUMMER_TEACHING), (c.WINTER, c.WINTER_TEACHING)):
         for code, teacher in teaching.items():
-            offerings[semester, code] = CourseOffering.objects.get_or_create(
+            offering = CourseOffering.objects.get_or_create(
                 course=structure.courses[code],
                 semester=structure.semesters[semester],
                 section="",
                 defaults={"teacher": teachers[teacher]},
             )[0]
+            # A database seeded before the demo teacher existed: hand the course over, but never
+            # take one from a teacher the owner chose outside the demo cast.
+            if offering.teacher_id != teachers[teacher].pk and offering.teacher_id in demo_teachers:
+                offering.teacher = teachers[teacher]
+                offering.save(update_fields=["teacher"])
+            offerings[semester, code] = offering
     return offerings
 
 
