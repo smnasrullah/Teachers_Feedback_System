@@ -706,3 +706,23 @@ class TestLevelTermCell:
     def test_other_cells_are_unknown(self, world, admin, cell):
         result = run("students", student_rows(f"2101001,CSE,BSC,{cell},,,"), admin)
         assert result.ok is False
+
+
+@pytest.mark.parametrize("kind", [None, *importers.IMPORTERS])
+def test_import_pages_never_build_an_importer(admin_client, monkeypatch, kind):
+    """An importer loads whole tables when built; showing a page must not build one."""
+
+    def refuse(self, **options):
+        raise AssertionError("an import page built an importer")
+
+    monkeypatch.setattr(importers.Importer, "__init__", refuse)
+    if kind:
+        url, shown = reverse("academics:import_upload", args=[kind]), [kind]
+    else:
+        url, shown = reverse("academics:import_index"), list(importers.IMPORTERS)
+
+    response = admin_client.get(url)
+
+    assert response.status_code == 200
+    html = response.content.decode()
+    assert all(str(importers.IMPORTERS[key].title) in html for key in shown)
