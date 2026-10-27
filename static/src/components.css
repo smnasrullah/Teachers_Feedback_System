@@ -502,7 +502,7 @@
   }
   .badge-closed {
     background: var(--border);
-    color: var(--muted);
+    color: var(--text);
   }
   .badge-alert {
     background: var(--danger-soft);
