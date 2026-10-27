@@ -5387,3 +5387,19 @@ msgstr "এখনো কোনো ফিডব্যাক রাউন্ড �
 
 msgid "Fill in"
 msgstr "পূরণ করুন"
+
+msgid "Open now"
+msgstr "এখন চালু"
+
+msgid "Semester ends in"
+msgstr "সেমিস্টার শেষ হতে বাকি"
+
+msgid "Semester ended"
+msgstr "সেমিস্টার শেষ"
+
+msgctxt "days, abbreviated"
+msgid "d"
+msgstr "দিন"
+
+msgid "{days} days, {hours} hours, {minutes} minutes"
+msgstr "{days} দিন, {hours} ঘণ্টা, {minutes} মিনিট"

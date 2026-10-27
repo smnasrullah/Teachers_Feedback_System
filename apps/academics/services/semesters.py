@@ -59,6 +59,11 @@ def short_date(day: date) -> str:
     return localize_digits(formats.date_format(day, "j M Y"))
 
 
+def ends_at(semester: Semester) -> datetime:
+    """The instant the semester's last day ends, in local time."""
+    return _day_bounds(semester.start_date, semester.end_date)[1]
+
+
 def _day_bounds(start: date, end: date) -> tuple[datetime, datetime]:
     """The first instant of ``start`` and the instant after ``end`` ends, in local time."""
     zone = timezone.get_default_timezone()

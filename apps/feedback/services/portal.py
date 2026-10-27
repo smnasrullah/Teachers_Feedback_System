@@ -27,7 +27,6 @@ from apps.feedback.services.submit import NO, YES
 
 SECTION_ICONS = ("book", "list", "file", "award")
 FINGERPRINT_SEPARATOR = ","
-SECONDS_PER_MINUTE, SECONDS_PER_HOUR, SECONDS_PER_DAY = 60, 3600, 86400
 
 
 class CourseState(StrEnum):
@@ -57,17 +56,9 @@ class CourseEntry:
 
 
 @dataclass(frozen=True)
-class Countdown:
-    days: int
-    hours: int
-    minutes: int
-
-
-@dataclass(frozen=True)
 class RoundSummary:
     window: FeedbackWindow
     status: WindowStatus
-    countdown: Countdown | None
     elapsed_percent: int
     done: int
     total: int
@@ -112,27 +103,18 @@ def _course_state(window: FeedbackWindow | None, submitted: bool, now) -> Course
     return CourseState.CLOSED
 
 
-def _countdown(delta) -> Countdown:
-    seconds = max(0, int(delta.total_seconds()))
-    days, rest = divmod(seconds, SECONDS_PER_DAY)
-    hours, rest = divmod(rest, SECONDS_PER_HOUR)
-    return Countdown(days, hours, rest // SECONDS_PER_MINUTE)
-
-
 def _round_summary(window: FeedbackWindow, entries: list[CourseEntry], now) -> RoundSummary:
     status = WindowStatus(window.status(now))
     in_round = [entry for entry in entries if entry.window == window]
     if status == WindowStatus.OPEN:
-        countdown = _countdown(window.closes_at - now)
         elapsed = (now - window.opens_at) / (window.closes_at - window.opens_at)
     elif status == WindowStatus.UPCOMING:
-        countdown, elapsed = _countdown(window.opens_at - now), 0
+        elapsed = 0
     else:
-        countdown, elapsed = None, 1
+        elapsed = 1
     return RoundSummary(
         window=window,
         status=status,
-        countdown=countdown,
         elapsed_percent=round(100 * min(1, max(0, elapsed))),
         done=sum(entry.state == CourseState.SUBMITTED for entry in in_round),
         total=len(in_round),

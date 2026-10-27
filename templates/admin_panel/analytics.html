@@ -1,5 +1,5 @@
 {% extends "layouts/dashboard.html" %}
-{% load i18n static ui %}
+{% load i18n rounds static ui %}
 {% block title %}{% translate "University analytics" %} · {% translate "Teacher Feedback System" %}{% endblock %}
 {% block head %}{% if report.trend or distribution_chart or department_chart %}<script src="{% static 'vendor/chart.umd.min.js' %}" nonce="{{ csp_nonce }}" defer></script><script src="{% static 'js/charts.js' %}" nonce="{{ csp_nonce }}" defer></script>{% endif %}{% endblock %}
 {% block content %}
@@ -31,8 +31,9 @@
   {% else %}
   <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="{% translate 'Summary' %}">
     {% translate "Courses in this view" as courses_label %}{% include "components/stat_tile.html" with label=courses_label value=report.courses icon="book" %}
-    {% if round_open %}
-    {% translate "Round closes in" as closes_label %}{% include "components/stat_tile.html" with label=closes_label value=closes_at|timeuntil icon="clock" %}
+    {% window_countdown window as round_clock %}
+    {% if round_clock %}
+    {% translate "Round" as closes_label %}{% include "components/stat_tile.html" with label=closes_label value=round_clock icon="clock" %}
     {% else %}
     {% translate "Round" as closes_label %}{% translate "Closed" as closed_value %}{% blocktranslate with when=closes_at|date:"j M Y" asvar closed_note %}Closed on {{ when }}{% endblocktranslate %}{% include "components/stat_tile.html" with label=closes_label value=closed_value delta=closed_note icon="lock" %}
     {% endif %}

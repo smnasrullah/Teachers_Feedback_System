@@ -1625,26 +1625,49 @@
     display: grid;
     gap: 12px;
   }
-  .countdown {
-    display: flex;
-    gap: 8px;
+  .live-countdown {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 8px;
   }
-  .countdown div {
-    background: var(--primary-soft);
-    border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
-    border-radius: var(--radius-btn);
-    padding: 8px 12px;
-    text-align: center;
-    min-width: 64px;
-    flex: 1;
-  }
-  .countdown b {
-    display: block;
-    font-size: var(--text-xl);
-  }
-  .countdown span {
-    font-size: var(--text-xs);
+  .live-countdown-label {
+    font-size: var(--text-sm);
+    font-weight: 400;
     color: var(--muted);
+  }
+  .live-countdown-value {
+    font-size: var(--text-xl);
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .live-countdown.is-done .live-countdown-value {
+    color: var(--muted);
+  }
+  .live-clock {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    padding-inline: 8px;
+    font-size: var(--text-sm);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .live-clock[hidden] {
+    display: none;
+  }
+  .live-clock-time {
+    color: var(--text);
+    font-weight: 600;
+  }
+  @media (max-width: 399px) {
+    .live-clock-date {
+      display: none;
+    }
+    .live-clock {
+      padding-inline: 4px;
+      font-size: var(--text-xs);
+    }
   }
   .course-list {
     display: grid;

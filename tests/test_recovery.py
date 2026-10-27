@@ -33,8 +33,9 @@ def fresh_client():
 
 
 def strip_tokens(response):
-    """The page without its per-request tokens (CSRF and CSP nonce)."""
-    return re.sub(r'(value|content|nonce)="[A-Za-z0-9_-]{16,}"', r'=""', response.content.decode())
+    """The page without its per-request tokens (CSRF, CSP nonce) and its server time."""
+    html = re.sub(r' data-server-now="[^"]*"', "", response.content.decode())
+    return re.sub(r'(value|content|nonce)="[A-Za-z0-9_-]{16,}"', r'=""', html)
 
 
 def request_reset(web, username, code, **extra):

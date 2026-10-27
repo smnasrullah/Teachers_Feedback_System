@@ -4,6 +4,7 @@ from django import template
 from django.template.loader import render_to_string
 from django.utils.html import format_html
 
+from apps.core.services.clock import utc_iso
 from apps.core.services.localize import pick, to_roman
 
 register = template.Library()
@@ -15,6 +16,15 @@ def icon(name, extra_class=""):
     classes = f"ico {extra_class}".strip()
     return format_html(
         '<svg class="{}" aria-hidden="true"><use href="#i-{}"/></svg>', classes, name
+    )
+
+
+@register.simple_tag
+def countdown(to, label, done_label):
+    """A live countdown to ``to`` (aware datetime); ``static/js/clock.js`` ticks it."""
+    return render_to_string(
+        "components/countdown.html",
+        {"moment": to, "to": utc_iso(to), "label": label, "done_label": done_label},
     )
 
 

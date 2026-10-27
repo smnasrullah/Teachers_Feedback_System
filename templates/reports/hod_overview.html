@@ -1,5 +1,5 @@
 {% extends "layouts/dashboard.html" %}
-{% load i18n semesters static ui %}
+{% load i18n rounds semesters static ui %}
 {% block title %}{% translate "Department overview" %} · {% translate "Teacher Feedback System" %}{% endblock %}
 {% block head %}{% if overview.trend %}<script src="{% static 'vendor/chart.umd.min.js' %}" nonce="{{ csp_nonce }}" defer></script><script src="{% static 'js/charts.js' %}" nonce="{{ csp_nonce }}" defer></script>{% endif %}{% endblock %}
 {% block content %}
@@ -9,7 +9,7 @@
       <h1 class="text-2xl">{% translate "Department overview" %}</h1>
       <p class="text-muted">{{ department|localized:"name" }}{% if window %}, {{ window.semester.name }}, {{ window.name }}{% endif %}</p>
     </div>
-    {% semester_badge %}
+    {% semester_badge %}{% semester_countdown %}
     {% translate "This department only" as scope_label %}{% include "components/badge.html" with variant="info" icon="eye" label=scope_label %}
     {% if window %}
     {% url 'reports:export_department' 'xlsx' as xlsx_url %}{% url 'reports:export_department' 'csv' as csv_url %}{% url 'reports:export_department' 'pdf' as pdf_url %}
@@ -37,8 +37,9 @@
   <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="{% translate 'Summary' %}">
     {% blocktranslate count n=overview.teachers asvar teachers_note %}{{ n }} teacher{% plural %}{{ n }} teachers{% endblocktranslate %}
     {% translate "Courses this round" as courses_label %}{% include "components/stat_tile.html" with label=courses_label value=overview.offerings delta=teachers_note icon="book" %}
-    {% if round_open %}
-    {% translate "Round closes" as closes_label %}{% include "components/stat_tile.html" with label=closes_label value=closes_at|timeuntil icon="clock" %}
+    {% window_countdown window as round_clock %}
+    {% if round_clock %}
+    {% translate "Round" as closes_label %}{% include "components/stat_tile.html" with label=closes_label value=round_clock icon="clock" %}
     {% else %}
     {% translate "Round" as closes_label %}{% translate "Closed" as closed_value %}{% blocktranslate with when=window.closes_at|date:"j M Y" asvar closed_note %}Closed on {{ when }}{% endblocktranslate %}{% include "components/stat_tile.html" with label=closes_label value=closed_value delta=closed_note icon="lock" %}
     {% endif %}

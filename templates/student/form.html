@@ -9,6 +9,7 @@
       <strong class="flex-1">{{ course|localized:"title" }}, {{ course.code }}</strong>
       {% translate "Anonymous" as anonymous_label %}{% include "components/badge.html" with variant="info" icon="lock" label=anonymous_label %}
     </div>
+    <div class="form-bar-row text-sm">{% translate "Closes in" as closes_label %}{% translate "Closed" as closed_label %}{% countdown window.closes_at closes_label closed_label %}</div>
     <div class="form-bar-row text-sm">
       <span class="text-muted">{% blocktranslate with total=required_total %}<span class="num" data-answered>0</span> of {{ total }} required answered{% endblocktranslate %}</span>
       <progress class="meter" data-progress max="{{ required_total|default:1 }}" value="0" aria-label="{% translate "Required questions answered" %}"></progress>

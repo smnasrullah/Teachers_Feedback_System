@@ -26,6 +26,7 @@ from tests.testapp import urls as policy_urls
 PUBLIC_VIEWS = {
     "core:home",
     "core:healthz",
+    "core:server_time",
     "core:dev_gallery",
     # Sign-up, login, second factor and recovery run before anyone is signed in.
     "accounts:login",

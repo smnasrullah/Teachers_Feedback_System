@@ -510,7 +510,7 @@ class TestHome:
         flagged_answer(open_round)
         body = page(admin_client, reverse("accounts:dashboard_admin"))
         assert "Registered users" in body
-        assert "Round closes in" in body
+        assert "Closes in" in body and "data-countdown-to=" in body
         assert "Comments to review" in body
         for name in (
             "academics:import_index",
