@@ -35,7 +35,7 @@ Linux/CI: `make seed` and `make seed ARGS="--reset"`.
 | --- | --- | --- |
 | `demo_admin` | Admin | Sees every screen and every department. |
 | `demo_hod` | Teacher, head of CSE | Also teaches Discrete Mathematics (Fall) and Linear Algebra (Spring). |
-| `demo_student` | Student, CSE, Level 2 Term 1 | Nickname "Demo Student"; enrolled in all six Level 2 Term 1 courses of Fall 2026. |
+| `demo_student` | Student, CSE, Level 2 Term 1 | Nickname "Demo Student"; enrolled in all six Level 2 Term 1 courses of Summer 2026. |
 
 On this machine in development the three accounts sign in with **username and password only**:
 no authenticator code is asked (see "Password-only demo login" in `docs/SECURITY.md` for the guard
@@ -49,15 +49,16 @@ usernames and says they sign in with password only. It never shows a password or
 ## What the data contains
 
 - Departments CSE and EEE (EEE proves cross-department denial), one program and batch each.
-- **Fall 2026** (current): six CSE Level 2 Term 1 courses (theory and lab) and an **open** round,
-  "Fall 2026 mid-term feedback". `demo_student` has two forms sealed and four pending; most other
+- **Summer 2026** (current, 1 July 2026 to 30 January 2027; the start date is a placeholder
+  until the real one is known, and the admin can change both dates): six CSE Level 2 Term 1 courses (theory and lab) and an **open** round,
+  "Summer 2026 mid-term feedback". `demo_student` has two forms sealed and four pending; most other
   students have some pending, and the two spare students have none.
-- **Spring 2026** (previous): four CSE Level 1 Term 2 courses and two EEE courses with published
-  results, and a **closed** round, "Spring 2026 end-of-term feedback". Every CSE offering has at
+- **Winter 2026** (previous): four CSE Level 1 Term 2 courses and two EEE courses with published
+  results, and a **closed** round, "Winter 2026 end-of-term feedback". Every CSE offering has at
   least nine responses; the two EEE offerings have fewer than `MIN_RESPONSES`.
 - 15 CSE students (including `demo_student`) were promoted from Spring through the real promotion
   service. Six EEE students are still waiting: Promotion shows promote, retain, promote with
-  retakes and graduate for Spring 2026.
+  retakes and graduate for Winter 2026.
 - Four more teachers, 14 + 6 synthetic students (`DEMO-S002` ... `DEMO-S015`, `DEMO-E001` ...
   `DEMO-E006`) with unused activation codes. The last two CSE students (`DEMO-S014`, `DEMO-S015`)
   are the spare pairs for testing a real sign-up at `/signup/`.
@@ -70,7 +71,7 @@ usernames and says they sign in with password only. It never shows a password or
 
 ## Tour: student (`demo_student`)
 
-1. Sign in (password only); the dashboard lists six Fall 2026 courses: two Sealed (submitted), four Pending.
+1. Sign in (password only); the dashboard lists six Summer 2026 courses: two Sealed (submitted), four Pending.
 2. Open a pending course. Answer the questions; theory and lab courses ask different ones.
 3. Save a draft, reload the page, and see the draft come back.
 4. Submit (the page asks you to confirm the password again) and see the course become Sealed.
@@ -83,7 +84,7 @@ usernames and says they sign in with password only. It never shows a password or
 
 ## Tour: head of department (`demo_hod`)
 
-1. Sign in; the HOD dashboard shows the department overview (pick the closed Spring 2026 round).
+1. Sign in; the HOD dashboard shows the department overview (pick the closed Winter 2026 round).
 2. Look at the heatmap and the low-rating alert (one teacher is rated low on purpose).
 3. Open a CSE course report: rating bars, radar chart, comments (cleaned) in a stable, shuffled order.
 4. Find the "action taken" notes on the courses that have them.
@@ -100,7 +101,7 @@ usernames and says they sign in with password only. It never shows a password or
 1. Sign in; the dashboard shows people, participation of the open round and alerts.
 2. Registry: 26 `DEMO-` IDs; the spare students show an active activation code.
 3. Academics > Courses/Offerings and Teaching: reassign a teacher.
-4. Results and Promotion: choose Spring 2026 and read the four outcomes; set an override.
+4. Results and Promotion: choose Winter 2026 and read the four outcomes; set an override.
 5. Rounds and Questions: open the two rounds and the 19 questions.
 6. Moderation: the queue holds comments the filter cleaned; approve or hide one.
 7. Analytics: the university report; open an EEE course and see "Not enough responses to show this."

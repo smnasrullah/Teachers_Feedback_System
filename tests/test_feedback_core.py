@@ -299,7 +299,7 @@ class TestSubmit:
         assert rejection(excinfo) == Rejection.WINDOW_CLOSED
 
     def test_window_of_another_semester_is_out_of_scope(self, world):
-        window = make_window(make_semester(name="Fall 2026"))
+        window = make_window(make_semester())
         with pytest.raises(SubmissionRejected) as excinfo:
             world.submit(window=window)
         assert rejection(excinfo) == Rejection.OUT_OF_SCOPE

@@ -1,6 +1,8 @@
 """The development demo data: safe to run twice, dev-only, and consistent with the rules."""
 
 import json
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import pytest
 from django.apps import apps
@@ -12,6 +14,7 @@ from django.utils import timezone
 
 from apps.academics.models import CourseOffering
 from apps.academics.screens import SCREENS
+from apps.academics.services import semesters
 from apps.accounts.models import IdRegistry, StudentProfile, User
 from apps.accounts.services import twofactor
 from apps.analytics import services as analytics
@@ -31,6 +34,13 @@ from tests.test_feedback_core import ANONYMOUS, identifying_path
 
 PASSWORD = "Demo-Pass-2026!x"
 DEMO_APPS = {"academics", "accounts", "enrollment", "feedback", "reports", "notifications"}
+# The demo semesters have fixed dates (Summer 2026 ends on 30 January 2027): run inside them.
+DEMO_NOW = datetime(2026, 10, 27, 12, 0, tzinfo=ZoneInfo("Asia/Dhaka"))
+
+
+@pytest.fixture(autouse=True)
+def demo_clock(monkeypatch):
+    monkeypatch.setattr(timezone, "now", lambda: DEMO_NOW)
 
 
 def seed(settings, *args):
@@ -64,8 +74,11 @@ def signed_in(username: str) -> Client:
     return client
 
 
-def offering(semester: str, code: str) -> CourseOffering:
-    return CourseOffering.objects.get(semester__name=semester, course__code=code)
+def offering(semester: tuple[str, int], code: str) -> CourseOffering:
+    season, year = semester
+    return CourseOffering.objects.get(
+        semester__season=season, semester__year=year, course__code=code
+    )
 
 
 def round_named(name: str) -> FeedbackWindow:
@@ -151,9 +164,9 @@ def test_reset_removes_only_the_demo_objects(db, settings):
 def test_the_student_sees_only_enrolled_courses_and_no_student_id(seeded):
     client = signed_in(demo.STUDENT)
     html = client.get(reverse("accounts:dashboard_student")).content.decode()
-    for code in demo.FALL_COURSES:
+    for code in demo.SUMMER_COURSES:
         assert code in html
-    for code in demo.SPRING_EEE_COURSES:
+    for code in demo.WINTER_EEE_COURSES:
         assert code not in html
     for external_id in demo.all_registry_ids():
         assert external_id not in html
@@ -167,32 +180,32 @@ def test_the_student_has_two_sealed_and_four_pending_forms(seeded):
     states = [entry.state for entry in entries]
     assert states.count(portal.CourseState.SUBMITTED) == len(demo.DEMO_STUDENT_SEALED)
     assert states.count(portal.CourseState.PENDING) == (
-        len(demo.FALL_COURSES) - len(demo.DEMO_STUDENT_SEALED)
+        len(demo.SUMMER_COURSES) - len(demo.DEMO_STUDENT_SEALED)
     )
     assert profile.level_term.name == demo.L2T1
-    assert profile.enrollments.filter(offering__semester__is_current=True).count() == len(
-        demo.FALL_COURSES
+    assert profile.enrollments.filter(offering__semester__in=semesters.ongoing()).count() == len(
+        demo.SUMMER_COURSES
     )
 
 
 def test_the_student_cannot_open_a_course_they_are_not_enrolled_in(seeded):
     client = signed_in(demo.STUDENT)
-    eee = offering(demo.SPRING, "EEE-2101")
-    for window in (round_named(demo.FALL_ROUND), round_named(demo.SPRING_ROUND)):
+    eee = offering(demo.WINTER, "EEE-2101")
+    for window in (round_named(demo.SUMMER_ROUND), round_named(demo.WINTER_ROUND)):
         url = reverse("feedback:form", args=[window.pk, eee.pk])
         assert client.get(url).status_code == 404
-    own = offering(demo.FALL, "CSE-2102")
+    own = offering(demo.SUMMER, "CSE-2102")
     assert (
-        client.get(reverse("feedback:form", args=[round_named(demo.FALL_ROUND).pk, own.pk]))
+        client.get(reverse("feedback:form", args=[round_named(demo.SUMMER_ROUND).pk, own.pk]))
     ).status_code == 200
 
 
 def test_the_hod_cannot_open_an_eee_report_but_sees_the_cse_pending_list(seeded):
     client = signed_in(demo.HOD)
-    closed = round_named(demo.SPRING_ROUND)
-    eee = offering(demo.SPRING, "EEE-2101")
+    closed = round_named(demo.WINTER_ROUND)
+    eee = offering(demo.WINTER, "EEE-2101")
     assert client.get(reverse("reports:course", args=[eee.pk, closed.pk])).status_code == 403
-    cse = offering(demo.SPRING, "CSE-1201")
+    cse = offering(demo.WINTER, "CSE-1201")
     assert client.get(reverse("reports:course", args=[cse.pk, closed.pk])).status_code == 200
     html = client.get(reverse("reports:hod_pending")).content.decode()
     assert any(f"DEMO-S0{n:02d}" in html for n in range(2, 14))
@@ -202,8 +215,8 @@ def test_the_hod_cannot_open_an_eee_report_but_sees_the_cse_pending_list(seeded)
 
 def test_the_admin_opens_every_admin_screen(seeded):
     client = signed_in(demo.ADMIN)
-    window = round_named(demo.SPRING_ROUND)
-    sheet = offering(demo.SPRING, "CSE-1201")
+    window = round_named(demo.WINTER_ROUND)
+    sheet = offering(demo.WINTER, "CSE-1201")
     names = [
         "accounts:dashboard_admin",
         "accounts:registry_list",
@@ -241,8 +254,8 @@ def test_the_admin_opens_every_admin_screen(seeded):
 
 def test_the_promotion_preview_shows_every_outcome(seeded):
     client = signed_in(demo.ADMIN)
-    spring = round_named(demo.SPRING_ROUND).semester
-    html = client.get(reverse("academics:promotion"), {"semester": spring.pk}).content.decode()
+    winter = round_named(demo.WINTER_ROUND).semester
+    html = client.get(reverse("academics:promotion"), {"semester": winter.pk}).content.decode()
     for label in ("Promote", "Retain", "Promote with retakes", "Graduate"):
         assert label in html
 
@@ -274,12 +287,12 @@ def test_every_demo_account_can_log_in_with_its_authenticator(seeded):
 
 
 def test_the_closed_round_is_visible_where_enough_students_answered(seeded):
-    closed = round_named(demo.SPRING_ROUND)
+    closed = round_named(demo.WINTER_ROUND)
     admin = User.objects.get(username=demo.ADMIN)
     now = timezone.now()
     assert closed.has_closed(now)
-    for code in demo.SPRING_CSE_COURSES:
-        target = offering(demo.SPRING, code)
+    for code in demo.WINTER_CSE_COURSES:
+        target = offering(demo.WINTER, code)
         count = FeedbackResponse.objects.filter(offering=target, window=closed).count()
         assert count >= 9
         summary = teacher_report.summarize(target, closed, admin, now)
@@ -287,24 +300,24 @@ def test_the_closed_round_is_visible_where_enough_students_answered(seeded):
 
 
 def test_the_small_eee_class_stays_below_the_minimum(seeded):
-    closed = round_named(demo.SPRING_ROUND)
+    closed = round_named(demo.WINTER_ROUND)
     admin = User.objects.get(username=demo.ADMIN)
     now = timezone.now()
-    for code in demo.SPRING_EEE_COURSES:
-        target = offering(demo.SPRING, code)
+    for code in demo.WINTER_EEE_COURSES:
+        target = offering(demo.WINTER, code)
         count = FeedbackResponse.objects.filter(offering=target, window=closed).count()
         assert 0 < count < anonymity.min_responses()
         summary = teacher_report.summarize(target, closed, admin, now)
         assert summary.average is None
         assert summary.notice == analytics.NOT_ENOUGH_MESSAGE
     client = signed_in(demo.ADMIN)
-    eee = offering(demo.SPRING, "EEE-2101")
+    eee = offering(demo.WINTER, "EEE-2101")
     html = client.get(reverse("reports:course", args=[eee.pk, closed.pk])).content.decode()
     assert "Not enough responses to show this." in html
 
 
 def test_the_open_round_shows_no_results_yet(seeded):
-    open_round = round_named(demo.FALL_ROUND)
+    open_round = round_named(demo.SUMMER_ROUND)
     assert FeedbackResponse.objects.filter(window=open_round).exists()
     assert not anonymity.results_visible(open_round)
 

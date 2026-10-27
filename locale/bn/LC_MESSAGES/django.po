@@ -1272,9 +1272,6 @@ msgstr "শুরুর তারিখ"
 msgid "end date"
 msgstr "শেষের তারিখ"
 
-msgid "current semester"
-msgstr "চলমান সেমিস্টার"
-
 msgid "semester"
 msgstr "সেমিস্টার"
 
@@ -1320,9 +1317,6 @@ msgstr "এই বিভাগে এই কোডের একটি প্র�
 msgid "This program already has a batch with this name."
 msgstr "এই প্রোগ্রামে এই নামের একটি ব্যাচ আগেই আছে।"
 
-msgid "Only one semester can be the current one."
-msgstr "একটি সেমিস্টারই চলমান হতে পারে।"
-
 msgid "The end date must be after the start date."
 msgstr "শেষের তারিখ অবশ্যই শুরুর তারিখের পরে হতে হবে।"
 
@@ -1337,9 +1331,6 @@ msgstr "প্রোগ্রামটি অবশ্যই কোর্সে�
 
 msgid "This course is already offered in this semester with this section."
 msgstr "এই কোর্স এই সেমিস্টারে এই সেকশনে আগেই অফার করা হয়েছে।"
-
-msgid "Making this the current semester ends the previous one."
-msgstr "এটিকে চলমান সেমিস্টার করলে আগেরটি আর চলমান থাকবে না।"
 
 msgid "Service course"
 msgstr "সার্ভিস কোর্স"
@@ -5303,13 +5294,60 @@ msgid "The demo authenticator code was refused. Run the command again."
 msgstr "ডেমো অথেনটিকেটর কোড গ্রহণ করা হয়নি। কমান্ডটি আবার চালান।"
 
 #: apps/core/services/demo/academics.py:0
-msgid "The semester %(name)s is marked as current. The demo needs %(demo)s as the current semester; end that one first or seed an empty database."
-msgstr "%(name)s সেমিস্টারটি বর্তমান হিসেবে চিহ্নিত। ডেমোর জন্য %(demo)s বর্তমান সেমিস্টার হওয়া দরকার; আগে ওটি শেষ করুন বা ফাঁকা ডাটাবেসে চালান।"
-
-#: apps/core/services/demo/academics.py:0
 msgid "The grade scale has no grade %(letters)s, which the demo results use."
 msgstr "গ্রেড স্কেলে %(letters)s গ্রেড নেই, অথচ ডেমো ফলাফলে তা ব্যবহৃত হয়।"
 
 #: apps/core/services/demo/runner.py:0
 msgid "The demo data only exists with DEBUG on and DJANGO_SETTINGS_MODULE=%(module)s."
 msgstr "ডেমো ডেটা শুধু DEBUG চালু এবং DJANGO_SETTINGS_MODULE=%(module)s হলে থাকে।"
+
+msgid "Winter"
+msgstr "উইন্টার"
+
+msgid "Summer"
+msgstr "সামার"
+
+msgid "Ongoing"
+msgstr "চলমান"
+
+msgid "Ended"
+msgstr "শেষ হয়েছে"
+
+msgid "season"
+msgstr "সিজন"
+
+msgid "Season"
+msgstr "সিজন"
+
+msgid "year"
+msgstr "বছর"
+
+msgid "The last day of the semester; promotion can start after it."
+msgstr "সেমিস্টারের শেষ দিন; এর পরেই প্রমোশন শুরু করা যায়।"
+
+msgid "This semester already exists."
+msgstr "এই সেমিস্টারটি আগে থেকেই আছে।"
+
+msgid "The first day of the semester. The seeded Summer 2026 starts on 1 July 2026 only as a placeholder: change it once the real date is known."
+msgstr "সেমিস্টারের প্রথম দিন। সিড করা সামার ২০২৬-এর শুরু ১ জুলাই ২০২৬ কেবল একটি অস্থায়ী তারিখ: আসল তারিখ জানা গেলে বদলে দিন।"
+
+msgid "These dates overlap %(names)s (%(start)s to %(end)s)."
+msgstr "এই তারিখগুলো %(names)s (%(start)s থেকে %(end)s)-এর সাথে মিলে যায়।"
+
+msgid "The feedback round “%(round)s” runs from %(opens)s to %(closes)s, which would fall outside the semester. Change the round first or keep these dates around it."
+msgstr "ফিডব্যাক রাউন্ড “%(round)s” চলে %(opens)s থেকে %(closes)s পর্যন্ত, যা সেমিস্টারের বাইরে পড়ে যাবে। আগে রাউন্ডটি বদলান, অথবা তারিখগুলো এমন রাখুন যাতে রাউন্ডটি ভেতরে থাকে।"
+
+msgid "Create next semester"
+msgstr "পরের সেমিস্টার তৈরি করুন"
+
+msgid "Promotion for %(semester)s can be applied after it ends on %(end)s."
+msgstr "%(semester)s-এর প্রমোশন %(end)s তারিখে সেমিস্টার শেষ হওয়ার পরে প্রয়োগ করা যাবে।"
+
+msgid "%(name)s ends on %(end)s. Promotion can be applied after that day; moving the end date moves this too."
+msgstr "%(name)s শেষ হবে %(end)s তারিখে। সেই দিনের পরে প্রমোশন প্রয়োগ করা যাবে; শেষের তারিখ বদলালে এটিও বদলে যায়।"
+
+msgid "%(name)s · ends %(end)s"
+msgstr "%(name)s · শেষ %(end)s"
+
+msgid "No semester is running today"
+msgstr "আজ কোনো সেমিস্টার চলছে না"

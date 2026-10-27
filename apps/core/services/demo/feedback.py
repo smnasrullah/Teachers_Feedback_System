@@ -8,7 +8,7 @@ response or answer row is ever written directly.
 import random
 from contextlib import contextmanager
 from dataclasses import dataclass
-from datetime import timedelta
+from datetime import datetime, time, timedelta
 from pathlib import Path
 
 from django.utils import timezone
@@ -31,8 +31,7 @@ from apps.reports.models import ActionNote
 from apps.reports.services import teacher as teacher_report
 
 BANK_FILE = Path(__file__).with_name("question_bank.md")
-SPRING_ROUND_OPENED_DAYS, SPRING_ROUND_CLOSED_DAYS = 85, 70
-FALL_ROUND_OPENED_DAYS, FALL_ROUND_CLOSES_DAYS = 3, 12
+SUMMER_ROUND_OPENED_DAYS, SUMMER_ROUND_CLOSES_DAYS = 3, 12
 HELD_OPEN = timedelta(hours=1)
 RATING_SPREAD = 0.9
 QUESTION_SHIFT = 0.15  # each question is a little easier or harder than the teacher's average
@@ -81,20 +80,19 @@ def ensure_bank(actor) -> bool:
 def ensure_rounds(structure: Structure) -> tuple[FeedbackWindow, FeedbackWindow]:
     """The closed round of the previous semester and the open round of the current one."""
     now = timezone.now()
+    zone = timezone.get_default_timezone()
+    opens, closes = (datetime.combine(day, time.min, tzinfo=zone) for day in c.WINTER_ROUND_DATES)
     closed = FeedbackWindow.objects.get_or_create(
-        semester=structure.semesters[c.SPRING],
-        name=c.SPRING_ROUND,
-        defaults={
-            "opens_at": now - timedelta(days=SPRING_ROUND_OPENED_DAYS),
-            "closes_at": now - timedelta(days=SPRING_ROUND_CLOSED_DAYS),
-        },
+        semester=structure.semesters[c.WINTER],
+        name=c.WINTER_ROUND,
+        defaults={"opens_at": opens, "closes_at": closes},
     )[0]
     open_ = FeedbackWindow.objects.get_or_create(
-        semester=structure.semesters[c.FALL],
-        name=c.FALL_ROUND,
+        semester=structure.semesters[c.SUMMER],
+        name=c.SUMMER_ROUND,
         defaults={
-            "opens_at": now - timedelta(days=FALL_ROUND_OPENED_DAYS),
-            "closes_at": now + timedelta(days=FALL_ROUND_CLOSES_DAYS),
+            "opens_at": now - timedelta(days=SUMMER_ROUND_OPENED_DAYS),
+            "closes_at": now + timedelta(days=SUMMER_ROUND_CLOSES_DAYS),
         },
     )[0]
     return closed, open_
@@ -104,11 +102,11 @@ def ensure_rounds(structure: Structure) -> tuple[FeedbackWindow, FeedbackWindow]
 
 
 def closed_round_items(window, offerings, cse, eee) -> list[Item]:
-    """Spring: at least nine CSE students per offering, a handful of EEE ones."""
+    """Winter: at least nine CSE students per offering, a handful of EEE ones."""
     items = []
     groups = (
-        (c.SPRING_CSE_COURSES, c.CSE_SPRING_RESPONSES, cse),
-        (c.SPRING_EEE_COURSES, c.EEE_SPRING_RESPONSES, eee),
+        (c.WINTER_CSE_COURSES, c.CSE_WINTER_RESPONSES, cse),
+        (c.WINTER_EEE_COURSES, c.EEE_WINTER_RESPONSES, eee),
     )
     for codes, counts, students in groups:
         for code, count in zip(codes, counts, strict=True):
@@ -119,7 +117,7 @@ def closed_round_items(window, offerings, cse, eee) -> list[Item]:
                 items.append(
                     Item(
                         students[index],
-                        offerings[c.SPRING, code],
+                        offerings[c.WINTER, code],
                         f"{window.name}:{index}:{code}",
                         abusive=(index, code) in c.ABUSIVE,
                     )
@@ -128,19 +126,19 @@ def closed_round_items(window, offerings, cse, eee) -> list[Item]:
 
 
 def open_round_items(window, offerings, cse) -> list[Item]:
-    """Fall: demo_student has two forms sealed; most others have some; the spare accounts none."""
+    """Summer: demo_student has two forms sealed; most others have some; the spare accounts none."""
     items = []
     for index, student in enumerate(cse):
         if index >= len(cse) - c.SPARE_STUDENTS:
             continue
-        for code in c.FALL_COURSES:
+        for code in c.SUMMER_COURSES:
             rng = random.Random(f"open:{index}:{code}")  # noqa: S311 - demo data, not security
             takes = (
                 code in c.DEMO_STUDENT_SEALED if index == 0 else rng.random() < c.OPEN_SUBMIT_SHARE
             )
             if takes:
                 items.append(
-                    Item(student, offerings[c.FALL, code], f"{window.name}:{index}:{code}")
+                    Item(student, offerings[c.SUMMER, code], f"{window.name}:{index}:{code}")
                 )
     return items
 
@@ -234,7 +232,7 @@ def submit_all(window, items, means: dict[int, float]) -> int:
 def add_notes(window, offerings) -> None:
     """A couple of "action taken" notes written by teachers once the results were out."""
     for code, text in c.NOTES.items():
-        offering = offerings[c.SPRING, code]
+        offering = offerings[c.WINTER, code]
         if not ActionNote.objects.filter(offering=offering, window=window).exists():
             teacher_report.save_note(offering, window, text)
 

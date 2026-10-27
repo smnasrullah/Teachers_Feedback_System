@@ -4,15 +4,20 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from apps.academics.models import CourseOffering, Department, LevelTerm, Program
+from apps.academics.services import semesters
 from apps.accounts.forms import StyledForm
 from apps.accounts.models import StudentProfile, registry_index
 from apps.enrollment.models import EnrollmentStatus
 
 
-def _current_offerings():
-    return CourseOffering.objects.filter(semester__is_current=True).select_related(
-        "course", "semester"
-    )
+class CurrentOfferingsMixin:
+    """Limits ``offering`` to today's semester, worked out per form (never at import time)."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["offering"].queryset = CourseOffering.objects.filter(
+            semester__in=semesters.ongoing()
+        ).select_related("course", "semester")
 
 
 class GroupForm(StyledForm):
@@ -22,11 +27,11 @@ class GroupForm(StyledForm):
     level_term = forms.ModelChoiceField(label=_("Level/term"), queryset=LevelTerm.objects.all())
 
 
-class EnrollForm(StyledForm):
+class EnrollForm(CurrentOfferingsMixin, StyledForm):
     student_id = forms.CharField(label=_("Student ID"), max_length=32)
     offering = forms.ModelChoiceField(
         label=_("Course offering"),
-        queryset=_current_offerings(),
+        queryset=CourseOffering.objects.none(),
         help_text=_("Offerings of the current semester."),
     )
     status = forms.ChoiceField(
@@ -42,12 +47,12 @@ class EnrollForm(StyledForm):
         return profile
 
 
-class EnrollmentFilterForm(StyledForm):
+class EnrollmentFilterForm(CurrentOfferingsMixin, StyledForm):
     offering = forms.ModelChoiceField(
         label=_("Course offering"),
         required=False,
         empty_label=_("All"),
-        queryset=_current_offerings(),
+        queryset=CourseOffering.objects.none(),
     )
     student_id = forms.CharField(label=_("Student ID"), required=False, max_length=32)
     status = forms.ChoiceField(

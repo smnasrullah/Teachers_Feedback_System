@@ -17,7 +17,7 @@ from functools import cached_property
 
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
-from django.utils import timezone
+from django.utils import timezone, translation
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy
 
@@ -139,7 +139,13 @@ class _Lookups:
 
     @cached_property
     def semesters(self) -> dict[str, Semester]:
-        return {s.name.casefold(): s for s in Semester.objects.all()}
+        """By name in English and in Bangla ("Summer 2026", "সামার ২০২৬")."""
+        found = {}
+        for semester in Semester.objects.all():
+            for language in ("en", "bn"):
+                with translation.override(language):
+                    found[semester.name.casefold()] = semester
+        return found
 
     @cached_property
     def courses(self) -> dict[tuple[int, str], Course]:
@@ -433,8 +439,8 @@ class OfferingImporter(Importer):
     required = ("department", "course_code", "semester", "teacher_id")
     optional = ("section",)
     sample = (
-        ("CSE", "CSE101", "Spring 2026", "T0001", "A"),
-        ("CSE", "CSE102", "Spring 2026", "T0002", ""),
+        ("CSE", "CSE101", "Summer 2026", "T0001", "A"),
+        ("CSE", "CSE102", "Summer 2026", "T0002", ""),
     )
 
     def __init__(self, **options):
@@ -474,8 +480,8 @@ class EnrollmentImporter(Importer):
     required = ("student_id", "department", "course_code", "semester")
     optional = ("section", "status")
     sample = (
-        ("2101001", "CSE", "CSE101", "Spring 2026", "A", "regular"),
-        ("2101002", "CSE", "CSE101", "Spring 2026", "A", "retake"),
+        ("2101001", "CSE", "CSE101", "Summer 2026", "A", "regular"),
+        ("2101002", "CSE", "CSE101", "Summer 2026", "A", "retake"),
     )
 
     def __init__(self, **options):
@@ -551,8 +557,8 @@ class ResultImporter(EnrollmentImporter):
     required = ("student_id", "department", "course_code", "semester", "grade")
     optional = ("section", "published")
     sample = (
-        ("2101001", "CSE", "CSE101", "Spring 2026", "A+", "A", "no"),
-        ("2101002", "CSE", "CSE101", "Spring 2026", "B-", "A", "no"),
+        ("2101001", "CSE", "CSE101", "Summer 2026", "A+", "A", "no"),
+        ("2101002", "CSE", "CSE101", "Summer 2026", "B-", "A", "no"),
     )
 
     def __init__(self, **options):

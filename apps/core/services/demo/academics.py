@@ -8,11 +8,9 @@ skipped, which keeps a second run from changing anything.
 
 import random
 from dataclasses import dataclass, replace
-from datetime import timedelta
 from decimal import Decimal
 
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 from django.utils.translation import gettext as _
 
 from apps.academics.models import (
@@ -27,12 +25,9 @@ from apps.academics.models import (
     Result,
     Semester,
 )
-from apps.academics.services import promotion, results
+from apps.academics.services import promotion, results, semesters
 from apps.core.services.demo import constants as c
 from apps.enrollment.models import Enrollment
-
-SPRING_START_DAYS, SPRING_END_DAYS = 230, 60
-FALL_START_DAYS, FALL_END_DAYS = 45, 135
 
 
 @dataclass(frozen=True)
@@ -41,7 +36,7 @@ class Structure:
     programs: dict[str, Program]
     batches: dict[str, Batch]
     level_terms: dict[str, LevelTerm]
-    semesters: dict[str, Semester]
+    semesters: dict[tuple[str, int], Semester]
     courses: dict[str, Course]
 
 
@@ -59,31 +54,17 @@ def _level_terms() -> dict[str, LevelTerm]:
     return found
 
 
-def _semesters() -> dict[str, Semester]:
-    current = Semester.objects.filter(is_current=True).exclude(name=c.FALL).first()
-    if current is not None:
-        raise ValidationError(
-            _(
-                "The semester %(name)s is marked as current. The demo needs %(demo)s as the "
-                "current semester; end that one first or seed an empty database."
-            )
-            % {"name": current.name, "demo": c.FALL}
-        )
-    today = timezone.localdate()
-    spans = {
-        c.SPRING: (SPRING_START_DAYS, -SPRING_END_DAYS, False),
-        c.FALL: (FALL_START_DAYS, FALL_END_DAYS, True),
-    }
+def _semesters() -> dict[tuple[str, int], Semester]:
+    """Winter 2026 and Summer 2026. An existing one is reused as it is (its dates may have been
+    corrected by the admin); a new one must not overlap a semester of the owner's own."""
     found = {}
-    for name, (start, end, is_current) in spans.items():
-        found[name] = Semester.objects.get_or_create(
-            name=name,
-            defaults={
-                "start_date": today - timedelta(days=start),
-                "end_date": today + timedelta(days=end),
-                "is_current": is_current,
-            },
-        )[0]
+    for (season, year), (start, end) in c.SEMESTER_DATES.items():
+        semester = Semester.objects.filter(season=season, year=year).first()
+        if semester is None:
+            semester = Semester(season=season, year=year, start_date=start, end_date=end)
+            semesters.validate_dates(semester, start, end)
+            semester.save()
+        found[season, year] = semester
     return found
 
 
@@ -122,10 +103,10 @@ def ensure_structure() -> Structure:
     return Structure(departments, programs, batches, level_terms, semesters, courses)
 
 
-def ensure_offerings(structure: Structure, teachers: dict) -> dict[tuple[str, str], CourseOffering]:
-    """Every offering as ``(semester name, course code) -> offering``."""
+def ensure_offerings(structure: Structure, teachers: dict) -> dict[tuple, CourseOffering]:
+    """Every offering as ``((season, year), course code) -> offering``."""
     offerings = {}
-    for semester, teaching in ((c.FALL, c.FALL_TEACHING), (c.SPRING, c.SPRING_TEACHING)):
+    for semester, teaching in ((c.SUMMER, c.SUMMER_TEACHING), (c.WINTER, c.WINTER_TEACHING)):
         for code, teacher in teaching.items():
             offerings[semester, code] = CourseOffering.objects.get_or_create(
                 course=structure.courses[code],
@@ -136,12 +117,12 @@ def ensure_offerings(structure: Structure, teachers: dict) -> dict[tuple[str, st
     return offerings
 
 
-def enroll_spring(offerings, cse, eee) -> None:
+def enroll_winter(offerings, cse, eee) -> None:
     """The previous semester's classes: all CSE students in the four Level 1 Term 2 courses,
     all EEE students in the two EEE courses."""
     rows = [
-        Enrollment(student_profile=student, offering=offerings[c.SPRING, code])
-        for students, codes in ((cse, c.SPRING_CSE_COURSES), (eee, c.SPRING_EEE_COURSES))
+        Enrollment(student_profile=student, offering=offerings[c.WINTER, code])
+        for students, codes in ((cse, c.WINTER_CSE_COURSES), (eee, c.WINTER_EEE_COURSES))
         for student in students
         for code in codes
     ]
@@ -167,8 +148,8 @@ def _grade_letters(cse, eee, offering) -> dict[int, str]:
 def publish_results(offerings, cse, eee, actor) -> None:
     """Grade and publish each previous-semester offering that has no published result yet."""
     scale = {grade.letter: grade for grade in GradeScale.objects.all()}
-    for code in (*c.SPRING_CSE_COURSES, *c.SPRING_EEE_COURSES):
-        offering = offerings[c.SPRING, code]
+    for code in (*c.WINTER_CSE_COURSES, *c.WINTER_EEE_COURSES):
+        offering = offerings[c.WINTER, code]
         if Result.objects.filter(enrollment__offering=offering, published=True).exists():
             continue
         letters = _grade_letters(cse, eee, offering)

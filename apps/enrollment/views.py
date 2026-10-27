@@ -9,6 +9,7 @@ from django.utils.translation import ngettext
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET, require_http_methods
 
+from apps.academics.services import semesters
 from apps.accounts.models import registry_index
 from apps.accounts.services.student_id_policy import (
     visible_full_name,
@@ -92,7 +93,7 @@ def enrollment_list(request):
         if data["offering"]:
             records = records.filter(offering=data["offering"])
         else:
-            records = records.filter(offering__semester__is_current=True)
+            records = records.filter(offering__semester__in=semesters.ongoing())
         if data["student_id"]:
             index = registry_index(data["student_id"])
             records = records.filter(student_profile__registry__external_id_index=index)

@@ -191,7 +191,7 @@ class TestAccess:
             teacher_client.get(reverse("reports:course", args=[9999, world.window.pk])).status_code
             == 404
         )
-        other_semester = make_semester(name="Fall 2026")
+        other_semester = make_semester()
         elsewhere = make_window(other_semester, **CLOSED)
         assert teacher_client.get(world.url(window=elsewhere)).status_code == 404
 

@@ -17,8 +17,11 @@ from apps.academics.models import (
     GradeScale,
     LevelTerm,
     Program,
+    Season,
     Semester,
+    SemesterStatus,
 )
+from apps.academics.services import semesters
 from apps.core.forms import StyledFormMixin
 
 YES_NO = [("", _("All")), ("1", _("Yes")), ("0", _("No"))]
@@ -73,6 +76,9 @@ class Screen:
     select_related: tuple[str, ...] = ()
     department_of: Callable[[Model], int | None] | None = None
     icon: str = "list"
+    # Pre-filled values for the "add next" shortcut, with its button label.
+    suggest: Callable[[], dict] | None = None
+    suggest_label: str = ""
 
     def queryset(self) -> QuerySet:
         return self.model.objects.select_related(*self.select_related)
@@ -187,13 +193,19 @@ SCREENS: dict[str, Screen] = {
             singular=_("semester"),
             columns=(
                 Column(_("Name"), lambda o: o.name),
-                Column(_("Start date"), lambda o: o.start_date.isoformat(), numeric=True),
-                Column(_("End date"), lambda o: o.end_date.isoformat(), numeric=True),
-                Column(_("Current"), lambda o: yes_no(o.is_current)),
+                Column(_("Start date"), lambda o: semesters.short_date(o.start_date), numeric=True),
+                Column(_("End date"), lambda o: semesters.short_date(o.end_date), numeric=True),
+                Column(
+                    _("Status"),
+                    lambda o: str(SemesterStatus(o.status(semesters.today())).label),
+                ),
             ),
-            search=("name",),
-            filters=(Filter("current", _("Current"), "is_current", boolean=True),),
+            filters=(
+                Filter("season", _("Season"), "season", choices=[("", _("All")), *Season.choices]),
+            ),
             icon="calendar",
+            suggest=semesters.suggest_next,
+            suggest_label=_("Create next semester"),
         ),
         Screen(
             key="courses",

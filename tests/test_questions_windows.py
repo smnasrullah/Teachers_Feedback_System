@@ -619,7 +619,7 @@ class TestWindowOverlap:
         assert self.clashes(semester, (10,), (12,)) == []
         other = self.make(semester, (9,), (17,))
         assert self.clashes(semester, (10,), (12,), exclude_pk=other.pk) == []
-        assert self.clashes(make_semester(name="Other"), (10,), (12,)) == []
+        assert self.clashes(make_semester(), (10,), (12,)) == []
 
     def test_scopes_must_intersect_in_both_dimensions(self, semester):
         cse, eee = DepartmentFactory(), DepartmentFactory()

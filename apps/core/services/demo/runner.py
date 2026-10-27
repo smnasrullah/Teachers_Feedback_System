@@ -72,9 +72,9 @@ def seed(password: str | None = None) -> Report:
     for user in (cast.admin, cast.hod, cast.student):
         people.sync_password(user, password)
     offerings = academics.ensure_offerings(structure, cast.teachers)
-    academics.enroll_spring(offerings, cast.cse, cast.eee)
+    academics.enroll_winter(offerings, cast.cse, cast.eee)
     academics.publish_results(offerings, cast.cse, cast.eee, admin)
-    academics.promote_cse(structure.semesters[constants.SPRING], cast.cse, admin)
+    academics.promote_cse(structure.semesters[constants.WINTER], cast.cse, admin)
     feedback.ensure_bank(admin)
     closed, open_ = feedback.ensure_rounds(structure)
     means = _teacher_means(cast)
@@ -91,8 +91,8 @@ def seed(password: str | None = None) -> Report:
         cast,
         closed,
         open_,
-        str(offerings[constants.FALL, constants.FALL_COURSES[0]].course),
-        len(constants.FALL_COURSES) - len(constants.DEMO_STUDENT_SEALED),
+        str(offerings[constants.SUMMER, constants.SUMMER_COURSES[0]].course),
+        len(constants.SUMMER_COURSES) - len(constants.DEMO_STUDENT_SEALED),
     )
     accounts = tuple(
         Account(user.username, twofactor.manual_key(user.totp_secret))

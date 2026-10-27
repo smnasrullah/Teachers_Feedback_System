@@ -1,13 +1,21 @@
-from datetime import date
+from datetime import date, timedelta
 
 import pytest
 from django.db import IntegrityError, connection, transaction
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 
-from apps.academics.models import Course, CourseOffering, Department, GradeScale, Semester
+from apps.academics.models import (
+    Course,
+    CourseOffering,
+    Department,
+    GradeScale,
+    Season,
+    Semester,
+)
 from apps.academics.screens import SCREENS
 from apps.academics.selectors import get_current_courses
+from apps.academics.services import semesters
 from apps.auditlog.models import AuditEvent
 from apps.enrollment.models import Enrollment
 from tests.factories import (
@@ -33,12 +41,27 @@ def admin_client(client):
     return client
 
 
-def make_semester(name="Spring 2026", current=False, **fields):
+def free_season_year() -> tuple[str, int]:
+    taken = set(Semester.objects.values_list("season", "year"))
+    keys = ((season, year) for year in range(2000, 2101) for season in Season.values)
+    return next(key for key in keys if key not in taken)
+
+
+def make_semester(current=False, **fields):
+    """A semester with an unused season and year. ``current`` makes it run today; otherwise it
+    ran in the first half of 2026, unless dates are given."""
+    today = semesters.today()
+    start, end = (
+        (today - timedelta(days=30), today + timedelta(days=120))
+        if current
+        else (date(2026, 1, 1), date(2026, 6, 30))
+    )
+    season, year = free_season_year()
     return Semester.objects.create(
-        name=name,
-        start_date=fields.pop("start_date", date(2026, 1, 1)),
-        end_date=fields.pop("end_date", date(2026, 6, 30)),
-        is_current=current,
+        season=fields.pop("season", season),
+        year=fields.pop("year", year),
+        start_date=fields.pop("start_date", start),
+        end_date=fields.pop("end_date", end),
         **fields,
     )
 
@@ -60,7 +83,7 @@ def make_offering(course=None, semester=None, teacher=None, section="A"):
     course = course or make_course()
     return CourseOffering.objects.create(
         course=course,
-        semester=semester or make_semester(name=f"S{CourseOffering.objects.count()}"),
+        semester=semester or make_semester(),
         teacher=teacher or make_teacher(course.department),
         section=section,
     )
@@ -98,10 +121,10 @@ def sample_objects():
 
 
 class TestModels:
-    def test_only_one_current_semester(self):
-        make_semester("A", current=True)
+    def test_one_semester_per_season_and_year(self):
+        make_semester(season=Season.SUMMER, year=2026)
         with pytest.raises(IntegrityError), transaction.atomic():
-            make_semester("B", current=True)
+            make_semester(season=Season.SUMMER, year=2026, start_date=date(2027, 7, 1))
 
     def test_semester_must_end_after_it_starts(self):
         with pytest.raises(IntegrityError), transaction.atomic():
@@ -178,10 +201,10 @@ class TestScreens:
         create(
             "semesters",
             {
-                "name": "Spring 2026",
+                "season": "winter",
+                "year": "2026",
                 "start_date": "2026-01-01",
                 "end_date": "2026-06-30",
-                "is_current": "on",
             },
         )
         create(
@@ -207,21 +230,6 @@ class TestScreens:
             },
         )
         assert CourseOffering.objects.count() == 1
-
-    def test_making_a_semester_current_demotes_the_old_one(self, admin_client):
-        old = make_semester("Old", current=True)
-        admin_client.post(
-            reverse("academics:create", args=["semesters"]),
-            {
-                "name": "New",
-                "start_date": "2026-07-01",
-                "end_date": "2026-12-31",
-                "is_current": "on",
-            },
-        )
-        old.refresh_from_db()
-        assert not old.is_current
-        assert Semester.objects.get(name="New").is_current
 
     def test_course_program_must_belong_to_its_department(self, admin_client):
         course = make_course()
@@ -379,7 +387,7 @@ class TestCurrentCourses:
     def test_returns_only_enrolled_offerings_of_the_current_semester(self):
         student = make_student()
         department = student.program.department
-        current, past = make_semester("Now", current=True), make_semester("Past")
+        current, past = make_semester(current=True), make_semester()
         course = make_course(department, "CSE101", level_term=student.level_term)
         wanted = make_offering(course, current)
         old = make_offering(course, past)
@@ -391,7 +399,7 @@ class TestCurrentCourses:
 
     def test_curriculum_alone_does_not_enroll(self):
         student = make_student()
-        current = make_semester("Now", current=True)
+        current = make_semester(current=True)
         make_offering(
             make_course(student.program.department, level_term=student.level_term), current
         )
@@ -406,7 +414,7 @@ class TestCurrentCourses:
     def test_query_count_is_constant(self, django_assert_num_queries):
         student = make_student()
         department = student.program.department
-        current = make_semester("Now", current=True)
+        current = make_semester(current=True)
         for n in range(3):
             offering = make_offering(make_course(department, f"C{n}"), current)
             Enrollment.objects.create(student_profile=student, offering=offering)

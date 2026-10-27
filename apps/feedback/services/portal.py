@@ -9,9 +9,11 @@ from dataclasses import dataclass
 from enum import StrEnum
 
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
+from django.utils import timezone
 from django.utils.translation import gettext as _
 
 from apps.academics.models import CourseOffering, Semester
+from apps.academics.services import semesters
 from apps.core.services.localize import pick
 from apps.feedback.models import (
     FeedbackWindow,
@@ -143,7 +145,7 @@ def build_dashboard(student_profile, now) -> Dashboard:
     The round card and progress ring describe the most relevant round (see
     ``_pick_window``); every course still carries the state of its own round.
     """
-    semester = Semester.objects.filter(is_current=True).first()
+    semester = semesters.current_semester(timezone.localdate(now))
     if semester is None:
         return Dashboard(None, [], None)
     offerings = list(

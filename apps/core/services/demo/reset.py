@@ -66,7 +66,12 @@ def delete_all() -> int:
     PromotionOverride.objects.filter(student_profile__in=students).delete()
     enrollments.delete()
     offerings.delete()
-    FeedbackWindow.objects.filter(name__in=c.ROUNDS, semester__name__in=c.SEMESTERS).delete()
+    demo_semesters = Q()
+    for season, year in c.SEMESTERS:
+        demo_semesters |= Q(season=season, year=year)
+    FeedbackWindow.objects.filter(
+        name__in=c.ROUNDS, semester__in=Semester.objects.filter(demo_semesters)
+    ).delete()
     account_ids = list(
         User.objects.filter(Q(username__in=c.USERNAMES) | Q(registry__in=registries)).values_list(
             "pk", flat=True
@@ -80,7 +85,7 @@ def delete_all() -> int:
     _delete_unused(Course.objects.filter(code__in=c.COURSE_CODES))
     _delete_unused(Batch.objects.filter(name=c.BATCH_NAME, program__code=c.PROGRAM_CODE))
     _delete_unused(Program.objects.filter(code=c.PROGRAM_CODE))
-    _delete_unused(Semester.objects.filter(name__in=c.SEMESTERS))
+    _delete_unused(Semester.objects.filter(demo_semesters))
     _delete_unused(LevelTerm.objects.filter(name__in=[name for name, _bn, _order in c.LEVEL_TERMS]))
     _delete_unused(Department.objects.filter(code__in=[code for code, _en, _bn in c.DEPARTMENTS]))
     bank = question_bank.parse(BANK_FILE.read_text(encoding="utf-8"))

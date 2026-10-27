@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
 
 import pytest
@@ -19,7 +19,7 @@ from apps.academics.models import (
     RetakePolicy,
 )
 from apps.academics.selectors import get_current_courses
-from apps.academics.services import gpa, importers, promotion, results
+from apps.academics.services import gpa, importers, promotion, results, semesters
 from apps.academics.services.promotion import RuleSnapshot, StalePreview, decide
 from apps.accounts.models import AcademicStatus
 from apps.auditlog.models import AuditEvent
@@ -77,18 +77,27 @@ def attempt(course, letter, *, semester=1, credit="3", enrollment=None):
 
 
 class World:
-    """One program with two levels/terms (the second is its last), a current semester S1
-    with the first level/term's offerings and a next semester S2 with offerings of the second
-    level/term plus C101 again (for retakes). C102 and C103 are not offered in S2."""
+    """One program with two levels/terms (the second is its last), a semester S1 that just ended
+    with the first level/term's offerings and the running semester S2 with offerings of the
+    second level/term plus C101 again (for retakes). C102 and C103 are not offered in S2."""
 
     def __init__(self, *, next_offerings=True):
         self.department = DepartmentFactory(code="CSE")
         self.program = ProgramFactory(department=self.department, code="BSC")
         self.l1, self.l2 = LevelTermFactory(name="L1T1"), LevelTermFactory(name="L1T2")
+        today = semesters.today()
         self.s1 = make_semester(
-            "S1", current=True, start_date=date(2026, 1, 1), end_date=date(2026, 6, 30)
+            season="winter",
+            year=2026,
+            start_date=today - timedelta(days=200),
+            end_date=today - timedelta(days=20),
         )
-        self.s2 = make_semester("S2", start_date=date(2026, 7, 1), end_date=date(2026, 12, 31))
+        self.s2 = make_semester(
+            season="summer",
+            year=2026,
+            start_date=today - timedelta(days=19),
+            end_date=today + timedelta(days=150),
+        )
         self.teacher = make_teacher(self.department)
         course = self.course
         self.c101, self.c102 = course("C101", self.l1), course("C102", self.l1)
@@ -402,7 +411,7 @@ class TestGraduation:
 
     def test_an_earlier_failure_blocks_graduation_and_is_retaken(self, world):
         student = self.last_term_student(world, "A A")
-        old = make_semester("S0", start_date=date(2025, 7, 1), end_date=date(2025, 12, 31))
+        old = make_semester(start_date=date(2025, 7, 1), end_date=date(2025, 12, 31))
         add_result(student, world.offer(world.c101, old), "F")
         decision = decision_of(promotion.preview(world.s1), student)
         assert decision.failed_course_ids == (world.c101.pk,)
@@ -526,23 +535,15 @@ class TestApply:
 
 
 class TestNextSemesterCourses:
-    def test_promoted_students_see_next_terms_courses_once_it_is_current(self, world, admin):
+    def test_promoted_students_see_next_terms_courses(self, world, admin):
         student = world.graded("A A A")
         promotion.apply(promotion.preview(world.s1), actor=admin)
-        world.s1.is_current = False
-        world.s1.save()
-        world.s2.is_current = True
-        world.s2.save()
         assert set(get_current_courses(student)) == {world.next["C201"], world.next["C202"]}
 
     def test_offerings_added_later_are_enrolled_by_level_term(self, admin):
         world = World(next_offerings=False)
         student = world.graded("A A A")
         promotion.apply(promotion.preview(world.s1), actor=admin)
-        world.s1.is_current = False
-        world.s1.save()
-        world.s2.is_current = True
-        world.s2.save()
         later = [world.offer(c, world.s2) for c in (world.c201, world.c202)]
         enrollments.enroll_group(world.program, world.l2, actor=admin)
         assert set(get_current_courses(student)) == set(later)
@@ -671,7 +672,9 @@ class TestResultImport:
 
     def test_creates_results(self, world, admin):
         first, second = self.enrolled(world, "2101001"), self.enrolled(world, "2101002")
-        result = self.run(admin, "2101001,CSE,C101,S1,a+,,yes", "2101002,CSE,C101,S1,F,,")
+        result = self.run(
+            admin, "2101001,CSE,C101,Winter 2026,a+,,yes", "2101002,CSE,C101,Winter 2026,F,,"
+        )
         assert result.ok and result.created == 2
         assert Result.objects.get(enrollment__student_profile=first).published
         stored = Result.objects.get(enrollment__student_profile=second)
@@ -683,9 +686,9 @@ class TestResultImport:
         self.enrolled(world, "2101002")
         result = self.run(
             admin,
-            "2101001,CSE,C101,S1,Z,,",
-            "2101009,CSE,C101,S1,A,,",
-            "2101002,CSE,C101,S1,A,,maybe",
+            "2101001,CSE,C101,Winter 2026,Z,,",
+            "2101009,CSE,C101,Winter 2026,A,,",
+            "2101002,CSE,C101,Winter 2026,A,,maybe",
         )
         assert [(e.line, e.column) for e in result.errors] == [
             (2, "grade"),
@@ -699,7 +702,7 @@ class TestResultImport:
         Result.objects.create(
             enrollment=student.enrollments.get(), grade=grade("B"), points=grade("B").points
         )
-        result = self.run(admin, "2101001,CSE,C101,S1,A,,")
+        result = self.run(admin, "2101001,CSE,C101,Winter 2026,A,,")
         assert [(e.line, e.column) for e in result.errors] == [(2, "student_id")]
         assert Result.objects.get().grade.letter == "B"
 
@@ -809,7 +812,9 @@ class TestScreens:
 
         admin_client.post(url, {"outcome": Outcome.RETAIN, "reason": "Asked to repeat"})
         assert PromotionOverride.objects.get().outcome == Outcome.RETAIN
-        body = admin_client.get(reverse("academics:promotion")).content.decode()
+        body = admin_client.get(
+            reverse("academics:promotion"), {"semester": world.s1.pk}
+        ).content.decode()
         assert "Overridden" in body
 
         admin_client.post(url, {"action": "clear"})

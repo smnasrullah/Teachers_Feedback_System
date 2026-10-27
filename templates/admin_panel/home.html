@@ -1,5 +1,5 @@
 {% extends "layouts/dashboard.html" %}
-{% load i18n static ui %}
+{% load i18n semesters static ui %}
 {% block title %}{% translate "Dashboard" %} · {% translate "Teacher Feedback System" %}{% endblock %}
 {% block head %}{% if home.trend or home.distribution %}<script src="{% static 'vendor/chart.umd.min.js' %}" nonce="{{ csp_nonce }}" defer></script><script src="{% static 'js/charts.js' %}" nonce="{{ csp_nonce }}" defer></script>{% endif %}{% endblock %}
 {% block content %}
@@ -9,6 +9,7 @@
       <h1 class="text-2xl">{% translate "Dashboard" %}</h1>
       <p class="text-muted">{% if home.window %}{{ home.window.semester.name }}, {{ home.window.name }}{% else %}{% translate "No feedback round has started yet." %}{% endif %}</p>
     </div>
+    {% semester_badge %}
     {% translate "Scope: all departments" as scope_label %}{% include "components/badge.html" with variant="info" icon="eye" label=scope_label %}
   </div>
 

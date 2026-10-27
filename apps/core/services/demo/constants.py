@@ -5,6 +5,7 @@ structure by the codes and names listed here.
 """
 
 from dataclasses import dataclass
+from datetime import date
 
 ADMIN, HOD, STUDENT = "demo_admin", "demo_hod", "demo_student"
 USERNAMES = (ADMIN, HOD, STUDENT)
@@ -14,11 +15,26 @@ CODE_VALID_DAYS = 30
 SPARE_STUDENTS = 2  # the last CSE students keep an unused code for testing the real sign-up
 
 CSE, EEE = "CSE", "EEE"
-SPRING, FALL = "Spring 2026", "Fall 2026"
-SPRING_ROUND = "Spring 2026 end-of-term feedback"
-FALL_ROUND = "Fall 2026 mid-term feedback"
-SEMESTERS = (SPRING, FALL)
-ROUNDS = (SPRING_ROUND, FALL_ROUND)
+# (season, year): the previous semester and the current one. Summer 2026 really ends on
+# 30 January 2027; its start date is not known yet, so 1 July 2026 stands in for it.
+WINTER, SUMMER = ("winter", 2026), ("summer", 2026)
+SEMESTER_DATES = {
+    WINTER: (date(2026, 2, 1), date(2026, 6, 30)),
+    SUMMER: (date(2026, 7, 1), date(2027, 1, 30)),
+}
+WINTER_ROUND = "Winter 2026 end-of-term feedback"
+SUMMER_ROUND = "Summer 2026 mid-term feedback"
+# The previous semester's round, at fixed local dates inside it.
+WINTER_ROUND_DATES = (date(2026, 6, 1), date(2026, 6, 15))
+SEMESTERS = (WINTER, SUMMER)
+# ``--reset`` also removes the rounds an older demo made, before semesters were Winter/Summer
+# (the migration turned their "Spring 2026" and "Fall 2026" into Winter and Summer 2026).
+ROUNDS = (
+    WINTER_ROUND,
+    SUMMER_ROUND,
+    "Spring 2026 end-of-term feedback",
+    "Fall 2026 mid-term feedback",
+)
 PROGRAM_CODE = "BSC"
 BATCH_NAME = "2024"
 
@@ -110,7 +126,7 @@ TEACHERS = (
 )
 
 # course code -> teacher key, per semester
-FALL_TEACHING = {
+SUMMER_TEACHING = {
     "CSE-2101": "t2",
     "CSE-2102": "t3",
     "CSE-2103": "t4",
@@ -118,7 +134,7 @@ FALL_TEACHING = {
     "CSE-2105": "hod",
     "CSE-2107": "t2",
 }
-SPRING_TEACHING = {
+WINTER_TEACHING = {
     "CSE-1201": "t3",
     "CSE-1202": "t3",
     "CSE-1203": "hod",
@@ -127,9 +143,9 @@ SPRING_TEACHING = {
     "EEE-2102": "t5",
 }
 
-FALL_COURSES = tuple(FALL_TEACHING)
-SPRING_CSE_COURSES = tuple(code for code in SPRING_TEACHING if code.startswith(f"{CSE}-"))
-SPRING_EEE_COURSES = tuple(code for code in SPRING_TEACHING if code.startswith(f"{EEE}-"))
+SUMMER_COURSES = tuple(SUMMER_TEACHING)
+WINTER_CSE_COURSES = tuple(code for code in WINTER_TEACHING if code.startswith(f"{CSE}-"))
+WINTER_EEE_COURSES = tuple(code for code in WINTER_TEACHING if code.startswith(f"{EEE}-"))
 
 CSE_STUDENT_NAMES = (
     "Demo Student",
@@ -160,7 +176,7 @@ CSE_STUDENT_IDS = tuple(f"DEMO-S{n:03d}" for n in range(1, len(CSE_STUDENT_NAMES
 EEE_STUDENT_IDS = tuple(f"DEMO-E{n:03d}" for n in range(1, len(EEE_STUDENT_NAMES) + 1))
 EEE_FINAL_YEAR = 5  # index of the EEE student on the last level/term (the graduate case)
 
-# Spring grades of the EEE students (theory, lab): one case of every promotion outcome.
+# Winter grades of the EEE students (theory, lab): one case of every promotion outcome.
 EEE_GRADES = (
     ("A", "A-"),  # promote
     ("B", "B+"),  # promote
@@ -171,10 +187,10 @@ EEE_GRADES = (
 )
 CSE_GRADE_WEIGHTS = (("A+", 2), ("A", 3), ("A-", 3), ("B+", 3), ("B", 2), ("B-", 1), ("C+", 1))
 
-# How many of the 15 CSE students answered each Spring offering (all above the minimum), and
+# How many of the 15 CSE students answered each Winter offering (all above the minimum), and
 # how many of the 6 EEE students (both below it).
-CSE_SPRING_RESPONSES = (15, 13, 11, 9)
-EEE_SPRING_RESPONSES = (3, 4)
+CSE_WINTER_RESPONSES = (15, 13, 11, 9)
+EEE_WINTER_RESPONSES = (3, 4)
 OPEN_SUBMIT_SHARE = 0.6
 DEMO_STUDENT_SEALED = ("CSE-2101", "CSE-2103")
 # (CSE student index, course code) pairs whose comment contains abusive words.

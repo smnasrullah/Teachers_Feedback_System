@@ -187,9 +187,7 @@ def test_only_enrolled_courses_are_listed(world):
     stranger = other_offering(world, title="Secret Seminar")
     other_semester = make_offering(
         make_course(world.offering.course.department, code="CSE0001", title="Old Course"),
-        make_semester(
-            name="Fall 2025", current=False, start_date="2025-07-01", end_date="2025-12-31"
-        ),
+        make_semester(start_date="2025-07-01", end_date="2025-12-31"),
     )
     other_student = enrolled_student(stranger)
     html = dashboard(world.web).content.decode()

@@ -1,6 +1,7 @@
 import csv
 import io
 import re
+from datetime import date
 
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -58,7 +59,7 @@ def world():
     department = DepartmentFactory(code="CSE")
     program = ProgramFactory(department=department, code="BSC")
     level_term = LevelTermFactory(name="Level 1 Term 1")
-    return department, program, level_term, make_semester("Spring 2026", current=True)
+    return department, program, level_term, make_semester(current=True, season="summer", year=2026)
 
 
 def student_in(program, level_term, section="", external_id=None):
@@ -329,14 +330,14 @@ class TestOtherImports:
         course = make_course(department, "CSE101")
         make_teacher(department, external_id="T100")
         header = "department,course_code,semester,teacher_id,section\n"
-        assert run("offerings", header + "CSE,cse101,Spring 2026,t100,A\n", admin).created == 1
+        assert run("offerings", header + "CSE,cse101,Summer 2026,t100,A\n", admin).created == 1
         offering = CourseOffering.objects.get()
         assert (offering.course, offering.semester, offering.section) == (course, semester, "A")
         again = run(
-            "offerings", header + "CSE,CSE101,Spring 2026,T100,A\nCSE,CSE101,Nope,T100,\n", admin
+            "offerings", header + "CSE,CSE101,Summer 2026,T100,A\nCSE,CSE101,Nope,T100,\n", admin
         )
         assert [e.column for e in again.errors] == ["section", "semester"]
-        unknown = run("offerings", header + "CSE,CSE101,Spring 2026,T999,B\n", admin)
+        unknown = run("offerings", header + "CSE,CSE101,Summer 2026,T999,B\n", admin)
         assert [e.column for e in unknown.errors] == ["teacher_id"]
 
     def test_enrollments(self, world, admin):
@@ -344,7 +345,7 @@ class TestOtherImports:
         student = student_in(program, level_term, external_id="2101001")
         offering = make_offering(make_course(department, "CSE101"), semester, section="A")
         header = "student_id,department,course_code,semester,section,status\n"
-        result = run("enrollments", header + "2101001,CSE,CSE101,Spring 2026,A,retake\n", admin)
+        result = run("enrollments", header + "2101001,CSE,CSE101,Summer 2026,A,retake\n", admin)
         assert result.created == 1
         enrollment = Enrollment.objects.get()
         assert (enrollment.student_profile, enrollment.offering) == (student, offering)
@@ -357,15 +358,15 @@ class TestOtherImports:
         student_in(program, level_term, external_id="2101003")
         offering = make_offering(make_course(department, "CSE101"), semester, section="A")
         header = "student_id,department,course_code,semester,section,status\n"
-        run("enrollments", header + "2101001,CSE,CSE101,Spring 2026,A,\n", admin)
+        run("enrollments", header + "2101001,CSE,CSE101,Summer 2026,A,\n", admin)
         text = header + "\n".join(
             [
-                "2101002,CSE,CSE101,Spring 2026,A,",
-                "2101002,CSE,CSE101,Spring 2026,A,",
-                "2101001,CSE,CSE101,Spring 2026,A,",
-                "9999999,CSE,CSE101,Spring 2026,A,",
-                "2101002,CSE,CSE101,Spring 2026,B,",
-                "2101003,CSE,CSE101,Spring 2026,A,audit",
+                "2101002,CSE,CSE101,Summer 2026,A,",
+                "2101002,CSE,CSE101,Summer 2026,A,",
+                "2101001,CSE,CSE101,Summer 2026,A,",
+                "9999999,CSE,CSE101,Summer 2026,A,",
+                "2101002,CSE,CSE101,Summer 2026,B,",
+                "2101003,CSE,CSE101,Summer 2026,A,audit",
             ]
         )
         result = run("enrollments", text + "\n", admin)
@@ -550,7 +551,7 @@ class TestGroupEnrollment:
         make_offering(make_course(department, "CSE201", program=program), semester)
         make_offering(
             make_course(department, "CSE104", level_term=level_term, program=program),
-            make_semester("Old"),
+            make_semester(),
         )
         other_program = student_in(ProgramFactory(department=department), level_term)
         dropped = student_in(program, level_term)
@@ -583,7 +584,7 @@ class TestGroupEnrollment:
         assert (metadata["students"], metadata["offerings"], metadata["created"]) == (3, 2, 4)
 
     def test_without_a_current_semester(self, admin_client):
-        Semester.objects.update(is_current=False)
+        Semester.objects.update(start_date=date(2020, 1, 1), end_date=date(2020, 6, 30))
         program, level_term = ProgramFactory(), LevelTermFactory()
         page = admin_client.get(
             reverse("enrollment:group"), {"program": program.pk, "level_term": level_term.pk}
@@ -622,7 +623,7 @@ class TestSingleEnrollment:
     def test_unknown_student_and_past_semester_offering_are_rejected(self, admin_client, world):
         department, program, level_term, _ = world
         student_in(program, level_term, external_id="2101001")
-        past = make_offering(make_course(department, "CSE101"), make_semester("Old"))
+        past = make_offering(make_course(department, "CSE101"), make_semester())
         unknown = admin_client.post(
             reverse("enrollment:list"),
             {"student_id": "999", "offering": past.pk, "status": "regular"},
@@ -662,7 +663,7 @@ class TestMissingEnrollment:
         )
         Enrollment.objects.create(
             student_profile=past_only,
-            offering=make_offering(make_course(department, "A2"), make_semester("Old")),
+            offering=make_offering(make_course(department, "A2"), make_semester()),
         )
         assert set(students_missing_enrollment()) == {missing, past_only}
         page = admin_client.get(reverse("enrollment:missing")).content.decode()
