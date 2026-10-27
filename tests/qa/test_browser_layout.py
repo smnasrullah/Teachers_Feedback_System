@@ -109,3 +109,21 @@ def test_pages_do_not_jump_while_they_load(transactional_db, live_server, browse
                 jumps.append(f"{role} {reverse(name)}: {shift:.2f}")
             context.close()
     assert not jumps, jumps
+
+
+TEXT_LINKS = """() => [...document.querySelectorAll(
+    'main p a:not([class]), main .callout a:not([class])')]
+  .filter(a => !getComputedStyle(a).textDecorationLine.includes('underline'))
+  .map(a => a.getAttribute('href'))"""
+
+
+def test_links_in_running_text_are_underlined(transactional_db, live_server, browser):
+    """A link inside a sentence must not differ by colour alone (WCAG 1.4.1)."""
+    context = browser.new_context(extra_http_headers={"Accept-Language": "en"})
+    page = context.new_page()
+    page.goto(live_server.url + reverse("accounts:signup"), wait_until="networkidle")
+    checked = page.evaluate("document.querySelectorAll('main p a:not([class])').length")
+    plain = page.evaluate(TEXT_LINKS)
+    context.close()
+
+    assert checked and not plain, plain

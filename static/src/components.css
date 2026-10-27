@@ -50,6 +50,10 @@
     color: var(--primary);
     text-underline-offset: 3px;
   }
+  /* A link inside a sentence is underlined, never told apart by colour alone. */
+  :where(p, li, dd, td, .callout) a:not([class]) {
+    text-decoration-line: underline;
+  }
   :focus-visible {
     outline: 3px solid var(--focus);
     outline-offset: 2px;
