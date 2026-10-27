@@ -127,3 +127,36 @@ def test_links_in_running_text_are_underlined(transactional_db, live_server, bro
     context.close()
 
     assert checked and not plain, plain
+
+
+TITLE_WIDTH = """() => {
+  const title = document.querySelector('main h1');
+  return (title.closest('.flex-1') || title).getBoundingClientRect().width;
+}"""
+
+
+def test_page_titles_keep_their_width_beside_the_semester_chips(
+    transactional_db, live_server, browser
+):
+    """On a phone the semester chips wrap under the title instead of squeezing it."""
+    from tests.test_academics import make_semester
+
+    make_semester(current=True)
+    users = _users()
+    narrow = []
+    pages = {
+        "teacher": ["accounts:dashboard_teacher", "reports:overview"],
+        "hod": ["accounts:dashboard_hod"],
+        "admin": ["accounts:dashboard_admin"],
+    }
+    for role, names in pages.items():
+        context = browser.new_context(viewport=PHONE, extra_http_headers={"Accept-Language": "bn"})
+        context.add_cookies([_session_cookie(users[role], live_server.url)])
+        page = context.new_page()
+        for name in names:
+            page.goto(live_server.url + reverse(name), wait_until="networkidle")
+            width = page.evaluate(TITLE_WIDTH)
+            if width < 200:
+                narrow.append(f"{reverse(name)}: {width:.0f}px")
+        context.close()
+    assert not narrow, narrow
