@@ -13,6 +13,7 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.academics.models import CourseType
 from apps.core.encryption import EncryptedTextField, TimelessEncryptedTextField
+from apps.core.services.localize import pick
 
 # Ratings and agreement questions use one five-point scale.
 SCALE_MIN, SCALE_MAX = 1, 5
@@ -52,7 +53,7 @@ class QuestionCategory(models.Model):
         verbose_name_plural = _("question categories")
 
     def __str__(self):
-        return self.name
+        return pick(self.name, self.name_bn)
 
 
 class QuestionQuerySet(models.QuerySet):
