@@ -10,7 +10,9 @@ from apps.core.logging import build_logging_config
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 env = environ.Env()
-environ.Env.read_env(BASE_DIR / ".env")
+# Local runs read .env; containers (and the settings tests) pass the environment directly.
+if env.bool("DJANGO_READ_ENV_FILE", default=True):
+    environ.Env.read_env(BASE_DIR / ".env")
 
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 DEBUG = env.bool("DJANGO_DEBUG", default=False)

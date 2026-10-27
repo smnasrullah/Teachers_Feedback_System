@@ -34,6 +34,7 @@ class Command(BaseCommand):
             if hasattr(stream, "reconfigure"):
                 stream.reconfigure(errors="replace")
         try:
+            runner.require_development()  # refuse before any database connection is opened
             if reset:
                 removed = runner.delete_all()
                 self.stdout.write(

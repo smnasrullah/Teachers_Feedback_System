@@ -196,7 +196,7 @@ Fonts: Plus Jakarta Sans (EN), Hind Siliguri (BN) — **self-hosted woff2** (fil
 ## §7 Working tree
 ```
 Teachers_Feedback_System/
-├── CLAUDE.md  manage.py  pyproject.toml  Makefile  scripts/dev.ps1  Dockerfile  docker-compose.yml
+├── CLAUDE.md  manage.py  pyproject.toml  Makefile  scripts/dev.ps1  Dockerfile  docker-compose.prod.yml
 ├── .env.example  .gitignore  .gitattributes  .editorconfig  .pre-commit-config.yaml  .github/workflows/ci.yml
 ├── requirements/{base,dev,prod}.txt
 ├── config/{settings/{base,dev,prod}.py, urls.py, celery.py}

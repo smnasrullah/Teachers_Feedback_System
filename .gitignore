@@ -10,15 +10,18 @@ htmlcov/
 
 # Django
 db.sqlite3
+*.sqlite3
 *.log
 /staticfiles/
 /media/
 /backups/
+*.dump
 
 # Secrets (NEVER commit)
 .env
 .env.*
 !.env.example
+!.env.production.example
 *.key
 *.pem
 

@@ -1,0 +1,29 @@
+# Reverse proxy for docker-compose.prod.yml: automatic HTTPS (Let's Encrypt) for {$DOMAIN},
+# HTTP redirected to HTTPS, uploads served from the media volume, everything else to gunicorn.
+# No access log on purpose: request times could be matched against feedback submissions.
+{
+	email {$ACME_EMAIL}
+}
+
+{$DOMAIN} {
+	request_body {
+		max_size 20MB
+	}
+	header -Server
+
+	# Avatars and teacher photos (re-encoded on upload). Never run as a page or script.
+	handle_path /media/* {
+		root * /srv/media
+		file_server
+		header {
+			X-Content-Type-Options nosniff
+			Content-Security-Policy "default-src 'none'; sandbox"
+			Strict-Transport-Security "max-age=31536000; includeSubDomains"
+			Cache-Control "private, max-age=3600"
+		}
+	}
+
+	handle {
+		reverse_proxy web:8000
+	}
+}

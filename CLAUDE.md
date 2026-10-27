@@ -31,5 +31,5 @@ Owner develops on **Windows** (`D:\Git\Teachers_Feedback_System`). Keep everythi
 - If a prompt contradicts BLUEPRINT or these rules, stop and say so in one line.
 
 ## Commands
-`python manage.py runserver` · `migrate` · `seed_demo` · `create_admin` · `pytest -q` · `docker compose up --build`
+`python manage.py runserver` · `migrate` · `seed_demo` · `create_admin` · `pytest -q` · `docker compose -f docker-compose.prod.yml up -d --build` (server; see `docs/DEPLOY.md`)
 Windows: `scripts/dev.ps1 run|test|lint|fmt|migrate|seed`; Linux/CI: `make run|test|lint|fmt|migrate|seed`.
