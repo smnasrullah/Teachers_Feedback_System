@@ -102,10 +102,44 @@ def seed():
         cookies[role] = client.cookies["sessionid"].value
     from django.urls import reverse
 
+    cookies["signup"] = _signup_session(department)
+    cookies["enrol"] = _enrolment_session(department)
     return cookies, {
         "form": reverse("feedback:form", args=[open_window.pk, offerings[1].pk]),
         "report": reverse("reports:course", args=[offerings[0].pk, closed.pk]),
+        "user": reverse("accounts:user_detail", args=[student_user.pk]),
     }
+
+
+def _signup_session(department) -> str:
+    """A visitor half-way through sign-up, at the authenticator step."""
+    from django.test import Client
+    from django.urls import reverse
+
+    from tests.auth_helpers import issue_code
+    from tests.factories import PASSWORD, make_student
+
+    profile = make_student(department, full_name="New Student")
+    client = Client()
+    client.post(
+        reverse("accounts:signup"),
+        {"registry_id": profile.registry.external_id, "activation_code": issue_code(profile)},
+    )
+    client.post(reverse("accounts:signup_password"), {"password1": PASSWORD, "password2": PASSWORD})
+    return client.cookies["sessionid"].value
+
+
+def _enrolment_session(department) -> str:
+    """An account without an authenticator yet, between its password and the enrolment page."""
+    from django.test import Client
+    from django.urls import reverse
+
+    from tests.factories import PASSWORD, claim, make_student
+
+    user = claim(make_student(department, full_name="Older Account"), PASSWORD)
+    client = Client()
+    client.post(reverse("accounts:login"), {"username": user.username, "password": PASSWORD})
+    return client.cookies["sessionid"].value
 
 
 def pages(urls):
@@ -119,6 +153,10 @@ def pages(urls):
         ("login", None, reverse("accounts:login")),
         ("signup", None, reverse("accounts:signup")),
         ("forgot", None, reverse("accounts:password_forgot")),
+        ("signup-authenticator", "signup", reverse("accounts:signup_authenticator")),
+        ("login-enrol", "enrol", reverse("accounts:login_two_factor_setup")),
+        ("account-authenticator", "student", reverse("accounts:two_factor")),
+        ("admin-user", "admin", urls["user"]),
         ("student-dashboard", "student", reverse("accounts:dashboard_student")),
         ("feedback-form", "student", urls["form"]),
         ("teacher-report", "teacher", urls["report"]),

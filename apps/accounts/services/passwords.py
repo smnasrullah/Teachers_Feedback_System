@@ -40,7 +40,7 @@ def validate_strong_password(password: str, user=None) -> None:
 def validate_account_password(password: str, user=None, *, role: str | None = None) -> None:
     """The rule that fits the account: strong for Admin and HOD, Django's validators otherwise."""
     role = role or getattr(user, "role", None)
-    if role == Role.ADMIN or getattr(user, "requires_second_factor", False):
+    if role == Role.ADMIN or getattr(user, "is_hod", False):
         validate_strong_password(password, user)
     else:
         validate_password(password, user)

@@ -55,13 +55,8 @@ def login_view(request):
 
 
 def _after_password(request, user):
-    next_url = login_service.safe_next(request)
-    step = login_service.next_step(user)
-    if step is login_service.NextStep.DONE:
-        login_service.complete_login(request, user, second_factor=False)
-        return redirect(next_url or login_service.landing_url(user))
-    login_service.begin_pending(request, user, next_url)
-    if step is login_service.NextStep.CODE:
+    login_service.begin_pending(request, user, login_service.safe_next(request))
+    if login_service.next_step(user) is login_service.NextStep.CODE:
         return redirect("accounts:login_second_factor")
     return redirect("accounts:login_two_factor_setup")
 
@@ -85,7 +80,7 @@ def login_second_factor(request):
             result = twofactor.check_second_factor(user, form.cleaned_data["code"])
             if result.ok:
                 next_url = login_service.pending_next(request)
-                login_service.complete_login(request, user, second_factor=True)
+                login_service.complete_login(request, user)
                 if result.recovery:
                     login_service.record_recovery_use(request, user, result.recovery_left)
                     messages.warning(

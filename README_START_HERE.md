@@ -58,7 +58,7 @@ claude
 | 2 | P02_design_system | Token, component, base layout, dark mode, i18n |
 | 3 | P03_security_core | Encryption, RBAC layer, CSP, log scrubber, hash-chained audit |
 | 4 | P04_accounts | User, roles, ID registry, profiles, HOD, activation code |
-| 5 | P05_auth_flows | Signup+OTP, login, 2FA (Admin/HOD), reset |
+| 5 | P05_auth_flows | Signup + authenticator (TOTP), login, recovery codes, reset |
 | 6 | P06_academics | Semester, course, offering + admin CRUD |
 | 7 | P07_import_enroll | CSV import, enrollment, teacher assignment |
 | 8 | P08_results_promotion | Result, CGPA, auto promotion |
@@ -83,4 +83,14 @@ Resume dorkar hole: `docs/SUPPORT_PROMPTS.md` theke "Resume" prompt.
 2. Teacher/HOD feedback result dekhbe **round shesh hoyar por** (anonymity-r jonno).
 3. Ekta offering-e ekjon teacher (lab/theory alada offering).
 4. Student signup-e ID-r sathe **activation code** lagbe (onno keu tomar ID diye account khule felte parbe na).
-5. Admin ar HOD-r jonno **TOTP 2FA** baddhotamulok.
+5. **Shob role**-er jonno authenticator app (TOTP 2FA) baddhotamulok; e-mail/SMS OTP nei.
+
+## Local-e login korar shomoy authenticator code (shudhu dev)
+
+Prottek account-e login-er por authenticator app-er 6-digit code lage. Local development-e phone chhara code pete:
+
+```powershell
+python manage.py totp_code <username>
+```
+
+Ei command shudhu `DEBUG=True` ar `DJANGO_SETTINGS_MODULE=config.settings.dev` hole chole; onno settings-e (test, prod) refuse kore. Notun account-e prothome QR scan kore (ba manual key diye) enrol korte hobe; tarpor command-ta current code print kore. Details: `docs/ADMIN_GUIDE.md` ar `docs/SECURITY.md`.

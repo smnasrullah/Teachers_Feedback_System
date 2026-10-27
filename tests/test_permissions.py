@@ -33,17 +33,11 @@ PUBLIC_VIEWS = {
     "accounts:login_two_factor_setup",
     "accounts:logout",
     "accounts:signup",
-    "accounts:signup_contact",
-    "accounts:signup_verify",
-    "accounts:signup_resend",
     "accounts:signup_password",
+    "accounts:signup_authenticator",
     "accounts:password_forgot",
-    "accounts:password_forgot_verify",
-    "accounts:password_forgot_resend",
     "accounts:password_forgot_new",
     "accounts:username_forgot",
-    "accounts:username_forgot_verify",
-    "accounts:username_forgot_resend",
 }
 
 

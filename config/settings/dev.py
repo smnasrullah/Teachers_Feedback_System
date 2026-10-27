@@ -9,13 +9,6 @@ ACCESS_POLICY_EXEMPT_NAMESPACES = ["admin"]  # admin guards itself with is_staff
 # Uploaded avatars and photos are served by the dev server only (a proxy serves them in production).
 ACCESS_POLICY_EXEMPT_VIEWS = [*ACCESS_POLICY_EXEMPT_VIEWS, "media"]  # noqa: F405
 
-# Codes are printed to the server console instead of being sent.
-OTP_BACKENDS = {
-    "email": "apps.notifications.backends.ConsoleBackend",
-    "sms": "apps.notifications.backends.ConsoleBackend",
-}
-OTP_SMS_ENABLED = True
-
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
 

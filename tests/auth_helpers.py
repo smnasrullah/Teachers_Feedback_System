@@ -4,7 +4,7 @@ import time
 
 import pyotp
 
-from apps.accounts.models import IdRegistry
+from apps.accounts.models import IdRegistry, User
 from apps.accounts.services import registry as registry_service
 from apps.accounts.services import twofactor
 from tests.factories import make_admin, make_student, make_teacher
@@ -31,8 +31,7 @@ def claimable_teacher(**kwargs):
 
 def totp_code(user, *, steps_ahead: int = 0) -> str:
     """A valid current code (or the one ``steps_ahead`` 30-second steps later)."""
-    secret = user.totp_secret
-    return pyotp.TOTP(secret).at(int(time.time()) + steps_ahead * twofactor.STEP_SECONDS)
+    return code_for_secret(user.totp_secret, steps_ahead=steps_ahead)
 
 
 def enable_totp(user) -> list[str]:
@@ -42,3 +41,17 @@ def enable_totp(user) -> list[str]:
     assert codes is not None
     user.refresh_from_db()
     return codes
+
+
+def fresh_code(user) -> str:
+    """A code the account accepts right now.
+
+    A code is accepted once per 30-second step, and tests log in several times within one
+    step, so this forgets the last used step first (the replay guard has its own tests).
+    """
+    User.objects.filter(pk=user.pk).update(totp_last_step=0)
+    return totp_code(user)
+
+
+def code_for_secret(secret: str, *, steps_ahead: int = 0) -> str:
+    return pyotp.TOTP(secret).at(int(time.time()) + steps_ahead * twofactor.STEP_SECONDS)

@@ -88,9 +88,9 @@ def problem(request) -> SessionProblem | None:
     )
     if active is None or not secrets.compare_digest(active, login_id):
         return SessionProblem.REPLACED
-    # Fail closed: accounts that see student identities never keep a session that skipped TOTP
-    # (for example one opened before the account was promoted).
-    if not session.get(SECOND_FACTOR_KEY) and request.user.requires_second_factor:
+    # Fail closed: every account signs in with its authenticator, so a session that skipped it
+    # (for example one opened before this rule) never continues.
+    if not session.get(SECOND_FACTOR_KEY):
         return SessionProblem.SECOND_FACTOR
     return None
 

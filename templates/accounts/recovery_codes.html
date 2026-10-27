@@ -4,8 +4,7 @@
 {% block content %}
 <section class="card grid gap-4 max-w-xl" aria-labelledby="codes-title">
   <h1 id="codes-title">{% translate "Your recovery codes" %}</h1>
-  <p class="callout">{% icon "alert" %}<span>{% translate "Save these codes now, somewhere safe and apart from your phone. Each works once if you lose your authenticator. They are shown only this time." %}</span></p>
-  <ul class="code-grid">{% for code in codes %}<li>{{ code }}</li>{% endfor %}</ul>
-  <a class="btn btn-primary" href="{{ continue_url }}">{% translate "I have saved my codes" %}</a>
+  {% include "accounts/_recovery_codes.html" %}
+  <a class="btn btn-primary no-print" href="{{ continue_url }}">{% translate "I have saved my codes" %}</a>
 </section>
 {% endblock %}

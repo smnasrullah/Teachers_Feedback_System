@@ -1,0 +1,12 @@
+{% load i18n ui %}
+{% include "accounts/signup/_progress.html" %}
+<div class="grid gap-4" role="status">
+  <h2 class="text-xl" tabindex="-1" autofocus>{% translate "Your account is ready" %}</h2>
+  <div class="id-chip">
+    <span class="text-sm text-muted">{% translate "Your username" %}</span>
+    <span class="num text-2xl font-bold">{{ username }}</span>
+  </div>
+  <p class="field-hint">{% translate "You log in with this username, your password and the code from your authenticator app, not with your ID. You can always see the username on your account page." %}</p>
+  {% include "accounts/_recovery_codes.html" %}
+  <a class="btn btn-primary btn-block no-print" href="{% url 'accounts:login' %}">{% translate "I have saved my codes. Go to log in" %}</a>
+</div>

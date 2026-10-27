@@ -15,7 +15,7 @@
       <div><dt class="text-muted text-sm">{% translate "Department" %}</dt><dd>{{ account.department.name|default:"—" }}</dd></div>
       <div><dt class="text-muted text-sm">{% translate "Nickname" %}</dt><dd>{{ account.nickname|default:"—" }}</dd></div>
       <div><dt class="text-muted text-sm">{% translate "Language" %}</dt><dd>{{ account.get_language_display }}</dd></div>
-      <div><dt class="text-muted text-sm">{% translate "Two-factor authentication" %}</dt><dd>{% if account.totp_enabled %}{% translate "Enabled" %}{% else %}{% translate "Not enabled" %}{% endif %}</dd></div>
+      <div><dt class="text-muted text-sm">{% translate "Authenticator app" %}</dt><dd>{% if account.totp_enabled %}{% translate "Set up" %}{% elif account.has_usable_password %}{% translate "Not set up yet (asked at the next login)" %}{% else %}{% translate "Waiting for the person to enrol again" %}{% endif %}</dd></div>
       <div><dt class="text-muted text-sm">{% translate "Status" %}</dt><dd>{% if account.is_active %}{% translate "Active" %}{% else %}{% translate "Disabled" %}{% endif %}</dd></div>
       {% if registry %}
       <div><dt class="text-muted text-sm">{% translate "Registry entry" %}</dt><dd><a href="{% url 'accounts:registry_edit' registry.pk %}">{{ registry.get_id_type_display }}</a></dd></div>
@@ -36,5 +36,18 @@
       <p class="text-muted">{% translate "This account's role cannot be changed here." %}</p>
     {% endif %}
   </section>
+
+  {% if reset_form %}
+  <section class="card grid gap-4" aria-labelledby="reset-title">
+    <h2 id="reset-title" class="text-lg">{% translate "Reset access" %}</h2>
+    <p>{% translate "For a lost phone. This clears the password and the authenticator, deletes the recovery codes, signs the person out everywhere and issues a new one-time activation code. They then sign up again with their ID and the new code and keep the same username." %}</p>
+    <p class="callout">{% icon "alert" %}<span>{% translate "Check who is asking before you do this. The new code is shown only once." %}</span></p>
+    <form method="post" action="{% url 'accounts:user_reset_access' account.pk %}" class="grid gap-4">
+      {% csrf_token %}
+      {% for field in reset_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+      <div><button type="submit" class="btn btn-danger">{% icon "lock" %}{% translate "Reset access" %}</button></div>
+    </form>
+  </section>
+  {% endif %}
 </div>
 {% endblock %}

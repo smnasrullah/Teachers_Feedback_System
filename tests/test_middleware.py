@@ -10,7 +10,7 @@ from django.urls import reverse
 from apps.core.models import ActiveSession
 from apps.core.permissions import Role
 from apps.core.services import sessions
-from tests.factories import make_user
+from tests.factories import make_user, sign_in
 
 HOME = reverse("core:home")
 
@@ -72,7 +72,7 @@ def test_request_id_generated_or_propagated(client):
 @pytest.mark.django_db
 def test_no_store_only_for_authenticated(client, user):
     assert "no-store" not in client.get(HOME).get("Cache-Control", "")
-    client.force_login(user)
+    sign_in(client, user)
     response = client.get(HOME)
     assert "no-store" in response["Cache-Control"]
     assert "private" in response["Cache-Control"]
@@ -98,9 +98,9 @@ def is_signed_in(client):
 
 @pytest.mark.django_db
 def test_single_active_session(client, user):
-    client.force_login(user)
+    sign_in(client, user)
     other_device = Client()
-    other_device.force_login(user)
+    sign_in(other_device, user)
 
     client.get(HOME)
     assert not is_signed_in(client)  # the older session was replaced
@@ -110,7 +110,7 @@ def test_single_active_session(client, user):
 
 @pytest.mark.django_db
 def test_logout_forgets_active_session(client, user):
-    client.force_login(user)
+    sign_in(client, user)
     assert ActiveSession.objects.filter(user=user).exists()
     client.logout()
     assert not ActiveSession.objects.filter(user=user).exists()
@@ -125,7 +125,7 @@ def age_session(client, key, seconds):
 @pytest.mark.django_db
 @override_settings(SESSION_IDLE_TIMEOUT=600)
 def test_idle_timeout(client, user):
-    client.force_login(user)
+    sign_in(client, user)
     age_session(client, sessions.SEEN_AT_KEY, 599)
     client.get(HOME)
     assert is_signed_in(client)
@@ -138,7 +138,7 @@ def test_idle_timeout(client, user):
 @pytest.mark.django_db
 @override_settings(SESSION_ABSOLUTE_TIMEOUT=3600)
 def test_absolute_timeout_even_when_active(client, user):
-    client.force_login(user)
+    sign_in(client, user)
     age_session(client, sessions.AUTH_AT_KEY, 3601)
     client.get(HOME)
     assert not is_signed_in(client)
@@ -146,7 +146,7 @@ def test_absolute_timeout_even_when_active(client, user):
 
 @pytest.mark.django_db
 def test_session_without_binding_is_ended(client, user):
-    client.force_login(user)
+    sign_in(client, user)
     session = client.session
     del session[sessions.LOGIN_ID_KEY]
     session.save()

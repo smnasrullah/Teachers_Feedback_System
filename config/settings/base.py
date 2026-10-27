@@ -177,20 +177,7 @@ RATELIMIT_FAIL_OPEN = False
 RATELIMIT_IP_META_KEY = "apps.core.net.client_ip"
 RATELIMIT_VIEW = "apps.core.views.ratelimited"
 
-# One-time codes (sign-up, password reset, username recovery).
-OTP_TTL_SECONDS = env.int("OTP_TTL_SECONDS", default=5 * 60)
-OTP_MAX_ATTEMPTS = 5
-OTP_RESEND_COOLDOWN = env.int("OTP_RESEND_COOLDOWN", default=60)
-OTP_MAX_SENDS = 5
-# After a code is verified the next step (new password) must follow within this time.
-OTP_VERIFIED_TTL_SECONDS = 15 * 60
-# Delivery per channel (apps.notifications.backends). SMS has no production gateway yet,
-# so it stays off until a deployment provides one.
-OTP_BACKENDS = {
-    "email": "apps.notifications.backends.SmtpBackend",
-    "sms": "apps.notifications.backends.SmsBackend",
-}
-OTP_SMS_ENABLED = env.bool("OTP_SMS_ENABLED", default=False)
+# Notification e-mail (apps.notifications.senders); never used to sign in.
 EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
 EMAIL_HOST = env("EMAIL_HOST", default="localhost")
 EMAIL_PORT = env.int("EMAIL_PORT", default=587)
