@@ -5,7 +5,7 @@
 {% block content %}
 <div class="grid gap-4">
   <div class="flex flex-wrap items-end gap-3">
-    <div class="flex-1">
+    <div class="flex-1 min-w-60">
       <h1 class="text-2xl">{% translate "Department overview" %}</h1>
       <p class="text-muted">{{ department|localized:"name" }}{% if window %}, {{ window.semester.name }}, {{ window.name }}{% endif %}</p>
     </div>
@@ -125,7 +125,7 @@
   <section class="card grid gap-3" aria-labelledby="heat-title">
     <h2 id="heat-title" class="text-xl">{% translate "Scores by category" %}</h2>
     {% if overview.heatmap.rows %}
-    <div class="table-scroll">
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="heat-title">
       <table class="heat">
         <caption class="sr-only">{% translate "Average score of each course in each question category" %}</caption>
         <thead><tr>

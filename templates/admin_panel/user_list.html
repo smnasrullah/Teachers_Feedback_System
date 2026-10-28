@@ -28,7 +28,7 @@
         <td role="cell" data-label="{% translate 'Username' %}"><a href="{% url 'accounts:user_detail' account.pk %}" class="num">{{ account.username }}</a></td>
         <td role="cell" data-label="{% translate 'Nickname' %}">{{ account.nickname|default:"—" }}</td>
         <td role="cell" data-label="{% translate 'Role' %}">{{ account.get_role_display }}</td>
-        <td role="cell" data-label="{% translate 'Department' %}">{{ account.department.code|default:"—" }}</td>
+        <td role="cell" data-label="{% translate 'Department' %}">{% if account.department %}{{ account.department.code }}{% else %}—{% endif %}</td>
         <td role="cell" data-label="{% translate 'Status' %}">
           {% if account.is_active %}{% include "components/badge.html" with variant="done" label=_("Active") %}{% else %}{% include "components/badge.html" with variant="alert" label=_("Disabled") %}{% endif %}
         </td>

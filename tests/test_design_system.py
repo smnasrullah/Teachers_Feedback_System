@@ -155,6 +155,19 @@ def test_component_css_uses_tokens_only():
     assert not re.search(r"\brgba?\(", css)
 
 
+@pytest.mark.parametrize("name", ["art.css", "landing.css", "landing_art.css"])
+def test_page_css_sets_colours_only_through_custom_properties(name):
+    """Literal colours belong in a palette variable, never in a rule or a var() fallback.
+
+    A mask image is the one exception: only its alpha channel matters, so its colour is not themed.
+    """
+    for line in (ROOT / "static/src" / name).read_text(encoding="utf-8").splitlines():
+        declaration = line.strip()
+        if declaration.startswith("--") or "mask-image:" in declaration:
+            continue
+        assert not re.search(r"#[0-9a-fA-F]{3,8}\b|\brgba?\(", declaration), declaration
+
+
 def test_tokens_cover_blueprint_light_and_dark_values():
     css = (ROOT / "static/src/tokens.css").read_text(encoding="utf-8")
 
@@ -162,6 +175,41 @@ def test_tokens_cover_blueprint_light_and_dark_values():
     assert "@theme inline" in css
     for value in ("#f8fafc", "#1e3a8a", "#0f172a", "#93b4ff", "#7c8da5", "#fbbf24"):
         assert value in css
+
+
+def _token_sets() -> dict[str, dict[str, str]]:
+    """The hex tokens of the light (:root) and dark (.dark) blocks of tokens.css."""
+    css = (ROOT / "static/src/tokens.css").read_text(encoding="utf-8")
+    sets = {}
+    for theme, selector in (("light", r":root\s*\{"), ("dark", r"\.dark\s*\{")):
+        block = css[re.search(selector, css).end() :].split("}", 1)[0]
+        sets[theme] = dict(re.findall(r"--([a-z0-9-]+):\s*(#[0-9a-fA-F]{6})\s*;", block))
+    sets["dark"] = {**sets["light"], **sets["dark"]}
+    return sets
+
+
+def _luminance(hex_colour: str) -> float:
+    channels = [int(hex_colour[i : i + 2], 16) / 255 for i in (1, 3, 5)]
+    linear = [c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4 for c in channels]
+    return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+
+
+def _contrast(first: str, second: str) -> float:
+    light, dark = sorted((_luminance(first), _luminance(second)), reverse=True)
+    return (light + 0.05) / (dark + 0.05)
+
+
+@pytest.mark.parametrize("theme", ["light", "dark"])
+def test_every_badge_meets_aa_contrast(theme):
+    css = (ROOT / "static/src/components.css").read_text(encoding="utf-8")
+    tokens = _token_sets()[theme]
+    badges = re.findall(
+        r"\.(badge-[a-z]+) \{\s*background: var\(--([a-z-]+)\);\s*color: var\(--([a-z-]+)\);", css
+    )
+    assert len(badges) >= 5
+    for name, background, text in badges:
+        ratio = _contrast(tokens[background], tokens[text])
+        assert ratio >= 4.5, f"{name} in {theme}: {ratio:.2f}"
 
 
 def test_fonts_and_license_are_vendored():

@@ -69,7 +69,7 @@
           <td role="cell" data-label="{% translate 'Who' %}">{{ event.actor_username|default:"—" }}{% if event.actor_role %} <span class="text-sm text-muted">({{ event.actor_role }})</span>{% endif %}</td>
           <td role="cell" data-label="{% translate 'Action' %}">{{ event.action }}</td>
           <td role="cell" data-label="{% translate 'Object' %}">{% if event.object_type %}{{ event.object_type }} <span class="text-sm text-muted">{{ event.object_id }}</span>{% else %}—{% endif %}</td>
-          <td role="cell" data-label="{% translate 'Details' %}" class="text-sm">{% for key, value in event.metadata.items %}{{ key }}: {{ value }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</td>
+          <td role="cell" data-label="{% translate 'Details' %}" class="text-sm">{% for key, value in event.metadata.items %}{{ key }}: {{ value|default_if_none:"—" }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</td>
         </tr>
         {% endfor %}
       </tbody>

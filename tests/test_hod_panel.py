@@ -212,6 +212,14 @@ class TestOverview:
         closed.submit(closed.offering, rating=4)
         body = page(hod_client(web, closed), reverse(HOD_URLS[0]))
         assert re.search(r'class="heat-4 num">4\.0<', body)
+
+    def test_the_wide_heatmap_can_be_scrolled_from_the_keyboard(self, web, closed):
+        closed.submit(closed.offering, rating=4)
+        body = page(hod_client(web, closed), reverse(HOD_URLS[0]))
+        assert (
+            '<div class="table-scroll" tabindex="0" role="region" aria-labelledby="heat-title">'
+            in body
+        )
         assert "Teaching" in body
 
     def test_action_notes_are_listed_for_the_head(self, web, closed):

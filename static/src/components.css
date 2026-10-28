@@ -50,6 +50,10 @@
     color: var(--primary);
     text-underline-offset: 3px;
   }
+  /* A link inside a sentence is underlined, never told apart by colour alone. */
+  :where(p, li, dd, td, .callout) a:not([class]) {
+    text-decoration-line: underline;
+  }
   :focus-visible {
     outline: 3px solid var(--focus);
     outline-offset: 2px;
@@ -502,7 +506,7 @@
   }
   .badge-closed {
     background: var(--border);
-    color: var(--muted);
+    color: var(--text);
   }
   .badge-alert {
     background: var(--danger-soft);
@@ -1664,9 +1668,23 @@
     .live-clock-date {
       display: none;
     }
+    /* The header row is full on a phone: the clock takes a line of its own under it. */
+    .nav .wrap {
+      --clock-line: 20px;
+      flex-wrap: wrap;
+    }
     .live-clock {
-      padding-inline: 4px;
+      order: 1;
+      flex-basis: 100%;
+      justify-content: center;
+      align-items: center;
+      block-size: var(--clock-line);
       font-size: var(--text-xs);
+    }
+    /* The header keeps the clock's line (and the row gap above it) until the script shows the
+       clock, so nothing below jumps when it appears. */
+    .nav .wrap:has(> .live-clock[hidden]) {
+      padding-block-end: calc(var(--clock-line) + 4px);
     }
   }
   .course-list {

@@ -744,3 +744,18 @@ class TestWindowScreens:
         response = client_admin.post(reverse("feedback:window_create"), data | {"name": "B"})
         assert response.status_code == 200
         assert FeedbackWindow.objects.count() == 1
+
+
+def test_question_pages_name_categories_in_the_active_language(client, admin):
+    category = QuestionCategory.objects.create(name="Punctuality", name_bn="সময়ানুবর্তিতা")
+    question = make_question(QuestionType.RATING, category=category)
+    sign_in(client, admin)
+    client.defaults["HTTP_ACCEPT_LANGUAGE"] = "bn"
+
+    listing = client.get(reverse("feedback:questions")).content.decode()
+    form = client.get(reverse("feedback:question_edit", args=[question.pk])).content.decode()
+
+    assert ">সময়ানুবর্তিতা<" in listing and ">Punctuality<" not in listing
+    assert ">সময়ানুবর্তিতা</option>" in form
+    with translation.override("en"):
+        assert str(category) == "Punctuality"

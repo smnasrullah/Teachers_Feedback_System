@@ -69,7 +69,7 @@ def pick_round(available, requested, now) -> FeedbackWindow | None:
 
 def offerings_in_scope(window, department=None, level_term=None) -> list[CourseOffering]:
     offerings = CourseOffering.objects.filter(semester=window.semester).select_related(
-        "course", "semester", "teacher__registry"
+        "course__department", "semester", "teacher__registry"
     )
     if department is not None:
         offerings = offerings.filter(course__department=department)

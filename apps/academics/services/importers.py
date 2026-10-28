@@ -226,6 +226,8 @@ class Importer:
     optional: tuple[str, ...] = ()
     sample: tuple[tuple[str, ...], ...]
     issues_codes = False
+    # Templates get the class itself; building one would load whole tables for nothing.
+    do_not_call_in_templates = True
 
     def __init__(self, *, issue_codes: bool = False, valid_days: int = DEFAULT_CODE_VALID_DAYS):
         self.issue_codes = issue_codes and self.issues_codes
