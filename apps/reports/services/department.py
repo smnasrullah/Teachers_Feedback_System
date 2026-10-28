@@ -237,7 +237,7 @@ def build_overview(department, window, viewer, now, threshold) -> Overview:
 
 
 def level_terms():
-    return LevelTerm.objects.order_by("order", "name")
+    return LevelTerm.objects.order_by("order")
 
 
 def _pending_enrollments(window, offerings, level_term=None):

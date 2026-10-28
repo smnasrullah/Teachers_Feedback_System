@@ -52,8 +52,6 @@ def overview(request):
         "overview": service.build_overview(department, window, request.user, now, threshold)
         if window
         else None,
-        "round_open": bool(window and window.is_open(now)),
-        "closes_at": window.closes_at if window else None,
         "export_query": f"?{urlencode({'round': window.pk, 'below': f'{threshold:.1f}'})}"
         if window
         else "",

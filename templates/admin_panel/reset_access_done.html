@@ -1,0 +1,30 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Access reset" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<section class="card grid gap-4 max-w-xl" aria-labelledby="reset-title">
+  <h1 id="reset-title">{% translate "Access reset" %}</h1>
+  <p class="callout no-print">{% icon "alert" %}<span>{% translate "This code is shown only once. Print it or copy it now and hand it to the person in private." %}</span></p>
+  <dl class="grid gap-3 sm:grid-cols-2">
+    <div><dt class="text-muted text-sm">{% translate "Username" %}</dt><dd class="num font-semibold">{{ account.username }}</dd></div>
+    <div><dt class="text-muted text-sm">{% translate "ID" %}</dt><dd class="idcode">{{ issued.registry.external_id }}</dd></div>
+    <div><dt class="text-muted text-sm">{% translate "Department" %}</dt><dd>{{ issued.registry.department.name }}</dd></div>
+    <div><dt class="text-muted text-sm">{% translate "Valid until" %}</dt><dd>{{ issued.registry.activation_expires_at|date:"j M Y, H:i" }}</dd></div>
+  </dl>
+  <div class="id-chip">
+    <span class="text-sm text-muted">{% translate "One-time activation code" %}</span>
+    <span class="idcode text-2xl" id="activation-code">{{ issued.code }}</span>
+  </div>
+  <ol class="grid gap-2 ps-5 list-decimal text-sm">
+    <li>{% translate "Open the sign-up page and enter your ID and this code." %}</li>
+    <li>{% translate "Choose a new password." %}</li>
+    <li>{% translate "Scan the new QR code with an authenticator app and type its 6-digit code." %}</li>
+  </ol>
+  <div class="flex flex-wrap items-center gap-3 no-print">
+    <button type="button" class="btn btn-ghost" data-copy="#activation-code" data-copied="{% translate 'Copied.' %}">{% icon "file" %}{% translate "Copy code" %}</button>
+    <button type="button" class="btn btn-primary" data-print>{% icon "print" %}{% translate "Print" %}</button>
+    <span class="text-sm text-muted" data-copy-status role="status"></span>
+  </div>
+  <a class="text-sm no-print" href="{% url 'accounts:user_detail' account.pk %}">{% translate "Back to the account" %}</a>
+</section>
+{% endblock %}

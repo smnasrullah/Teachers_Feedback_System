@@ -14,7 +14,7 @@ from django.views.decorators.http import require_GET, require_http_methods
 from apps.academics.forms import OverrideForm, PromotionFilterForm, PromotionRuleForm
 from apps.academics.models import Outcome, PromotionOverride, PromotionRule, Semester
 from apps.academics.selectors import promotion_rows
-from apps.academics.services import promotion
+from apps.academics.services import promotion, semesters
 from apps.accounts.models import StudentProfile
 from apps.accounts.services.student_id_policy import visible_full_name, visible_student_id
 from apps.core.permissions import Role, role_required
@@ -31,9 +31,11 @@ def _preview_url(semester) -> str:
     return f"{reverse('academics:promotion')}?semester={semester.pk}"
 
 
-def _summary(planned) -> dict:
+def _summary(planned, semester) -> dict:
     counts = planned.counts()
     return {
+        "ended": promotion.has_ended(semester),
+        "ends_on": semesters.short_date(semester.end_date),
         "counts": [(label, counts.get(value, 0)) for value, label in Outcome.choices],
         "overridden": sum(decision.overridden for decision in planned.decisions),
         "enrollments": sum(len(decision.enrollments) for decision in planned.decisions),
@@ -79,7 +81,7 @@ def promotion_preview(request):
         filter_form=form,
         semester=semester,
         planned=planned,
-        summary=_summary(planned) if planned else None,
+        summary=_summary(planned, semester) if planned else None,
         page_obj=page_obj,
         rows=promotion_rows(page_obj.object_list, request.user),
         query=f"{params.urlencode()}&" if params else "",
@@ -118,7 +120,7 @@ def promotion_confirm(request, semester_pk):
         "promotion",
         semester=semester,
         planned=planned,
-        summary=_summary(planned),
+        summary=_summary(planned, semester),
         fingerprint=planned.fingerprint(),
     )
 

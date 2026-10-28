@@ -1,0 +1,33 @@
+{# Params: qr (data URI), manual_key, username. The three-step authenticator guide with the QR code and the key to type in by hand. #}
+{% load i18n ui %}
+<ol class="setup-steps" aria-label="{% translate 'How to set up your authenticator' %}">
+  <li>
+    <span class="step-dot" aria-hidden="true">1</span>
+    <div class="grid gap-1">
+      <strong>{% translate "Install an authenticator app" %}</strong>
+      <span class="text-sm text-muted">{% translate "Google Authenticator or Microsoft Authenticator, free on Play Store and App Store." %}</span>
+    </div>
+  </li>
+  <li>
+    <span class="step-dot" aria-hidden="true">2</span>
+    <div class="grid gap-1">
+      <strong>{% translate "Scan the QR code" %}</strong>
+      <span class="text-sm text-muted">{% translate "In the app tap + and choose to scan a QR code. If you cannot scan, type the key shown under the code." %}</span>
+    </div>
+  </li>
+  <li>
+    <span class="step-dot" aria-hidden="true">3</span>
+    <div class="grid gap-1">
+      <strong>{% translate "Type the 6-digit code" %}</strong>
+      <span class="text-sm text-muted">{% translate "The code changes every 30 seconds. Type the one the app shows now." %}</span>
+    </div>
+  </li>
+</ol>
+<figure class="qr-panel">
+  <img class="qr" src="{{ qr }}" width="220" height="220" alt="{% translate 'QR code for your authenticator app' %}">
+  <figcaption class="grid gap-1 text-sm">
+    <span class="text-muted">{% translate "Key for typing in by hand:" %}</span>
+    <span class="secret-key font-semibold">{{ manual_key }}</span>
+    <span class="text-muted">{% blocktranslate %}Account: {{ username }}{% endblocktranslate %}</span>
+  </figcaption>
+</figure>

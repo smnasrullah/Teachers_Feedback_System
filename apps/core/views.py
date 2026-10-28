@@ -6,6 +6,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET
 
 from .permissions import public
+from .services.clock import utc_iso, utc_now
 from .services.gallery import build_gallery_context
 from .services.health import check_health
 
@@ -16,6 +17,14 @@ from .services.health import check_health
 def healthz(request):
     healthy = check_health()
     return JsonResponse({"status": "ok" if healthy else "error"}, status=200 if healthy else 503)
+
+
+@require_GET
+@never_cache
+@public
+def server_time(request):
+    """The current UTC time, for the page clock to re-sync when a tab becomes visible again."""
+    return JsonResponse({"now": utc_iso(utc_now())})
 
 
 @require_GET

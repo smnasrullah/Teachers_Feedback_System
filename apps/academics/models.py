@@ -1,13 +1,17 @@
 """Academic structure: departments and programs down to semesters, courses and offerings,
 then grades, results and the promotion rule (BLUEPRINT §3 F2)."""
 
+from datetime import date
 from decimal import Decimal
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
+from apps.core.services.localize import BANGLA_DIGITS, localize_digits, pick, to_roman
 
 
 class Department(models.Model):
@@ -72,30 +76,75 @@ class Batch(models.Model):
 
 
 class LevelTerm(models.Model):
-    """One step of the curriculum (for example "Level 2, Term 1").
+    """One step of the curriculum (for example "Level 2, Term II").
 
     How many exist is data, not code: the admin defines as many ordered rows as the
-    university's scheme needs. ``order`` is unique and drives promotion order.
+    university's scheme needs. ``order`` is unique and drives promotion order. The term is
+    stored as a number and shown as a Roman numeral; the name is built from the two numbers.
     """
 
-    name = models.CharField(_("name"), max_length=50)
-    name_bn = models.CharField(_("name (Bangla)"), max_length=50, blank=True)
+    level = models.PositiveSmallIntegerField(_("level"))
+    term = models.PositiveSmallIntegerField(_("term"))
     order = models.PositiveSmallIntegerField(_("order"), unique=True)
 
     class Meta:
         ordering = ["order"]
         verbose_name = _("level/term")
         verbose_name_plural = _("levels/terms")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["level", "term"],
+                name="unique_level_term",
+                violation_error_message=_("This level and term already exist."),
+            )
+        ]
 
     def __str__(self):
-        return self.name
+        return pick(self.name, self.name_bn)
+
+    @property
+    def name(self) -> str:
+        return f"Level {self.level} Term {to_roman(self.term)}"
+
+    @property
+    def name_bn(self) -> str:
+        level = str(self.level).translate(BANGLA_DIGITS)
+        return f"লেভেল {level} টার্ম {to_roman(self.term)}"
+
+
+class Season(models.TextChoices):
+    """The two semesters of a year, in calendar order: Winter Y, Summer Y, Winter Y+1."""
+
+    WINTER = "winter", _("Winter")
+    SUMMER = "summer", _("Summer")
+
+
+class SemesterStatus(models.TextChoices):
+    UPCOMING = "upcoming", _("Upcoming")
+    ONGOING = "ongoing", _("Ongoing")
+    ENDED = "ended", _("Ended")
+
+
+class SemesterQuerySet(models.QuerySet):
+    def ongoing(self, today: date):
+        """Semesters running on ``today`` (both the start and the end day count)."""
+        return self.filter(start_date__lte=today, end_date__gte=today)
 
 
 class Semester(models.Model):
-    name = models.CharField(_("name"), max_length=50, unique=True)
+    """A Winter or Summer semester of one year. Its name and status are computed: the name
+    from the season and year, the status from today's date in the university's time zone."""
+
+    season = models.CharField(_("season"), max_length=8, choices=Season.choices)
+    year = models.PositiveSmallIntegerField(
+        _("year"), validators=[MinValueValidator(2000), MaxValueValidator(2100)]
+    )
     start_date = models.DateField(_("start date"))
-    end_date = models.DateField(_("end date"))
-    is_current = models.BooleanField(_("current semester"), default=False)
+    end_date = models.DateField(
+        _("end date"), help_text=_("The last day of the semester; promotion can start after it.")
+    )
+
+    objects = SemesterQuerySet.as_manager()
 
     class Meta:
         ordering = ["-start_date"]
@@ -103,10 +152,9 @@ class Semester(models.Model):
         verbose_name_plural = _("semesters")
         constraints = [
             models.UniqueConstraint(
-                fields=["is_current"],
-                condition=models.Q(is_current=True),
-                name="one_current_semester",
-                violation_error_message=_("Only one semester can be the current one."),
+                fields=["season", "year"],
+                name="semester_unique_season_year",
+                violation_error_message=_("This semester already exists."),
             ),
             models.CheckConstraint(
                 condition=models.Q(end_date__gt=models.F("start_date")),
@@ -118,10 +166,15 @@ class Semester(models.Model):
     def __str__(self):
         return self.name
 
-    def validate_constraints(self, exclude=None):
-        # Saving a current semester demotes the previous one (catalog.save), so form
-        # validation must not reject it; the database constraint still guarantees one.
-        super().validate_constraints(exclude={*(exclude or ()), "is_current"})
+    @property
+    def name(self) -> str:
+        """ "Summer 2026" ("সামার ২০২৬" in Bangla)."""
+        return localize_digits(f"{self.get_season_display()} {self.year}")
+
+    def status(self, today: date) -> str:
+        if today < self.start_date:
+            return SemesterStatus.UPCOMING
+        return SemesterStatus.ONGOING if today <= self.end_date else SemesterStatus.ENDED
 
 
 class CourseType(models.TextChoices):

@@ -9,12 +9,9 @@ ACCESS_POLICY_EXEMPT_NAMESPACES = ["admin"]  # admin guards itself with is_staff
 # Uploaded avatars and photos are served by the dev server only (a proxy serves them in production).
 ACCESS_POLICY_EXEMPT_VIEWS = [*ACCESS_POLICY_EXEMPT_VIEWS, "media"]  # noqa: F405
 
-# Codes are printed to the server console instead of being sent.
-OTP_BACKENDS = {
-    "email": "apps.notifications.backends.ConsoleBackend",
-    "sms": "apps.notifications.backends.ConsoleBackend",
-}
-OTP_SMS_ENABLED = True
+DEMO_SKIP_SECOND_FACTOR = True
+# The same variable ``seed_demo`` reads; the login page shows it only while it still matches.
+DEMO_PASSWORD = env("DEMO_PASSWORD", default="")  # noqa: F405
 
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True

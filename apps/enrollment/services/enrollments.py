@@ -10,6 +10,7 @@ from django.db import IntegrityError, transaction
 from django.utils.translation import gettext as _
 
 from apps.academics.models import CourseOffering, Result, Semester
+from apps.academics.services import semesters
 from apps.accounts.models import AcademicStatus, StudentProfile
 from apps.auditlog.services import audit
 from apps.enrollment.models import Enrollment, EnrollmentStatus
@@ -26,8 +27,8 @@ class GroupPlan:
     new: list[Enrollment]
 
 
-def current_semester() -> Semester:
-    semester = Semester.objects.filter(is_current=True).first()
+def require_current_semester() -> Semester:
+    semester = semesters.current_semester()
     if semester is None:
         raise ValidationError(_("There is no current semester."), code="no_current_semester")
     return semester
@@ -40,7 +41,7 @@ def plan_group(program, level_term) -> GroupPlan:
     A student joins an offering when it has no section, or when it has the student's section.
     Electives are enrolled one student at a time.
     """
-    semester = current_semester()
+    semester = require_current_semester()
     students = list(
         StudentProfile.objects.filter(
             program=program, level_term=level_term, academic_status=AcademicStatus.ACTIVE

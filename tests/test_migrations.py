@@ -52,8 +52,8 @@ def test_fresh_database_migrate_create_admin_then_log_in(monkeypatch):
 
 
 def test_create_admin_refuses_while_migrations_are_unapplied(monkeypatch):
-    MigrationRecorder(connection).record_unapplied("accounts", "0003_user_theme")
-    assert ("accounts", "0003_user_theme") in unapplied_migrations()
+    MigrationRecorder(connection).record_unapplied("accounts", "0004_remove_one_time_codes")
+    assert ("accounts", "0004_remove_one_time_codes") in unapplied_migrations()
     with pytest.raises(CommandError, match=r"Run: python manage\.py migrate"):
         create_admin(monkeypatch)
     assert not User.objects.exists()

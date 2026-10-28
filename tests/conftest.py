@@ -22,18 +22,11 @@ def pytest_collection_modifyitems(config, items):
 
 @pytest.fixture(autouse=True)
 def _isolated_state():
-    """Rate limits live in the cache and delivered codes in memory: start every test clean."""
+    """Rate limits live in the cache and delivered texts in memory: start every test clean."""
     cache.clear()
-    outbox.sent.clear()
     outbox.texts.clear()
     yield
     cache.clear()
-
-
-@pytest.fixture
-def sent():
-    """Messages delivered through the test OTP backend, oldest first."""
-    return outbox.sent
 
 
 @pytest.fixture

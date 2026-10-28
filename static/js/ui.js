@@ -48,6 +48,20 @@
       return;
     }
 
+    var copyBtn = target.closest("[data-copy]");
+    if (copyBtn) {
+      var source = document.querySelector(copyBtn.getAttribute("data-copy"));
+      var status = copyBtn.parentElement.querySelector("[data-copy-status]");
+      if (source && navigator.clipboard) {
+        navigator.clipboard.writeText(source.innerText.trim()).then(function () {
+          if (status) {
+            status.textContent = copyBtn.getAttribute("data-copied") || "";
+          }
+        });
+      }
+      return;
+    }
+
     var themeBtn = target.closest("[data-theme-toggle]");
     if (themeBtn) {
       var dark = !root.classList.contains("dark");

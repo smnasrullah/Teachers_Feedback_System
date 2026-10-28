@@ -1,0 +1,51 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n semesters ui %}
+{% block title %}{% translate "Teacher dashboard" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<div class="grid gap-4">
+  <div class="flex flex-wrap items-end gap-3">
+    <h1 class="flex-1 text-2xl">{% translate "Teacher dashboard" %}</h1>
+    {% semester_badge %}{% semester_countdown %}
+    <a class="btn btn-ghost" href="{% url 'reports:overview' %}">{% translate "All my courses" %}</a>
+  </div>
+  {% if not courses %}
+  <div class="card">{% translate "No courses this semester" as empty_title %}{% translate "The courses you teach in the running semester appear here." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="book" %}</div>
+  {% else %}
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+    {% for course in courses %}
+    <article class="card grid gap-3 content-start">
+      <div>
+        <h2 class="text-lg">{{ course.offering.course|localized:"title" }}</h2>
+        <p class="text-sm text-muted">{{ course.offering.course.code }}{% if course.offering.section %}, {% blocktranslate with section=course.offering.section %}section {{ section }}{% endblocktranslate %}{% endif %}</p>
+      </div>
+      {% for line in course.rounds %}
+      <div class="grid gap-1">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="font-semibold flex-1">{{ line.window.name }}</span>
+          {% if line.status == "open" %}{% translate "Open" as status_label %}{% include "components/badge.html" with variant="pending" label=status_label %}
+          {% elif line.status == "upcoming" %}{% translate "Upcoming" as status_label %}{% include "components/badge.html" with variant="info" label=status_label %}
+          {% else %}{% translate "Closed" as status_label %}{% include "components/badge.html" with variant="closed" label=status_label %}{% endif %}
+        </div>
+        {% if line.status == "open" %}
+        <p class="text-sm text-muted">{% blocktranslate with when=line.window.closes_at|date:"j M Y, H:i" %}Closes on {{ when }}. Results appear after it closes.{% endblocktranslate %}</p>
+        {% elif line.status == "upcoming" %}
+        <p class="text-sm text-muted">{% blocktranslate with when=line.window.opens_at|date:"j M Y, H:i" %}Opens on {{ when }}.{% endblocktranslate %}</p>
+        {% elif line.summary.rate %}
+        <p class="text-sm">
+          {% if line.summary.average is not None %}<span class="num">{{ line.summary.average|floatformat:1 }}</span> {% translate "average rating" %} · {% endif %}
+          <span class="num">{% blocktranslate with submitted=line.summary.rate.submitted enrolled=line.summary.rate.enrolled %}{{ submitted }} of {{ enrolled }} responded{% endblocktranslate %}</span>
+        </p>
+        <a href="{% url 'reports:course' course.offering.pk line.window.pk %}">{% translate "Open the report" %}</a>
+        {% else %}
+        <p class="callout" role="status">{% icon "lock" %}<span>{{ line.summary.notice }}</span></p>
+        {% endif %}
+      </div>
+      {% empty %}
+      <p class="text-sm text-muted">{% translate "No feedback round covers this course yet." %}</p>
+      {% endfor %}
+    </article>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,7 +1,5 @@
 """Identity: users, the pre-registered ID registry and the profiles that exist before signup."""
 
-import uuid
-
 from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.core.validators import RegexValidator
@@ -29,11 +27,15 @@ class Theme(models.TextChoices):
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, role, password=None, **fields):
-        """Create a user with a freshly generated username (usernames are never chosen)."""
+    def create_user(self, role, password=None, *, username=None, **fields):
+        """Create a user with a generated username (usernames are never chosen by people).
+
+        ``username`` is one ``generate_username`` issued earlier in the same flow (sign-up
+        shows it inside the authenticator before the account exists).
+        """
         if role not in Role.values:
             raise ValueError(f"Unknown role {role!r}.")
-        user = self.model(username=generate_username(role), role=role, **fields)
+        user = self.model(username=username or generate_username(role), role=role, **fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -103,11 +105,6 @@ class User(AbstractBaseUser):
     def is_staff(self):
         """Lets the development-only Django admin recognise the Admin role."""
         return self.role == Role.ADMIN
-
-    @property
-    def requires_second_factor(self) -> bool:
-        """Admins and heads of department see student identities, so they must use TOTP."""
-        return self.role == Role.ADMIN or self.is_hod
 
     @cached_property
     def teacher_profile(self):
@@ -364,45 +361,3 @@ class RecoveryCode(models.Model):
 
     def __str__(self):
         return f"RecoveryCode({self.pk})"
-
-
-class OtpPurpose(models.TextChoices):
-    SIGNUP = "signup", _("Sign-up")
-    PASSWORD_RESET = "password_reset", _("Password reset")
-    USERNAME_RECOVERY = "username_recovery", _("Username recovery")
-
-
-class OneTimeCode(models.Model):
-    """One OTP challenge: a hashed 6-digit code with expiry, attempt and resend limits.
-
-    A challenge for an unknown account is stored exactly like a real one (``user`` and
-    ``registry`` both empty, nothing delivered), so the visible behaviour is identical.
-    """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    purpose = models.CharField(max_length=24, choices=OtpPurpose.choices)
-    channel = models.CharField(max_length=8)
-    user = models.ForeignKey(
-        User, null=True, blank=True, on_delete=models.CASCADE, related_name="+"
-    )
-    registry = models.ForeignKey(
-        IdRegistry, null=True, blank=True, on_delete=models.CASCADE, related_name="+"
-    )
-    # Sign-up only: the contact being verified. Cleared once the account exists.
-    destination = EncryptedCharField(max_length=254, null=True, blank=True)
-    code_hash = models.CharField(max_length=64, editable=False)
-    sent_at = models.DateTimeField(default=timezone.now)
-    expires_at = models.DateTimeField()
-    send_count = models.PositiveSmallIntegerField(default=1)
-    attempts = models.PositiveSmallIntegerField(default=0)
-    verified_at = models.DateTimeField(null=True, blank=True)
-    consumed_at = models.DateTimeField(null=True, blank=True)
-    created_at = models.DateTimeField(default=timezone.now, editable=False)
-
-    class Meta:
-        verbose_name = _("one-time code")
-        verbose_name_plural = _("one-time codes")
-        indexes = [models.Index(fields=["created_at"], name="otp_created_idx")]
-
-    def __str__(self):
-        return f"OneTimeCode({self.pk})"

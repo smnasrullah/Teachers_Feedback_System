@@ -50,18 +50,21 @@ def login_view(request):
                 return _after_password(request, user)
             login_service.note_failure(request, username, stage="password")
             form.add_error(None, GENERIC_LOGIN_ERROR)
-    context = {"form": form, "next": login_service.safe_next(request) or ""}
+    context = {
+        "form": form,
+        "next": login_service.safe_next(request) or "",
+        "demo": login_service.demo_box(),
+    }
     return render(request, "accounts/login.html", context, status=status)
 
 
 def _after_password(request, user):
-    next_url = login_service.safe_next(request)
-    step = login_service.next_step(user)
-    if step is login_service.NextStep.DONE:
-        login_service.complete_login(request, user, second_factor=False)
+    if login_service.is_demo_account(request, user):
+        next_url = login_service.safe_next(request)
+        login_service.complete_demo_login(request, user)
         return redirect(next_url or login_service.landing_url(user))
-    login_service.begin_pending(request, user, next_url)
-    if step is login_service.NextStep.CODE:
+    login_service.begin_pending(request, user, login_service.safe_next(request))
+    if login_service.next_step(user) is login_service.NextStep.CODE:
         return redirect("accounts:login_second_factor")
     return redirect("accounts:login_two_factor_setup")
 
@@ -85,7 +88,7 @@ def login_second_factor(request):
             result = twofactor.check_second_factor(user, form.cleaned_data["code"])
             if result.ok:
                 next_url = login_service.pending_next(request)
-                login_service.complete_login(request, user, second_factor=True)
+                login_service.complete_login(request, user)
                 if result.recovery:
                     login_service.record_recovery_use(request, user, result.recovery_left)
                     messages.warning(

@@ -49,7 +49,6 @@ def analytics(request):
             "report": report,
             "distribution_chart": university.distribution_chart(report.distribution),
             "department_chart": university.department_chart(report.departments),
-            "round_open": window.is_open(now),
             "closes_at": window.closes_at,
             "export_query": f"?{urlencode({**request.GET.dict(), 'round': window.pk})}",
         }

@@ -6,6 +6,7 @@ from django.db.models import ProtectedError
 from django.utils.translation import gettext as _
 
 from apps.academics.models import Semester
+from apps.academics.services import semesters
 from apps.auditlog.services import audit
 
 
@@ -23,14 +24,14 @@ def _audit_department_id(screen, obj) -> int | None:
 
 @transaction.atomic
 def save(screen, form, *, actor, request=None):
-    """Save a validated ModelForm and audit it; choosing a current semester demotes the old one."""
+    """Save a validated ModelForm and audit it; semesters have their own date rules."""
+    if isinstance(form.instance, Semester):
+        return semesters.save(form, actor=actor, request=request)
     created = form.instance.pk is None
     changed = [] if created else sorted(set(form.changed_data) & set(form._meta.fields))
     if not created and not changed:
         return form.instance
     obj = form.save(commit=False)
-    if isinstance(obj, Semester) and obj.is_current:
-        Semester.objects.filter(is_current=True).exclude(pk=obj.pk).update(is_current=False)
     obj.save()
     form.save_m2m()
     audit.record(

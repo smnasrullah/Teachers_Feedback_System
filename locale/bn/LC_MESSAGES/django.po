@@ -293,13 +293,6 @@ msgstr ""
 msgid "What if I forget my password?"
 msgstr "পাসওয়ার্ড ভুলে গেলে কী করব?"
 
-msgid ""
-"Use the forgot password option on the login page. We send a one-time code to"
-" the contact you registered with."
-msgstr ""
-"লগইন পাতায় পাসওয়ার্ড ভুলে গেছি অপশনটি ব্যবহার করুন। নিবন্ধনের সময় দেওয়া "
-"যোগাযোগে আমরা একটি এককালীন কোড পাঠাই।"
-
 msgid "Who can see my student ID?"
 msgstr "আমার শিক্ষার্থী আইডি কারা দেখতে পারেন?"
 
@@ -674,9 +667,6 @@ msgstr "ঝরে পড়েছে"
 msgid "Edit registry entry"
 msgstr "রেজিস্ট্রি এন্ট্রি সম্পাদনা"
 
-msgid "Enabled"
-msgstr "চালু"
-
 msgid "Enter a valid e-mail address."
 msgstr "সঠিক ই-মেইল ঠিকানা দিন।"
 
@@ -752,9 +742,6 @@ msgstr "কোনো এন্ট্রি পাওয়া যায়নি
 
 msgid "No users found"
 msgstr "কোনো ব্যবহারকারী পাওয়া যায়নি"
-
-msgid "Not enabled"
-msgstr "চালু নেই"
 
 msgid "Only an account created from a teacher ID can become a teacher."
 msgstr "শুধু শিক্ষক আইডি থেকে তৈরি অ্যাকাউন্টই শিক্ষক হতে পারে।"
@@ -899,9 +886,6 @@ msgstr "অনেকবার ভুল চেষ্টা করা হয়�
 
 msgid "The database is not fully migrated. Run: python manage.py migrate"
 msgstr "ডেটাবেস পুরোপুরি মাইগ্রেট করা হয়নি। চালান: python manage.py migrate"
-
-msgid "Two-factor authentication"
-msgstr "দ্বি-স্তর যাচাই (টু-ফ্যাক্টর)"
 
 msgid "Type"
 msgstr "ধরন"
@@ -1055,15 +1039,8 @@ msgstr "ইউজারনেম"
 msgid "users"
 msgstr "ব্যবহারকারীরা"
 
-# Sign-up, login, two-factor and recovery
-msgid "6-digit code"
-msgstr "৬ অঙ্কের কোড"
-
 msgid "6-digit code from the app"
 msgstr "অ্যাপের ৬ অঙ্কের কোড"
-
-msgid "A new code was sent."
-msgstr "নতুন কোড পাঠানো হয়েছে।"
 
 msgid "Admin dashboard"
 msgstr "অ্যাডমিন ড্যাশবোর্ড"
@@ -1086,9 +1063,6 @@ msgstr "পাসওয়ার্ড পরিবর্তন করুন"
 msgid "Choose a new password"
 msgstr "নতুন পাসওয়ার্ড বেছে নিন"
 
-msgid "Contact"
-msgstr "যোগাযোগ"
-
 msgid "Contact on file"
 msgstr "নথিভুক্ত যোগাযোগ"
 
@@ -1104,40 +1078,8 @@ msgstr "আপনার অ্যাকাউন্ট তৈরি করুন
 msgid "Current password"
 msgstr "বর্তমান পাসওয়ার্ড"
 
-msgid ""
-"Delete finished one-time code challenges, and the contacts they hold, after "
-"a day."
-msgstr ""
-"সম্পন্ন হওয়া ওয়ান-টাইম কোড এবং তাতে থাকা যোগাযোগের তথ্য একদিন পরে মুছে "
-"ফেলুন।"
-
-msgid "Deleted %(count)d one-time codes."
-msgstr "%(count)d টি ওয়ান-টাইম কোড মুছে ফেলা হয়েছে।"
-
 msgid "Done:"
 msgstr "সম্পন্ন:"
-
-msgid "E-mail address"
-msgstr "ইমেইল ঠিকানা"
-
-msgid "E-mail address or phone number"
-msgstr "ইমেইল ঠিকানা বা ফোন নম্বর"
-
-msgid ""
-"Enter the 6-digit code from your authenticator app. If you lost your phone, "
-"enter one of your recovery codes instead."
-msgstr ""
-"আপনার অথেন্টিকেটর অ্যাপের ৬ অঙ্কের কোডটি দিন। ফোন হারিয়ে গেলে এর বদলে একটি "
-"রিকভারি কোড দিন।"
-
-msgid "Enter the 6-digit code the app shows."
-msgstr "অ্যাপে দেখানো ৬ অঙ্কের কোডটি দিন।"
-
-msgid "Enter the 6-digit code."
-msgstr "৬ অঙ্কের কোডটি দিন।"
-
-msgid "Enter the code we sent to the contact on your account."
-msgstr "আপনার অ্যাকাউন্টের যোগাযোগ মাধ্যমে আমরা যে কোড পাঠিয়েছি তা দিন।"
 
 msgid "Enter your ID and the activation code your department gave you."
 msgstr "আপনার আইডি এবং বিভাগ থেকে পাওয়া অ্যাক্টিভেশন কোড দিন।"
@@ -1163,33 +1105,11 @@ msgstr "আমি কোডগুলো সংরক্ষণ করেছি"
 msgid "ID and code"
 msgstr "আইডি ও কোড"
 
-msgid ""
-"If the details match an account, we sent a 6-digit code to its contact."
-msgstr ""
-"তথ্য কোনো অ্যাকাউন্টের সাথে মিললে আমরা তার যোগাযোগ মাধ্যমে ৬ অঙ্কের একটি কোড"
-" পাঠিয়েছি।"
-
-msgid ""
-"Install an authenticator app (for example Google Authenticator, Microsoft "
-"Authenticator or Aegis)."
-msgstr ""
-"একটি অথেন্টিকেটর অ্যাপ ইনস্টল করুন (যেমন Google Authenticator, Microsoft "
-"Authenticator বা Aegis)।"
-
-msgid "It expires in 5 minutes."
-msgstr "এটি ৫ মিনিট পরে মেয়াদোত্তীর্ণ হবে।"
-
-msgid "Key for manual entry:"
-msgstr "নিজে টাইপ করার কী:"
-
 msgid "Log out of all devices"
 msgstr "সব ডিভাইস থেকে লগ আউট করুন"
 
 msgid "Make new recovery codes"
 msgstr "নতুন রিকভারি কোড তৈরি করুন"
-
-msgid "Making new codes makes the old ones stop working."
-msgstr "নতুন কোড তৈরি করলে পুরনো কোডগুলো আর কাজ করবে না।"
 
 msgid "My account"
 msgstr "আমার অ্যাকাউন্ট"
@@ -1199,9 +1119,6 @@ msgstr "নতুন পাসওয়ার্ড"
 
 msgid "No active sign-in is recorded."
 msgstr "কোনো সক্রিয় সাইন-ইন নথিভুক্ত নেই।"
-
-msgid "No more codes can be sent. Start again."
-msgstr "আর কোড পাঠানো যাবে না। আবার শুরু করুন।"
 
 msgid ""
 "Only one device can be signed in at a time: logging in elsewhere signs this "
@@ -1213,18 +1130,9 @@ msgstr ""
 msgid "Password"
 msgstr "পাসওয়ার্ড"
 
-msgid "Password reset"
-msgstr "পাসওয়ার্ড রিসেট"
-
 msgid "Please sign in again and complete two-factor authentication."
 msgstr ""
 "অনুগ্রহ করে আবার সাইন-ইন করুন এবং টু-ফ্যাক্টর অথেন্টিকেশন সম্পন্ন করুন।"
-
-msgid "Please wait %(seconds)d seconds before asking for a new code."
-msgstr "নতুন কোড চাওয়ার আগে অনুগ্রহ করে %(seconds)d সেকেন্ড অপেক্ষা করুন।"
-
-msgid "Recover your username"
-msgstr "আপনার ইউজারনেম উদ্ধার করুন"
 
 msgid "Recovery codes"
 msgstr "রিকভারি কোড"
@@ -1235,35 +1143,8 @@ msgstr "নতুন পাসওয়ার্ডটি আবার দিন
 msgid "Reset your password"
 msgstr "আপনার পাসওয়ার্ড রিসেট করুন"
 
-msgid ""
-"Save these codes now, somewhere safe and apart from your phone. Each works "
-"once if you lose your authenticator. They are shown only this time."
-msgstr ""
-"এই কোডগুলো এখনই নিরাপদ জায়গায়, ফোন থেকে আলাদা করে সংরক্ষণ করুন। "
-"অথেন্টিকেটর হারালে প্রতিটি কোড একবার করে কাজ করবে। কোডগুলো শুধু এই একবারই "
-"দেখানো হয়।"
-
-msgid "Scan this QR code with the app, or type the key below into it."
-msgstr ""
-"অ্যাপ দিয়ে এই QR কোড স্ক্যান করুন, অথবা নিচের কী-টি অ্যাপে টাইপ করুন।"
-
 msgid "Security"
 msgstr "নিরাপত্তা"
-
-msgid "Send a new code"
-msgstr "নতুন কোড পাঠান"
-
-msgid "Send code"
-msgstr "কোড পাঠান"
-
-msgid "Set up two-factor"
-msgstr "টু-ফ্যাক্টর চালু করুন"
-
-msgid "Set up two-factor authentication"
-msgstr "টু-ফ্যাক্টর অথেন্টিকেশন চালু করুন"
-
-msgid "Sign-up"
-msgstr "সাইন-আপ"
 
 msgid "Sign-up could not be completed. Please start again."
 msgstr "সাইন-আপ সম্পন্ন করা যায়নি। অনুগ্রহ করে আবার শুরু করুন।"
@@ -1302,12 +1183,6 @@ msgstr "আপনার বিভাগ থেকে পাওয়া কো�
 msgid "The current password is not correct."
 msgstr "বর্তমান পাসওয়ার্ডটি সঠিক নয়।"
 
-msgid "The password is not correct, so the codes were not replaced."
-msgstr "পাসওয়ার্ড সঠিক নয়, তাই কোডগুলো বদলানো হয়নি।"
-
-msgid "The password is not correct, so two-factor was not turned off."
-msgstr "পাসওয়ার্ড সঠিক নয়, তাই টু-ফ্যাক্টর বন্ধ করা হয়নি।"
-
 msgid "The password is not correct."
 msgstr "পাসওয়ার্ডটি সঠিক নয়।"
 
@@ -1317,14 +1192,8 @@ msgstr "দুটি পাসওয়ার্ড মিলছে না।"
 msgid "The username or password is not correct."
 msgstr "ইউজারনেম বা পাসওয়ার্ড সঠিক নয়।"
 
-msgid "This code has expired. Send a new code."
-msgstr "এই কোডের মেয়াদ শেষ। নতুন কোড পাঠান।"
-
 msgid "This device"
 msgstr "এই ডিভাইস"
-
-msgid "This e-mail address or phone number cannot be used. Try another."
-msgstr "এই ইমেইল ঠিকানা বা ফোন নম্বরটি ব্যবহার করা যাবে না। অন্যটি দিন।"
 
 msgid ""
 "This is the name you log in with. It is not your student or teacher ID, and "
@@ -1338,9 +1207,6 @@ msgid ""
 "ready."
 msgstr "ব্যবস্থার পরবর্তী অংশগুলো প্রস্তুত হলে আপনার কাজ এখানে দেখা যাবে।"
 
-msgid "This reset link has expired. Start again."
-msgstr "রিসেটের সময় শেষ হয়ে গেছে। আবার শুরু করুন।"
-
 msgid "Too many attempts. Please wait a few minutes and try again."
 msgstr ""
 "অনেকবার চেষ্টা করা হয়েছে। অনুগ্রহ করে কয়েক মিনিট অপেক্ষা করে আবার চেষ্টা "
@@ -1351,82 +1217,11 @@ msgstr ""
 "অনেকবার ব্যর্থ চেষ্টা হয়েছে। অনুগ্রহ করে %(minutes)d মিনিট পরে আবার চেষ্টা "
 "করুন।"
 
-msgid "Too many wrong attempts. Send a new code."
-msgstr "অনেকবার ভুল দেওয়া হয়েছে। নতুন কোড পাঠান।"
-
-msgid "Turn off"
-msgstr "বন্ধ করুন"
-
-msgid "Turn off two-factor"
-msgstr "টু-ফ্যাক্টর বন্ধ করুন"
-
-msgid "Turn on and continue"
-msgstr "চালু করে চালিয়ে যান"
-
-msgid ""
-"Two-factor authentication adds a 6-digit code from your phone to every "
-"login."
-msgstr ""
-"টু-ফ্যাক্টর অথেন্টিকেশনে প্রতিটি লগইনে আপনার ফোন থেকে একটি ৬ অঙ্কের কোড "
-"লাগে।"
-
-msgid "Two-factor authentication is off."
-msgstr "টু-ফ্যাক্টর অথেন্টিকেশন বন্ধ আছে।"
-
-msgid "Two-factor authentication is required for your role."
-msgstr "আপনার ভূমিকার জন্য টু-ফ্যাক্টর অথেন্টিকেশন বাধ্যতামূলক।"
-
-msgid "Two-factor off"
-msgstr "টু-ফ্যাক্টর বন্ধ"
-
-msgid "Two-factor on"
-msgstr "টু-ফ্যাক্টর চালু"
-
-msgid "Two-factor required"
-msgstr "টু-ফ্যাক্টর আবশ্যক"
-
 msgid "Unknown browser"
 msgstr "অজানা ব্রাউজার"
 
-msgid "Use a different e-mail address or phone"
-msgstr "অন্য ইমেইল ঠিকানা বা ফোন ব্যবহার করুন"
-
-msgid "Use it with your password to log in."
-msgstr "লগইন করতে এটি পাসওয়ার্ডের সাথে ব্যবহার করুন।"
-
-msgid "Username or ID"
-msgstr "ইউজারনেম বা আইডি"
-
-msgid "Username recovery"
-msgstr "ইউজারনেম উদ্ধার"
-
-msgid "Verify"
-msgstr "যাচাই করুন"
-
-msgid "We send a 6-digit code here. It is also used to recover your account."
-msgstr "আমরা এখানে ৬ অঙ্কের কোড পাঠাব। অ্যাকাউন্ট উদ্ধারেও এটি ব্যবহার হবে।"
-
-msgid "We sent a 6-digit code. It expires in 5 minutes."
-msgstr "আমরা ৬ অঙ্কের একটি কোড পাঠিয়েছি। এটি ৫ মিনিট পরে মেয়াদোত্তীর্ণ হবে।"
-
-msgid ""
-"We will send a 6-digit code to the e-mail address or phone you verified when"
-" you signed up."
-msgstr ""
-"সাইন-আপের সময় যাচাই করা ইমেইল ঠিকানা বা ফোনে আমরা ৬ অঙ্কের একটি কোড পাঠাব।"
-
-msgid "Where should we send your verification code?"
-msgstr "যাচাইয়ের কোড কোথায় পাঠাব?"
-
 msgid "Where you are signed in"
 msgstr "যেখানে আপনি সাইন-ইন আছেন"
-
-msgid ""
-"Write it down. You log in with this username and your password, not with "
-"your ID. You can always see it on your account page."
-msgstr ""
-"এটি লিখে রাখুন। আপনি আইডি দিয়ে নয়, এই ইউজারনেম ও পাসওয়ার্ড দিয়ে লগইন "
-"করবেন। আপনার অ্যাকাউন্ট পেজেও সবসময় এটি দেখতে পাবেন।"
 
 msgid "You have been logged out."
 msgstr "আপনি লগ আউট করেছেন।"
@@ -1438,29 +1233,14 @@ msgstr ""
 msgid "You were signed out on every device."
 msgstr "সব ডিভাইসে আপনাকে সাইন-আউট করা হয়েছে।"
 
-msgid ""
-"Your Teacher Feedback System code is %(code)s. It expires in %(minutes)d "
-"minutes. If you did not ask for it, ignore this message and tell nobody the "
-"code."
-msgstr ""
-"আপনার শিক্ষক মূল্যায়ন ব্যবস্থার কোড %(code)s। এটি %(minutes)d মিনিট পরে "
-"মেয়াদোত্তীর্ণ হবে। আপনি না চেয়ে থাকলে এই বার্তা উপেক্ষা করুন এবং কোডটি "
-"কাউকে বলবেন না।"
-
 msgid "Your account is ready"
 msgstr "আপনার অ্যাকাউন্ট তৈরি হয়েছে"
-
-msgid "Your contact is verified. Choose a password."
-msgstr "আপনার যোগাযোগ যাচাই হয়েছে। একটি পাসওয়ার্ড বেছে নিন।"
 
 msgid "Your dashboard is on its way"
 msgstr "আপনার ড্যাশবোর্ড শীঘ্রই আসছে"
 
 msgid "Your password"
 msgstr "আপনার পাসওয়ার্ড"
-
-msgid "Your password reset code"
-msgstr "আপনার পাসওয়ার্ড রিসেট কোড"
 
 msgid "Your password was changed."
 msgstr "আপনার পাসওয়ার্ড পরিবর্তন করা হয়েছে।"
@@ -1471,41 +1251,11 @@ msgstr "আপনার পাসওয়ার্ড পরিবর্তন 
 msgid "Your recovery codes"
 msgstr "আপনার রিকভারি কোড"
 
-msgid ""
-"Your role can see student identities, so two-factor authentication is "
-"required before you continue."
-msgstr ""
-"আপনার ভূমিকায় শিক্ষার্থীদের পরিচয় দেখা যায়, তাই চালিয়ে যাওয়ার আগে "
-"টু-ফ্যাক্টর অথেন্টিকেশন আবশ্যক।"
-
-msgid ""
-"Your role requires two-factor authentication, so it cannot be turned off."
-msgstr ""
-"আপনার ভূমিকায় টু-ফ্যাক্টর অথেন্টিকেশন আবশ্যক, তাই এটি বন্ধ করা যাবে না।"
-
-msgid "Your sign-up code"
-msgstr "আপনার সাইন-আপ কোড"
-
 msgid "Your username"
 msgstr "আপনার ইউজারনেম"
 
-msgid "Your username is:"
-msgstr "আপনার ইউজারনেম:"
-
-msgid "Your username recovery code"
-msgstr "আপনার ইউজারনেম উদ্ধারের কোড"
-
-msgid "Your verification code"
-msgstr "আপনার যাচাইকরণ কোড"
-
 msgid "browser"
 msgstr "ব্রাউজার"
-
-msgid "one-time code"
-msgstr "ওয়ান-টাইম কোড"
-
-msgid "one-time codes"
-msgstr "ওয়ান-টাইম কোড"
 
 msgid "recovery code"
 msgstr "রিকভারি কোড"
@@ -1516,24 +1266,11 @@ msgstr "রিকভারি কোড"
 msgid "signed in at"
 msgstr "সাইন-ইনের সময়"
 
-msgid "%(left)s recovery code left."
-msgid_plural "%(left)s recovery codes left."
-msgstr[0] "আর %(left)s টি রিকভারি কোড বাকি আছে।"
-msgstr[1] "আর %(left)s টি রিকভারি কোড বাকি আছে।"
-
-msgid "You can ask for a new code in %(seconds)s second."
-msgid_plural "You can ask for a new code in %(seconds)s seconds."
-msgstr[0] "আপনি %(seconds)s সেকেন্ড পরে নতুন কোড চাইতে পারবেন।"
-msgstr[1] "আপনি %(seconds)s সেকেন্ড পরে নতুন কোড চাইতে পারবেন।"
-
 msgid "start date"
 msgstr "শুরুর তারিখ"
 
 msgid "end date"
 msgstr "শেষের তারিখ"
-
-msgid "current semester"
-msgstr "চলমান সেমিস্টার"
 
 msgid "semester"
 msgstr "সেমিস্টার"
@@ -1580,9 +1317,6 @@ msgstr "এই বিভাগে এই কোডের একটি প্র�
 msgid "This program already has a batch with this name."
 msgstr "এই প্রোগ্রামে এই নামের একটি ব্যাচ আগেই আছে।"
 
-msgid "Only one semester can be the current one."
-msgstr "একটি সেমিস্টারই চলমান হতে পারে।"
-
 msgid "The end date must be after the start date."
 msgstr "শেষের তারিখ অবশ্যই শুরুর তারিখের পরে হতে হবে।"
 
@@ -1597,9 +1331,6 @@ msgstr "প্রোগ্রামটি অবশ্যই কোর্সে�
 
 msgid "This course is already offered in this semester with this section."
 msgstr "এই কোর্স এই সেমিস্টারে এই সেকশনে আগেই অফার করা হয়েছে।"
-
-msgid "Making this the current semester ends the previous one."
-msgstr "এটিকে চলমান সেমিস্টার করলে আগেরটি আর চলমান থাকবে না।"
 
 msgid "Service course"
 msgstr "সার্ভিস কোর্স"
@@ -4707,7 +4438,6 @@ msgid_plural "%(n)s unread notifications"
 msgstr[0] "%(n)s টি অপঠিত বিজ্ঞপ্তি"
 msgstr[1] "%(n)s টি অপঠিত বিজ্ঞপ্তি"
 
-
 #. ui polish
 msgid "Show password"
 msgstr "পাসওয়ার্ড দেখুন"
@@ -4730,8 +4460,12 @@ msgstr "পাসওয়ার্ডের শক্তি: শক্তিশ
 msgid "CSE 2203 · Algorithms"
 msgstr "CSE 2203 · অ্যালগরিদম"
 
-msgid "After you submit, your course is sealed. Teachers see combined results only after the round closes."
-msgstr "জমা দেওয়ার পর আপনার কোর্সটি সিল করা হয়। রাউন্ড শেষ হওয়ার পরেই কেবল শিক্ষকরা সম্মিলিত ফলাফল দেখতে পান।"
+msgid ""
+"After you submit, your course is sealed. Teachers see combined results only "
+"after the round closes."
+msgstr ""
+"জমা দেওয়ার পর আপনার কোর্সটি সিল করা হয়। রাউন্ড শেষ হওয়ার পরেই কেবল শিক্ষকরা "
+"সম্মিলিত ফলাফল দেখতে পান।"
 
 msgid "Can see combined ratings and shuffled comments after the round closes."
 msgstr "রাউন্ড শেষ হওয়ার পর সম্মিলিত রেটিং ও এলোমেলো মন্তব্য দেখতে পারেন।"
@@ -4739,17 +4473,25 @@ msgstr "রাউন্ড শেষ হওয়ার পর সম্মিল�
 msgid "Cannot see student names, IDs, or who wrote which answer."
 msgstr "শিক্ষার্থীর নাম, আইডি বা কে কোন উত্তর লিখেছেন তা দেখতে পারেন না।"
 
-msgid "Can see department course rankings and which own-department IDs are still pending."
-msgstr "বিভাগের কোর্সের ক্রম এবং নিজ বিভাগের কোন আইডিগুলো এখনো বাকি তা দেখতে পারেন।"
+msgid ""
+"Can see department course rankings and which own-department IDs are still "
+"pending."
+msgstr ""
+"বিভাগের কোর্সের ক্রম এবং নিজ বিভাগের কোন আইডিগুলো এখনো বাকি তা দেখতে পারেন।"
 
 msgid "Cannot see any student's answers or link a ballot to a student."
-msgstr "কোনো শিক্ষার্থীর উত্তর দেখতে বা ব্যালটের সাথে শিক্ষার্থীকে যুক্ত করতে পারেন না।"
+msgstr ""
+"কোনো শিক্ষার্থীর উত্তর দেখতে বা ব্যালটের সাথে শিক্ষার্থীকে যুক্ত করতে পারেন "
+"না।"
 
 msgid "Can manage rounds, enrollments, and moderate flagged comment text."
-msgstr "রাউন্ড, এনরোলমেন্ট পরিচালনা এবং চিহ্নিত মন্তব্যের ভাষা যাচাই করতে পারেন।"
+msgstr ""
+"রাউন্ড, এনরোলমেন্ট পরিচালনা এবং চিহ্নিত মন্তব্যের ভাষা যাচাই করতে পারেন।"
 
 msgid "Cannot see who wrote a comment or connect ratings to a student."
-msgstr "কে মন্তব্য লিখেছেন তা দেখতে বা রেটিংয়ের সাথে শিক্ষার্থীকে যুক্ত করতে পারেন না।"
+msgstr ""
+"কে মন্তব্য লিখেছেন তা দেখতে বা রেটিংয়ের সাথে শিক্ষার্থীকে যুক্ত করতে পারেন "
+"না।"
 
 msgid "Privacy promise"
 msgstr "গোপনীয়তার প্রতিশ্রুতি"
@@ -4781,8 +4523,12 @@ msgstr "এখনও বণ্টন নেই"
 msgid "Honest feedback, kept anonymous."
 msgstr "আপনার মতামত, নিরাপদে বেনামি।"
 
-msgid "Rate your courses and teachers each semester. Teachers see only combined results, after the round closes."
-msgstr "প্রতি সেমিস্টারে আপনার কোর্স ও শিক্ষকদের মূল্যায়ন করুন। রাউন্ড শেষ হওয়ার পরই শিক্ষকেরা শুধু সম্মিলিত ফলাফল দেখেন।"
+msgid ""
+"Rate your courses and teachers each semester. Teachers see only combined "
+"results, after the round closes."
+msgstr ""
+"প্রতি সেমিস্টারে আপনার কোর্স ও শিক্ষকদের মূল্যায়ন করুন। রাউন্ড শেষ হওয়ার "
+"পরই শিক্ষকেরা শুধু সম্মিলিত ফলাফল দেখেন।"
 
 msgid "Why you can trust it"
 msgstr "কেন আপনি ভরসা করতে পারেন"
@@ -4793,8 +4539,12 @@ msgstr "আপনার উত্তরে কোনো নাম, আইডি 
 msgid "Protected data"
 msgstr "সুরক্ষিত তথ্য"
 
-msgid "Student IDs, contact details and comments are encrypted in the database. Passwords are hashed."
-msgstr "শিক্ষার্থী আইডি, যোগাযোগের তথ্য ও মন্তব্য ডাটাবেসে এনক্রিপ্ট করা থাকে। পাসওয়ার্ড হ্যাশ করে রাখা হয়।"
+msgid ""
+"Student IDs, contact details and comments are encrypted in the database. "
+"Passwords are hashed."
+msgstr ""
+"শিক্ষার্থী আইডি, যোগাযোগের তথ্য ও মন্তব্য ডাটাবেসে এনক্রিপ্ট করা থাকে। "
+"পাসওয়ার্ড হ্যাশ করে রাখা হয়।"
 
 msgid "One voice per course"
 msgstr "প্রতি কোর্সে একটি মতামত"
@@ -4814,20 +4564,25 @@ msgstr "তিন ধাপ"
 msgid "Get your ID and code"
 msgstr "আইডি ও কোড নিন"
 
-msgid "Your department gives you a student ID and a sign-up code. Create your account and verify it with a one-time code."
-msgstr "আপনার বিভাগ আপনাকে শিক্ষার্থী আইডি ও সাইন-আপ কোড দেয়। অ্যাকাউন্ট খুলে একবার-ব্যবহারযোগ্য কোড দিয়ে যাচাই করুন।"
-
 msgid "Give feedback once per course"
 msgstr "প্রতি কোর্সে একবার মতামত দিন"
 
-msgid "When a round opens, rate each course with stars and add comments if you like. Submission is final."
-msgstr "রাউন্ড শুরু হলে প্রতিটি কোর্সে তারা দিয়ে রেটিং দিন, চাইলে মন্তব্য লিখুন। জমা দেওয়ার পর আর বদলানো যায় না।"
+msgid ""
+"When a round opens, rate each course with stars and add comments if you "
+"like. Submission is final."
+msgstr ""
+"রাউন্ড শুরু হলে প্রতিটি কোর্সে তারা দিয়ে রেটিং দিন, চাইলে মন্তব্য লিখুন। "
+"জমা দেওয়ার পর আর বদলানো যায় না।"
 
 msgid "Teachers see combined results"
 msgstr "শিক্ষকেরা সম্মিলিত ফলাফল দেখেন"
 
-msgid "After the round closes, teachers see averages and comments without names. Nothing shows if fewer than five students answered."
-msgstr "রাউন্ড শেষ হলে শিক্ষকেরা নাম ছাড়া গড় রেটিং ও মন্তব্য দেখেন। পাঁচজনের কম শিক্ষার্থী উত্তর দিলে কিছুই দেখানো হয় না।"
+msgid ""
+"After the round closes, teachers see averages and comments without names. "
+"Nothing shows if fewer than five students answered."
+msgstr ""
+"রাউন্ড শেষ হলে শিক্ষকেরা নাম ছাড়া গড় রেটিং ও মন্তব্য দেখেন। পাঁচজনের কম "
+"শিক্ষার্থী উত্তর দিলে কিছুই দেখানো হয় না।"
 
 msgid "Four roles"
 msgstr "চারটি ভূমিকা"
@@ -4835,8 +4590,12 @@ msgstr "চারটি ভূমিকা"
 msgid "What each role sees"
 msgstr "কে কী দেখতে পান"
 
-msgid "Every role gets only what it needs, and nothing that could identify who wrote what."
-msgstr "প্রতিটি ভূমিকা শুধু প্রয়োজনীয় তথ্যই পায়, কে কী লিখেছে তা চেনার মতো কিছু নয়।"
+msgid ""
+"Every role gets only what it needs, and nothing that could identify who "
+"wrote what."
+msgstr ""
+"প্রতিটি ভূমিকা শুধু প্রয়োজনীয় তথ্যই পায়, কে কী লিখেছে তা চেনার মতো কিছু "
+"নয়।"
 
 msgid "Can see"
 msgstr "দেখতে পান"
@@ -4856,7 +4615,8 @@ msgstr "রাউন্ড শেষ হওয়ার পর সম্মি�
 msgid "Names, student IDs, or who wrote which answer."
 msgstr "নাম, শিক্ষার্থী আইডি, বা কে কোন উত্তর লিখেছে।"
 
-msgid "Department rankings, alerts, and which own-department IDs are still pending."
+msgid ""
+"Department rankings, alerts, and which own-department IDs are still pending."
 msgstr "বিভাগের র‍্যাংকিং, সতর্কতা, এবং নিজ বিভাগের কোন আইডিগুলো এখনও বাকি।"
 
 msgid "Any student's answers, or a link from a ballot to a student."
@@ -4877,8 +4637,12 @@ msgstr "সহজ ভাষায়"
 msgid "A look inside"
 msgstr "ভেতরে এক নজর"
 
-msgid "Each role gets a focused dashboard. Everything below is sample data, not real people or results."
-msgstr "প্রতিটি ভূমিকার জন্য আলাদা ড্যাশবোর্ড। নিচের সবকিছু নমুনা তথ্য, বাস্তব মানুষ বা ফলাফল নয়।"
+msgid ""
+"Each role gets a focused dashboard. Everything below is sample data, not "
+"real people or results."
+msgstr ""
+"প্রতিটি ভূমিকার জন্য আলাদা ড্যাশবোর্ড। নিচের সবকিছু নমুনা তথ্য, বাস্তব মানুষ"
+" বা ফলাফল নয়।"
 
 msgid "Sample data, not real"
 msgstr "নমুনা তথ্য, বাস্তব নয়"
@@ -4952,14 +4716,690 @@ msgstr "শিক্ষার্থী সাড়া দিয়েছেন"
 msgid "Which devices does it work on?"
 msgstr "কোন ডিভাইসে এটি চলে?"
 
-msgid "Any modern phone, tablet or computer browser. Bangla and English are both available, in light or dark mode."
-msgstr "যেকোনো আধুনিক ফোন, ট্যাবলেট বা কম্পিউটারের ব্রাউজারে। বাংলা ও ইংরেজি দুটোই আছে, লাইট বা ডার্ক মোডে।"
+msgid ""
+"Any modern phone, tablet or computer browser. Bangla and English are both "
+"available, in light or dark mode."
+msgstr ""
+"যেকোনো আধুনিক ফোন, ট্যাবলেট বা কম্পিউটারের ব্রাউজারে। বাংলা ও ইংরেজি দুটোই "
+"আছে, লাইট বা ডার্ক মোডে।"
 
 msgid "Ready to share honest feedback?"
 msgstr "সৎ মতামত জানাতে প্রস্তুত?"
 
-msgid "Log in with your account, or create one with your student ID and the code from your department."
-msgstr "আপনার অ্যাকাউন্টে লগ ইন করুন, অথবা শিক্ষার্থী আইডি ও বিভাগের কোড দিয়ে নতুন অ্যাকাউন্ট খুলুন।"
+msgid ""
+"Log in with your account, or create one with your student ID and the code "
+"from your department."
+msgstr ""
+"আপনার অ্যাকাউন্টে লগ ইন করুন, অথবা শিক্ষার্থী আইডি ও বিভাগের কোড দিয়ে নতুন "
+"অ্যাকাউন্ট খুলুন।"
 
 msgid "Who sees what"
 msgstr "কে কী দেখে"
+
+msgid "The 6-digit code from your authenticator app, or one recovery code."
+msgstr "অথেন্টিকেটর অ্যাপের ৬ অঙ্কের কোড, অথবা একটি রিকভারি কোড।"
+
+msgid "Code valid for (days)"
+msgstr "কোডের মেয়াদ (দিন)"
+
+msgid "Hand the code over as"
+msgstr "কোডটি যেভাবে দেবেন"
+
+msgid "A printable page"
+msgstr "প্রিন্টযোগ্য পাতা"
+
+msgid "A CSV file"
+msgstr "একটি CSV ফাইল"
+
+msgid ""
+"Development only: print the current authenticator code of an account. "
+"Refuses to run unless DEBUG is on and the settings module is "
+"config.settings.dev."
+msgstr ""
+"শুধু ডেভেলপমেন্টের জন্য: একটি অ্যাকাউন্টের বর্তমান অথেন্টিকেটর কোড দেখায়। "
+"DEBUG চালু এবং সেটিংস মডিউল config.settings.dev না হলে চলে না।"
+
+msgid ""
+"totp_code only runs with DEBUG on and DJANGO_SETTINGS_MODULE=%(module)s."
+msgstr ""
+"totp_code শুধু DEBUG চালু এবং DJANGO_SETTINGS_MODULE=%(module)s হলে চলে।"
+
+msgid "No account with an authenticator has that username."
+msgstr "এই ইউজারনেমে অথেন্টিকেটরসহ কোনো অ্যাকাউন্ট নেই।"
+
+msgid "This reset has expired. Start again."
+msgstr "এই রিসেটের মেয়াদ শেষ। আবার শুরু করুন।"
+
+msgid "Access to this account cannot be reset."
+msgstr "এই অ্যাকাউন্টের অ্যাক্সেস রিসেট করা যাবে না।"
+
+msgid "The username or code is not correct."
+msgstr "ইউজারনেম বা কোড সঠিক নয়।"
+
+msgid "Authenticator"
+msgstr "অথেন্টিকেটর"
+
+msgid "That code is not correct. Check the time on your phone."
+msgstr "কোডটি সঠিক নয়। ফোনের সময় ঠিক আছে কি না দেখুন।"
+
+msgid "The password or code is not correct."
+msgstr "পাসওয়ার্ড বা কোড সঠিক নয়।"
+
+msgid "Your new authenticator is set up."
+msgstr "আপনার নতুন অথেন্টিকেটর চালু হয়েছে।"
+
+msgid "Install an authenticator app"
+msgstr "একটি অথেন্টিকেটর অ্যাপ ইনস্টল করুন"
+
+msgid ""
+"Google Authenticator or Microsoft Authenticator, free on Play Store and App "
+"Store."
+msgstr ""
+"Google Authenticator বা Microsoft Authenticator, Play Store ও App Store-এ "
+"বিনামূল্যে পাওয়া যায়।"
+
+msgid "Scan the QR code"
+msgstr "QR কোড স্ক্যান করুন"
+
+msgid ""
+"In the app tap + and choose to scan a QR code. If you cannot scan, type the "
+"key shown under the code."
+msgstr ""
+"অ্যাপে + চাপুন এবং QR কোড স্ক্যান বেছে নিন। স্ক্যান করতে না পারলে কোডের "
+"নিচের কী-টি টাইপ করুন।"
+
+msgid "Type the 6-digit code"
+msgstr "৬ অঙ্কের কোডটি লিখুন"
+
+msgid "The code changes every 30 seconds. Type the one the app shows now."
+msgstr "কোডটি প্রতি ৩০ সেকেন্ডে বদলায়। অ্যাপে এখন যেটি দেখাচ্ছে সেটি লিখুন।"
+
+msgid "Key for typing in by hand:"
+msgstr "হাতে টাইপ করার কী:"
+
+msgid "How to set up your authenticator"
+msgstr "অথেন্টিকেটর যেভাবে চালু করবেন"
+
+msgid "QR code for your authenticator app"
+msgstr "আপনার অথেন্টিকেটর অ্যাপের জন্য QR কোড"
+
+msgid "Account: %(username)s"
+msgstr "অ্যাকাউন্ট: %(username)s"
+
+msgid ""
+"Save these recovery codes now, somewhere safe and away from your phone. Each"
+" one works once if you lose your phone. They are shown only this time."
+msgstr ""
+"রিকভারি কোডগুলো এখনই ফোন থেকে আলাদা কোনো নিরাপদ জায়গায় সংরক্ষণ করুন। ফোন "
+"হারালে প্রতিটি কোড একবার কাজ করবে। এগুলো শুধু এই একবারই দেখানো হচ্ছে।"
+
+msgid "Copy codes"
+msgstr "কোডগুলো কপি করুন"
+
+msgid "Print codes"
+msgstr "কোডগুলো প্রিন্ট করুন"
+
+msgid "Copied."
+msgstr "কপি হয়েছে।"
+
+msgid "Authenticator app on"
+msgstr "অথেন্টিকেটর অ্যাপ চালু"
+
+msgid "No recovery codes left"
+msgstr "কোনো রিকভারি কোড বাকি নেই"
+
+msgid "Authenticator and recovery codes"
+msgstr "অথেন্টিকেটর ও রিকভারি কোড"
+
+msgid ""
+"Enter your username and the code your authenticator app shows now. Lost your"
+" phone? Use one of your recovery codes."
+msgstr ""
+"আপনার ইউজারনেম এবং অথেন্টিকেটর অ্যাপে এখন দেখানো কোডটি দিন। ফোন হারিয়েছেন? "
+"একটি রিকভারি কোড ব্যবহার করুন।"
+
+msgid ""
+"No phone and no recovery code? Ask your department or the Admin to reset "
+"your access."
+msgstr ""
+"ফোন বা রিকভারি কোড কোনোটিই নেই? আপনার বিভাগ বা অ্যাডমিনকে অ্যাক্সেস রিসেট "
+"করতে বলুন।"
+
+msgid ""
+"Ask your department office or the Admin. They can look up the username that "
+"belongs to your student or teacher ID."
+msgstr ""
+"আপনার বিভাগীয় অফিস বা অ্যাডমিনকে জিজ্ঞেস করুন। তাঁরা আপনার শিক্ষার্থী বা "
+"শিক্ষক আইডির ইউজারনেম খুঁজে দিতে পারেন।"
+
+msgid ""
+"Once you are logged in, your username is always shown on your account page."
+msgstr "লগইন করার পর আপনার ইউজারনেম সবসময় অ্যাকাউন্ট পাতায় দেখা যায়।"
+
+msgid "Enter your code"
+msgstr "আপনার কোড দিন"
+
+msgid ""
+"Open your authenticator app and type the 6-digit code it shows for this "
+"site. Lost your phone? Type one of your recovery codes instead."
+msgstr ""
+"অথেন্টিকেটর অ্যাপ খুলে এই সাইটের জন্য দেখানো ৬ অঙ্কের কোডটি লিখুন। ফোন "
+"হারিয়েছেন? এর বদলে একটি রিকভারি কোড লিখুন।"
+
+msgid ""
+"Every login asks for a code from an authenticator app on your phone. Set it "
+"up now; your account is created when the first code checks out."
+msgstr ""
+"প্রতিবার লগইনে আপনার ফোনের অথেন্টিকেটর অ্যাপের একটি কোড লাগবে। এখনই এটি চালু"
+" করুন; প্রথম কোডটি মিলে গেলেই আপনার অ্যাকাউন্ট তৈরি হবে।"
+
+msgid "Verify and create account"
+msgstr "যাচাই করে অ্যাকাউন্ট তৈরি করুন"
+
+msgid ""
+"You log in with this username, your password and the code from your "
+"authenticator app, not with your ID. You can always see the username on your"
+" account page."
+msgstr ""
+"আপনি আইডি দিয়ে নয়, এই ইউজারনেম, পাসওয়ার্ড এবং অথেন্টিকেটর অ্যাপের কোড "
+"দিয়ে লগইন করবেন। ইউজারনেমটি সবসময় অ্যাকাউন্ট পাতায় দেখতে পাবেন।"
+
+msgid "I have saved my codes. Go to log in"
+msgstr "কোডগুলো সংরক্ষণ করেছি। লগইনে যান"
+
+msgid "Your ID is confirmed. Choose a password."
+msgstr "আপনার আইডি নিশ্চিত হয়েছে। একটি পাসওয়ার্ড বেছে নিন।"
+
+msgid ""
+"Each code signs you in once if you lose your phone. Making new codes makes "
+"all the old ones stop working."
+msgstr ""
+"ফোন হারালে প্রতিটি কোড দিয়ে একবার লগইন করা যায়। নতুন কোড তৈরি করলে পুরোনো "
+"সব কোড বাতিল হয়ে যায়।"
+
+msgid "New phone"
+msgstr "নতুন ফোন"
+
+msgid ""
+"Moving to a new phone? Confirm with your password and a code from the old "
+"phone, then scan a new QR code. Your recovery codes stay the same."
+msgstr ""
+"নতুন ফোনে যাচ্ছেন? পাসওয়ার্ড ও পুরোনো ফোনের একটি কোড দিয়ে নিশ্চিত করুন, "
+"তারপর নতুন QR কোড স্ক্যান করুন। আপনার রিকভারি কোড একই থাকবে।"
+
+msgid "Change authenticator"
+msgstr "অথেন্টিকেটর বদলান"
+
+msgid ""
+"Lost the old phone? Sign in with a recovery code first, or ask the Admin to "
+"reset your access."
+msgstr ""
+"পুরোনো ফোন হারিয়েছেন? আগে একটি রিকভারি কোড দিয়ে লগইন করুন, অথবা অ্যাডমিনকে"
+" অ্যাক্সেস রিসেট করতে বলুন।"
+
+msgid "Set up your new authenticator"
+msgstr "নতুন অথেন্টিকেটর চালু করুন"
+
+msgid "Your old phone keeps working until the new one is confirmed."
+msgstr "নতুনটি নিশ্চিত না হওয়া পর্যন্ত পুরোনো ফোন কাজ করবে।"
+
+msgid "Verify and switch"
+msgstr "যাচাই করে বদলান"
+
+msgid "Set up your authenticator"
+msgstr "আপনার অথেন্টিকেটর চালু করুন"
+
+msgid ""
+"Every account now signs in with a code from an authenticator app. Set it up "
+"once to continue."
+msgstr ""
+"এখন প্রতিটি অ্যাকাউন্টে অথেন্টিকেটর অ্যাপের কোড দিয়ে লগইন করতে হয়। চালিয়ে"
+" যেতে একবার এটি চালু করুন।"
+
+msgid "Verify and continue"
+msgstr "যাচাই করে চালিয়ে যান"
+
+msgid "Access reset"
+msgstr "অ্যাক্সেস রিসেট হয়েছে"
+
+msgid ""
+"This code is shown only once. Print it or copy it now and hand it to the "
+"person in private."
+msgstr ""
+"এই কোডটি শুধু একবার দেখানো হবে। এখনই প্রিন্ট বা কপি করে ব্যক্তিকে গোপনে দিন।"
+
+msgid "One-time activation code"
+msgstr "এককালীন অ্যাক্টিভেশন কোড"
+
+msgid "Open the sign-up page and enter your ID and this code."
+msgstr "নিবন্ধন পাতা খুলে আপনার আইডি ও এই কোডটি দিন।"
+
+msgid "Choose a new password."
+msgstr "নতুন পাসওয়ার্ড বেছে নিন।"
+
+msgid ""
+"Scan the new QR code with an authenticator app and type its 6-digit code."
+msgstr ""
+"অথেন্টিকেটর অ্যাপ দিয়ে নতুন QR কোড স্ক্যান করে এর ৬ অঙ্কের কোডটি লিখুন।"
+
+msgid "Copy code"
+msgstr "কোড কপি করুন"
+
+msgid "Print"
+msgstr "প্রিন্ট করুন"
+
+msgid "Back to the account"
+msgstr "অ্যাকাউন্টে ফিরে যান"
+
+msgid "Authenticator app"
+msgstr "অথেন্টিকেটর অ্যাপ"
+
+msgid "Set up"
+msgstr "চালু আছে"
+
+msgid "Not set up yet (asked at the next login)"
+msgstr "এখনো চালু হয়নি (পরের লগইনে চাওয়া হবে)"
+
+msgid "Waiting for the person to enrol again"
+msgstr "ব্যক্তির আবার নিবন্ধনের অপেক্ষায়"
+
+msgid "Reset access"
+msgstr "অ্যাক্সেস রিসেট করুন"
+
+msgid ""
+"For a lost phone. This clears the password and the authenticator, deletes "
+"the recovery codes, signs the person out everywhere and issues a new one-"
+"time activation code. They then sign up again with their ID and the new code"
+" and keep the same username."
+msgstr ""
+"ফোন হারালে ব্যবহার করুন। এতে পাসওয়ার্ড ও অথেন্টিকেটর মুছে যায়, রিকভারি কোড"
+" বাতিল হয়, সব ডিভাইস থেকে লগআউট হয় এবং নতুন এককালীন অ্যাক্টিভেশন কোড তৈরি "
+"হয়। এরপর ব্যক্তি নিজের আইডি ও নতুন কোড দিয়ে আবার নিবন্ধন করবেন এবং একই "
+"ইউজারনেম থাকবে।"
+
+msgid ""
+"Check who is asking before you do this. The new code is shown only once."
+msgstr ""
+"এটি করার আগে অনুরোধকারীর পরিচয় যাচাই করুন। নতুন কোডটি শুধু একবার দেখানো "
+"হবে।"
+
+msgid ""
+"Your department gives you a student ID and a sign-up code. Create your "
+"account and link an authenticator app on your phone."
+msgstr ""
+"আপনার বিভাগ আপনাকে একটি শিক্ষার্থী আইডি ও নিবন্ধন কোড দেয়। অ্যাকাউন্ট তৈরি "
+"করে আপনার ফোনের অথেন্টিকেটর অ্যাপ যুক্ত করুন।"
+
+msgid ""
+"Use the forgot password option on the login page with your username and the "
+"code from your authenticator app (or a recovery code)."
+msgstr ""
+"লগইন পাতার পাসওয়ার্ড ভুলে যাওয়ার অপশনে আপনার ইউজারনেম এবং অথেন্টিকেটর "
+"অ্যাপের কোড (বা একটি রিকভারি কোড) দিন।"
+
+msgid "%(left)s recovery code left"
+msgid_plural "%(left)s recovery codes left"
+msgstr[0] "%(left)sটি রিকভারি কোড বাকি"
+msgstr[1] "%(left)sটি রিকভারি কোড বাকি"
+
+#: templates/core/landing.html:0
+msgid "A comment (optional)"
+msgstr "মন্তব্য (ঐচ্ছিক)"
+
+#: templates/core/landing.html:0
+msgid "Anonymous, no name, no time"
+msgstr "বেনামি, নাম নেই, সময় নেই"
+
+#: templates/core/landing.html:0
+msgid "Answers cannot be traced back"
+msgstr "উত্তর থেকে আপনাকে চেনা যায় না"
+
+#: templates/core/landing.html:0
+msgid "Bangla and English, light and dark"
+msgstr "বাংলা ও ইংরেজি, আলো ও অন্ধকার মোড"
+
+#: templates/core/landing.html:0
+msgid "Built so that honesty is safe"
+msgstr "যেন সৎ মতামত নিরাপদ থাকে"
+
+#: templates/core/landing.html:0
+msgid ""
+"Combined from <b class=\"num\" data-demo-count>%(total)s</b> sample "
+"responses."
+msgstr ""
+"মোট <b class=\"num\" data-demo-count>%(total)s</b>টি নমুনা মতামত মিলিয়ে "
+"দেখানো হচ্ছে।"
+
+#: templates/core/landing.html:0
+msgid "Combined results only"
+msgstr "শুধু সম্মিলিত ফলাফল"
+
+#: templates/core/landing.html:0
+msgid "Comments are screened"
+msgstr "মন্তব্য যাচাই করা হয়"
+
+#: templates/core/landing.html:0
+msgid "Comments, shuffled"
+msgstr "মন্তব্য, এলোমেলো করে সাজানো"
+
+#: templates/core/landing.html:0
+msgid "Dashboard role"
+msgstr "ড্যাশবোর্ডের ভূমিকা"
+
+#: templates/core/landing.html:0
+msgid ""
+"Every role confirms sign-in with a code from an app on their own phone."
+msgstr ""
+"প্রতিটি ভূমিকার ব্যবহারকারী নিজের ফোনের অ্যাপের কোড দিয়ে লগ ইন নিশ্চিত "
+"করেন।"
+
+#: templates/core/landing.html:0
+msgid ""
+"Feedback stops. Only now can results reach teachers and heads of department."
+msgstr ""
+"মতামত দেওয়া বন্ধ হয়। এখন থেকেই শুধু শিক্ষক ও বিভাগীয় প্রধান ফলাফল দেখতে "
+"পারেন।"
+
+#: templates/core/landing.html:0
+msgid ""
+"Fonts, scripts and images all come from this site. No outside trackers or "
+"ads are loaded."
+msgstr ""
+"ফন্ট, স্ক্রিপ্ট ও ছবি সবই এই সাইট থেকেই আসে। বাইরের কোনো ট্র্যাকার বা "
+"বিজ্ঞাপন লোড হয় না।"
+
+#: templates/core/landing.html:0
+msgid "Four steps"
+msgstr "চারটি ধাপ"
+
+#: templates/core/landing.html:0
+msgid "Hidden below five answers"
+msgstr "পাঁচটির কম উত্তরে লুকানো থাকে"
+
+#: templates/core/landing.html:0
+msgid "How your answers and your account are protected, without the jargon."
+msgstr "আপনার উত্তর ও অ্যাকাউন্ট কীভাবে সুরক্ষিত থাকে, সহজ ভাষায়।"
+
+#: templates/core/landing.html:0
+msgid ""
+"If fewer than five students answered, no average and no comment is shown."
+msgstr "পাঁচজনের কম শিক্ষার্থী উত্তর দিলে কোনো গড় বা মন্তব্য দেখানো হয় না।"
+
+#: templates/core/landing.html:0
+msgid "Marking was fair and the rubric was clear."
+msgstr "নম্বর দেওয়া ন্যায্য ছিল এবং মূল্যায়নের মানদণ্ড স্পষ্ট ছিল।"
+
+#: templates/core/landing.html:0
+msgid ""
+"Merged. You are now one of {n} voices, and the teacher cannot tell which "
+"one."
+msgstr ""
+"মিলে গেছে। আপনি এখন {n}টি মতামতের একটি, আর শিক্ষক বুঝতে পারবেন না কোনটি "
+"আপনার।"
+
+#: templates/core/landing.html:0
+msgid "Nothing from other websites"
+msgstr "অন্য ওয়েবসাইট থেকে কিছু আসে না"
+
+#: templates/core/landing.html:0
+msgid "Passwords are hashed"
+msgstr "পাসওয়ার্ড হ্যাশ করা হয়"
+
+#: templates/core/landing.html:0
+msgid "Pick at least one star rating or write a comment first."
+msgstr "আগে অন্তত একটি তারা রেটিং দিন বা একটি মন্তব্য লিখুন।"
+
+#: templates/core/landing.html:0
+msgid "Please slow down in the last chapters."
+msgstr "শেষের অধ্যায়গুলো একটু ধীরে পড়ালে ভালো হয়।"
+
+#: templates/core/landing.html:0
+msgid "Sample participation"
+msgstr "নমুনা অংশগ্রহণ"
+
+#: templates/core/landing.html:0
+msgid "Sample rating distribution"
+msgstr "নমুনা রেটিং বণ্টন"
+
+#: templates/core/landing.html:0
+msgid "See what your teacher sees"
+msgstr "দেখুন আপনার শিক্ষক কী দেখেন"
+
+#: templates/core/landing.html:0
+msgid "Send anonymously"
+msgstr "বেনামে পাঠান"
+
+#: templates/core/landing.html:0
+msgid "Sensitive data is encrypted"
+msgstr "গোপনীয় তথ্য এনক্রিপ্ট করা থাকে"
+
+#: templates/core/landing.html:0
+msgid "Sign in with an authenticator app"
+msgstr "অথেনটিকেটর অ্যাপ দিয়ে লগ ইন"
+
+#: templates/core/landing.html:0
+msgid ""
+"Student IDs, contact details and comments are encrypted in the database."
+msgstr ""
+"শিক্ষার্থীর আইডি, যোগাযোগের তথ্য ও মন্তব্য ডেটাবেসে এনক্রিপ্ট করে রাখা হয়।"
+
+#: templates/core/landing.html:0
+msgid ""
+"Tap some stars, add a comment and watch it join the sample answers. This is "
+"a demo with sample data; nothing you type leaves this page."
+msgstr ""
+"কয়েকটি তারায় চাপ দিন, একটি মন্তব্য লিখুন এবং দেখুন সেটি নমুনা উত্তরগুলোর "
+"সঙ্গে কীভাবে মিশে যায়। এটি নমুনা তথ্যের ডেমো; আপনি যা লিখবেন তা এই পাতার "
+"বাইরে যায় না।"
+
+#: templates/core/landing.html:0
+msgid ""
+"Teachers see averages and shuffled comments, never one person's answers."
+msgstr "শিক্ষকেরা গড় ও এলোমেলো করা মন্তব্য দেখেন, কখনও একজনের উত্তর নয়।"
+
+#: templates/core/landing.html:0
+msgid "The examples in class helped a lot."
+msgstr "ক্লাসের উদাহরণগুলো খুব সাহায্য করেছে।"
+
+#: templates/core/landing.html:0
+msgid "The round closes"
+msgstr "রাউন্ড শেষ হয়"
+
+#: templates/core/landing.html:0
+msgid "Try it"
+msgstr "নিজে চেষ্টা করুন"
+
+#: templates/core/landing.html:0
+msgid ""
+"We never keep your password itself, only a scrambled form that cannot be "
+"turned back."
+msgstr ""
+"আমরা আপনার পাসওয়ার্ড নিজে কখনও রাখি না, শুধু একটি এলোমেলো রূপ রাখি যা আর "
+"আগের রূপে ফেরানো যায় না।"
+
+#: templates/core/landing.html:0
+msgid "What makes it different"
+msgstr "কেন এটি আলাদা"
+
+#: templates/core/landing.html:0
+msgid "What the teacher sees"
+msgstr "শিক্ষক যা দেখেন"
+
+#: templates/core/landing.html:0
+msgid "With fewer than five responses, nothing would be shown."
+msgstr "পাঁচটির কম মতামত হলে কিছুই দেখানো হতো না।"
+
+#: templates/core/landing.html:0
+msgid "Your feedback"
+msgstr "আপনার মতামত"
+
+#: templates/core/landing.html:0
+msgid "+1 voice"
+msgstr "+1 মতামত"
+
+#: templates/accounts/login.html:0
+msgid "Demo accounts"
+msgstr "ডেমো অ্যাকাউন্ট"
+
+#: templates/accounts/login.html:0
+msgid "Demo accounts sign in with password only"
+msgstr "ডেমো অ্যাকাউন্ট শুধু পাসওয়ার্ড দিয়ে ঢোকে"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Development only: create the demo accounts and demo data (safe to run again). Refuses to run unless DEBUG is on and the settings module is config.settings.dev."
+msgstr "শুধু ডেভেলপমেন্টের জন্য: ডেমো অ্যাকাউন্ট ও ডেমো ডেটা তৈরি করে (আবার চালালে ক্ষতি নেই)। DEBUG চালু এবং সেটিংস মডিউল config.settings.dev না হলে চলে না।"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Demo data removed (%(count)d accounts)."
+msgstr "ডেমো ডেটা মুছে ফেলা হয়েছে (%(count)d টি অ্যাকাউন্ট)।"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Demo data is ready (%(count)d new forms submitted)."
+msgstr "ডেমো ডেটা প্রস্তুত (%(count)d টি নতুন ফর্ম জমা হয়েছে)।"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Demo accounts (add the key to an authenticator app: time-based, 6 digits):"
+msgstr "ডেমো অ্যাকাউন্ট (কীটি অথেনটিকেটর অ্যাপে যোগ করুন: সময়ভিত্তিক, ৬ অঙ্ক):"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "setup key"
+msgstr "সেটআপ কী"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "generated, shown only now"
+msgstr "তৈরি করা হয়েছে, শুধু এখনই দেখানো হচ্ছে"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "as given"
+msgstr "আপনার দেওয়া"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Password (%(note)s): %(password)s"
+msgstr "পাসওয়ার্ড (%(note)s): %(password)s"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Passwords are unchanged. Use --password or %(env)s to set them."
+msgstr "পাসওয়ার্ড বদলানো হয়নি। ঠিক করতে --password বা %(env)s ব্যবহার করুন।"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Current code of an account: python manage.py totp_code <username>"
+msgstr "অ্যাকাউন্টের বর্তমান কোড: python manage.py totp_code <username>"
+
+#: apps/core/management/commands/seed_demo.py:0
+msgid "Spare sign-up pairs (student ID + activation code, shown only now):"
+msgstr "সাইন-আপ পরীক্ষার অতিরিক্ত জোড়া (শিক্ষার্থী আইডি + অ্যাক্টিভেশন কোড, শুধু এখনই দেখানো হচ্ছে):"
+
+#: apps/core/services/demo/people.py:0
+msgid "The demo authenticator code was refused. Run the command again."
+msgstr "ডেমো অথেনটিকেটর কোড গ্রহণ করা হয়নি। কমান্ডটি আবার চালান।"
+
+#: apps/core/services/demo/academics.py:0
+msgid "The grade scale has no grade %(letters)s, which the demo results use."
+msgstr "গ্রেড স্কেলে %(letters)s গ্রেড নেই, অথচ ডেমো ফলাফলে তা ব্যবহৃত হয়।"
+
+#: apps/core/services/demo/runner.py:0
+msgid "The demo data only exists with DEBUG on and DJANGO_SETTINGS_MODULE=%(module)s."
+msgstr "ডেমো ডেটা শুধু DEBUG চালু এবং DJANGO_SETTINGS_MODULE=%(module)s হলে থাকে।"
+
+msgid "Winter"
+msgstr "উইন্টার"
+
+msgid "Summer"
+msgstr "সামার"
+
+msgid "Ongoing"
+msgstr "চলমান"
+
+msgid "Ended"
+msgstr "শেষ হয়েছে"
+
+msgid "season"
+msgstr "সিজন"
+
+msgid "Season"
+msgstr "সিজন"
+
+msgid "year"
+msgstr "বছর"
+
+msgid "The last day of the semester; promotion can start after it."
+msgstr "সেমিস্টারের শেষ দিন; এর পরেই প্রমোশন শুরু করা যায়।"
+
+msgid "This semester already exists."
+msgstr "এই সেমিস্টারটি আগে থেকেই আছে।"
+
+msgid "The first day of the semester. The seeded Summer 2026 starts on 1 July 2026 only as a placeholder: change it once the real date is known."
+msgstr "সেমিস্টারের প্রথম দিন। সিড করা সামার ২০২৬-এর শুরু ১ জুলাই ২০২৬ কেবল একটি অস্থায়ী তারিখ: আসল তারিখ জানা গেলে বদলে দিন।"
+
+msgid "These dates overlap %(names)s (%(start)s to %(end)s)."
+msgstr "এই তারিখগুলো %(names)s (%(start)s থেকে %(end)s)-এর সাথে মিলে যায়।"
+
+msgid "The feedback round “%(round)s” runs from %(opens)s to %(closes)s, which would fall outside the semester. Change the round first or keep these dates around it."
+msgstr "ফিডব্যাক রাউন্ড “%(round)s” চলে %(opens)s থেকে %(closes)s পর্যন্ত, যা সেমিস্টারের বাইরে পড়ে যাবে। আগে রাউন্ডটি বদলান, অথবা তারিখগুলো এমন রাখুন যাতে রাউন্ডটি ভেতরে থাকে।"
+
+msgid "Create next semester"
+msgstr "পরের সেমিস্টার তৈরি করুন"
+
+msgid "Promotion for %(semester)s can be applied after it ends on %(end)s."
+msgstr "%(semester)s-এর প্রমোশন %(end)s তারিখে সেমিস্টার শেষ হওয়ার পরে প্রয়োগ করা যাবে।"
+
+msgid "%(name)s ends on %(end)s. Promotion can be applied after that day; moving the end date moves this too."
+msgstr "%(name)s শেষ হবে %(end)s তারিখে। সেই দিনের পরে প্রমোশন প্রয়োগ করা যাবে; শেষের তারিখ বদলালে এটিও বদলে যায়।"
+
+msgid "%(name)s · ends %(end)s"
+msgstr "%(name)s · শেষ %(end)s"
+
+msgid "No semester is running today"
+msgstr "আজ কোনো সেমিস্টার চলছে না"
+
+msgid "level"
+msgstr "লেভেল"
+
+msgid "term"
+msgstr "টার্ম"
+
+msgid "This level and term already exist."
+msgstr "এই লেভেল ও টার্ম আগেই আছে।"
+
+msgid "Type the number, such as 2. It is shown as a Roman numeral (II)."
+msgstr "সংখ্যাটি লিখুন, যেমন 2। এটি রোমান সংখ্যায় (II) দেখানো হয়।"
+
+msgid "All my courses"
+msgstr "আমার সব কোর্স"
+
+msgid "No courses this semester"
+msgstr "এই সেমিস্টারে কোনো কোর্স নেই"
+
+msgid "The courses you teach in the running semester appear here."
+msgstr "চলমান সেমিস্টারে আপনি যে কোর্সগুলো পড়ান, সেগুলো এখানে দেখা যাবে।"
+
+msgid "Closes on %(when)s. Results appear after it closes."
+msgstr "%(when)s তারিখে শেষ হবে। শেষ হওয়ার পর ফলাফল দেখা যাবে।"
+
+msgid "Opens on %(when)s."
+msgstr "%(when)s তারিখে শুরু হবে।"
+
+msgid "Open the report"
+msgstr "রিপোর্ট খুলুন"
+
+msgid "No feedback round covers this course yet."
+msgstr "এখনো কোনো ফিডব্যাক রাউন্ড এই কোর্সটি অন্তর্ভুক্ত করেনি।"
+
+msgid "Fill in"
+msgstr "পূরণ করুন"
+
+msgid "Open now"
+msgstr "এখন চালু"
+
+msgid "Semester ends in"
+msgstr "সেমিস্টার শেষ হতে বাকি"
+
+msgid "Semester ended"
+msgstr "সেমিস্টার শেষ"
+
+msgctxt "days, abbreviated"
+msgid "d"
+msgstr "দিন"
+
+msgid "{days} days, {hours} hours, {minutes} minutes"
+msgstr "{days} দিন, {hours} ঘণ্টা, {minutes} মিনিট"

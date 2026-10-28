@@ -1496,6 +1496,44 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-btn);
   }
+  .setup-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .setup-steps li {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+  .setup-steps .step-dot {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+  .qr-panel {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    margin: 0;
+    padding: 16px;
+    background: var(--primary-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    text-align: center;
+  }
+  .qr-panel .qr {
+    background: var(--surface);
+  }
+  .id-chip {
+    display: grid;
+    gap: 2px;
+    padding: 12px 16px;
+    border: 1px dashed var(--border-input);
+    border-radius: var(--radius-btn);
+  }
   .callout {
     display: flex;
     gap: 10px;
@@ -1587,26 +1625,49 @@
     display: grid;
     gap: 12px;
   }
-  .countdown {
-    display: flex;
-    gap: 8px;
+  .live-countdown {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 8px;
   }
-  .countdown div {
-    background: var(--primary-soft);
-    border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
-    border-radius: var(--radius-btn);
-    padding: 8px 12px;
-    text-align: center;
-    min-width: 64px;
-    flex: 1;
-  }
-  .countdown b {
-    display: block;
-    font-size: var(--text-xl);
-  }
-  .countdown span {
-    font-size: var(--text-xs);
+  .live-countdown-label {
+    font-size: var(--text-sm);
+    font-weight: 400;
     color: var(--muted);
+  }
+  .live-countdown-value {
+    font-size: var(--text-xl);
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .live-countdown.is-done .live-countdown-value {
+    color: var(--muted);
+  }
+  .live-clock {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    padding-inline: 8px;
+    font-size: var(--text-sm);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .live-clock[hidden] {
+    display: none;
+  }
+  .live-clock-time {
+    color: var(--text);
+    font-weight: 600;
+  }
+  @media (max-width: 399px) {
+    .live-clock-date {
+      display: none;
+    }
+    .live-clock {
+      padding-inline: 4px;
+      font-size: var(--text-xs);
+    }
   }
   .course-list {
     display: grid;
@@ -2084,6 +2145,7 @@
     .sidebar,
     .bottom-nav,
     .no-print,
+    .auth-brand,
     .breadcrumb {
       display: none !important;
     }

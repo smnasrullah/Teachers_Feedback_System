@@ -33,8 +33,9 @@ from apps.academics.models import (
     PromotionOverride,
     PromotionRule,
     Semester,
+    SemesterStatus,
 )
-from apps.academics.services import gpa
+from apps.academics.services import gpa, semesters
 from apps.accounts.models import AcademicStatus, StudentProfile
 from apps.auditlog.services import audit
 from apps.enrollment.models import Enrollment, EnrollmentStatus
@@ -111,6 +112,11 @@ def decide(rule: RuleSnapshot, *, failed: int, cgpa: Decimal, credits: Decimal, 
     if last:
         return Outcome.RETAIN if failed else Outcome.GRADUATE
     return Outcome.PROMOTE_WITH_RETAKES if failed else Outcome.PROMOTE
+
+
+def has_ended(semester: Semester) -> bool:
+    """Promotion waits for the semester's last day to pass; moving the end date moves it too."""
+    return semester.status(semesters.today()) == SemesterStatus.ENDED
 
 
 def next_semester(semester: Semester) -> Semester | None:
@@ -297,8 +303,15 @@ def preview(semester: Semester) -> Preview:
 
 @transaction.atomic
 def apply(planned: Preview, *, actor, request=None) -> int:
-    """Apply ``planned`` exactly; returns how many students changed (0 when already applied)."""
+    """Apply ``planned`` exactly; returns how many students changed (0 when already applied).
+    Refused until the semester has ended."""
     semester = Semester.objects.get(pk=planned.semester_id)
+    if not has_ended(semester):
+        raise ValidationError(
+            _("Promotion for %(semester)s can be applied after it ends on %(end)s."),
+            code="not_ended",
+            params={"semester": semester.name, "end": semesters.short_date(semester.end_date)},
+        )
     by_student = {decision.student_profile_id: decision for decision in planned.decisions}
     profiles = {
         profile.pk: profile

@@ -1,63 +1,72 @@
-"""Sign-up stepper: ID + activation code -> contact -> OTP -> password.
+"""Sign-up stepper: ID + activation code -> password -> authenticator -> recovery codes.
 
 Each step is a partial swapped into ``#signup-step`` by HTMX; without JavaScript the same
-views answer with the full page. Progress lives in the session as the claimed registry row
-and the OTP challenge, and the current step is always derived from them.
+views answer with the full page. Progress lives in the session (the claimed registry row,
+the username to be, then the password hash and TOTP secret, both encrypted) and the current
+step is always derived from it. Nothing is written to the account tables before the first
+authenticator code checks out.
 """
 
-from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _lazy
+from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
 
 from apps.accounts import ratelimits
-from apps.accounts.auth_forms import ClaimForm, ContactForm, NewPasswordForm, OtpForm
-from apps.accounts.models import IdRegistry, IdType, OtpPurpose
-from apps.accounts.services import otp, signup
-from apps.core.permissions import Role, public
+from apps.accounts.auth_forms import ClaimForm, NewPasswordForm, TotpCodeForm
+from apps.accounts.models import IdRegistry
+from apps.accounts.services import signup, twofactor
+from apps.core.encryption import encrypt
+from apps.core.permissions import public
 
 STATE_KEY = "signup"
-STEPS = ("claim", "contact", "verify", "password")
+STEPS = ("claim", "password", "authenticator", "done")
 STEP_LABELS = (
     _lazy("ID and code"),
-    _lazy("Contact"),
-    _lazy("Verify"),
     _lazy("Password"),
+    _lazy("Authenticator"),
+    _lazy("Recovery codes"),
 )
 GENERIC_CLAIM_ERROR = _lazy(
     "The ID or code is not valid, or it has already been used. Check both and try again."
 )
 
 
-VERIFY_ERRORS = {
-    otp.VerifyStatus.WRONG: _lazy("That code is not correct."),
-    otp.VerifyStatus.EXPIRED: _lazy("This code has expired. Send a new code."),
-    otp.VerifyStatus.LOCKED: _lazy("Too many wrong attempts. Send a new code."),
-}
-
-
 def _too_many() -> str:
     return _("Too many attempts. Please wait a few minutes and try again.")
 
 
+def _state(request) -> dict:
+    return request.session.get(STATE_KEY) or {}
+
+
+def _save_state(request, **values) -> None:
+    request.session[STATE_KEY] = {**_state(request), **values}
+
+
 def _registry(request) -> IdRegistry | None:
-    pk = (request.session.get(STATE_KEY) or {}).get("registry")
-    return IdRegistry.objects.select_related("department").filter(pk=pk).first() if pk else None
+    pk = _state(request).get("registry")
+    if not pk:
+        return None
+    return IdRegistry.objects.select_related("department", "claimed_by").filter(pk=pk).first()
 
 
-def _challenge(request):
-    challenge_id = (request.session.get(STATE_KEY) or {}).get("challenge")
-    return otp.get_active(challenge_id, OtpPurpose.SIGNUP) if challenge_id else None
+def _secret(request) -> str:
+    """The authenticator secret for this sign-up (made on first view, then kept)."""
+    secret = signup.unseal(_state(request).get("secret"))
+    if secret is None:
+        secret = twofactor.new_secret()
+        _save_state(request, secret=encrypt(secret))
+    return secret
 
 
 def _stage(request) -> str:
     if _registry(request) is None:
         return "claim"
-    challenge = _challenge(request)
-    if challenge is None:
-        return "contact"
-    return "password" if otp.is_verified(challenge) else "verify"
+    if signup.unseal(_state(request).get("password")) is None:
+        return "password"
+    return "authenticator"
 
 
 def _render(request, stage: str, context: dict | None = None, status: int = 200):
@@ -81,13 +90,13 @@ def _render(request, stage: str, context: dict | None = None, status: int = 200)
 def _current(request, context: dict | None = None, status: int = 200):
     stage = _stage(request)
     context = dict(context or {})
-    if stage == "verify":
-        challenge = _challenge(request)
-        context.setdefault("form", OtpForm())
-        context["wait"] = otp.seconds_until_resend(challenge)
-        context["channel"] = challenge.channel
-    elif stage == "contact":
-        context.setdefault("form", ContactForm())
+    if stage == "authenticator":
+        secret = _secret(request)
+        username = _state(request)["username"]
+        context.setdefault("form", TotpCodeForm())
+        context["qr"] = twofactor.qr_data_uri(secret, username)
+        context["manual_key"] = twofactor.manual_key(secret)
+        context["username"] = username
     elif stage == "password":
         context.setdefault("form", NewPasswordForm())
     else:
@@ -116,75 +125,13 @@ def signup_claim(request):
             form.cleaned_data["registry_id"], form.cleaned_data["activation_code"]
         )
         if registry is not None:
-            request.session[STATE_KEY] = {"registry": registry.pk}
+            request.session[STATE_KEY] = {
+                "registry": registry.pk,
+                "username": signup.username_for(registry),
+            }
             return _current(request)
         form.add_error(None, GENERIC_CLAIM_ERROR)
     return _render(request, "claim", {"form": form})
-
-
-@require_http_methods(["GET", "POST"])
-@ratelimits.limited(ratelimits.session_subject, ip_rate="12/10m", subject_rate="6/15m")
-@public
-def signup_contact(request):
-    registry = _registry(request)
-    if registry is None:
-        return _current(request)
-    if request.method == "GET":
-        return _render(request, "contact", {"form": ContactForm()})
-    form = ContactForm(request.POST)
-    if request.limited:
-        form.add_error(None, _too_many())
-        return _render(request, "contact", {"form": form}, status=429)
-    if form.is_valid():
-        try:
-            challenge = signup.start_verification(registry, form.cleaned_data["contact"])
-        except ValidationError as error:
-            form.add_error("contact", error)
-        else:
-            request.session[STATE_KEY] = {"registry": registry.pk, "challenge": str(challenge.pk)}
-            return _current(request)
-    return _render(request, "contact", {"form": form})
-
-
-@require_http_methods(["GET", "POST"])
-@ratelimits.limited(ratelimits.session_subject, ip_rate="30/10m", subject_rate="12/15m")
-@public
-def signup_verify(request):
-    challenge = _challenge(request)
-    if request.method == "GET" or challenge is None:
-        return _current(request)
-    form = OtpForm(request.POST)
-    if request.limited:
-        form.add_error(None, _too_many())
-        return _current(request, {"form": form}, status=429)
-    if form.is_valid():
-        status, _checked = otp.verify(challenge.pk, OtpPurpose.SIGNUP, form.cleaned_data["code"])
-        if status is otp.VerifyStatus.OK:
-            return _current(request)
-        form.add_error("code", VERIFY_ERRORS[status])
-    return _current(request, {"form": form})
-
-
-@require_http_methods(["POST"])
-@ratelimits.limited(ratelimits.session_subject, ip_rate="12/10m", subject_rate="6/15m")
-@public
-def signup_resend(request):
-    challenge = _challenge(request)
-    if challenge is None:
-        return _current(request)
-    if request.limited:
-        return _current(request, {"notice": _too_many()}, status=429)
-    try:
-        otp.resend(challenge, challenge.destination)
-    except otp.ResendError as error:
-        if error.wait:
-            notice = _("Please wait %(seconds)d seconds before asking for a new code.") % {
-                "seconds": error.wait
-            }
-        else:
-            notice = _("No more codes can be sent. Start again.")
-        return _current(request, {"notice": notice})
-    return _current(request, {"notice": _("A new code was sent.")})
 
 
 @require_http_methods(["GET", "POST"])
@@ -192,25 +139,50 @@ def signup_resend(request):
 @public
 def signup_password(request):
     registry = _registry(request)
-    challenge = _challenge(request)
-    if registry is None or challenge is None or not otp.is_verified(challenge):
+    if request.method == "GET" or registry is None:
         return _current(request)
-    if request.method == "GET":
+    form = NewPasswordForm(request.POST, user=registry.claimed_by, role=signup.role_for(registry))
+    if request.limited:
+        form.add_error(None, _too_many())
+        return _render(request, "password", {"form": form}, status=429)
+    if form.is_valid():
+        password_hash = signup.hash_password(form.cleaned_data["password1"])
+        _save_state(request, password=encrypt(password_hash))
         return _current(request)
-    role = Role.STUDENT if registry.id_type == IdType.STUDENT else Role.TEACHER
-    form = NewPasswordForm(request.POST, role=role)
+    return _render(request, "password", {"form": form})
+
+
+@require_http_methods(["GET", "POST"])
+@ratelimits.limited(ratelimits.session_subject, ip_rate="30/10m", subject_rate="12/15m")
+@never_cache
+@public
+def signup_authenticator(request):
+    registry = _registry(request)
+    password_hash = signup.unseal(_state(request).get("password"))
+    if request.method == "GET" or registry is None or password_hash is None:
+        return _current(request)
+    form = TotpCodeForm(request.POST)
     if request.limited:
         form.add_error(None, _too_many())
         return _current(request, {"form": form}, status=429)
-    if form.is_valid():
-        try:
-            user = signup.create_account(
-                registry.pk, challenge.pk, form.cleaned_data["password1"], request=request
-            )
-        except signup.SignupError:
-            _restart(request)
-            notice = _("Sign-up could not be completed. Please start again.")
-            return _render(request, "claim", {"form": ClaimForm(), "error": notice})
+    if not form.is_valid():
+        return _current(request, {"form": form})
+    try:
+        result = signup.complete(
+            registry.pk,
+            username=_state(request)["username"],
+            password_hash=password_hash,
+            secret=_secret(request),
+            code=form.cleaned_data["code"],
+            request=request,
+        )
+    except signup.SignupError:
         _restart(request)
-        return _render(request, "password", {"username": user.username, "done": True})
-    return _current(request, {"form": form})
+        notice = _("Sign-up could not be completed. Please start again.")
+        return _render(request, "claim", {"form": ClaimForm(), "error": notice})
+    if result is None:
+        form.add_error("code", _("That code is not correct. Check the time on your phone."))
+        return _current(request, {"form": form})
+    user, codes = result
+    _restart(request)
+    return _render(request, "done", {"username": user.username, "codes": codes, "done": True})

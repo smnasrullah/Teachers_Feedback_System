@@ -1,0 +1,123 @@
+# Production stack for one Linux server; step-by-step guide in docs/DEPLOY.md.
+#   docker compose -f docker-compose.prod.yml up -d --build
+# Secrets come from .env next to this file (copied from .env.production.example, never committed).
+# Only Caddy publishes ports (80/443); PostgreSQL and Redis sit on an internal network.
+name: tfs
+
+x-app-env: &app-env
+  DJANGO_SETTINGS_MODULE: config.settings.prod
+  DJANGO_ALLOWED_HOSTS: ${DOMAIN:?Set DOMAIN in .env}
+  DJANGO_CSRF_TRUSTED_ORIGINS: https://${DOMAIN}
+  SITE_URL: https://${DOMAIN}
+  DATABASE_URL: postgres://${POSTGRES_USER:-tfs}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:-tfs}
+  CACHE_URL: redis://redis:6379/2
+  CELERY_BROKER_URL: redis://redis:6379/0
+  CELERY_RESULT_BACKEND: redis://redis:6379/1
+  MEDIA_ROOT: /app/media
+  TRUSTED_PROXY_COUNT: "1"
+
+x-app: &app
+  build: .
+  image: tfs-app:latest
+  restart: unless-stopped
+  env_file: .env
+  environment: *app-env
+  networks: [backend, egress]
+
+services:
+  web:
+    <<: *app
+    environment:
+      <<: *app-env
+      RUN_MIGRATIONS: "1"
+    volumes:
+      - media:/app/media
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "docker/healthcheck.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  worker:
+    <<: *app
+    command: ["celery", "-A", "config", "worker", "--loglevel=info"]
+    volumes:
+      - media:/app/media
+    depends_on:
+      web:
+        condition: service_healthy
+
+  beat:
+    <<: *app
+    command: ["celery", "-A", "config", "beat", "--loglevel=info", "--schedule=/tmp/celerybeat-schedule"]
+    networks: [backend]
+    depends_on:
+      web:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-tfs}
+      POSTGRES_USER: ${POSTGRES_USER:-tfs}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [backend]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+    networks: [backend]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN in .env}
+      ACME_EMAIL: ${ACME_EMAIL:?Set ACME_EMAIL in .env}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - media:/srv/media:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [egress]
+    depends_on:
+      web:
+        condition: service_healthy
+
+networks:
+  # No route to the internet and nothing published: only the app containers reach db and redis.
+  backend:
+    internal: true
+  # Caddy <-> web, and outgoing mail / certificate requests.
+  egress: {}
+
+volumes:
+  pgdata:
+  redisdata:
+  media:
+  caddy_data:
+  caddy_config:

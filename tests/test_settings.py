@@ -1,11 +1,4 @@
-import os
-import secrets
-import subprocess
-import sys
-from pathlib import Path
-
 import pytest
-from cryptography.fernet import Fernet
 from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
@@ -15,8 +8,7 @@ from django.core.exceptions import ValidationError
 from apps.core.net import UNKNOWN_IP, client_ip
 from apps.core.permissions import Role
 from tests.factories import make_user
-
-BASE_DIR = Path(settings.BASE_DIR)
+from tests.prod_env import run_manage, shell
 
 
 def test_argon2id_is_the_primary_hasher():
@@ -68,38 +60,11 @@ def test_client_ip_trusts_only_configured_proxies(rf, settings, proxies, meta, e
     assert client_ip(request) == expected
 
 
-def run_with_prod_settings(*args):
-    env = {
-        **os.environ,
-        "DJANGO_SETTINGS_MODULE": "config.settings.prod",
-        "DJANGO_SECRET_KEY": secrets.token_urlsafe(64),
-        "DJANGO_ALLOWED_HOSTS": "feedback.example.edu",
-        "DATABASE_URL": "sqlite:///:memory:",
-        "CACHE_URL": "redis://127.0.0.1:6379/9",
-        "FIELD_ENCRYPTION_KEYS": Fernet.generate_key().decode(),
-        "BLIND_INDEX_KEY": secrets.token_urlsafe(48),
-    }
-    return subprocess.run(  # noqa: S603 - fixed argv, no shell
-        [sys.executable, "manage.py", *args],
-        cwd=BASE_DIR,
-        env=env,
-        capture_output=True,
-        text=True,
-        timeout=120,
-        check=False,
-    )
-
-
 def test_prod_settings_pass_deploy_checks():
-    result = run_with_prod_settings("check", "--deploy", "--fail-level", "WARNING")
+    result = run_manage("check", "--deploy", "--fail-level", "WARNING")
     assert result.returncode == 0, result.stdout + result.stderr
 
 
 def test_django_admin_not_installed_in_prod():
-    result = run_with_prod_settings(
-        "shell",
-        "-c",
-        "from django.apps import apps; print(apps.is_installed('django.contrib.admin'))",
-    )
-    assert result.returncode == 0, result.stderr
-    assert result.stdout.strip().endswith("False")
+    code = "from django.apps import apps; print(apps.is_installed('django.contrib.admin'))"
+    assert shell(code) == "False"

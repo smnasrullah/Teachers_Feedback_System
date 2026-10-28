@@ -1,15 +1,21 @@
-"""Signed-in account actions: password change, sign out everywhere, 2FA on/off, session list."""
+"""Signed-in account actions: password change, sign out everywhere, authenticator, sessions."""
 
+import time
+
+from django.conf import settings
 from django.contrib.auth import logout, update_session_auth_hash
-from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.utils.translation import gettext as _
 
 from apps.accounts.models import User
 from apps.accounts.services import twofactor
 from apps.accounts.services.passwords import validate_account_password
 from apps.auditlog.services import audit
+from apps.core.encryption import DecryptionError, decrypt, encrypt
 from apps.core.models import ActiveSession
+from apps.core.services import sessions
+
+# The new authenticator's secret, encrypted, while the person scans it.
+DEVICE_CHANGE_KEY = "_tfs_device_change"
 
 
 def active_sessions(user: User) -> list[ActiveSession]:
@@ -90,20 +96,11 @@ def enable_two_factor(request, user: User, code: str) -> list[str] | None:
     return codes
 
 
-@transaction.atomic
-def disable_two_factor(request, user: User) -> None:
-    if user.requires_second_factor:
-        raise ValidationError(
-            _("Two-factor authentication is required for your role."), code="2fa_required"
-        )
-    twofactor.disable(user)
-    audit.record(
-        "auth.twofactor_disabled",
-        request=request,
-        actor=user,
-        target=user,
-        department_id=user.department_id,
-    )
+def reauthenticate(user: User, password: str, code: str) -> bool:
+    """Password and a current authenticator code, both checked, before a sensitive change."""
+    password_ok = user.check_password(password)
+    code_ok = twofactor.verify_totp(user, code) if password_ok else False
+    return password_ok and code_ok
 
 
 def regenerate_recovery_codes(request, user: User) -> list[str]:
@@ -116,3 +113,41 @@ def regenerate_recovery_codes(request, user: User) -> list[str]:
         department_id=user.department_id,
     )
     return codes
+
+
+def start_device_change(request) -> str:
+    """Remember a new secret (encrypted, in this session) for the authenticator being set up."""
+    secret = twofactor.new_secret()
+    request.session[DEVICE_CHANGE_KEY] = {"secret": encrypt(secret), "at": int(time.time())}
+    return secret
+
+
+def pending_device_secret(request) -> str | None:
+    state = request.session.get(DEVICE_CHANGE_KEY)
+    if not state:
+        return None
+    if int(time.time()) - state.get("at", 0) > settings.SECOND_FACTOR_PENDING_SECONDS:
+        request.session.pop(DEVICE_CHANGE_KEY, None)
+        return None
+    try:
+        return decrypt(state["secret"])
+    except (DecryptionError, KeyError):
+        request.session.pop(DEVICE_CHANGE_KEY, None)
+        return None
+
+
+def finish_device_change(request, user: User, code: str) -> bool:
+    """Switch to the new authenticator once a code from it checks out."""
+    secret = pending_device_secret(request)
+    if secret is None or not twofactor.replace_secret(user, secret, code):
+        return False
+    request.session.pop(DEVICE_CHANGE_KEY, None)
+    sessions.mark_second_factor(request)
+    audit.record(
+        "auth.authenticator_changed",
+        request=request,
+        actor=user,
+        target=user,
+        department_id=user.department_id,
+    )
+    return True

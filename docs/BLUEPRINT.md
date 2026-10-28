@@ -11,7 +11,7 @@ Visual source of truth: `design/*.html` (open in a browser). Tokens in §6 are W
 | Jobs | Celery + Redis | Reminders, window notices. Window open/closed is **computed from datetimes at request time**, never trusted to a job |
 | Passwords | Argon2id | Strongest default |
 | Field encryption | Fernet (MultiFernet for rotation) + separate HMAC key for blind-index lookups | Student/teacher ID, contacts, names, free text, drafts |
-| 2FA | TOTP (`pyotp`) mandatory for **Admin and HOD**, optional for others | They can see Student IDs / all data |
+| 2FA | TOTP (`pyotp`) authenticator app mandatory for **every role**; 8 hashed single-use recovery codes; no e-mail/SMS codes | Works offline, no SMS/e-mail cost, no contact data needed for auth |
 | Abuse control | django-axes + django-ratelimit (Redis cache) | Lockout + throttling |
 | Answer filter | 3 layers: word-list/regex (EN+BN+Banglish) → junk heuristics → optional AI classifier (pluggable, OFF by default) + PII scrubber | Local-first protects privacy |
 | Exports | openpyxl, WeasyPrint (server-rendered SVG/CSS charts, no JS), csv (UTF-8 BOM, formula-injection safe) | Excel/PDF/CSV |
@@ -25,7 +25,7 @@ Visual source of truth: `design/*.html` (open in a browser). Tokens in §6 are W
 flowchart TD
   A[Admin: dept, program, level/term, semester, courses] --> B[Admin: import Student/Teacher ID registry + activation codes]
   B --> C[Admin: assign teacher to offering, enroll students by level/term]
-  C --> D[User signup: ID + activation code match, OTP verify, unique username issued]
+  C --> D[User signup: ID + activation code match, password, authenticator enrolled, unique username issued]
   D --> E[Admin: open feedback window / round]
   E --> F[Student dashboard: only enrolled courses + teachers]
   F --> G[Form: all required questions answered]
@@ -45,11 +45,11 @@ TFS
 ├── F1 Identity & Access
 │   ├── Roles Student/Teacher/Admin + HOD flag (department-scoped)
 │   ├── ID registry: admin pre-registers Student IDs + Teacher IDs (+ dept/level/term) and one-time activation codes
-│   ├── Signup only if ID matches + unclaimed + activation code valid; OTP verify contact; set password
-│   ├── Unique non-guessable username per ID (immutable); editable nickname only; "forgot username" via OTP
+│   ├── Signup only if ID matches + unclaimed + activation code valid; set password; enrol authenticator (QR) and verify the first code; 8 recovery codes shown once
+│   ├── Unique non-guessable username per ID (immutable); editable nickname only; forgotten username: ask the department/Admin (shown on the account page)
 │   ├── Student ID (and optional full name) visible to Admin + HOD of the student's own department only
-│   ├── Login: Argon2, lockout, rate limit, single session, idle timeout, TOTP for Admin/HOD
-│   └── Password reset via OTP, strong password policy, session list, "log out everywhere"
+│   ├── Login: Argon2 password then TOTP (or recovery code) for every role, lockout, rate limit, single session, idle timeout
+│   └── Password reset with username + TOTP/recovery code; lost phone: Admin "Reset access" (new activation code, re-enrol); strong password policy, session list, "log out everywhere"
 ├── F2 Academic Management (Admin does everything)
 │   ├── Department, Program, Level/Term, Semester (one current), Course (theory/lab, belongs to a level/term)
 │   ├── CourseOffering = course + semester + teacher + section
@@ -98,7 +98,7 @@ TFS
 
 **HOD / Admin** → `design/admin_dashboard.html` (HOD uses the same layout, department-scoped): stat tiles → teacher ranking → category heatmap → pending list (Student ID visible) → quick actions → recent audit → moderation queue.
 
-Pages: landing, login, signup stepper (ID+code → OTP → password), forgot password/username, dashboards per role, management screens, audit log, settings, 403/404/500.
+Pages: landing, login, signup stepper (ID+code → password → authenticator → recovery codes), forgot password/username, dashboards per role, management screens, audit log, settings, 403/404/500.
 
 ## §5 Data, anonymity, permissions
 ### §5.1 Entities
@@ -155,7 +155,7 @@ Edge rules: an offering's **department = `course.department`**; HOD scope follow
 ### §5.4 Threat model (checked in P20)
 | Threat | Mitigation |
 |---|---|
-| Account squatting (someone claims another student's ID) | Single-use hashed activation code + OTP; admin can revoke a claim |
+| Account squatting (someone claims another student's ID) | Single-use hashed activation code + authenticator enrolment; admin can revoke a claim |
 | Proxy submitting | Re-auth at submit, single session, new-device notice, rate limit, audit |
 | De-anonymising via time/order/ids | A1–A5, no timestamps, UUIDs, stable shuffle, results after close |
 | User/ID enumeration | Generic messages, constant-time work, throttling |
@@ -163,7 +163,7 @@ Edge rules: an offering's **department = `course.department`**; HOD scope follow
 | XSS via comments | Auto-escape, strict CSP with nonces, no inline JS, Alpine CSP build |
 | CSV/Excel formula injection | Prefix `'` on cells starting `= + - @` in exports; sanitise on import |
 | Malicious upload (avatar) | Type sniff, size cap, Pillow re-encode, strip EXIF, random file name |
-| Secret/PII in logs | Log scrubber filter; never log OTP/passwords/feedback |
+| Secret/PII in logs | Log scrubber filter; never log TOTP codes/secrets, recovery or activation codes, passwords, feedback |
 | Audit tampering | Append-only model, DB-level revoke of UPDATE/DELETE where possible, hash-chained rows |
 | Brute force | axes lockout + ratelimit + Argon2 |
 | Key loss/leak | Key rotation command, keys only in env, documented backup |
@@ -196,13 +196,13 @@ Fonts: Plus Jakarta Sans (EN), Hind Siliguri (BN) — **self-hosted woff2** (fil
 ## §7 Working tree
 ```
 Teachers_Feedback_System/
-├── CLAUDE.md  manage.py  pyproject.toml  Makefile  scripts/dev.ps1  Dockerfile  docker-compose.yml
+├── CLAUDE.md  manage.py  pyproject.toml  Makefile  scripts/dev.ps1  Dockerfile  docker-compose.prod.yml
 ├── .env.example  .gitignore  .gitattributes  .editorconfig  .pre-commit-config.yaml  .github/workflows/ci.yml
 ├── requirements/{base,dev,prod}.txt
 ├── config/{settings/{base,dev,prod}.py, urls.py, celery.py}
 ├── apps/
 │   ├── core/{encryption.py, permissions.py, middleware.py, logging.py, templatetags/}
-│   ├── accounts/{models.py, services/{signup,otp,username,student_id_policy,totp}.py, views/, forms.py}
+│   ├── accounts/{models.py, services/{signup,twofactor,recovery,username,student_id_policy}.py, views/, forms.py}
 │   ├── academics/{models.py, services/{importers,promotion}.py, views/}
 │   ├── enrollment/
 │   ├── feedback/{models.py, services/{submit,filter,anonymity}.py, views/, management/commands/load_questions.py}
@@ -233,4 +233,4 @@ Teachers_Feedback_System/
 | Earlier GitHub issues #1–#24 (+#19 HOD dashboard) | all, nothing missed |
 
 ## §9 Assumptions — confirm or change before building
-1. "kali/gali" = abusive/vulgar words. 2. "Once" means **once per course per round**; if you want once per semester, create only one round. 3. One teacher per offering; theory+lab or co-taught = separate offerings. 4. HOD is a teacher with `is_hod`; sees offerings whose **course department** is theirs. 5. Teachers/HOD see results only after the round closes. 6. `MIN_RESPONSES=5`. 7. Students need an activation code (printed/sent by admin) plus OTP. 8. Admin and HOD must use TOTP 2FA. 9. Default language Bangla, timezone Asia/Dhaka. 10. Full name is optional and follows the Student-ID visibility rule. 11. Editing an already-answered question creates a new version.
+1. "kali/gali" = abusive/vulgar words. 2. "Once" means **once per course per round**; if you want once per semester, create only one round. 3. One teacher per offering; theory+lab or co-taught = separate offerings. 4. HOD is a teacher with `is_hod`; sees offerings whose **course department** is theirs. 5. Teachers/HOD see results only after the round closes. 6. `MIN_RESPONSES=5`. 7. Students need an activation code (printed/sent by admin) plus an authenticator app. 8. Every role must use TOTP 2FA. 9. Default language Bangla, timezone Asia/Dhaka. 10. Full name is optional and follows the Student-ID visibility rule. 11. Editing an already-answered question creates a new version.

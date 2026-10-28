@@ -17,8 +17,11 @@ from apps.academics.models import (
     GradeScale,
     LevelTerm,
     Program,
+    Season,
     Semester,
+    SemesterStatus,
 )
+from apps.academics.services import semesters
 from apps.core.forms import StyledFormMixin
 
 YES_NO = [("", _("All")), ("1", _("Yes")), ("0", _("No"))]
@@ -73,6 +76,9 @@ class Screen:
     select_related: tuple[str, ...] = ()
     department_of: Callable[[Model], int | None] | None = None
     icon: str = "list"
+    # Pre-filled values for the "add next" shortcut, with its button label.
+    suggest: Callable[[], dict] | None = None
+    suggest_label: str = ""
 
     def queryset(self) -> QuerySet:
         return self.model.objects.select_related(*self.select_related)
@@ -174,9 +180,8 @@ SCREENS: dict[str, Screen] = {
             columns=(
                 Column(_("Order"), lambda o: str(o.order), numeric=True),
                 Column(_("Name"), lambda o: o.name),
-                Column(_("Name (Bangla)"), lambda o: o.name_bn or "—"),
+                Column(_("Name (Bangla)"), lambda o: o.name_bn),
             ),
-            search=("name", "name_bn"),
             icon="list",
         ),
         Screen(
@@ -187,13 +192,19 @@ SCREENS: dict[str, Screen] = {
             singular=_("semester"),
             columns=(
                 Column(_("Name"), lambda o: o.name),
-                Column(_("Start date"), lambda o: o.start_date.isoformat(), numeric=True),
-                Column(_("End date"), lambda o: o.end_date.isoformat(), numeric=True),
-                Column(_("Current"), lambda o: yes_no(o.is_current)),
+                Column(_("Start date"), lambda o: semesters.short_date(o.start_date), numeric=True),
+                Column(_("End date"), lambda o: semesters.short_date(o.end_date), numeric=True),
+                Column(
+                    _("Status"),
+                    lambda o: str(SemesterStatus(o.status(semesters.today())).label),
+                ),
             ),
-            search=("name",),
-            filters=(Filter("current", _("Current"), "is_current", boolean=True),),
+            filters=(
+                Filter("season", _("Season"), "season", choices=[("", _("All")), *Season.choices]),
+            ),
             icon="calendar",
+            suggest=semesters.suggest_next,
+            suggest_label=_("Create next semester"),
         ),
         Screen(
             key="courses",
@@ -208,7 +219,7 @@ SCREENS: dict[str, Screen] = {
                 Column(_("Type"), lambda o: o.get_course_type_display()),
                 Column(_("Department"), lambda o: o.department.code),
                 Column(_("Program"), lambda o: o.program.code),
-                Column(_("Level/term"), lambda o: o.level_term.name),
+                Column(_("Level/term"), lambda o: str(o.level_term)),
                 Column(_("Elective"), lambda o: yes_no(o.is_elective)),
             ),
             search=("code", "title", "title_bn"),

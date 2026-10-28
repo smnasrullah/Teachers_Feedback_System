@@ -510,7 +510,7 @@ class TestHome:
         flagged_answer(open_round)
         body = page(admin_client, reverse("accounts:dashboard_admin"))
         assert "Registered users" in body
-        assert "Round closes in" in body
+        assert "Closes in" in body and "data-countdown-to=" in body
         assert "Comments to review" in body
         for name in (
             "academics:import_index",
@@ -620,16 +620,18 @@ class TestAnalytics:
         assert "CSE999" not in body
 
     def test_the_round_and_semester_filters_pick_the_round(self, admin_client, closed):
-        later = make_semester("Fall 2026", start_date=date(2026, 7, 1), end_date=date(2026, 12, 31))
+        later = make_semester(
+            season="summer", year=2026, start_date=date(2026, 7, 1), end_date=date(2026, 12, 31)
+        )
         later_window = make_window(later, name="Final", **CLOSED)
         body = page(admin_client, reverse("reports:analytics"), round=later_window.pk)
-        assert "Fall 2026, Final" in body
+        assert "Summer 2026, Final" in body
         body = page(admin_client, reverse("reports:analytics"), semester=closed.semester.pk)
         assert closed.window.name in body
-        assert "Fall 2026, Final" not in body
+        assert "Summer 2026, Final" not in body
 
     def test_a_round_of_another_semester_is_an_error(self, admin_client, closed):
-        later = make_semester("Fall 2026", start_date=date(2026, 7, 1), end_date=date(2026, 12, 31))
+        later = make_semester(start_date=date(2026, 7, 1), end_date=date(2026, 12, 31))
         make_window(later, name="Final", **CLOSED)
         body = page(
             admin_client,

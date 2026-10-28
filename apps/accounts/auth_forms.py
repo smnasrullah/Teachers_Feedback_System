@@ -1,4 +1,4 @@
-"""Forms for sign-up, login, two-factor, recovery and password change.
+"""Forms for sign-up, login, the authenticator, password recovery and password change.
 
 Validation here is user experience only; the services re-check everything.
 """
@@ -10,18 +10,32 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.forms import StyledForm
 from apps.accounts.models import Theme
-from apps.accounts.services import otp, signup, twofactor
+from apps.accounts.services import twofactor
 from apps.accounts.services.passwords import validate_account_password
 from apps.core.uploads import SafeImageField
 
 NICKNAME_MAX_LENGTH = 50
 
-OTP_ATTRS = {
+CODE_ATTRS = {
     "inputmode": "numeric",
     "autocomplete": "one-time-code",
     "maxlength": "12",
     "class": "input otp-input num",
 }
+SECOND_FACTOR_ATTRS = {
+    "autocomplete": "one-time-code",
+    "inputmode": "text",
+    "autocapitalize": "characters",
+    "spellcheck": "false",
+    "class": "input num",
+}
+
+
+class CodeInput(forms.TextInput):
+    """A one-time code field that never echoes a submitted code back into the page."""
+
+    def format_value(self, value):
+        return None
 
 
 class ClaimForm(StyledForm):
@@ -36,35 +50,6 @@ class ClaimForm(StyledForm):
         help_text=_("The code your department gave you, like XXXX-XXXX-XXXX."),
         widget=forms.TextInput(attrs={"autocomplete": "off", "autocapitalize": "characters"}),
     )
-
-
-class ContactForm(StyledForm):
-    contact = forms.CharField(
-        label=_("E-mail address"),
-        max_length=254,
-        help_text=_("We send a 6-digit code here. It is also used to recover your account."),
-        widget=forms.TextInput(attrs={"autocomplete": "email", "inputmode": "email"}),
-    )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if otp.sms_enabled():
-            self.fields["contact"].label = _("E-mail address or phone number")
-
-    def clean_contact(self):
-        return signup.parse_contact(self.cleaned_data["contact"])
-
-
-class OtpForm(StyledForm):
-    code = forms.CharField(
-        label=_("6-digit code"), max_length=12, widget=forms.TextInput(attrs=OTP_ATTRS)
-    )
-
-    def clean_code(self):
-        code = otp.normalize_code(self.cleaned_data["code"])
-        if len(code) != otp.CODE_LENGTH:
-            raise ValidationError(_("Enter the 6-digit code."), code="invalid")
-        return code
 
 
 class NewPasswordForm(StyledForm):
@@ -114,14 +99,13 @@ class LoginForm(StyledForm):
 
 
 class SecondFactorForm(StyledForm):
-    """A six-digit authenticator code, or (where allowed) a recovery code."""
+    """A six-digit authenticator code or a recovery code."""
 
     code = forms.CharField(
         label=_("Authenticator code"),
         max_length=32,
-        widget=forms.TextInput(
-            attrs={"autocomplete": "one-time-code", "inputmode": "text", "class": "input num"}
-        ),
+        help_text=_("The 6-digit code from your authenticator app, or one recovery code."),
+        widget=CodeInput(attrs=SECOND_FACTOR_ATTRS),
     )
 
     def clean_code(self):
@@ -132,24 +116,19 @@ class TotpCodeForm(SecondFactorForm):
     code = forms.CharField(
         label=_("6-digit code from the app"),
         max_length=12,
-        widget=forms.TextInput(attrs=OTP_ATTRS),
+        widget=CodeInput(attrs=CODE_ATTRS),
     )
 
 
-class ForgotPasswordForm(StyledForm):
-    identifier = forms.CharField(
-        label=_("Username or ID"),
+class ForgotPasswordForm(SecondFactorForm):
+    username = forms.CharField(
+        label=_("Username"),
         max_length=64,
-        widget=forms.TextInput(attrs={"autocomplete": "username", "autocapitalize": "none"}),
+        widget=forms.TextInput(
+            attrs={"autocomplete": "username", "autocapitalize": "none", "spellcheck": "false"}
+        ),
     )
-
-
-class ForgotUsernameForm(StyledForm):
-    registry_id = forms.CharField(
-        label=_("Student or teacher ID"),
-        max_length=40,
-        widget=forms.TextInput(attrs={"autocomplete": "off", "autocapitalize": "characters"}),
-    )
+    field_order = ["username", "code"]
 
 
 class PasswordChangeForm(NewPasswordForm):
@@ -168,8 +147,8 @@ class PasswordChangeForm(NewPasswordForm):
         return password
 
 
-class ConfirmPasswordForm(StyledForm):
-    """Re-authentication before a sensitive 2FA change."""
+class ReauthForm(TotpCodeForm):
+    """Password and a current authenticator code before a sensitive change (the service checks)."""
 
     password = forms.CharField(
         label=_("Your password"),
@@ -177,16 +156,7 @@ class ConfirmPasswordForm(StyledForm):
         max_length=256,
         widget=forms.PasswordInput(attrs={"autocomplete": "current-password"}),
     )
-
-    def __init__(self, *args, user, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.user = user
-
-    def clean_password(self):
-        password = self.cleaned_data["password"]
-        if not self.user.check_password(password):
-            raise ValidationError(_("The password is not correct."), code="invalid")
-        return password
+    field_order = ["password", "code"]
 
 
 class ProfileForm(StyledForm):

@@ -15,9 +15,11 @@
   {% block pre_alpine %}{% endblock %}
   <script src="{% static 'vendor/alpine-csp.min.js' %}" nonce="{{ csp_nonce }}" defer></script>
   <script src="{% static 'js/ui.js' %}" nonce="{{ csp_nonce }}" defer></script>
+  <script src="{% static 'js/clock_core.js' %}" nonce="{{ csp_nonce }}" defer></script>
+  <script src="{% static 'js/clock.js' %}" nonce="{{ csp_nonce }}" defer></script>
   {% block head %}{% endblock %}
 </head>
-<body class="bg-bg text-text min-h-screen antialiased">
+<body class="bg-bg text-text min-h-screen antialiased" data-server-now="{{ server_now }}" data-time-url="{% url 'core:server_time' %}">
   <a class="skip" href="#main">{% translate "Skip to content" %}</a>
   {% include "components/icon_sprite.html" %}
   {% block body %}<main id="main" tabindex="-1">{% block content %}{% endblock %}</main>{% endblock %}

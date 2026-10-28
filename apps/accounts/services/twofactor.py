@@ -1,8 +1,9 @@
 """TOTP (RFC 6238) enrolment and verification, plus single-use recovery codes.
 
-The secret is encrypted at rest and shown once at enrolment. A TOTP code is accepted at
-most once (``totp_last_step`` only moves forward); recovery codes are stored as keyed
-hashes and burned on use. Nothing here logs a secret or a code.
+Every account signs in with an authenticator app. The secret is encrypted at rest and shown
+only while enrolling. A TOTP code is accepted at most once (``totp_last_step`` only moves
+forward); recovery codes are stored as keyed hashes and burned on use. Nothing here logs a
+secret or a code.
 """
 
 import hmac
@@ -31,6 +32,8 @@ TOTP_DIGITS = 6
 # A QR code must be dark on light to scan, whatever the page theme.
 QR_DARK = "#000000"
 QR_LIGHT = "#ffffff"
+# Checked when there is no account (or no authenticator), so a miss costs the same work.
+_DECOY_SECRET = pyotp.random_base32()
 
 
 @dataclass(frozen=True)
@@ -52,54 +55,68 @@ def _totp(secret: str) -> pyotp.TOTP:
     return pyotp.TOTP(secret, digits=TOTP_DIGITS, interval=STEP_SECONDS)
 
 
+def new_secret() -> str:
+    return pyotp.random_base32()
+
+
 def begin_enrolment(user: User) -> str:
     """Give ``user`` a not-yet-active secret (the same one until it is confirmed)."""
     if user.totp_enabled:
         raise ValueError("Two-factor authentication is already enabled.")
     if not user.totp_secret:
-        user.totp_secret = pyotp.random_base32()
+        user.totp_secret = new_secret()
         user.totp_last_step = 0
         user.save(update_fields=["totp_secret", "totp_last_step"])
     return user.totp_secret
 
 
-def provisioning_uri(user: User) -> str:
-    return _totp(user.totp_secret).provisioning_uri(
-        name=user.username, issuer_name=settings.TOTP_ISSUER
-    )
+def provisioning_uri(secret: str, account_name: str) -> str:
+    return _totp(secret).provisioning_uri(name=account_name, issuer_name=settings.TOTP_ISSUER)
 
 
-def qr_data_uri(user: User) -> str:
+def qr_data_uri(secret: str, account_name: str) -> str:
     """The enrolment QR code as an inline SVG image (allowed by the CSP's ``img-src data:``)."""
-    code = segno.make(provisioning_uri(user), error="m")
+    code = segno.make(provisioning_uri(secret, account_name), error="m")
     return code.svg_data_uri(scale=5, border=2, dark=QR_DARK, light=QR_LIGHT)
 
 
-def manual_key(user: User) -> str:
+def manual_key(secret: str) -> str:
     """The secret in groups of four, for typing into an authenticator by hand."""
-    secret = user.totp_secret
     return " ".join(secret[i : i + 4] for i in range(0, len(secret), 4))
 
 
-def _matching_step(secret: str, code: str, after: int) -> int | None:
-    """The time step ``code`` is valid for (later than ``after``), checked in constant time."""
+def current_code(secret: str) -> str:
+    """The code an authenticator shows right now (the development ``totp_code`` command)."""
+    return _totp(secret).now()
+
+
+def matching_step(secret: str, code: str, after: int = 0) -> int | None:
+    """The time step ``code`` is valid for (later than ``after``), checked in constant time.
+
+    The current step and one either side are accepted, so a phone clock a little off works.
+    """
+    code = normalize_code(code)
+    if len(code) != TOTP_DIGITS or not code.isdigit():
+        code = "0" * TOTP_DIGITS
+        after = None
     totp = _totp(secret)
     now_step = int(time.time()) // STEP_SECONDS
     found = None
     for step in range(now_step - WINDOW_STEPS, now_step + WINDOW_STEPS + 1):
-        if hmac.compare_digest(totp.at(step * STEP_SECONDS), code) and step > after:
+        same = hmac.compare_digest(totp.at(step * STEP_SECONDS), code)
+        if same and after is not None and step > after:
             found = step
     return found
 
 
 def verify_totp(user: User, code: str) -> bool:
     """Accept a current 6-digit code once; a replay of the same code fails."""
-    code = normalize_code(code)
-    if len(code) != TOTP_DIGITS or not code.isdigit() or not user.totp_secret:
+    if not user.totp_secret:
+        matching_step(_DECOY_SECRET, code)
         return False
     with transaction.atomic():
         locked = User.objects.select_for_update().get(pk=user.pk)
-        step = _matching_step(locked.totp_secret, code, locked.totp_last_step)
+        step = matching_step(locked.totp_secret, code, locked.totp_last_step)
         if step is None:
             return False
         locked.totp_last_step = step
@@ -148,7 +165,37 @@ def confirm_enrolment(user: User, code: str) -> list[str] | None:
         return _issue_recovery_codes(user)
 
 
-def disable(user: User) -> None:
+def activate(user: User, secret: str, step: int) -> list[str]:
+    """Install a confirmed secret (``step`` = the code that confirmed it); new recovery codes.
+
+    The caller holds the transaction: sign-up creates or re-enrols the account in the same one.
+    """
+    user.totp_secret = secret
+    user.totp_enabled = True
+    user.totp_last_step = step
+    user.save(update_fields=["totp_secret", "totp_enabled", "totp_last_step"])
+    return _issue_recovery_codes(user)
+
+
+@transaction.atomic
+def replace_secret(user: User, secret: str, code: str) -> bool:
+    """Move the account to a new authenticator once ``code`` from it checks out.
+
+    The recovery codes stay valid: they belong to the account, not to the phone.
+    """
+    step = matching_step(secret, code)
+    if step is None:
+        return False
+    locked = User.objects.select_for_update().get(pk=user.pk)
+    locked.totp_secret = secret
+    locked.totp_last_step = step
+    locked.save(update_fields=["totp_secret", "totp_last_step"])
+    user.totp_secret, user.totp_last_step = secret, step
+    return True
+
+
+def clear(user: User) -> None:
+    """Forget the authenticator and every recovery code (the admin's "reset access")."""
     with transaction.atomic():
         user.recovery_codes.all().delete()
         user.totp_secret = None
@@ -168,8 +215,15 @@ def use_recovery_code(user: User, code: str) -> bool:
     return burned == 1
 
 
-def check_second_factor(user: User, code: str) -> SecondFactor:
-    """A TOTP code or a recovery code, whichever ``code`` is."""
+def check_second_factor(user: User | None, code: str) -> SecondFactor:
+    """A TOTP code or a recovery code, whichever ``code`` is.
+
+    ``user`` may be ``None`` (an unknown username): the same checks then run against nothing.
+    """
+    if user is None or not user.totp_enabled:
+        matching_step(_DECOY_SECRET, code)
+        _recovery_hash(code)
+        return SecondFactor(ok=False)
     if verify_totp(user, code):
         return SecondFactor(ok=True)
     if use_recovery_code(user, code):

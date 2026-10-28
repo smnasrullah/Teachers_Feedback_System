@@ -1,0 +1,9 @@
+{# Params: codes. The recovery codes, shown once, with copy and print buttons. #}
+{% load i18n ui %}
+<p class="callout">{% icon "alert" %}<span>{% translate "Save these recovery codes now, somewhere safe and away from your phone. Each one works once if you lose your phone. They are shown only this time." %}</span></p>
+<ul class="code-grid" id="recovery-codes" aria-label="{% translate 'Recovery codes' %}">{% for code in codes %}<li>{{ code }}</li>{% endfor %}</ul>
+<div class="flex flex-wrap items-center gap-3 no-print">
+  <button type="button" class="btn btn-ghost" data-copy="#recovery-codes" data-copied="{% translate 'Copied.' %}">{% icon "file" %}{% translate "Copy codes" %}</button>
+  <button type="button" class="btn btn-ghost" data-print>{% icon "print" %}{% translate "Print codes" %}</button>
+  <span class="text-sm text-muted" data-copy-status role="status"></span>
+</div>

@@ -2,32 +2,24 @@ import logging
 from datetime import timedelta
 
 import pytest
+from django.contrib.sessions.models import Session
 from django.db import connection
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from django.utils import timezone
 
-from apps.accounts.models import EMAIL_INDEX_PURPOSE, IdRegistry, OneTimeCode, RegistryStatus, User
+from apps.accounts.models import IdRegistry, RegistryStatus, User
 from apps.accounts.services import registry as registry_service
+from apps.accounts.services import signup as signup_service
 from apps.auditlog.models import AuditEvent
-from apps.core.encryption import blind_index
 from apps.core.permissions import Role
-from tests.auth_helpers import claimable_student, claimable_teacher
-from tests.factories import claim, make_admin, make_student
+from tests.auth_helpers import claimable_student, claimable_teacher, code_for_secret
+from tests.factories import claim, make_admin
 
 pytestmark = pytest.mark.django_db
 
 PASSWORD = "Str0ng-Passw0rd!x"
-EMAIL = "new.student@example.com"
 GENERIC = "The ID or code is not valid, or it has already been used. Check both and try again."
-
-
-def email_index():
-    return blind_index(EMAIL, EMAIL_INDEX_PURPOSE)
-
-
-def user_by_email():
-    return User.objects.get(contact_email_index=email_index())
 
 
 def url(name):
@@ -42,74 +34,142 @@ def start_claim(web, profile, code, **extra):
     )
 
 
-def to_verify(web, profile, code, sent):
-    assert start_claim(web, profile, code).context["stage"] == "contact"
-    response = web.post(url("signup_contact"), {"contact": EMAIL})
-    assert response.context["stage"] == "verify"
-    return sent[-1].code
+def to_authenticator(web, profile, code, password=PASSWORD):
+    assert start_claim(web, profile, code).context["stage"] == "password"
+    response = web.post(url("signup_password"), {"password1": password, "password2": password})
+    assert response.context["stage"] == "authenticator"
+    return response
 
 
-def finish(web, profile, code, sent, password=PASSWORD):
-    otp_code = to_verify(web, profile, code, sent)
-    assert web.post(url("signup_verify"), {"code": otp_code}).context["stage"] == "password"
-    return web.post(url("signup_password"), {"password1": password, "password2": password})
+def session_secret(web) -> str:
+    return signup_service.unseal(web.session["signup"]["secret"])
 
 
-def test_full_signup_creates_account_claims_registry_and_burns_code(web, sent):
+def finish(web, profile, code):
+    to_authenticator(web, profile, code)
+    return web.post(url("signup_authenticator"), {"code": code_for_secret(session_secret(web))})
+
+
+def account_of(profile) -> User | None:
+    return IdRegistry.objects.get(pk=profile.registry_id).claimed_by
+
+
+def test_full_signup_creates_an_account_with_its_authenticator(web):
     profile, code = claimable_student()
-    response = finish(web, profile, code, sent)
+    page = to_authenticator(web, profile, code)
+    secret = session_secret(web)
+    response = web.post(url("signup_authenticator"), {"code": code_for_secret(secret)})
 
-    user = user_by_email()
+    user = account_of(profile)
     assert user.role == Role.STUDENT
     assert user.department_id == profile.registry.department_id
     assert user.check_password(PASSWORD)
-    assert response.context["done"] is True
+    assert user.totp_enabled
+    assert user.totp_secret == secret
+    assert user.totp_last_step > 0  # the first code cannot be replayed at login
+    assert user.contact_email is None and user.contact_phone is None
+    assert user.username == page.context["username"]
+    assert response.context["stage"] == "done"
     assert user.username in response.content.decode()
+    codes = response.context["codes"]
+    assert len(codes) == 8
+    assert all(code in response.content.decode() for code in codes)
+    stored = " ".join(user.recovery_codes.values_list("code_hash", flat=True))
+    assert not any(code.replace("-", "") in stored for code in codes)
     registry = IdRegistry.objects.get(pk=profile.registry_id)
     assert registry.status == RegistryStatus.CLAIMED
-    assert registry.claimed_by_id == user.pk
     assert registry.activation_code_hash == ""
     assert registry.activation_used_at is not None
-    assert sent[0].destination == EMAIL
     event = AuditEvent.objects.get(action="auth.signup")
     assert event.actor_id == user.pk
-    assert event.metadata == {"id_type": "student", "channel": "email"}
+    assert event.metadata == {"id_type": "student"}
+    assert "signup" not in web.session
 
 
-def test_code_cannot_be_reused_after_signup(web, sent):
+def test_authenticator_page_shows_qr_key_and_the_three_step_guide(web):
     profile, code = claimable_student()
-    finish(web, profile, code, sent)
+    page = to_authenticator(web, profile, code)
+    html = page.content.decode()
+    assert "data:image/svg+xml" in html
+    assert page.context["manual_key"].replace(" ", "") == session_secret(web)
+    assert "Google Authenticator or Microsoft Authenticator" in html
+    assert "Type the 6-digit code" in html
+    again = web.get(url("signup_authenticator"))
+    assert again.context["manual_key"] == page.context["manual_key"]  # the secret is kept
+
+
+def test_no_account_exists_until_the_first_code_checks_out(web):
+    profile, code = claimable_student()
+    to_authenticator(web, profile, code)
+    real = code_for_secret(session_secret(web))
+    wrong = "000000" if real != "000000" else "111111"
+    response = web.post(url("signup_authenticator"), {"code": wrong})
+    assert response.context["stage"] == "authenticator"
+    assert "That code is not correct" in response.content.decode()
+    assert not User.objects.filter(role=Role.STUDENT).exists()
+    assert IdRegistry.objects.get(pk=profile.registry_id).status == RegistryStatus.UNCLAIMED
+
+
+def test_a_far_off_code_is_refused_but_neighbouring_steps_work(web):
+    profile, code = claimable_student()
+    to_authenticator(web, profile, code)
+    secret = session_secret(web)
+    far = web.post(url("signup_authenticator"), {"code": code_for_secret(secret, steps_ahead=3)})
+    assert far.context["stage"] == "authenticator"
+    near = web.post(url("signup_authenticator"), {"code": code_for_secret(secret, steps_ahead=-1)})
+    assert near.context["stage"] == "done"
+
+
+def test_password_and_secret_wait_encrypted_in_the_session(web):
+    profile, code = claimable_student()
+    to_authenticator(web, profile, code)
+    secret = session_secret(web)
+    session = Session.objects.get(session_key=web.session.session_key)
+    stored = str(session.get_decoded())
+    assert secret not in stored
+    assert "argon2" not in stored
+    assert PASSWORD not in stored
+    assert signup_service.unseal(web.session["signup"]["password"]).startswith("argon2")
+
+
+def test_code_cannot_be_reused_after_signup(web):
+    profile, code = claimable_student()
+    finish(web, profile, code)
     web.session.flush()
     again = start_claim(web, profile, code)
     assert again.context["form"].non_field_errors() == [GENERIC]
 
 
-def test_teacher_id_creates_a_teacher(web, sent):
+def test_teacher_id_creates_a_teacher(web):
     profile, code = claimable_teacher()
-    finish(web, profile, code, sent)
-    assert user_by_email().role == Role.TEACHER
+    finish(web, profile, code)
+    assert account_of(profile).role == Role.TEACHER
 
 
-def test_username_is_shown_once_and_stays_on_the_account_page(web, sent):
+def test_new_account_logs_in_with_password_and_code_and_sees_its_username(web):
     profile, code = claimable_student()
-    finish(web, profile, code, sent)
-    user = user_by_email()
-    web.post(url("login"), {"username": user.username, "password": PASSWORD})
+    finish(web, profile, code)
+    user = account_of(profile)
+    response = web.post(url("login"), {"username": user.username, "password": PASSWORD})
+    assert response["Location"] == url("login_second_factor")
+    secret = user.totp_secret
+    web.post(url("login_second_factor"), {"code": code_for_secret(secret, steps_ahead=1)})
     assert user.username in web.get(url("account")).content.decode()
 
 
-def test_nothing_secret_reaches_the_logs(web, sent, caplog):
+def test_nothing_secret_reaches_the_logs(web, caplog):
     caplog.set_level(logging.DEBUG)
     profile, code = claimable_student()
-    otp_code = to_verify(web, profile, code, sent)
-    web.post(url("signup_verify"), {"code": otp_code})
-    web.post(url("signup_password"), {"password1": PASSWORD, "password2": PASSWORD})
+    to_authenticator(web, profile, code)
+    secret = session_secret(web)
+    totp = code_for_secret(secret)
+    codes = web.post(url("signup_authenticator"), {"code": totp}).context["codes"]
     logged = caplog.text
-    for secret in (code, otp_code, PASSWORD):
-        assert secret not in logged
+    for value in (code, PASSWORD, secret, totp, *codes):
+        assert value not in logged
     for event in AuditEvent.objects.all():
-        assert code not in str(event.metadata)
-        assert otp_code not in str(event.metadata)
+        for value in (code, secret, totp, *codes):
+            assert value not in str(event.metadata)
 
 
 def unknown(profile, code):
@@ -175,7 +235,7 @@ def test_htmx_gets_the_step_fragment_and_plain_requests_the_full_page(web):
     data = {"registry_id": profile.registry.external_id, "activation_code": code}
     fragment = web.post(url("signup"), data, HTTP_HX_REQUEST="true").content.decode()
     assert "<html" not in fragment
-    assert 'name="contact"' in fragment
+    assert 'name="password1"' in fragment
     assert "stepper" in fragment
     web.session.flush()
     full = web.post(url("signup"), data).content.decode()
@@ -183,98 +243,48 @@ def test_htmx_gets_the_step_fragment_and_plain_requests_the_full_page(web):
     assert 'id="signup-step"' in full
 
 
-def test_contact_already_in_use_is_refused_without_sending_a_code(web, sent):
-    claim(make_student(), contact_email=EMAIL)
+def test_later_steps_are_unreachable_before_the_earlier_ones(web):
     profile, code = claimable_student()
+    early = web.post(url("signup_password"), {"password1": PASSWORD, "password2": PASSWORD})
+    assert early.context["stage"] == "claim"
     start_claim(web, profile, code)
-    response = web.post(url("signup_contact"), {"contact": EMAIL})
-    assert response.context["stage"] == "contact"
-    assert "contact" in response.context["form"].errors
-    assert sent == []
-
-
-def test_invalid_contact_is_refused(web, sent):
-    profile, code = claimable_student()
-    start_claim(web, profile, code)
-    response = web.post(url("signup_contact"), {"contact": "not an address"})
-    assert "contact" in response.context["form"].errors
-    assert sent == []
-
-
-def test_wrong_code_then_lockout_after_five_attempts(web, sent):
-    profile, code = claimable_student()
-    real = to_verify(web, profile, code, sent)
-    wrong = "000000" if real != "000000" else "111111"
-    for _attempt in range(5):
-        response = web.post(url("signup_verify"), {"code": wrong})
-        assert response.context["stage"] == "verify"
-    locked = web.post(url("signup_verify"), {"code": real})
-    assert locked.context["stage"] == "verify"
-    assert "Too many wrong attempts" in locked.content.decode()
-
-
-def test_expired_code_is_refused(web, sent):
-    profile, code = claimable_student()
-    real = to_verify(web, profile, code, sent)
-    OneTimeCode.objects.update(expires_at=timezone.now() - timedelta(seconds=1))
-    response = web.post(url("signup_verify"), {"code": real})
-    assert "expired" in response.content.decode()
-    assert response.context["stage"] == "verify"
-
-
-def test_resend_respects_the_cooldown(web, sent):
-    profile, code = claimable_student()
-    to_verify(web, profile, code, sent)
-    early = web.post(url("signup_resend"))
-    assert "Please wait" in early.content.decode()
-    assert len(sent) == 1
-    OneTimeCode.objects.update(sent_at=timezone.now() - timedelta(seconds=61))
-    later = web.post(url("signup_resend"))
-    assert "A new code was sent." in later.content.decode()
-    assert len(sent) == 2
-
-
-def test_password_step_is_unreachable_before_the_code_is_verified(web, sent):
-    profile, code = claimable_student()
-    to_verify(web, profile, code, sent)
-    response = web.post(url("signup_password"), {"password1": PASSWORD, "password2": PASSWORD})
-    assert response.context["stage"] == "verify"
-    assert not User.objects.filter(contact_email_index=email_index()).exists()
+    skipped = web.post(url("signup_authenticator"), {"code": "123456"})
+    assert skipped.context["stage"] == "password"
+    assert not User.objects.filter(role=Role.STUDENT).exists()
 
 
 @pytest.mark.parametrize(
     ("first", "second"),
     [("short1A!", "short1A!"), (PASSWORD, PASSWORD + "x"), ("password", "password")],
 )
-def test_weak_or_mismatched_passwords_are_refused(web, sent, first, second):
+def test_weak_or_mismatched_passwords_are_refused(web, first, second):
     profile, code = claimable_student()
-    otp_code = to_verify(web, profile, code, sent)
-    web.post(url("signup_verify"), {"code": otp_code})
+    start_claim(web, profile, code)
     response = web.post(url("signup_password"), {"password1": first, "password2": second})
+    assert response.context["stage"] == "password"
     assert response.context["form"].errors
-    assert not User.objects.filter(contact_email_index=email_index()).exists()
+    assert "password" not in web.session["signup"]
 
 
-def test_revoking_the_id_mid_signup_stops_account_creation(web, sent):
+def test_revoking_the_id_mid_signup_stops_account_creation(web):
     profile, code = claimable_student()
-    otp_code = to_verify(web, profile, code, sent)
-    web.post(url("signup_verify"), {"code": otp_code})
+    to_authenticator(web, profile, code)
+    secret = session_secret(web)
     registry_service.revoke(IdRegistry.objects.filter(pk=profile.registry_id), actor=make_admin())
-    response = web.post(url("signup_password"), {"password1": PASSWORD, "password2": PASSWORD})
+    response = web.post(url("signup_authenticator"), {"code": code_for_secret(secret)})
     assert response.context["stage"] == "claim"
     assert "could not be completed" in response.content.decode()
-    assert not User.objects.filter(contact_email_index=email_index()).exists()
+    assert not User.objects.filter(role=Role.STUDENT).exists()
 
 
-def test_two_people_cannot_claim_one_id(web, client, sent):
+def test_two_people_cannot_claim_one_id(web):
     profile, code = claimable_student()
-    otp_code = to_verify(web, profile, code, sent)
-    web.post(url("signup_verify"), {"code": otp_code})
-    # Someone else finishes first.
-    claim(profile)
-    response = web.post(url("signup_password"), {"password1": PASSWORD, "password2": PASSWORD})
+    to_authenticator(web, profile, code)
+    secret = session_secret(web)
+    claim(profile)  # someone else finishes first
+    response = web.post(url("signup_authenticator"), {"code": code_for_secret(secret)})
     assert response.context["stage"] == "claim"
-    assert not User.objects.filter(contact_email_index=email_index()).exists()
+    assert User.objects.filter(role=Role.STUDENT).count() == 1  # only the first claimant
 
 
 @pytest.mark.parametrize("known", [True, False])
@@ -304,6 +314,16 @@ def test_claim_attempts_are_limited_per_ip(web):
     ]
     assert statuses[:30] == [200] * 30
     assert statuses[30:] == [429, 429]
+
+
+def test_authenticator_codes_are_rate_limited_per_session(web):
+    profile, code = claimable_student()
+    to_authenticator(web, profile, code)
+    statuses = [
+        web.post(url("signup_authenticator"), {"code": "000000"}).status_code for _ in range(14)
+    ]
+    assert statuses[:12] == [200] * 12
+    assert statuses[12:] == [429, 429]
 
 
 def test_rate_limited_htmx_step_still_shows_the_message(web):

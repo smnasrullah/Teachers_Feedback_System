@@ -1,40 +1,31 @@
 {% extends "layouts/dashboard.html" %}
 {% load i18n ui %}
-{% block title %}{% translate "Two-factor authentication" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block title %}{% translate "Authenticator and recovery codes" %} · {% translate "Teacher Feedback System" %}{% endblock %}
 {% block content %}
 <div class="grid gap-6 max-w-xl">
-  <h1>{% translate "Two-factor authentication" %}</h1>
+  <h1>{% translate "Authenticator and recovery codes" %}</h1>
 
-  {% if request.user.totp_enabled %}
   <section class="card grid gap-3" aria-labelledby="recovery-title">
     <h2 id="recovery-title" class="text-lg">{% translate "Recovery codes" %}</h2>
-    <p>{% blocktranslate count left=recovery_left %}{{ left }} recovery code left.{% plural %}{{ left }} recovery codes left.{% endblocktranslate %}</p>
+    <p>{% if recovery_left %}<span class="badge badge-done">{% icon "check" %}{% blocktranslate count left=recovery_left %}{{ left }} recovery code left{% plural %}{{ left }} recovery codes left{% endblocktranslate %}</span>{% else %}<span class="badge badge-alert">{% icon "alert" %}{% translate "No recovery codes left" %}</span>{% endif %}</p>
+    <p class="field-hint">{% translate "Each code signs you in once if you lose your phone. Making new codes makes all the old ones stop working." %}</p>
     <form method="post" action="{% url 'accounts:two_factor_regenerate' %}" class="grid gap-4">
       {% csrf_token %}
       {% for field in regenerate_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
-      <p class="field-hint">{% translate "Making new codes makes the old ones stop working." %}</p>
       <div><button type="submit" class="btn btn-ghost">{% translate "Make new recovery codes" %}</button></div>
     </form>
   </section>
 
-  <section class="card grid gap-3" aria-labelledby="off-title">
-    <h2 id="off-title" class="text-lg">{% translate "Turn off" %}</h2>
-    {% if must_use_two_factor %}
-    <p class="text-muted">{% translate "Your role requires two-factor authentication, so it cannot be turned off." %}</p>
-    {% else %}
-    <form method="post" action="{% url 'accounts:two_factor_disable' %}" class="grid gap-4">
+  <section class="card grid gap-3" aria-labelledby="device-title">
+    <h2 id="device-title" class="text-lg">{% translate "New phone" %}</h2>
+    <p class="field-hint">{% translate "Moving to a new phone? Confirm with your password and a code from the old phone, then scan a new QR code. Your recovery codes stay the same." %}</p>
+    <form method="post" action="{% url 'accounts:two_factor_device' %}" class="grid gap-4">
       {% csrf_token %}
-      {% for field in disable_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
-      <div><button type="submit" class="btn btn-danger">{% translate "Turn off two-factor" %}</button></div>
+      {% for field in device_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+      <div><button type="submit" class="btn btn-ghost">{% icon "shield" %}{% translate "Change authenticator" %}</button></div>
     </form>
-    {% endif %}
+    <p class="field-hint">{% translate "Lost the old phone? Sign in with a recovery code first, or ask the Admin to reset your access." %}</p>
   </section>
-  {% else %}
-  <section class="card grid gap-3">
-    <p>{% translate "Two-factor authentication adds a 6-digit code from your phone to every login." %}</p>
-    <div><a class="btn btn-primary" href="{% url 'accounts:two_factor_setup' %}">{% icon "shield" %}{% translate "Set up two-factor" %}</a></div>
-  </section>
-  {% endif %}
   <a class="text-sm" href="{% url 'accounts:account' %}">{% translate "Back to my account" %}</a>
 </div>
 {% endblock %}

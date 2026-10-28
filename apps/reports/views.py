@@ -1,4 +1,4 @@
-"""The teacher's pages: course overview, course report, comment lists, print view, note.
+"""The teacher's pages: dashboard, course overview, course report, comment lists, print view, note.
 
 Every course page loads the offering first and checks ``access_for`` before anything else, so
 another teacher's course answers 403 whatever the round. Results themselves are held back by
@@ -56,6 +56,21 @@ def _focus(request):
     except ValueError:
         return None
     return question_id, CommentQuery.parse(request.GET)
+
+
+@require_GET
+@role_required(Role.TEACHER)
+def dashboard(request):
+    """The teacher's courses of the running semester with the status of each round."""
+    profile = request.user.teacher_profile
+    if profile is None:
+        raise PermissionDenied
+    now = timezone.now()
+    context = {
+        "nav_items": user_nav_items(request.user, "dashboard"),
+        "courses": teacher.dashboard(profile, request.user, now),
+    }
+    return render(request, "reports/dashboard.html", context)
 
 
 @require_GET

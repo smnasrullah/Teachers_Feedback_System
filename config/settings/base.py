@@ -10,7 +10,9 @@ from apps.core.logging import build_logging_config
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 env = environ.Env()
-environ.Env.read_env(BASE_DIR / ".env")
+# Local runs read .env; containers (and the settings tests) pass the environment directly.
+if env.bool("DJANGO_READ_ENV_FILE", default=True):
+    environ.Env.read_env(BASE_DIR / ".env")
 
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 DEBUG = env.bool("DJANGO_DEBUG", default=False)
@@ -76,6 +78,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "apps.core.context_processors.csp_nonce",
+                "apps.core.context_processors.server_time",
                 "apps.accounts.context_processors.account_menu",
             ],
         },
@@ -177,20 +180,7 @@ RATELIMIT_FAIL_OPEN = False
 RATELIMIT_IP_META_KEY = "apps.core.net.client_ip"
 RATELIMIT_VIEW = "apps.core.views.ratelimited"
 
-# One-time codes (sign-up, password reset, username recovery).
-OTP_TTL_SECONDS = env.int("OTP_TTL_SECONDS", default=5 * 60)
-OTP_MAX_ATTEMPTS = 5
-OTP_RESEND_COOLDOWN = env.int("OTP_RESEND_COOLDOWN", default=60)
-OTP_MAX_SENDS = 5
-# After a code is verified the next step (new password) must follow within this time.
-OTP_VERIFIED_TTL_SECONDS = 15 * 60
-# Delivery per channel (apps.notifications.backends). SMS has no production gateway yet,
-# so it stays off until a deployment provides one.
-OTP_BACKENDS = {
-    "email": "apps.notifications.backends.SmtpBackend",
-    "sms": "apps.notifications.backends.SmsBackend",
-}
-OTP_SMS_ENABLED = env.bool("OTP_SMS_ENABLED", default=False)
+# Notification e-mail (apps.notifications.senders); never used to sign in.
 EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
 EMAIL_HOST = env("EMAIL_HOST", default="localhost")
 EMAIL_PORT = env.int("EMAIL_PORT", default=587)
@@ -205,6 +195,11 @@ DEFAULT_FROM_EMAIL = env(
 TOTP_ISSUER = "Teacher Feedback System"
 # A password-checked login waits this long for its second factor.
 SECOND_FACTOR_PENDING_SECONDS = 10 * 60
+# Development only (dev.py turns it on; a system check refuses it anywhere else): the demo
+# accounts of ``seed_demo`` sign in from this machine with a password alone.
+DEMO_SKIP_SECOND_FACTOR = False
+# Development only: the password ``seed_demo`` set on the demo accounts, shown on the login page.
+DEMO_PASSWORD = ""
 
 # Results and comment lists stay hidden below this many responses (never fewer than 3).
 MIN_RESPONSES = env.int("MIN_RESPONSES", default=5)

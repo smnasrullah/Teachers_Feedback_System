@@ -15,10 +15,11 @@ from django.urls import reverse
 from django.utils import timezone
 from PIL import Image
 
-from apps.academics.models import CourseType
+from apps.academics.models import CourseType, LevelTerm
 from apps.accounts.models import User
 from apps.auditlog.models import AuditEvent
 from apps.core.models import ActiveSession
+from apps.core.services.clock import utc_iso
 from apps.enrollment.models import Enrollment
 from apps.feedback.models import (
     Answer,
@@ -171,7 +172,7 @@ def test_dashboard_shows_profile_round_and_enrolled_course(world):
     assert "Karim Sir" in html
     assert "Pending" in html and "Give feedback" in html
     assert 'aria-label="0 of 1 done"' in html
-    assert "Closes in" in html and 'role="timer"' in html
+    assert "Closes in" in html and "data-countdown-to=" in html
     assert "Your feedback is anonymous" in html
     assert world.form_url in html
 
@@ -187,9 +188,7 @@ def test_only_enrolled_courses_are_listed(world):
     stranger = other_offering(world, title="Secret Seminar")
     other_semester = make_offering(
         make_course(world.offering.course.department, code="CSE0001", title="Old Course"),
-        make_semester(
-            name="Fall 2025", current=False, start_date="2025-07-01", end_date="2025-12-31"
-        ),
+        make_semester(start_date="2025-07-01", end_date="2025-12-31"),
     )
     other_student = enrolled_student(stranger)
     html = dashboard(world.web).content.decode()
@@ -657,3 +656,41 @@ def test_the_replaced_device_is_told_what_happened(web):
     assert response.redirect_chain[0][0].startswith(reverse("accounts:login"))
     html = response.content.decode()
     assert "signed in on another device" in html and "change your password" in html
+
+
+@pytest.mark.parametrize(
+    ("language", "shown"), [("en", "Level 3 Term II"), ("bn", "লেভেল ৩ টার্ম II")]
+)
+def test_dashboard_shows_the_term_in_roman_numerals(world, language, shown):
+    world.profile.level_term = LevelTerm.objects.create(level=3, term=2, order=99)
+    world.profile.save()
+    world.web.defaults["HTTP_ACCEPT_LANGUAGE"] = language
+    assert shown in dashboard(world.web).content.decode()
+
+
+def test_dashboard_counts_down_to_the_exact_close_in_utc(world):
+    html = dashboard(world.web).content.decode()
+    assert f'data-countdown-to="{utc_iso(world.window.closes_at)}"' in html
+    assert 'data-countdown-label="Closes in"' in html
+
+
+def test_upcoming_dashboard_counts_down_to_the_opening(world):
+    FeedbackWindow.objects.update(
+        opens_at=timezone.now() + timedelta(days=2), closes_at=timezone.now() + timedelta(days=9)
+    )
+    window = FeedbackWindow.objects.get()
+    html = dashboard(world.web).content.decode()
+    assert f'data-countdown-to="{utc_iso(window.opens_at)}"' in html
+    assert 'data-countdown-label="Opens in"' in html
+
+
+def test_form_header_counts_down_to_the_close(world):
+    html = world.web.get(world.form_url).content.decode()
+    assert f'data-countdown-to="{utc_iso(world.window.closes_at)}"' in html
+
+
+def test_closed_round_has_no_countdown(world):
+    FeedbackWindow.objects.update(
+        opens_at=timezone.now() - timedelta(days=9), closes_at=timezone.now() - timedelta(days=2)
+    )
+    assert 'data-countdown-label="Closes in"' not in dashboard(world.web).content.decode()

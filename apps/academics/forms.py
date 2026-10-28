@@ -1,6 +1,7 @@
 """Admin forms for the academic structure."""
 
 from django import forms
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from apps.academics.models import (
@@ -15,7 +16,7 @@ from apps.academics.models import (
     PromotionRule,
     Semester,
 )
-from apps.academics.services import importers
+from apps.academics.services import importers, semesters
 from apps.accounts.forms import MAX_CODE_VALID_DAYS
 from apps.accounts.models import TeacherProfile
 from apps.core.forms import StyledFormMixin
@@ -46,20 +47,37 @@ class BatchForm(StyledModelForm):
 class LevelTermForm(StyledModelForm):
     class Meta:
         model = LevelTerm
-        fields = ["name", "name_bn", "order"]
+        fields = ["level", "term", "order"]
+        help_texts = {"term": _("Type the number, such as 2. It is shown as a Roman numeral (II).")}
 
 
 class SemesterForm(StyledModelForm):
+    """Season, year and dates; the date rules (no overlap, no stranded round) are checked here
+    for the error messages and again under a lock when saving."""
+
     class Meta:
         model = Semester
-        fields = ["name", "start_date", "end_date", "is_current"]
+        fields = ["season", "year", "start_date", "end_date"]
         widgets = {
             "start_date": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
             "end_date": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
         }
         help_texts = {
-            "is_current": _("Making this the current semester ends the previous one."),
+            "start_date": _(
+                "The first day of the semester. The seeded Summer 2026 starts on 1 July 2026 "
+                "only as a placeholder: change it once the real date is known."
+            ),
         }
+
+    def clean(self):
+        data = super().clean()
+        start, end = data.get("start_date"), data.get("end_date")
+        if start and end and end > start:
+            try:
+                semesters.validate_dates(self.instance, start, end)
+            except ValidationError as error:
+                self.add_error(None, error)
+        return data
 
 
 class CourseForm(StyledModelForm):
@@ -198,9 +216,7 @@ class SemesterChoiceForm(StyledFormMixin, forms.Form):
 
     def semester_or_current(self) -> Semester | None:
         chosen = self.cleaned_data.get("semester") if self.is_valid() else None
-        return (
-            chosen or Semester.objects.filter(is_current=True).first() or Semester.objects.first()
-        )
+        return chosen or semesters.current_semester() or Semester.objects.first()
 
 
 class ResultFilterForm(SemesterChoiceForm):

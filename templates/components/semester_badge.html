@@ -1,0 +1,2 @@
+{# Context: semester (today's, or None), ends_on (its last day, localized) #}
+{% load i18n %}{% if semester %}{% blocktranslate with name=semester.name end=ends_on asvar label %}{{ name }} · ends {{ end }}{% endblocktranslate %}{% include "components/badge.html" with variant="info" icon="calendar" label=label %}{% else %}{% translate "No semester is running today" as label %}{% include "components/badge.html" with variant="closed" icon="calendar" label=label %}{% endif %}

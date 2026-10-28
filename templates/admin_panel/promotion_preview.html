@@ -34,7 +34,9 @@
       <p class="callout">{% icon "alert" %}<span>{% translate "There is no later semester yet, so nobody is enrolled for next term and failed courses get no retake enrollment. Add the next semester and its offerings first, or enroll students later." %}</span></p>
     {% endif %}
     {% if summary.unplaced %}<p class="callout">{% icon "alert" %}<span>{% blocktranslate count count=summary.unplaced %}{{ count }} failed course is not offered in the next semester; enroll that retake by hand later.{% plural %}{{ count }} failed courses are not offered in the next semester; enroll those retakes by hand later.{% endblocktranslate %}</span></p>{% endif %}
-    {% if planned.decisions %}
+    {% if not summary.ended %}
+      <p class="callout">{% icon "clock" %}<span>{% blocktranslate with name=semester end=summary.ends_on %}{{ name }} ends on {{ end }}. Promotion can be applied after that day; moving the end date moves this too.{% endblocktranslate %}</span></p>
+    {% elif planned.decisions %}
       <div><a class="btn btn-primary" href="{% url 'academics:promotion_confirm' semester.pk %}?fingerprint={{ planned.fingerprint }}">{% icon "chevron-right" %}{% translate "Review and apply" %}</a></div>
     {% endif %}
   </section>

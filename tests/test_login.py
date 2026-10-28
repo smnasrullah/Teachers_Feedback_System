@@ -7,10 +7,11 @@ from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 
 from apps.accounts.models import User
+from apps.accounts.services.account import DEVICE_CHANGE_KEY
 from apps.auditlog.models import AuditEvent
 from apps.core.models import ActiveSession
 from apps.core.services.sessions import SECOND_FACTOR_KEY
-from tests.auth_helpers import enable_totp, totp_code
+from tests.auth_helpers import code_for_secret, enable_totp, fresh_code, totp_code
 from tests.factories import (
     PASSWORD,
     claim,
@@ -30,14 +31,16 @@ def url(name, *args):
     return reverse(f"accounts:{name}", args=args)
 
 
-def with_password(user):
+def with_password(user, *, totp=True):
     user.set_password(PASSWORD)
     user.save()
+    if totp:
+        enable_totp(user)
     return user
 
 
-def student():
-    return with_password(claim(make_student()))
+def student(*, totp=True):
+    return with_password(claim(make_student()), totp=totp)
 
 
 def teacher():
@@ -48,8 +51,11 @@ def hod():
     return with_password(make_hod())
 
 
-def admin():
-    return make_admin(PASSWORD)
+def admin(*, totp=True):
+    user = make_admin(PASSWORD)
+    if totp:
+        enable_totp(user)
+    return user
 
 
 def log_in(web, user, password=PASSWORD, **extra):
@@ -67,7 +73,13 @@ def second_step(web, user, code=None, **extra):
     )
 
 
-# --- password login ---------------------------------------------------------------------------
+def full_login(web, user, **extra):
+    """Password, then a code the account accepts right now; returns the second response."""
+    assert log_in(web, user, **extra)["Location"] == url("login_second_factor")
+    return web.post(url("login_second_factor"), {"code": fresh_code(user)}, **extra)
+
+
+# --- password + code login ----------------------------------------------------------------------
 
 
 @pytest.mark.parametrize(
@@ -75,12 +87,15 @@ def second_step(web, user, code=None, **extra):
     [
         (student, "dashboard_student"),
         (teacher, "dashboard_teacher"),
+        (hod, "dashboard_hod"),
+        (admin, "dashboard_admin"),
     ],
 )
-def test_plain_roles_land_on_their_own_dashboard(web, make, destination):
+def test_every_role_needs_the_code_then_lands_on_its_dashboard(web, make, destination):
     user = make()
-    response = log_in(web, user)
-    assert response.status_code == 302
+    assert log_in(web, user)["Location"] == url("login_second_factor")
+    assert not is_signed_in(web)
+    response = second_step(web, user)
     assert response["Location"] == url(destination)
     page = web.get(response["Location"])
     assert page.status_code == 200
@@ -88,27 +103,13 @@ def test_plain_roles_land_on_their_own_dashboard(web, make, destination):
     assert AuditEvent.objects.filter(action="auth.login", actor_id=user.pk).exists()
 
 
-@pytest.mark.parametrize(
-    ("make", "destination"), [(hod, "dashboard_hod"), (admin, "dashboard_admin")]
-)
-def test_hod_and_admin_land_on_their_dashboard_after_totp(web, make, destination):
-    user = make()
-    enable_totp(user)
-    assert log_in(web, user)["Location"] == url("login_second_factor")
-    assert not is_signed_in(web)
-    response = second_step(web, user)
-    assert response["Location"] == url(destination)
-    assert web.get(response["Location"]).status_code == 200
-
-
 def test_dashboard_redirect_sends_each_role_home(web):
-    user = student()
-    web.post(url("login"), {"username": user.username, "password": PASSWORD})
+    full_login(web, student())
     assert web.get(url("dashboard"))["Location"] == url("dashboard_student")
 
 
 def test_a_student_cannot_open_other_roles_dashboards(web):
-    log_in(web, student())
+    full_login(web, student())
     for name in ("dashboard_teacher", "dashboard_hod", "dashboard_admin"):
         assert web.get(url(name)).status_code == 403
 
@@ -191,41 +192,46 @@ def test_login_is_rate_limited_per_username_across_ips(web):
 
 def test_next_is_followed_only_inside_the_site(web):
     user = student()
-    assert log_in(web, user, next="/x")  # unknown extras are ignored
+    log_in(web, user, next="/x")  # unknown extras are ignored
     web.post(url("logout"))
-    inside = web.post(
+    web.post(
         url("login"), {"username": user.username, "password": PASSWORD, "next": url("account")}
     )
+    inside = web.post(url("login_second_factor"), {"code": fresh_code(user)})
     assert inside["Location"] == url("account")
     web.post(url("logout"))
-    outside = web.post(
+    web.post(
         url("login"),
         {"username": user.username, "password": PASSWORD, "next": "https://evil.example/"},
     )
+    outside = web.post(url("login_second_factor"), {"code": fresh_code(user)})
     assert outside["Location"] == url("dashboard_student")
 
 
 def test_signed_in_visitors_skip_the_login_page(web):
-    log_in(web, student())
+    full_login(web, student())
     assert web.get(url("login"))["Location"] == url("dashboard_student")
 
 
 # --- second factor ------------------------------------------------------------------------------
 
 
-def test_admin_without_totp_is_forced_to_enrol_and_is_not_signed_in_meanwhile(web):
-    user = admin()
+@pytest.mark.parametrize("make", [student, admin])
+def test_account_without_an_authenticator_must_enrol_at_login(web, make):
+    """Accounts made before the authenticator was required (or by create_admin) enrol first."""
+    user = make(totp=False)
     response = log_in(web, user)
     assert response["Location"] == url("login_two_factor_setup")
     assert not is_signed_in(web)
-    assert web.get(url("dashboard_admin"))["Location"].startswith(url("login"))
+    assert web.get(url("dashboard"))["Location"].startswith(url("login"))
 
     page = web.get(url("login_two_factor_setup"))
     html = page.content.decode()
     assert "data:image/svg+xml" in html
+    assert "Google Authenticator or Microsoft Authenticator" in html
     user.refresh_from_db()
     assert user.totp_secret and not user.totp_enabled
-    assert len(page.context["manual_key"].replace(" ", "")) == len(user.totp_secret)
+    assert page.context["manual_key"].replace(" ", "") == user.totp_secret
 
     bad = web.post(url("login_two_factor_setup"), {"code": "000000"})
     assert bad.status_code == 200
@@ -238,12 +244,11 @@ def test_admin_without_totp_is_forced_to_enrol_and_is_not_signed_in_meanwhile(we
     assert web.session[SECOND_FACTOR_KEY]
     user.refresh_from_db()
     assert user.totp_enabled
-    assert web.get(url("dashboard_admin")).status_code == 200
     assert AuditEvent.objects.filter(action="auth.twofactor_enabled", actor_id=user.pk).exists()
 
 
 def test_recovery_codes_are_stored_hashed_only(web):
-    user = admin()
+    user = admin(totp=False)
     log_in(web, user)
     web.get(url("login_two_factor_setup"))
     user.refresh_from_db()
@@ -254,19 +259,19 @@ def test_recovery_codes_are_stored_hashed_only(web):
     assert user.recovery_codes.count() == 8
 
 
-@pytest.mark.parametrize("make", [hod, admin])
-def test_hod_and_admin_cannot_reach_anything_without_totp(web, make):
+@pytest.mark.parametrize("make", [student, teacher, hod, admin])
+def test_nobody_reaches_anything_with_the_password_alone(web, make):
     user = make()
     log_in(web, user)  # password only
-    for name in ("dashboard", "dashboard_hod", "dashboard_admin", "account"):
+    for name in ("dashboard", "account", "two_factor"):
         response = web.get(url(name))
         assert response.status_code == 302
         assert response["Location"].startswith(url("login"))
     assert not is_signed_in(web)
 
 
-@pytest.mark.parametrize("make", [hod, admin])
-def test_a_session_that_skipped_totp_is_ended(web, make):
+@pytest.mark.parametrize("make", [student, hod, admin])
+def test_a_session_that_skipped_the_code_is_ended(web, make):
     user = make()
     web.force_login(user)  # signed in without the second factor
     response = web.get(url("account"))
@@ -276,22 +281,28 @@ def test_a_session_that_skipped_totp_is_ended(web, make):
     assert "complete two-factor" in web.get(url("login")).content.decode()
 
 
-def test_totp_login_rejects_wrong_codes_and_audits_them(web):
-    user = admin()
-    enable_totp(user)
+def test_wrong_codes_are_rejected_and_audited(web):
+    user = student()
     log_in(web, user)
     response = second_step(web, user, "000000")
     assert response.status_code == 200
     assert response.context["form"].non_field_errors() == ["That code is not correct."]
+    assert 'value="000000"' not in response.content.decode()
     assert not is_signed_in(web)
     assert AuditEvent.objects.filter(
         action="auth.login_failed", metadata__stage="second_factor"
     ).exists()
 
 
-def test_a_totp_code_works_only_once(web):
-    user = admin()
-    enable_totp(user)
+def test_codes_one_step_off_are_accepted_but_not_further(web):
+    user = student()
+    log_in(web, user)
+    assert second_step(web, user, totp_code(user, steps_ahead=3)).status_code == 200
+    assert second_step(web, user, totp_code(user, steps_ahead=1)).status_code == 302
+
+
+def test_a_code_works_only_once(web):
+    user = teacher()
     code = totp_code(user, steps_ahead=1)
     log_in(web, user)
     assert second_step(web, user, code).status_code == 302
@@ -301,9 +312,8 @@ def test_a_totp_code_works_only_once(web):
     assert not is_signed_in(web)
 
 
-def test_repeated_wrong_totp_codes_lock_the_account(web):
-    user = admin()
-    enable_totp(user)
+def test_repeated_wrong_codes_lock_the_account(web):
+    user = student()
     log_in(web, user)
     last = None
     for _attempt in range(5):
@@ -314,7 +324,7 @@ def test_repeated_wrong_totp_codes_lock_the_account(web):
 
 
 def test_recovery_code_works_exactly_once(web):
-    user = admin()
+    user = make_admin(PASSWORD)
     codes = enable_totp(user)
     log_in(web, user)
     assert second_step(web, user, codes[0]).status_code == 302
@@ -331,8 +341,7 @@ def test_recovery_code_works_exactly_once(web):
 
 
 def test_pending_login_expires(web, settings):
-    user = admin()
-    enable_totp(user)
+    user = student()
     log_in(web, user)
     session = web.session
     session["_tfs_pending_login"]["at"] = (
@@ -347,60 +356,104 @@ def test_second_factor_pages_need_a_pending_login(web):
     assert web.get(url("login_two_factor_setup"))["Location"] == url("login")
 
 
-def test_students_can_turn_two_factor_on_and_then_must_use_it(web):
+def test_an_enrolled_account_cannot_reopen_the_enrolment_page(web):
     user = student()
     log_in(web, user)
-    page = web.get(url("two_factor_setup"))
-    assert "data:image/svg+xml" in page.content.decode()
-    user.refresh_from_db()
-    done = web.post(url("two_factor_setup"), {"code": totp_code(user)})
-    assert len(done.context["codes"]) == 8
-    web.post(url("logout"))
-    user.refresh_from_db()
-    assert log_in(web, user)["Location"] == url("login_second_factor")
-    assert second_step(web, user)["Location"] == url("dashboard_student")
+    assert web.get(url("login_two_factor_setup"))["Location"] == url("login")
 
 
-def test_students_can_turn_two_factor_off_with_their_password(web):
+# --- authenticator management -------------------------------------------------------------------
+
+
+def test_management_page_shows_how_many_recovery_codes_are_left(web):
     user = student()
-    enable_totp(user)
+    codes = list(user.recovery_codes.all())
+    codes[0].used_at = codes[0].created_at
+    codes[0].save()
     sign_in(web, user)
-    refused = web.post(url("two_factor_disable"), {"password": "Wrong-password-1"})
-    assert refused.status_code == 302
-    user.refresh_from_db()
-    assert user.totp_enabled
-    web.post(url("two_factor_disable"), {"password": PASSWORD})
-    user.refresh_from_db()
-    assert not user.totp_enabled
-    assert user.totp_secret is None
-    assert user.recovery_codes.count() == 0
-    assert AuditEvent.objects.filter(action="auth.twofactor_disabled").exists()
+    html = web.get(url("two_factor")).content.decode()
+    assert "7 recovery codes left" in html
+    assert "7 recovery codes left" in web.get(url("account")).content.decode()
 
 
-def test_admin_cannot_turn_two_factor_off(web):
-    user = admin()
-    enable_totp(user)
+def reauth(prefix, user, *, password=PASSWORD, code=None):
+    return {f"{prefix}-password": password, f"{prefix}-code": code or fresh_code(user)}
+
+
+@pytest.mark.parametrize(
+    "bad", [{"password": "Wrong-password-1"}, {"code": "000000"}], ids=["password", "code"]
+)
+def test_new_recovery_codes_need_the_password_and_a_current_code(web, bad):
+    user = student()
+    old = set(user.recovery_codes.values_list("code_hash", flat=True))
     sign_in(web, user)
-    web.post(url("two_factor_disable"), {"password": PASSWORD})
-    user.refresh_from_db()
-    assert user.totp_enabled
+    refused = web.post(url("two_factor_regenerate"), reauth("regenerate", user, **bad))
+    assert refused["Location"] == url("two_factor")
+    assert set(user.recovery_codes.values_list("code_hash", flat=True)) == old
+    assert not AuditEvent.objects.filter(action="auth.recovery_codes_regenerated").exists()
 
 
 def test_new_recovery_codes_replace_the_old_ones(web):
     user = admin()
-    old = enable_totp(user)
+    old = list(user.recovery_codes.values_list("code_hash", flat=True))
     sign_in(web, user)
-    response = web.post(url("two_factor_regenerate"), {"password": PASSWORD})
+    response = web.post(url("two_factor_regenerate"), reauth("regenerate", user))
     assert len(response.context["codes"]) == 8
-    assert not set(old) & set(response.context["codes"])
+    assert not set(old) & set(user.recovery_codes.values_list("code_hash", flat=True))
     assert AuditEvent.objects.filter(action="auth.recovery_codes_regenerated").exists()
+
+
+def test_changing_the_authenticator_needs_the_password_and_a_current_code(web):
+    user = student()
+    sign_in(web, user)
+    refused = web.post(url("two_factor_device"), reauth("device", user, code="000000"))
+    assert refused["Location"] == url("two_factor")
+    assert DEVICE_CHANGE_KEY not in web.session
+    assert web.get(url("two_factor_device_confirm"))["Location"] == url("two_factor")
+
+
+def test_changing_the_authenticator_switches_only_after_the_new_code(web):
+    user = student()
+    old_secret = user.totp_secret
+    recovery = set(user.recovery_codes.values_list("code_hash", flat=True))
+    sign_in(web, user)
+    started = web.post(url("two_factor_device"), reauth("device", user))
+    assert started["Location"] == url("two_factor_device_confirm")
+    page = web.get(url("two_factor_device_confirm"))
+    assert "data:image/svg+xml" in page.content.decode()
+    new_secret = page.context["manual_key"].replace(" ", "")
+    assert new_secret != old_secret
+    assert new_secret not in str(web.session[DEVICE_CHANGE_KEY])  # kept encrypted
+
+    wrong = web.post(url("two_factor_device_confirm"), {"code": totp_code(user, steps_ahead=1)})
+    assert wrong.status_code == 200
+    user.refresh_from_db()
+    assert user.totp_secret == old_secret  # the old phone still works
+
+    done = web.post(url("two_factor_device_confirm"), {"code": code_for_secret(new_secret)})
+    assert done["Location"] == url("two_factor")
+    user.refresh_from_db()
+    assert user.totp_secret == new_secret
+    assert set(user.recovery_codes.values_list("code_hash", flat=True)) == recovery
+    assert DEVICE_CHANGE_KEY not in web.session
+    assert AuditEvent.objects.filter(action="auth.authenticator_changed", actor_id=user.pk).exists()
+
+
+def test_a_pending_authenticator_change_expires(web, settings):
+    user = student()
+    sign_in(web, user)
+    web.post(url("two_factor_device"), reauth("device", user))
+    session = web.session
+    session[DEVICE_CHANGE_KEY]["at"] = int(time.time()) - settings.SECOND_FACTOR_PENDING_SECONDS - 5
+    session.save()
+    assert web.get(url("two_factor_device_confirm"))["Location"] == url("two_factor")
 
 
 # --- logout, sessions, password -----------------------------------------------------------------
 
 
 def test_logout_needs_post(web):
-    log_in(web, student())
+    full_login(web, student())
     assert web.get(url("logout")).status_code == 405
     assert is_signed_in(web)
     assert web.post(url("logout"))["Location"] == url("login")
@@ -409,7 +462,7 @@ def test_logout_needs_post(web):
 
 def test_log_out_all_devices_ends_every_session(web):
     user = student()
-    log_in(web, user)
+    full_login(web, user)
     assert ActiveSession.objects.filter(user=user).exists()
     web.post(url("sign_out_everywhere"))
     assert not ActiveSession.objects.filter(user=user).exists()
@@ -419,15 +472,16 @@ def test_log_out_all_devices_ends_every_session(web):
 
 def test_a_second_device_replaces_the_first(web):
     user = student()
-    log_in(web, user)
+    full_login(web, user)
     other = Client(HTTP_ACCEPT_LANGUAGE="en")
-    log_in(other, user)
+    full_login(other, user)
     assert web.get(url("account"))["Location"].startswith(url("login"))
 
 
 def test_account_page_shows_username_contact_and_the_active_session(web):
     user = claim(make_student(), PASSWORD, contact_email="aminul.islam@example.com")
-    log_in(web, user, HTTP_USER_AGENT="TestBrowser/1.0", REMOTE_ADDR="198.51.100.20")
+    enable_totp(user)
+    full_login(web, user, HTTP_USER_AGENT="TestBrowser/1.0", REMOTE_ADDR="198.51.100.20")
     html = web.get(url("account")).content.decode()
     assert user.username in html
     assert "am***@example.com" in html
@@ -438,7 +492,7 @@ def test_account_page_shows_username_contact_and_the_active_session(web):
 
 def test_password_change_keeps_this_session_and_audits(web):
     user = student()
-    log_in(web, user)
+    full_login(web, user)
     new = "Another-Str0ng-pass"
     wrong = web.post(
         url("password_change"),
@@ -458,7 +512,6 @@ def test_password_change_keeps_this_session_and_audits(web):
 
 def test_admin_password_change_needs_a_strong_password(web):
     user = admin()
-    enable_totp(user)
     sign_in(web, user)
     weak = "Abcdefg1234"  # 11 characters: fine for a student, too short for an admin
     response = web.post(
@@ -486,13 +539,22 @@ def test_auth_pages_are_available_in_bangla(client):
     assert "ইউজারনেম বা পাসওয়ার্ড সঠিক নয়।" in failed.content.decode()
 
 
+def test_authenticator_guide_is_available_in_bangla(client):
+    client.defaults["HTTP_ACCEPT_LANGUAGE"] = "bn"
+    user = admin(totp=False)
+    client.post(url("login"), {"username": user.username, "password": PASSWORD})
+    page = client.get(url("login_two_factor_setup")).content.decode()
+    assert "Install an authenticator app" not in page
+    assert "Google Authenticator" in page
+
+
 @pytest.mark.parametrize("saved", ["bn", "en"])
 def test_login_applies_the_saved_language(web, saved):
     user = student()
     user.language = saved
     user.save()
     web.cookies["django_language"] = "en" if saved == "bn" else "bn"
-    response = log_in(web, user)
+    response = full_login(web, user)
     assert response.status_code == 302
     assert response.cookies["django_language"].value == saved
     assert "django_language" not in web.get(url("dashboard_student")).cookies

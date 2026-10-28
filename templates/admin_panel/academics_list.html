@@ -5,7 +5,10 @@
 <div class="grid gap-6">
   <header class="flex flex-wrap items-center justify-between gap-3">
     <h1>{{ screen.title }}</h1>
-    <a class="btn btn-primary" href="{% url 'academics:create' screen.key %}">{% icon "edit" %}{% blocktranslate with what=screen.singular %}Add {{ what }}{% endblocktranslate %}</a>
+    <div class="flex flex-wrap gap-3">
+      {% if screen.suggest %}<a class="btn btn-ghost" href="{% url 'academics:create' screen.key %}?suggested=1">{% icon "calendar" %}{{ screen.suggest_label }}</a>{% endif %}
+      <a class="btn btn-primary" href="{% url 'academics:create' screen.key %}">{% icon "edit" %}{% blocktranslate with what=screen.singular %}Add {{ what }}{% endblocktranslate %}</a>
+    </div>
   </header>
 
   {% if filter_form.fields %}

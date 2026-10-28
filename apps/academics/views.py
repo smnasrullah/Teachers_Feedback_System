@@ -13,7 +13,7 @@ from django.views.decorators.http import require_GET, require_http_methods
 from apps.academics.forms import AssignFilterForm
 from apps.academics.models import CourseOffering, Semester
 from apps.academics.screens import SCREENS, Screen
-from apps.academics.services import assignments, catalog
+from apps.academics.services import assignments, catalog, semesters
 from apps.accounts.models import TeacherProfile
 from apps.core.permissions import Role, role_required
 from apps.core.services.navigation import admin_nav_items
@@ -64,11 +64,16 @@ def _form_page(request, screen: Screen, obj=None):
     if request.method == "POST":
         form = screen.form_class(request.POST, instance=obj)
         if form.is_valid():
-            catalog.save(screen, form, actor=request.user, request=request)
-            messages.success(request, _("The %(what)s was saved.") % {"what": screen.singular})
-            return redirect("academics:list", entity=screen.key)
+            try:
+                catalog.save(screen, form, actor=request.user, request=request)
+            except ValidationError as error:
+                form.add_error(None, error)
+            else:
+                messages.success(request, _("The %(what)s was saved.") % {"what": screen.singular})
+                return redirect("academics:list", entity=screen.key)
     else:
-        form = screen.form_class(instance=obj)
+        suggested = obj is None and screen.suggest and request.GET.get("suggested")
+        form = screen.form_class(instance=obj, initial=screen.suggest() if suggested else None)
     return render(
         request,
         "admin_panel/academics_form.html",
@@ -163,7 +168,7 @@ def assign_teachers(request):
     form = AssignFilterForm(request.GET)
     valid = form.is_valid()
     semester = (valid and form.cleaned_data["semester"]) or (
-        Semester.objects.filter(is_current=True).first() or Semester.objects.first()
+        semesters.current_semester() or Semester.objects.first()
     )
     offerings = CourseOffering.objects.select_related("course__department").filter(
         semester=semester

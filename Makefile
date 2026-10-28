@@ -23,7 +23,7 @@ reset-db:
 	$(PY) scripts/reset_dev_db.py
 
 seed:
-	$(PY) manage.py seed_demo
+	$(PY) manage.py seed_demo $(ARGS)
 
 messages:
 	$(PY) scripts/compile_messages.py

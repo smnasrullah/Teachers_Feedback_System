@@ -4,7 +4,8 @@ from django import template
 from django.template.loader import render_to_string
 from django.utils.html import format_html
 
-from apps.core.services.localize import pick
+from apps.core.services.clock import utc_iso
+from apps.core.services.localize import pick, to_roman
 
 register = template.Library()
 
@@ -15,6 +16,15 @@ def icon(name, extra_class=""):
     classes = f"ico {extra_class}".strip()
     return format_html(
         '<svg class="{}" aria-hidden="true"><use href="#i-{}"/></svg>', classes, name
+    )
+
+
+@register.simple_tag
+def countdown(to, label, done_label):
+    """A live countdown to ``to`` (aware datetime); ``static/js/clock.js`` ticks it."""
+    return render_to_string(
+        "components/countdown.html",
+        {"moment": to, "to": utc_iso(to), "label": label, "done_label": done_label},
     )
 
 
@@ -76,6 +86,12 @@ def localized(obj, field):
     """``{{ course|localized:"title" }}``: the Bangla column (``title_bn``) when the page is
     in Bangla and it is filled in, else the English one."""
     return pick(getattr(obj, field, ""), getattr(obj, f"{field}_bn", ""))
+
+
+@register.filter
+def roman(number):
+    """``{{ term|roman }}``: 1..10 as I..X, anything else as it is, nothing as empty."""
+    return to_roman(number)
 
 
 @register.filter

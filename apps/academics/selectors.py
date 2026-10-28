@@ -1,6 +1,7 @@
 """Read-side queries over the academic structure."""
 
 from apps.academics.models import Course, CourseOffering, LevelTerm, Outcome
+from apps.academics.services import semesters
 from apps.accounts.models import StudentProfile
 from apps.accounts.services.student_id_policy import with_visible_ids
 
@@ -17,7 +18,7 @@ def get_current_courses(student_profile) -> list[CourseOffering]:
     """Offerings of the current semester that ``student_profile`` is enrolled in."""
     return list(
         CourseOffering.objects.filter(
-            semester__is_current=True, enrollments__student_profile=student_profile
+            semester__in=semesters.ongoing(), enrollments__student_profile=student_profile
         ).select_related("course", "semester", "teacher__registry")
     )
 

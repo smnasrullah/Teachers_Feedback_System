@@ -225,6 +225,25 @@ class RoleForm(StyledForm):
     )
 
 
+class ResetAccessForm(StyledForm):
+    """Lost phone: how long the new activation code lasts and how it is handed over."""
+
+    OUTPUT_PAGE = "page"
+    OUTPUT_CSV = "csv"
+
+    valid_days = forms.IntegerField(
+        label=_("Code valid for (days)"),
+        min_value=1,
+        max_value=MAX_CODE_VALID_DAYS,
+        initial=DEFAULT_CODE_VALID_DAYS,
+    )
+    output = forms.ChoiceField(
+        label=_("Hand the code over as"),
+        choices=[(OUTPUT_PAGE, _("A printable page")), (OUTPUT_CSV, _("A CSV file"))],
+        initial=OUTPUT_PAGE,
+    )
+
+
 class UserFilterForm(StyledForm):
     q = forms.CharField(
         label=_("Search"), required=False, max_length=64, help_text=_("Username or nickname")

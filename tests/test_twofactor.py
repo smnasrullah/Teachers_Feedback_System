@@ -4,7 +4,7 @@ import pytest
 from apps.accounts.models import RecoveryCode
 from apps.accounts.services import twofactor
 from apps.accounts.templatetags.identity import mask_contact
-from tests.auth_helpers import enable_totp, totp_code
+from tests.auth_helpers import code_for_secret, enable_totp, totp_code
 from tests.factories import claim, make_admin, make_student
 
 pytestmark = pytest.mark.django_db
@@ -22,7 +22,9 @@ def test_enrolment_keeps_one_secret_until_confirmed():
     assert twofactor.begin_enrolment(user) == secret
     assert not user.totp_enabled
     assert pyotp.TOTP(secret).provisioning_uri(name=user.username).startswith("otpauth://totp/")
-    assert "issuer=Teacher%20Feedback%20System" in twofactor.provisioning_uri(user)
+    uri = twofactor.provisioning_uri(secret, user.username)
+    assert "issuer=Teacher%20Feedback%20System" in uri
+    assert user.username in uri
 
 
 def test_secret_is_encrypted_at_rest():
@@ -97,10 +99,10 @@ def test_regenerating_invalidates_the_old_codes():
     assert twofactor.check_second_factor(user, new[0]).ok
 
 
-def test_disable_clears_the_secret_and_codes():
+def test_clear_forgets_the_secret_and_codes():
     user = claim(make_student())
     enable_totp(user)
-    twofactor.disable(user)
+    twofactor.clear(user)
     user.refresh_from_db()
     assert not user.totp_enabled
     assert user.totp_secret is None
@@ -108,8 +110,42 @@ def test_disable_clears_the_secret_and_codes():
 
 
 def test_qr_is_an_inline_svg_image():
-    uri = twofactor.qr_data_uri(pending_user())
-    assert uri.startswith("data:image/svg+xml")
+    user = pending_user()
+    assert twofactor.qr_data_uri(user.totp_secret, user.username).startswith("data:image/svg+xml")
+
+
+def test_manual_key_is_the_secret_in_groups_of_four():
+    key = twofactor.manual_key("ABCDEFGHIJKLMNOP")
+    assert key == "ABCD EFGH IJKL MNOP"
+
+
+@pytest.mark.parametrize("code", ["", "12345", "1234567", "abcdef", "০১২"])
+def test_malformed_codes_never_match(code):
+    assert twofactor.matching_step(twofactor.new_secret(), code) is None
+
+
+def test_matching_step_skips_steps_already_used():
+    secret = twofactor.new_secret()
+    step = twofactor.matching_step(secret, code_for_secret(secret))
+    assert step is not None
+    assert twofactor.matching_step(secret, code_for_secret(secret), after=step) is None
+
+
+def test_an_unknown_account_never_passes_the_second_factor():
+    assert not twofactor.check_second_factor(None, "123456").ok
+    pending = pending_user()  # a secret, but not enabled yet
+    assert not twofactor.check_second_factor(pending, totp_code(pending)).ok
+
+
+def test_replacing_the_secret_needs_a_code_from_the_new_one():
+    user = claim(make_student())
+    codes = enable_totp(user)
+    new = twofactor.new_secret()
+    assert not twofactor.replace_secret(user, new, totp_code(user, steps_ahead=1))
+    assert twofactor.replace_secret(user, new, code_for_secret(new))
+    user.refresh_from_db()
+    assert user.totp_secret == new
+    assert twofactor.check_second_factor(user, codes[0]).ok  # recovery codes survive
 
 
 def test_mask_contact_hides_most_of_the_address():

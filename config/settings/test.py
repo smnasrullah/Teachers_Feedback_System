@@ -7,12 +7,12 @@ os.environ.setdefault("BLIND_INDEX_KEY", "test-blind-index-key-0123456789abcdef"
 
 from .dev import *  # noqa: F403
 
+# Tests turn the demo shortcut on explicitly; it is never on by accident.
+DEMO_SKIP_SECOND_FACTOR = False
+DEMO_PASSWORD = ""
+
 # Test-only models (encrypted fields) live in tests/testapp.
 INSTALLED_APPS = [*INSTALLED_APPS, "tests.testapp"]  # noqa: F405
-
-# Codes land in memory (tests/outbox.py) instead of being sent.
-OTP_BACKENDS = {"email": "tests.outbox.OutboxBackend", "sms": "tests.outbox.OutboxBackend"}
-OTP_SMS_ENABLED = True
 
 # Texts land in memory too; e-mail uses Django's in-memory mailbox.
 NOTIFICATION_SENDERS = {

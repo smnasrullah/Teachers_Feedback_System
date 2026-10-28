@@ -9,6 +9,7 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 from apps.accounts import ratelimits
 from apps.accounts.auth_forms import PasswordChangeForm
 from apps.accounts.services import account as account_service
+from apps.accounts.services import twofactor
 from apps.core.permissions import ALL_ROLES, role_required
 from apps.core.services.navigation import user_nav_items
 
@@ -26,7 +27,7 @@ def account_home(request):
     context = {
         **account_context(request, "account"),
         "sessions": account_service.active_sessions(user),
-        "must_use_two_factor": user.requires_second_factor,
+        "recovery_left": twofactor.recovery_codes_left(user),
     }
     return render(request, "accounts/account.html", context)
 

@@ -1,5 +1,5 @@
 {% extends "layouts/dashboard.html" %}
-{% load i18n ui %}
+{% load i18n semesters ui %}
 {% block title %}{% translate "My courses" %} · {% translate "Teacher Feedback System" %}{% endblock %}
 {% block content %}
 {% if replaced_device_at %}
@@ -19,7 +19,7 @@
         <div><dt>{% translate "Department" %}</dt><dd>{{ profile.registry.department|localized:"name" }}</dd></div>
         {% if profile.batch %}<div><dt>{% translate "Batch" %}</dt><dd>{{ profile.batch.name }}</dd></div>{% endif %}
         <div><dt>{% translate "Level/term" %}</dt><dd>{{ profile.level_term|localized:"name" }}</dd></div>
-        {% if dashboard.semester %}<div><dt>{% translate "Semester" %}</dt><dd>{{ dashboard.semester.name }}</dd></div>{% endif %}
+        <div><dt>{% translate "Semester" %}</dt><dd>{% semester_badge %} {% semester_countdown %}</dd></div>
         <div><dt>{% translate "Login name" %}</dt><dd><span class="username num">{{ request.user.username }}</span></dd></div>
         {% if own_id %}<div><dt>{% translate "Student ID" %}</dt><dd class="num">{{ own_id }}</dd></div>{% endif %}
       </dl>
@@ -30,21 +30,12 @@
           {% include "components/progress_ring.html" with done=round.done total=round.total %}
           <div>
             <p class="font-semibold">{{ round.window.name }}</p>
-            <p class="text-sm text-muted">
-              {% if round.status == "open" %}{% translate "Closes in" %}
-              {% elif round.status == "upcoming" %}{% translate "Opens in" %}
-              {% else %}{% blocktranslate with when=round.window.closes_at|date:"j M Y" %}Closed on {{ when }}{% endblocktranslate %}{% endif %}
-            </p>
+            {% if round.status == "closed" %}<p class="text-sm text-muted">{% blocktranslate with when=round.window.closes_at|date:"j M Y" %}Closed on {{ when }}{% endblocktranslate %}</p>{% endif %}
           </div>
         </div>
-        {% if round.countdown %}
-        <div class="countdown" role="timer" aria-label="{% blocktranslate with d=round.countdown.days h=round.countdown.hours m=round.countdown.minutes %}{{ d }} days {{ h }} hours {{ m }} minutes{% endblocktranslate %}">
-          <div><b class="num">{{ round.countdown.days }}</b><span>{% translate "days" %}</span></div>
-          <div><b class="num">{{ round.countdown.hours }}</b><span>{% translate "hours" %}</span></div>
-          <div><b class="num">{{ round.countdown.minutes }}</b><span>{% translate "min" %}</span></div>
-        </div>
+        {% if round.status == "open" %}{% translate "Closes in" as closes_label %}{% translate "Closed" as closed_label %}{% countdown round.window.closes_at closes_label closed_label %}
+        {% elif round.status == "upcoming" %}{% translate "Opens in" as opens_label %}{% translate "Open now" as open_label %}{% countdown round.window.opens_at opens_label open_label %}{% endif %}
         {% if round.status == "open" %}{% translate "Round time used" as elapsed_label %}{% include "components/meter.html" with value=round.elapsed_percent label=elapsed_label %}{% endif %}
-        {% endif %}
         {% else %}
         <p class="text-muted">{% translate "No feedback round has been announced for this semester yet." %}</p>
         {% endif %}

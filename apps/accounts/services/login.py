@@ -1,8 +1,9 @@
-"""Password login with an optional or mandatory second factor, kept as pending state.
+"""Password login followed by the authenticator code, kept as pending state.
 
-A correct password alone never signs anyone in when the account uses TOTP: the user is
-held in the session as *pending* until the code (or a recovery code) checks out, so
-nothing authenticated exists in between. Failures are audited by hash, never by name.
+A correct password alone never signs anyone in: the user is held in the session as
+*pending* until the code (or a recovery code) checks out, or, for an account without an
+authenticator yet, until one is enrolled. Nothing authenticated exists in between.
+Failures are audited by hash, never by name.
 """
 
 import time
@@ -14,26 +15,39 @@ from django.contrib.auth import login
 from django.contrib.auth.signals import user_login_failed
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.models import User
+from apps.auditlog.models import AuditEvent
 from apps.auditlog.services import audit
+from apps.core.checks import DEV_SETTINGS
 from apps.core.encryption import blind_index
+from apps.core.net import client_ip
 from apps.core.permissions import HOD, Role, primary_role
 from apps.core.services import sessions
+from apps.core.services.demo import constants as demo
 
 PENDING_KEY = "_tfs_pending_login"
 MODEL_BACKEND = "django.contrib.auth.backends.ModelBackend"
 USERNAME_PURPOSE = "audit.username"
+DEMO_PREFIX = "demo_"
+DEMO_ID_PREFIX = "DEMO-"
+LOOPBACK = frozenset({"127.0.0.1", "::1"})
 DASHBOARDS = {
     Role.ADMIN.value: "accounts:dashboard_admin",
     HOD: "accounts:dashboard_hod",
     Role.TEACHER.value: "accounts:dashboard_teacher",
     Role.STUDENT.value: "accounts:dashboard_student",
 }
+DEMO_ROLES = (
+    (demo.ADMIN, _("Administrator")),
+    (demo.HOD, _("Head of department")),
+    (demo.TEACHER, _("Teacher")),
+    (demo.STUDENT, _("Student")),
+)
 
 
 class NextStep(StrEnum):
-    DONE = "done"
     CODE = "code"
     ENROL = "enrol"
 
@@ -44,9 +58,7 @@ def username_ref(username: str) -> str:
 
 
 def next_step(user: User) -> NextStep:
-    if user.totp_enabled:
-        return NextStep.CODE
-    return NextStep.ENROL if user.requires_second_factor else NextStep.DONE
+    return NextStep.CODE if user.totp_enabled else NextStep.ENROL
 
 
 def begin_pending(request, user: User, next_url: str | None = None) -> None:
@@ -67,18 +79,59 @@ def pending_user(request) -> User | None:
     return User.objects.filter(pk=state["user"], is_active=True).first()
 
 
-def complete_login(request, user: User, *, second_factor: bool) -> None:
+def complete_login(request, user: User) -> None:
+    """Sign in after the second factor (or a fresh enrolment) checked out."""
     login(request, user, backend=MODEL_BACKEND)
     request.session.pop(PENDING_KEY, None)
-    if second_factor:
-        sessions.mark_second_factor(request)
+    sessions.mark_second_factor(request)
+    audit.record("auth.login", request=request, actor=user, department_id=user.department_id)
+
+
+def is_demo_account(request, user: User) -> bool:
+    """Whether ``user`` is a ``seed_demo`` account signing in from this machine in development.
+
+    Every condition must hold: the flag, DEBUG, the dev settings module, a ``demo_`` username,
+    a ``DEMO-`` registry row (the Admin has none, so ``seed_demo``'s own ``admin.created``
+    event stands in), a loopback peer address and no forwarding header (a tunnel or proxy).
+    """
+    if not (
+        settings.DEMO_SKIP_SECOND_FACTOR
+        and settings.DEBUG
+        and settings.SETTINGS_MODULE == DEV_SETTINGS
+        and user.username.startswith(DEMO_PREFIX)
+        and request.META.get("REMOTE_ADDR") in LOOPBACK
+        and client_ip(request) in LOOPBACK
+        and "HTTP_X_FORWARDED_FOR" not in request.META
+    ):
+        return False
+    if user.role == Role.ADMIN:
+        return AuditEvent.objects.filter(
+            action="admin.created",
+            object_type=user._meta.label_lower,
+            object_id=str(user.pk),
+            metadata__via="seed_demo",
+        ).exists()
+    registry = getattr(user, "registry", None)
+    return registry is not None and registry.external_id.startswith(DEMO_ID_PREFIX)
+
+
+def complete_demo_login(request, user: User) -> None:
+    """Sign a demo account in on its password alone and audit that the code was skipped."""
+    complete_login(request, user)
     audit.record(
-        "auth.login",
-        request=request,
-        actor=user,
-        department_id=user.department_id,
-        metadata={"second_factor": second_factor},
+        "auth.login_demo_bypass", request=request, actor=user, department_id=user.department_id
     )
+
+
+def demo_box() -> dict | None:
+    """What the dev-only "Demo accounts" box of the login page shows, or ``None`` outside
+    development. The password appears only while it is still the demo accounts' password."""
+    if not (settings.DEBUG and settings.SETTINGS_MODULE == DEV_SETTINGS):
+        return None
+    password = settings.DEMO_PASSWORD
+    sample = User.objects.filter(username=demo.STUDENT).first()
+    matches = bool(password) and sample is not None and sample.check_password(password)
+    return {"accounts": DEMO_ROLES, "password": password if matches else ""}
 
 
 def landing_url(user: User) -> str:
@@ -101,7 +154,8 @@ def note_failure(request, username: str, *, stage: str) -> None:
     """Audit a failed attempt (by hash, same work whether the account exists or not).
 
     Password failures reach django-axes through ``authenticate``; a wrong second-factor
-    code is reported to it here so it counts towards the same lockout.
+    code (at login or in a password reset) is reported to it here so it counts towards the
+    same lockout.
     """
     if stage != "password":
         user_login_failed.send(sender=User, credentials={"username": username}, request=request)

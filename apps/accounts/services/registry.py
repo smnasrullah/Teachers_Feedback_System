@@ -1,4 +1,4 @@
-"""Create, edit, revoke and re-activate ID registry entries, and issue activation codes.
+"""Create, edit, revoke and re-activate ID registry entries, issue activation codes, reset access.
 
 Every change is audited with row ids and counts only: never an ID, a name or a code.
 """
@@ -6,6 +6,7 @@ Every change is audited with row ids and counts only: never an ID, a name or a c
 from dataclasses import dataclass
 from datetime import timedelta
 
+from axes.handlers.proxy import AxesProxyHandler
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from django.utils import timezone
@@ -19,7 +20,7 @@ from apps.accounts.models import (
     TeacherProfile,
     registry_index,
 )
-from apps.accounts.services import activation
+from apps.accounts.services import activation, twofactor
 from apps.accounts.services.identifiers import clean_registry_id
 from apps.auditlog.services import audit
 from apps.core.models import ActiveSession
@@ -215,6 +216,60 @@ def activate(registries, *, actor, request=None) -> int:
     return len(rows)
 
 
+def can_reset_access(account, actor) -> bool:
+    """Students and teachers (HODs included) with a live claim; never the Admin's own account."""
+    registry = getattr(account, "registry", None)
+    return (
+        account.pk != actor.pk
+        and registry is not None
+        and registry.status == RegistryStatus.CLAIMED
+        and account.is_active
+    )
+
+
+def _new_code(row: IdRegistry, expires_at) -> str:
+    code = activation.generate_code()
+    row.activation_code_hash = activation.hash_code(code)
+    row.activation_expires_at = expires_at
+    row.activation_used_at = None
+    row.save(update_fields=["activation_code_hash", "activation_expires_at", "activation_used_at"])
+    return code
+
+
+@transaction.atomic
+def reset_access(account, *, valid_days: int, actor, request=None) -> IssuedCode:
+    """Lost phone: clear the password and authenticator, end every session, issue a new code.
+
+    The person then signs up again with their ID and this code; the same steps re-enrol the
+    existing account (same username, same history). The plaintext code exists only in the
+    returned value.
+    """
+    row = (
+        IdRegistry.objects.select_for_update(of=("self",))
+        .select_related("claimed_by", "department")
+        .filter(claimed_by=account)
+        .first()
+    )
+    if row is None or not can_reset_access(row.claimed_by, actor):
+        raise ValidationError(_("Access to this account cannot be reset."), code="not_resettable")
+    user = row.claimed_by
+    user.set_unusable_password()
+    user.save(update_fields=["password"])
+    twofactor.clear(user)
+    ActiveSession.objects.filter(user=user).delete()
+    AxesProxyHandler.reset_attempts(username=user.username)
+    code = _new_code(row, timezone.now() + timedelta(days=valid_days))
+    audit.record(
+        "account.access_reset",
+        request=request,
+        actor=actor,
+        target=user,
+        department_id=row.department_id,
+        metadata={"valid_days": valid_days, "registry_id": row.pk},
+    )
+    return IssuedCode(row, code)
+
+
 @transaction.atomic
 def issue_activation_codes(registries, *, valid_days: int, actor, request=None) -> list[IssuedCode]:
     """Give every unclaimed entry a new code (replacing any earlier one).
@@ -226,14 +281,7 @@ def issue_activation_codes(registries, *, valid_days: int, actor, request=None) 
     expires_at = timezone.now() + timedelta(days=valid_days)
     issued = []
     for row in rows:
-        code = activation.generate_code()
-        row.activation_code_hash = activation.hash_code(code)
-        row.activation_expires_at = expires_at
-        row.activation_used_at = None
-        row.save(
-            update_fields=["activation_code_hash", "activation_expires_at", "activation_used_at"]
-        )
-        issued.append(IssuedCode(row, code))
+        issued.append(IssuedCode(row, _new_code(row, expires_at)))
     if rows:
         audit.record(
             "registry.codes_issued",

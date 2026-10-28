@@ -1,53 +1,56 @@
-"""Account claiming: ID + activation code, contact verification, then the account itself.
+"""Account claiming: ID + activation code, password, authenticator, then the account itself.
 
 Every failure of the first step looks the same to the caller (``find_claimable`` returns
 ``None``) and costs the same work, whether the ID is unknown, claimed, revoked or the code
 is wrong, expired or used.
+
+The account is created only when the first authenticator code checks out. Until then the
+chosen password (as its hash) and the new TOTP secret wait in the session, encrypted.
+
+A claimed row carries an activation code only after the Admin reset its access (lost phone):
+the same steps then re-enrol the existing account, which keeps its username.
 """
 
 import hmac
 
 from django.conf import settings
+from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
 from django.db import IntegrityError, transaction
 from django.utils import timezone, translation
-from django.utils.translation import gettext as _
 
-from apps.accounts.models import (
-    EMAIL_INDEX_PURPOSE,
-    PHONE_INDEX_PURPOSE,
-    IdRegistry,
-    IdType,
-    OneTimeCode,
-    OtpPurpose,
-    RegistryStatus,
-    User,
-    registry_index,
-)
-from apps.accounts.services import activation, otp
-from apps.accounts.services.identifiers import (
-    clean_registry_id,
-    normalize_activation_code,
-    normalize_phone,
-)
+from apps.accounts.models import IdRegistry, IdType, RegistryStatus, User, registry_index
+from apps.accounts.services import activation, twofactor
+from apps.accounts.services.identifiers import clean_registry_id, normalize_activation_code
+from apps.accounts.services.username import generate_username
 from apps.auditlog.services import audit
-from apps.core.encryption import blind_index
+from apps.core.encryption import DecryptionError, decrypt
 from apps.core.permissions import Role
-from apps.notifications.otp import EMAIL, SMS
 
-MIN_PHONE_DIGITS = 8
-MAX_PHONE_DIGITS = 15
 # What a code is compared with when no registry row matched, so a miss costs the same.
 _MISS = "0" * 64
+OPEN_STATUSES = (RegistryStatus.UNCLAIMED, RegistryStatus.CLAIMED)
 
 
 class SignupError(Exception):
     """The sign-up cannot continue; the person starts again from the first step."""
 
 
+def _open_for_signup(row: IdRegistry | None, now) -> bool:
+    """Unclaimed (new account) or claimed after an access reset; never revoked."""
+    return (
+        row is not None
+        and row.status in OPEN_STATUSES
+        and (row.status == RegistryStatus.UNCLAIMED) == (row.claimed_by_id is None)
+        and bool(row.activation_code_hash)
+        and row.activation_used_at is None
+        and row.activation_expires_at is not None
+        and row.activation_expires_at > now
+    )
+
+
 def find_claimable(external_id: str, code: str) -> IdRegistry | None:
-    """The unclaimed, unrevoked registry row this ID and unexpired unused code belong to."""
+    """The open registry row this ID and unexpired unused code belong to."""
     try:
         normalized_id = clean_registry_id(external_id)
     except ValidationError:
@@ -59,56 +62,34 @@ def find_claimable(external_id: str, code: str) -> IdRegistry | None:
     for row in rows or [None]:
         stored = (row.activation_code_hash if row else "") or _MISS
         same_code = hmac.compare_digest(stored, submitted)
-        usable = (
-            row is not None
-            and row.status == RegistryStatus.UNCLAIMED
-            and row.activation_used_at is None
-            and row.activation_expires_at is not None
-            and row.activation_expires_at > now
-        )
-        if same_code and usable:
+        if same_code and _open_for_signup(row, now):
             match = row
     return match
 
 
-def parse_contact(raw: str) -> otp.Contact:
-    """An e-mail address or (when SMS is on) a phone number, in canonical form."""
-    raw = raw.strip()
-    if "@" in raw:
-        try:
-            validate_email(raw)
-        except ValidationError:
-            raise ValidationError(_("Enter a valid e-mail address."), code="invalid") from None
-        return otp.Contact(EMAIL, raw.lower())
-    phone = normalize_phone(raw)
-    if not otp.sms_enabled() or not MIN_PHONE_DIGITS <= len(phone) - 1 <= MAX_PHONE_DIGITS:
-        raise ValidationError(_("Enter a valid e-mail address."), code="invalid")
-    return otp.Contact(SMS, phone)
+def role_for(registry: IdRegistry) -> str:
+    return Role.STUDENT if registry.id_type == IdType.STUDENT else Role.TEACHER
 
 
-def contact_in_use(contact: otp.Contact) -> bool:
-    if contact.channel == EMAIL:
-        return User.objects.filter(
-            contact_email_index=blind_index(contact.destination, EMAIL_INDEX_PURPOSE)
-        ).exists()
-    return User.objects.filter(
-        contact_phone_index=blind_index(contact.destination, PHONE_INDEX_PURPOSE)
-    ).exists()
+def username_for(registry: IdRegistry) -> str:
+    """The account's username: the existing one when re-enrolling, else a freshly issued one."""
+    if registry.claimed_by_id:
+        return registry.claimed_by.username
+    return generate_username(role_for(registry))
 
 
-def start_verification(registry: IdRegistry, contact: otp.Contact) -> OneTimeCode:
-    if contact_in_use(contact):
-        raise ValidationError(
-            _("This e-mail address or phone number cannot be used. Try another."),
-            code="contact_in_use",
-        )
-    return otp.start(
-        OtpPurpose.SIGNUP,
-        channel=contact.channel,
-        destination=contact.destination,
-        registry=registry,
-        keep_destination=True,
-    )
+def unseal(token: str | None) -> str | None:
+    """A password hash or secret the session holds encrypted; ``None`` if absent or unreadable."""
+    if not token:
+        return None
+    try:
+        return decrypt(token)
+    except DecryptionError:
+        return None
+
+
+def hash_password(password: str) -> str:
+    return make_password(password)
 
 
 def _usable_language() -> str:
@@ -116,44 +97,51 @@ def _usable_language() -> str:
     return language if language in dict(settings.LANGUAGES) else settings.LANGUAGE_CODE
 
 
-@transaction.atomic
-def create_account(registry_pk: int, challenge_id, password: str, *, request=None) -> User:
-    """Create the account, claim the registry row and burn the activation code, atomically."""
-    registry = (
-        IdRegistry.objects.select_for_update(of=("self",))
-        .select_related("department")
-        .get(pk=registry_pk)
-    )
-    challenge = otp.get_active(challenge_id, OtpPurpose.SIGNUP)
-    if (
-        challenge is None
-        or challenge.registry_id != registry.pk
-        or not challenge.destination
-        or not otp.is_verified(challenge)
-    ):
-        raise SignupError
-    now = timezone.now()
-    if (
-        registry.status != RegistryStatus.UNCLAIMED
-        or registry.activation_used_at is not None
-        or not registry.activation_code_hash
-        or registry.activation_expires_at is None
-        or registry.activation_expires_at <= now
-    ):
-        raise SignupError
-    role = Role.STUDENT if registry.id_type == IdType.STUDENT else Role.TEACHER
-    contact_field = "contact_email" if challenge.channel == EMAIL else "contact_phone"
+def _new_account(registry: IdRegistry, username: str) -> User:
     try:
         with transaction.atomic():
-            user = User.objects.create_user(
-                role,
-                password,
+            return User.objects.create_user(
+                role_for(registry),
+                None,
+                username=username,
                 department=registry.department,
                 language=_usable_language(),
-                **{contact_field: challenge.destination},
             )
     except IntegrityError:
         raise SignupError from None
+
+
+@transaction.atomic
+def complete(
+    registry_pk: int, *, username: str, password_hash: str, secret: str, code: str, request=None
+) -> tuple[User, list[str]] | None:
+    """Create (or re-enrol) the account once ``code`` from the new authenticator checks out.
+
+    Returns the account and its recovery codes, ``None`` for a wrong code (try again), and
+    raises ``SignupError`` when the registry row is no longer open (start again). Claiming
+    the row and burning the activation code happen in the same transaction.
+    """
+    step = twofactor.matching_step(secret, code)
+    if step is None:
+        return None
+    registry = (
+        IdRegistry.objects.select_for_update(of=("self",))
+        .select_related("department", "claimed_by")
+        .get(pk=registry_pk)
+    )
+    now = timezone.now()
+    if not _open_for_signup(registry, now):
+        raise SignupError
+    reenrol = registry.claimed_by is not None
+    if reenrol:
+        user = User.objects.select_for_update().get(pk=registry.claimed_by_id)
+        if user.username != username or not user.is_active:
+            raise SignupError
+    else:
+        user = _new_account(registry, username)
+    user.password = password_hash
+    user.save(update_fields=["password"])
+    codes = twofactor.activate(user, secret, step)
     registry.claimed_by = user
     registry.status = RegistryStatus.CLAIMED
     registry.activation_code_hash = ""
@@ -168,13 +156,12 @@ def create_account(registry_pk: int, challenge_id, password: str, *, request=Non
             "activation_used_at",
         ]
     )
-    otp.consume(challenge)
     audit.record(
-        "auth.signup",
+        "auth.reenrolled" if reenrol else "auth.signup",
         request=request,
         actor=user,
         target=user,
         department_id=user.department_id,
-        metadata={"id_type": registry.id_type, "channel": challenge.channel},
+        metadata={"id_type": registry.id_type},
     )
-    return user
+    return user, codes

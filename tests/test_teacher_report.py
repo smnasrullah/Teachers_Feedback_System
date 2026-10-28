@@ -191,7 +191,7 @@ class TestAccess:
             teacher_client.get(reverse("reports:course", args=[9999, world.window.pk])).status_code
             == 404
         )
-        other_semester = make_semester(name="Fall 2026")
+        other_semester = make_semester()
         elsewhere = make_window(other_semester, **CLOSED)
         assert teacher_client.get(world.url(window=elsewhere)).status_code == 404
 
@@ -336,7 +336,8 @@ class TestReportContent:
     def test_no_identity_or_timestamps_in_the_page(self, teacher_client, world):
         world.submit(6, texts=[POSITIVE, NEGATIVE])
         for url in (world.url(), world.url("print")):
-            html = page(teacher_client, url)
+            # The page clock's server time is not data about any response.
+            html = re.sub(r' data-server-now="[^"]*"', "", page(teacher_client, url))
             for response in FeedbackResponse.objects.all():
                 assert str(response.pk) not in html
             for answer in Answer.objects.all()[:5]:
