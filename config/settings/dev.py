@@ -11,7 +11,8 @@ ACCESS_POLICY_EXEMPT_VIEWS = [*ACCESS_POLICY_EXEMPT_VIEWS, "media"]  # noqa: F40
 
 DEMO_SKIP_SECOND_FACTOR = True
 # The same variable ``seed_demo`` reads; the login page shows it only while it still matches.
-DEMO_PASSWORD = env("DEMO_PASSWORD", default="")  # noqa: F405
+# This fixed development-only value keeps the bundled demo accounts easy to use locally.
+DEMO_PASSWORD = env("DEMO_PASSWORD", default="DemoPass123!")  # noqa: F405
 
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True

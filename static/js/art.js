@@ -1,6 +1,6 @@
 /* Illustration runtime. Loops run only while their art is on screen and the tab is visible;
-   .reveal blocks fade in once; the hero scene leans with the pointer. All motion is off for
-   prefers-reduced-motion and for <html data-motion="off">. No inline styles: only CSSOM custom properties. */
+   .reveal blocks fade in once. All motion is off for prefers-reduced-motion and for
+   <html data-motion="off">. */
 (function () {
   var root = document.documentElement;
   root.classList.add("art-js");
@@ -59,32 +59,4 @@
   }
   document.addEventListener("visibilitychange", sync);
 
-  document.querySelectorAll("[data-parallax]").forEach(function (host) {
-    var target = host.querySelector(".scene");
-    if (!target || !window.matchMedia("(pointer: fine)").matches) {
-      return;
-    }
-    var frame = 0;
-    var next = 0;
-    function paint() {
-      frame = 0;
-      target.style.setProperty("--px", next.toFixed(3));
-    }
-    function lean(value) {
-      next = value;
-      if (!frame) {
-        frame = window.requestAnimationFrame(paint);
-      }
-    }
-    host.addEventListener("pointermove", function (event) {
-      if (motionOff()) {
-        return;
-      }
-      var box = host.getBoundingClientRect();
-      lean(((event.clientX - box.left) / box.width - 0.5) * -2);
-    });
-    host.addEventListener("pointerleave", function () {
-      lean(0);
-    });
-  });
 })();

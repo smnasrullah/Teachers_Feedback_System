@@ -7,7 +7,7 @@ For development only. `seed_demo` refuses to run unless `DEBUG` is on and the se
 
 ```powershell
 scripts/dev.ps1 migrate
-scripts/dev.ps1 seed                              # random password, printed once
+scripts/dev.ps1 seed                              # uses the fixed local demo password
 scripts/dev.ps1 seed --password "Your-Own-Pass-1" # or set DEMO_PASSWORD in the environment
 scripts/dev.ps1 seed --reset                      # remove the demo data and stop
 scripts/dev.ps1 run

@@ -2,7 +2,6 @@
 {# Params: user_name (empty = signed out), user_menu [{label,url,icon}], logout_url, static_nav, anchors (landing section links). The bell fills itself over HTMX. #}
 <header class="nav{% if static_nav %} nav-static{% endif %}"><div class="wrap">
   {% include "components/logo.html" %}
-  <span class="flex-1"></span>
   {% if anchors %}
   <nav class="nav-anchors" aria-label="{% translate 'On this page' %}">
     <a href="#demo">{% translate "Try it" %}</a>
@@ -11,6 +10,22 @@
     <a href="#preview">{% translate "Preview" %}</a>
     <a href="#faq">{% translate "Questions" %}</a>
   </nav>
+  {% endif %}
+  <span class="nav-spacer" aria-hidden="true"></span>
+  {% if anchors %}
+  <div class="menu-wrap nav-anchors-compact">
+    <button type="button" class="icon-btn" data-toggle="#nav-anchors-menu" aria-expanded="false" aria-controls="nav-anchors-menu" aria-label="{% translate 'On this page' %}">
+      {% icon "menu" %}
+    </button>
+    <div class="menu" id="nav-anchors-menu" hidden>
+      <p class="menu-head">{% translate "On this page" %}</p>
+      <a class="menu-item" href="#demo">{% translate "Try it" %}</a>
+      <a class="menu-item" href="#how">{% translate "How it works" %}</a>
+      <a class="menu-item" href="#roles">{% translate "Who sees what" %}</a>
+      <a class="menu-item" href="#preview">{% translate "Preview" %}</a>
+      <a class="menu-item" href="#faq">{% translate "Questions" %}</a>
+    </div>
+  </div>
   {% endif %}
   {% include "components/clock.html" %}
   {% include "components/lang_toggle.html" %}

@@ -133,9 +133,18 @@
     align-items: center;
     gap: 4px;
     min-height: 56px;
+    max-width: 1440px;
+  }
+  .nav .btn {
+    white-space: nowrap;
+    flex-shrink: 0;
   }
   .nav-static {
     position: static;
+  }
+  .nav-spacer {
+    flex: 1 1 auto;
+    min-width: 8px;
   }
   .logo {
     display: flex;
@@ -145,6 +154,8 @@
     color: var(--text);
     text-decoration: none;
     min-height: 44px;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
   .logo-mark {
     width: 32px;
@@ -156,9 +167,11 @@
     place-items: end center;
     padding-bottom: 4px;
     font-size: 14px;
+    flex-shrink: 0;
   }
   .logo-text {
     display: none;
+    white-space: nowrap;
   }
   .icon-btn {
     min-width: 44px;
@@ -172,6 +185,7 @@
     cursor: pointer;
     font: inherit;
     position: relative;
+    flex-shrink: 0;
   }
   .icon-btn:hover {
     background: var(--primary-soft);
@@ -181,6 +195,8 @@
     border: 1px solid var(--border-input);
     border-radius: var(--radius-chip);
     padding: 2px;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
   .pill-toggle button {
     min-height: 44px;
@@ -1656,6 +1672,7 @@
     font-size: var(--text-sm);
     color: var(--muted);
     white-space: nowrap;
+    flex-shrink: 0;
   }
   .live-clock[hidden] {
     display: none;
@@ -1663,6 +1680,11 @@
   .live-clock-time {
     color: var(--text);
     font-weight: 600;
+  }
+  @media (max-width: 899px) {
+    .live-clock-date {
+      display: none;
+    }
   }
   @media (max-width: 399px) {
     .live-clock-date {

@@ -1,4 +1,4 @@
-/* Landing page: hero arch, bento, demo, timeline, roles, security, rickshaw divider. Tokens and art palette only. */
+/* Landing page: bento, demo, timeline, roles, security, and rickshaw divider. Tokens only. */
 
 @layer components {
   .alpona,
@@ -119,8 +119,9 @@
   }
   .a-hero-grid {
     display: grid;
-    gap: 40px;
     align-items: center;
+    max-width: 860px;
+    margin-inline: auto;
   }
   .a-hero h1 {
     margin-top: 16px;
@@ -153,33 +154,6 @@
   .a-facts .ico {
     color: var(--primary);
   }
-  .a-hero-art {
-    position: relative;
-    padding-bottom: 44px;
-  }
-  .hero-arch {
-    position: relative;
-    width: min(100%, 420px);
-    aspect-ratio: 6 / 7;
-    margin-inline: auto;
-    border-radius: 999px 999px 24px 24px;
-    border: 2px solid var(--border-input);
-    outline: 1.5px solid var(--primary);
-    outline-offset: 8px;
-    box-shadow: var(--shadow-lift);
-    overflow: hidden;
-    background: var(--art-sky-2);
-  }
-  .a-hero-art .mini-stub {
-    inset-inline-start: 50%;
-    transform: translateX(-50%);
-    bottom: 6px;
-    white-space: nowrap;
-  }
-  html[dir="rtl"] .a-hero-art .mini-stub {
-    transform: translateX(50%);
-  }
-
   /* bento */
   .bento {
     display: grid;
@@ -507,9 +481,6 @@
   @media (min-width: 900px) {
     .a-sec {
       padding-block: 80px;
-    }
-    .a-hero-grid {
-      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
     }
     .a-hero h1 {
       font-size: 52px;

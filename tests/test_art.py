@@ -69,14 +69,14 @@ def test_scene_figures_grow_on_small_screens_and_the_demo_cue_has_a_reduced_moti
 
 
 @pytest.mark.parametrize("language", ["bn", "en"])
-def test_landing_carries_the_scene_demo_and_no_external_assets(client, language):
+def test_landing_omits_the_hero_scene_and_keeps_the_demo_local(client, language):
     client.cookies["django_language"] = language
     html = client.get(reverse("core:home")).content.decode()
 
-    assert 'class="scene live enter"' in html
+    assert 'class="scene live enter"' not in html
+    assert "hero-arch" not in html and "mini-stub" not in html
     assert 'src="/static/js/art.js"' in html and 'src="/static/js/demo.js"' in html
     assert "data-demo-send" in html and "data-demo-panel" in html
-    assert 'aria-hidden="true"' in html.split("<svg", 2)[1][:400]
     assert not re.search(r"""(?:src|href)=["']https?://""", html)
     assert not re.search(r"<script(?![^>]*\bsrc=)", html)
     assert "{#" not in html and "{%" not in html

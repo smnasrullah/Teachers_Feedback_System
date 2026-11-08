@@ -82,7 +82,9 @@
       }
       return;
     }
-    if (!target.closest(".menu")) {
+    if (target.closest(".menu a")) {
+      closeMenus(null);
+    } else if (!target.closest(".menu")) {
       closeMenus(null);
     }
 
