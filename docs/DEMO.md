@@ -1,11 +1,12 @@
 # Demo accounts and demo data
 
-The demo seed runs locally by default. To run it on the existing production site and Supabase
-database, explicitly enable `PUBLIC_DEMO_ENABLED` and set `DEMO_PASSWORD` in Render. Keep
+The demo seed runs locally by default and runs automatically after migrations on the existing
+production site when `PUBLIC_DEMO_ENABLED` is on (the default). Keep
 `DJANGO_SETTINGS_MODULE=config.settings.prod` and the current `DATABASE_URL`; no extra site or
-database is needed. These are shared, ordinary app accounts, including an administrator. Their
-changes persist in the connected database and can affect other testers. Use this only while the
-database contains test data or when those changes are acceptable.
+database is needed. The public password defaults to `Demo-Pass-2026!x` and can be overridden with
+`DEMO_PASSWORD`. These are shared app accounts, including an administrator. Their changes persist
+in the connected database and can affect other testers. Use this only when those changes are
+acceptable.
 
 ## Seed and reset (Windows PowerShell)
 

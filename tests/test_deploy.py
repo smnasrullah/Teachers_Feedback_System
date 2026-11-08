@@ -167,11 +167,11 @@ def test_production_flags_are_set():
         "X_FRAME_OPTIONS": "DENY",
         "SECURE_REFERRER_POLICY": "same-origin",
         "SECURE_CONTENT_TYPE_NOSNIFF": True,
-        "DEMO_SKIP_SECOND_FACTOR": False,
-        "DEMO_PASSWORD": "",
-        "IS_DEMO_SITE": False,
+        "DEMO_SKIP_SECOND_FACTOR": True,
+        "DEMO_PASSWORD": "Demo-Pass-123!",
+        "IS_DEMO_SITE": True,
         "DEMO_DATABASE_ISOLATED": False,
-        "PUBLIC_DEMO_ENABLED": False,
+        "PUBLIC_DEMO_ENABLED": True,
         "TRUSTED_PROXY_COUNT": 1,
     }
 
@@ -193,7 +193,6 @@ def test_the_admin_path_is_not_routed_in_production():
 @pytest.mark.parametrize(
     ("command", "message"),
     [
-        (["seed_demo", "--password", "Demo-Pass-123!"], "PUBLIC_DEMO_ENABLED"),
         (["totp_code", "x"], "config.settings.dev"),
     ],
 )
@@ -203,9 +202,15 @@ def test_dev_commands_refuse_to_run_in_production(command, message):
     assert message in result.stderr
 
 
-def test_the_login_demo_box_is_closed_in_production():
+def test_the_login_demo_box_can_be_explicitly_disabled_in_production():
     code = "from apps.accounts.services.login import demo_box; print(demo_box())"
-    assert shell(code, overrides={"DEMO_PASSWORD": "Demo-Pass-123!"}) == "None"
+    assert (
+        shell(
+            code,
+            overrides={"PUBLIC_DEMO_ENABLED": "false", "DEMO_PASSWORD": "Demo-Pass-123!"},
+        )
+        == "None"
+    )
 
 
 def test_public_demo_is_explicitly_enabled_in_the_existing_production_settings():
@@ -228,6 +233,15 @@ def test_public_demo_is_explicitly_enabled_in_the_existing_production_settings()
         True,
         "Public-Demo-2026!x",
     ]
+
+
+def test_public_demo_is_on_by_default_with_public_login_credentials():
+    code = (
+        "import json; from django.conf import settings as s; "
+        "print(json.dumps([s.PUBLIC_DEMO_ENABLED, s.IS_DEMO_SITE, s.DEMO_SKIP_SECOND_FACTOR, "
+        "s.DEMO_PASSWORD]))"
+    )
+    assert json.loads(shell(code)) == [True, True, True, "Demo-Pass-2026!x"]
 
 
 def test_public_demo_requires_a_strong_configured_password():

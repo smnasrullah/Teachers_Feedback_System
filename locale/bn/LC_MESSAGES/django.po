@@ -1189,8 +1189,8 @@ msgstr "পাসওয়ার্ডটি সঠিক নয়।"
 msgid "The two passwords do not match."
 msgstr "দুটি পাসওয়ার্ড মিলছে না।"
 
-msgid "The username or password is not correct."
-msgstr "ইউজারনেম বা পাসওয়ার্ড সঠিক নয়।"
+msgid "Invalid ID or password."
+msgstr "আইডি বা পাসওয়ার্ড সঠিক নয়।"
 
 msgid "This device"
 msgstr "এই ডিভাইস"

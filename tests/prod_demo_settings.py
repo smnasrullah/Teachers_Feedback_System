@@ -3,3 +3,4 @@
 from config.settings.prod import *  # noqa: F403
 
 DEMO_SKIP_SECOND_FACTOR = True
+PUBLIC_DEMO_ENABLED = False

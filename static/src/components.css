@@ -2205,4 +2205,19 @@
       break-inside: avoid;
     }
   }
+
+  @media (max-width: 639px) {
+    body {
+      line-height: 1.55;
+    }
+    html[lang="bn"] body {
+      line-height: 1.62;
+    }
+    .wrap {
+      padding-inline: 14px;
+    }
+    .card {
+      padding: 16px;
+    }
+  }
 }

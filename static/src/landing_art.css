@@ -616,3 +616,56 @@
     }
   }
 }
+
+@layer components {
+  @media (max-width: 639px) {
+    .a-wrap {
+      padding-inline: 14px;
+    }
+    .a-sec {
+      padding-block: 40px;
+    }
+    .a-head {
+      margin-bottom: 22px;
+    }
+    .a-h2 {
+      font-size: clamp(23px, 6vw, 27px);
+      line-height: 1.25;
+    }
+    .a-hero {
+      padding-block: 24px 40px;
+    }
+    .a-hero h1 {
+      font-size: clamp(28px, 7.4vw, 34px);
+      line-height: 1.16;
+    }
+    .a-hero .lead {
+      margin-top: 16px;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+    .a-facts {
+      margin-top: 22px;
+      gap: 8px 16px;
+    }
+    .a-cta {
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .bento-tile,
+    .demo-card,
+    .demo-panel {
+      padding: 16px;
+      gap: 12px;
+    }
+  }
+
+  @media (max-width: 359px) {
+    .a-hero h1 {
+      font-size: 27px;
+    }
+    .a-cta > .btn {
+      padding-inline: 14px;
+    }
+  }
+}

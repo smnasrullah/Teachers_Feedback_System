@@ -17,7 +17,7 @@ from apps.accounts.services import login as login_service
 from apps.accounts.services import twofactor
 from apps.core.permissions import public
 
-GENERIC_LOGIN_ERROR = _lazy("The username or password is not correct.")
+GENERIC_LOGIN_ERROR = _lazy("Invalid ID or password.")
 LOGIN_UNAVAILABLE_ERROR = _lazy("Sign-in is temporarily unavailable. Please try again shortly.")
 logger = logging.getLogger(__name__)
 
@@ -44,6 +44,7 @@ def login_view(request):
         return redirect(login_service.landing_url(request.user))
     form = LoginForm(request.POST or None)
     status = 200
+    page_error = None
     if request.method == "POST":
         if request.limited:
             form.add_error(None, _too_many_message())
@@ -67,10 +68,26 @@ def login_view(request):
                 if user is not None:
                     return _after_password(request, user)
                 form.add_error(None, GENERIC_LOGIN_ERROR)
+    demo = None
+    if status < 500:
+        try:
+            demo = login_service.demo_box()
+        except DatabaseError:
+            logger.exception(
+                "Unable to load demo login information (request_id=%s)",
+                getattr(request, "request_id", ""),
+            )
+            if not form.non_field_errors():
+                if form.is_bound:
+                    form.add_error(None, LOGIN_UNAVAILABLE_ERROR)
+                else:
+                    page_error = LOGIN_UNAVAILABLE_ERROR
+                status = 503
     context = {
         "form": form,
         "next": login_service.safe_next(request) or "",
-        "demo": login_service.demo_box(),
+        "demo": demo,
+        "error": page_error,
     }
     return render(request, "accounts/login.html", context, status=status)
 

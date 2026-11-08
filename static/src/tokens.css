@@ -173,3 +173,14 @@
   --text-2xl: 24px;
   --text-3xl: 32px;
 }
+
+@media (max-width: 639px) {
+  :root {
+    --text-sm: 13px;
+    --text-base: 15px;
+    --text-xl: 18px;
+    --text-2xl: 22px;
+    --text-3xl: 28px;
+    --radius-card: 14px;
+  }
+}

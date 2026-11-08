@@ -66,30 +66,30 @@ In Supabase, use **Connect → Session pooler** and copy its PostgreSQL URI into
 pooler for this Django service. Keep Supabase's generated host and username intact, and URL-encode
 reserved characters in the database password.
 
-On the current Render service's **Environment** page, keep all existing production values and set:
+On the current Render service, keep `DJANGO_SETTINGS_MODULE=config.settings.prod` and its existing
+`DATABASE_URL`. Set `RUN_MIGRATIONS=1` on the web service. Public demo accounts are enabled by
+default; the public password defaults to `Demo-Pass-2026!x`. You may override it in the Render
+Environment page with `DEMO_PASSWORD` (it remains publicly visible). Set `PUBLIC_DEMO_ENABLED=false`
+there if you later want to turn demo mode off.
 
 | Variable | Value |
 | --- | --- |
 | `DJANGO_SETTINGS_MODULE` | `config.settings.prod` |
 | `DATABASE_URL` | Existing Supabase database connection URI |
-| `PUBLIC_DEMO_ENABLED` | `true` |
-| `DEMO_PASSWORD` | A strong password, 12+ characters; public on the login page |
 | `RUN_MIGRATIONS` | `1` |
-| `RUN_DEMO_SEED` | `1` for initial seed only |
 
 Keep the existing encryption keys, Django secret, Redis settings, allowed hosts, CSRF origin and
 `SITE_URL`. Never paste database or signing secrets into chat or commit them to Git. After the
-updated code is deployed, the container runs migrations first, then seeds the accounts and sample
-workflows. Keep one web instance during initial seeding. Confirm Render logs report `Demo data is
-ready`, then set `RUN_DEMO_SEED=0` and redeploy. The database rows persist; the seed does not need
-to run on each restart. It is idempotent if intentionally run again. Only the four seeded identities
-skip second factor; normal accounts retain the regular login flow.
+updated code is deployed, the container runs migrations first, then automatically seeds the accounts
+and sample workflows. The seed is idempotent and serialized across web instances. Confirm Render
+logs report `Demo data is ready`. The database rows persist; only the four seeded identities skip
+second factor. Normal accounts retain the regular login flow.
 
 The login page lists the four usernames and shared password after all accounts exist and have the
 configured password. The shared accounts are mutable and `demo_admin` is an administrator. A tester
 can affect other testers or change rows in the connected database. When public testing ends, run
-`python manage.py seed_demo --reset` once with `PUBLIC_DEMO_ENABLED=true`, then disable
-`PUBLIC_DEMO_ENABLED`, remove `DEMO_PASSWORD`, and redeploy. Review the data before real
+`python manage.py seed_demo --reset` once while public demo mode is enabled, then set
+`PUBLIC_DEMO_ENABLED=false` and redeploy. Review the data before real
 institutional activity.
 
 ## Background tasks, e-mail, and uploads

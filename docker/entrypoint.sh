@@ -6,14 +6,11 @@ set -eu
 if [ "${RUN_MIGRATIONS:-0}" = "1" ]; then
     python manage.py check --deploy --fail-level ERROR
     python manage.py migrate --noinput
-fi
-
-if [ "${RUN_DEMO_SEED:-0}" = "1" ]; then
-    if [ "${RUN_MIGRATIONS:-0}" != "1" ]; then
-        echo "RUN_DEMO_SEED=1 requires RUN_MIGRATIONS=1." >&2
-        exit 1
+    # Seed public demo accounts after migrations on the web service. A worker with
+    # RUN_MIGRATIONS=0 never seeds on startup. Disable the demo with PUBLIC_DEMO_ENABLED=0.
+    if [ "${PUBLIC_DEMO_ENABLED:-1}" = "1" ]; then
+        python manage.py seed_demo
     fi
-    python manage.py seed_demo
 fi
 
 exec "$@"

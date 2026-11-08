@@ -85,27 +85,27 @@ recovery codes stay valid.
 ## Password-only demo login (local development and explicitly enabled public demo)
 
 `seed_demo` accounts (`demo_admin`, `demo_hod`, `demo_teacher`, `demo_student`) skip the authenticator code at
-login, so the sample roles are usable. Production permits this only when the owner explicitly sets
-`PUBLIC_DEMO_ENABLED=true` and configures `DEMO_PASSWORD`; only the four seeded demo identities
-are affected, while normal production accounts keep the regular second-factor flow. The login
+login, so the sample roles are usable. Production enables this for the four public demo accounts by
+default. The owner can disable it with `PUBLIC_DEMO_ENABLED=false` or override the shared public
+password with `DEMO_PASSWORD`; normal production accounts keep the regular second-factor flow. The login
 service (`login.is_demo_account`) honours it only when all demo identity checks hold:
 
 - either the flag, `DEBUG` and `SETTINGS_MODULE == "config.settings.dev"`, plus loopback access
   without a forwarding header; an isolated `config.settings.demo` deployment; or
-  `DEBUG=False`, `SETTINGS_MODULE == "config.settings.prod"` and explicit `PUBLIC_DEMO_ENABLED`;
+  `DEBUG=False`, `SETTINGS_MODULE == "config.settings.prod"` and `PUBLIC_DEMO_ENABLED`;
 - the username starts with `demo_` and the account is tied to a `DEMO-` registry row (the Admin
   has none, so the `admin.created` audit event written by `seed_demo` stands in);
 - the username is one of the four fixed demo usernames.
 
 The password, lockout and rate limits still apply; the session is a normal fully authenticated one;
 each such login writes the audit event `auth.login_demo_bypass`. System check `core.E004` is an
-error when the flag is enabled outside local dev, isolated demo, or explicitly enabled public demo
+error when the flag is enabled outside local dev, isolated demo, or enabled public demo
 mode. Real accounts (including any made by `create_admin`) are never affected.
 
 The login page's "Demo accounts" box (usernames, roles, "Fill in" buttons and, when `DEMO_PASSWORD`
 still matches all demo accounts, the password) is rendered only in local dev or an explicitly
-enabled public demo. Production seeding remains disabled unless `PUBLIC_DEMO_ENABLED=true`, and the
-seeder hides credentials from logs in public demo mode.
+enabled public demo. Production seeding runs after migrations when public demo mode is enabled, and
+the seeder hides credentials from logs in public demo mode.
 
 ## Removed
 

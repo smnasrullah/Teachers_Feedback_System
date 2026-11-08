@@ -56,12 +56,12 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_NAME = "__Host-tfs_session"
 CSRF_COOKIE_NAME = "__Host-tfs_csrf"
 
-# Development features stay off whatever the environment says (core.E004 also guards the first).
+# Public demo credentials are intentionally public. The owner can turn the demo off explicitly.
 DEMO_SKIP_SECOND_FACTOR = False
 DEMO_PASSWORD = ""
-PUBLIC_DEMO_ENABLED = env.bool("PUBLIC_DEMO_ENABLED", default=False)  # noqa: F405
+PUBLIC_DEMO_ENABLED = env.bool("PUBLIC_DEMO_ENABLED", default=True)  # noqa: F405
 if PUBLIC_DEMO_ENABLED:
-    DEMO_PASSWORD = env("DEMO_PASSWORD")  # noqa: F405
+    DEMO_PASSWORD = env("DEMO_PASSWORD", default="Demo-Pass-2026!x")  # noqa: F405
     if len(DEMO_PASSWORD) < 12:
         raise ImproperlyConfigured("DEMO_PASSWORD must contain at least 12 characters.")
     # Only the four seeded demo identities bypass the second factor. All normal users still use

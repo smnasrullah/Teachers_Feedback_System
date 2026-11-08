@@ -24,7 +24,7 @@ from tests.factories import (
 
 pytestmark = pytest.mark.django_db
 
-GENERIC = "The username or password is not correct."
+GENERIC = "Invalid ID or password."
 
 
 def url(name, *args):
@@ -140,6 +140,36 @@ def test_authentication_database_failure_is_a_friendly_service_error(web, monkey
     assert "database connection details" not in response.content.decode()
     assert "secret-value" not in response.content.decode()
     assert response.context["form"]["username"].value() == "stu_known"
+
+
+def test_demo_panel_database_failure_does_not_return_an_http_500(web, monkeypatch):
+    from apps.accounts.services import login as login_service
+
+    def unavailable():
+        raise OperationalError("private database detail")
+
+    monkeypatch.setattr(login_service, "demo_box", unavailable)
+    response = web.get(url("login"))
+
+    assert response.status_code == 503
+    assert "temporarily unavailable" in response.content.decode()
+    assert "private database detail" not in response.content.decode()
+
+
+def test_wrong_password_stays_an_inline_error_if_demo_details_cannot_load(web, monkeypatch):
+    from apps.accounts.services import login as login_service
+
+    user = student()
+
+    def unavailable():
+        raise OperationalError("private database detail")
+
+    monkeypatch.setattr(login_service, "demo_box", unavailable)
+    response = log_in(web, user, "Wrong-password-1")
+
+    assert response.status_code == 200
+    assert response.context["form"].non_field_errors() == [GENERIC]
+    assert "private database detail" not in response.content.decode()
 
 
 def test_disabled_account_gets_the_same_generic_error(web):
@@ -552,7 +582,7 @@ def test_auth_pages_are_available_in_bangla(client):
     signup_page = client.get(url("signup")).content.decode()
     assert "আইডি ও কোড" in signup_page
     failed = client.post(url("login"), {"username": "stu_nobody", "password": "x"})
-    assert "ইউজারনেম বা পাসওয়ার্ড সঠিক নয়।" in failed.content.decode()
+    assert "আইডি বা পাসওয়ার্ড সঠিক নয়।" in failed.content.decode()
 
 
 def test_authenticator_guide_is_available_in_bangla(client):

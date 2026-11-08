@@ -8,7 +8,7 @@ from dataclasses import dataclass
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.db import transaction
+from django.db import connection, transaction
 from django.utils.translation import gettext as _
 
 from apps.accounts.models import User
@@ -20,6 +20,7 @@ DEV_SETTINGS = "config.settings.dev"
 DEMO_SETTINGS = "config.settings.demo"
 PROD_SETTINGS = "config.settings.prod"
 USERNAMES = constants.USERNAMES
+SEED_LOCK_ID = 0x54465344  # "TFSD"; serializes startup seeds across web instances.
 
 
 @dataclass(frozen=True)
@@ -62,9 +63,18 @@ def require_seed_environment() -> None:
         )
 
 
+def _lock_seed() -> None:
+    """Ensure only one Render instance mutates the demo dataset at a time."""
+    if connection.vendor == "postgresql":
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT pg_advisory_xact_lock(%s)", [SEED_LOCK_ID])
+
+
+@transaction.atomic
 def delete_all() -> int:
     """Remove the demo data; returns how many accounts were deleted."""
     require_seed_environment()
+    _lock_seed()
     return reset.delete_all()
 
 
@@ -77,6 +87,7 @@ def seed(password: str | None = None) -> Report:
     """Create the demo data that is missing. ``password`` (checked against the strict rule) is
     set on the four accounts; without one, a random password is made when any is missing."""
     require_seed_environment()
+    _lock_seed()
     generated = password is None and User.objects.filter(username__in=USERNAMES).count() < len(
         USERNAMES
     )
