@@ -195,11 +195,14 @@ DEFAULT_FROM_EMAIL = env(
 TOTP_ISSUER = "Teacher Feedback System"
 # A password-checked login waits this long for its second factor.
 SECOND_FACTOR_PENDING_SECONDS = 10 * 60
-# Development only (dev.py turns it on; a system check refuses it anywhere else): the demo
-# accounts of ``seed_demo`` sign in from this machine with a password alone.
+# Off by default. Only dev.py and the separately deployed demo settings may enable the seeded
+# demo accounts' password-only login; production user accounts always require 2FA.
 DEMO_SKIP_SECOND_FACTOR = False
-# Development only: the password ``seed_demo`` set on the demo accounts, shown on the login page.
+# Password ``seed_demo`` applies to the sample accounts and may be shown on a dedicated demo site.
 DEMO_PASSWORD = ""
+IS_DEMO_SITE = False
+DEMO_DATABASE_ISOLATED = False
+PUBLIC_DEMO_ENABLED = False
 
 # Results and comment lists stay hidden below this many responses (never fewer than 3).
 MIN_RESPONSES = env.int("MIN_RESPONSES", default=5)

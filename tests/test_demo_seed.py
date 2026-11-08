@@ -1,4 +1,4 @@
-"""The development demo data: safe to run twice, dev-only, and consistent with the rules."""
+"""The demo data: idempotent, restricted to local dev or explicitly enabled public demo."""
 
 import json
 from datetime import datetime
@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo
 
 import pytest
 from django.apps import apps
+from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import Client
@@ -106,9 +107,25 @@ def test_it_refuses_to_run_outside_development(db, settings, module, debug):
     settings.DEBUG = debug
     settings.SETTINGS_MODULE = module
     for args in ((), ("--reset",)):
-        with pytest.raises(CommandError, match="DEBUG"):
+        with pytest.raises(CommandError, match="isolated"):
             call_command("seed_demo", *args)
     assert not User.objects.exists()
+
+
+def test_production_seed_requires_explicit_public_demo_and_postgres(db, settings, monkeypatch):
+    from apps.core.services.demo.runner import require_seed_environment
+
+    settings.DEBUG = False
+    settings.IS_DEMO_SITE = True
+    settings.PUBLIC_DEMO_ENABLED = False
+    monkeypatch.setitem(settings.DATABASES["default"], "ENGINE", "django.db.backends.postgresql")
+    settings.SETTINGS_MODULE = "config.settings.prod"  # set last: overrides reset this marker
+    with pytest.raises(ValidationError, match="PUBLIC_DEMO_ENABLED"):
+        require_seed_environment()
+
+    settings.PUBLIC_DEMO_ENABLED = True
+    settings.SETTINGS_MODULE = "config.settings.prod"  # set last: overrides reset this marker
+    require_seed_environment()
 
 
 def test_the_password_and_keys_are_printed_but_never_stored(db, settings, capsys):

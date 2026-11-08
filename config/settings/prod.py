@@ -1,3 +1,5 @@
+from django.core.exceptions import ImproperlyConfigured
+
 from .base import *  # noqa: F403
 from .hardening import require_production_settings
 
@@ -57,6 +59,15 @@ CSRF_COOKIE_NAME = "__Host-tfs_csrf"
 # Development features stay off whatever the environment says (core.E004 also guards the first).
 DEMO_SKIP_SECOND_FACTOR = False
 DEMO_PASSWORD = ""
+PUBLIC_DEMO_ENABLED = env.bool("PUBLIC_DEMO_ENABLED", default=False)  # noqa: F405
+if PUBLIC_DEMO_ENABLED:
+    DEMO_PASSWORD = env("DEMO_PASSWORD")  # noqa: F405
+    if len(DEMO_PASSWORD) < 12:
+        raise ImproperlyConfigured("DEMO_PASSWORD must contain at least 12 characters.")
+    # Only the four seeded demo identities bypass the second factor. All normal users still use
+    # the production authentication flow. The public credentials are deliberately shown on login.
+    IS_DEMO_SITE = True
+    DEMO_SKIP_SECOND_FACTOR = True
 
 LOGGING = build_logging_config(  # noqa: F405
     json_logs=env.bool("LOG_JSON", default=True),  # noqa: F405

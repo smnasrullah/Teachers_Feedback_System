@@ -77,6 +77,13 @@
       var open = toggle.getAttribute("aria-expanded") === "true";
       closeMenus(menu);
       if (menu) {
+        if (toggle.closest(".nav-anchors-compact")) {
+          var wrapper = toggle.parentElement;
+          var wrapperLeft = wrapper.getBoundingClientRect().left;
+          var menuWidth = Math.min(320, window.innerWidth - 32);
+          var left = Math.max(16, Math.min(wrapperLeft, window.innerWidth - menuWidth - 16));
+          menu.style.left = (left - wrapperLeft) + "px";
+        }
         menu.hidden = open;
         toggle.setAttribute("aria-expanded", String(!open));
       }

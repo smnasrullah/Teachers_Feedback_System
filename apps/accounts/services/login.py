@@ -27,10 +27,10 @@ from apps.core.permissions import HOD, Role, primary_role
 from apps.core.services import sessions
 from apps.core.services.demo import constants as demo
 
+DEMO_SETTINGS = "config.settings.demo"
 PENDING_KEY = "_tfs_pending_login"
 MODEL_BACKEND = "django.contrib.auth.backends.ModelBackend"
 USERNAME_PURPOSE = "audit.username"
-DEMO_PREFIX = "demo_"
 DEMO_ID_PREFIX = "DEMO-"
 LOOPBACK = frozenset({"127.0.0.1", "::1"})
 DASHBOARDS = {
@@ -88,20 +88,34 @@ def complete_login(request, user: User) -> None:
 
 
 def is_demo_account(request, user: User) -> bool:
-    """Whether ``user`` is a ``seed_demo`` account signing in from this machine in development.
+    """Whether ``user`` is a seeded demo account in local dev or an explicitly enabled public demo.
 
-    Every condition must hold: the flag, DEBUG, the dev settings module, a ``demo_`` username,
-    a ``DEMO-`` registry row (the Admin has none, so ``seed_demo``'s own ``admin.created``
-    event stands in), a loopback peer address and no forwarding header (a tunnel or proxy).
+    Local password-only access requires a loopback request with no forwarding header. The public
+    Public demo accounts are the four fixed seeded identities; ordinary users are never affected.
     """
-    if not (
-        settings.DEMO_SKIP_SECOND_FACTOR
-        and settings.DEBUG
+    local_dev = (
+        settings.DEBUG
         and settings.SETTINGS_MODULE == DEV_SETTINGS
-        and user.username.startswith(DEMO_PREFIX)
         and request.META.get("REMOTE_ADDR") in LOOPBACK
         and client_ip(request) in LOOPBACK
         and "HTTP_X_FORWARDED_FOR" not in request.META
+    )
+    isolated_demo = (
+        not settings.DEBUG
+        and settings.IS_DEMO_SITE
+        and settings.SETTINGS_MODULE == DEMO_SETTINGS
+        and settings.DEMO_DATABASE_ISOLATED
+    )
+    public_demo = (
+        not settings.DEBUG
+        and settings.IS_DEMO_SITE
+        and settings.SETTINGS_MODULE == "config.settings.prod"
+        and settings.PUBLIC_DEMO_ENABLED
+    )
+    if not (
+        settings.DEMO_SKIP_SECOND_FACTOR
+        and user.username in demo.USERNAMES
+        and (local_dev or isolated_demo or public_demo)
     ):
         return False
     if user.role == Role.ADMIN:
@@ -124,13 +138,25 @@ def complete_demo_login(request, user: User) -> None:
 
 
 def demo_box() -> dict | None:
-    """What the dev-only "Demo accounts" box of the login page shows, or ``None`` outside
-    development. The password appears only while it is still the demo accounts' password."""
-    if not (settings.DEBUG and settings.SETTINGS_MODULE == DEV_SETTINGS):
+    """Show credentials locally or when public demo accounts are explicitly enabled."""
+    local_dev = settings.DEBUG and settings.SETTINGS_MODULE == DEV_SETTINGS
+    public_demo = (
+        not settings.DEBUG
+        and settings.IS_DEMO_SITE
+        and (
+            (settings.SETTINGS_MODULE == DEMO_SETTINGS and settings.DEMO_DATABASE_ISOLATED)
+            or (settings.SETTINGS_MODULE == "config.settings.prod" and settings.PUBLIC_DEMO_ENABLED)
+        )
+    )
+    if not (local_dev or public_demo):
         return None
     password = settings.DEMO_PASSWORD
-    sample = User.objects.filter(username=demo.STUDENT).first()
-    matches = bool(password) and sample is not None and sample.check_password(password)
+    users = list(User.objects.filter(username__in=demo.USERNAMES, is_active=True))
+    matches = len(users) == len(demo.USERNAMES) and all(
+        user.check_password(password) for user in users
+    )
+    if public_demo and not matches:
+        return None
     return {"accounts": DEMO_ROLES, "password": password if matches else ""}
 
 

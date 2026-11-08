@@ -82,27 +82,30 @@ recovery codes stay valid.
 **and** `settings.SETTINGS_MODULE == "config.settings.dev"`; under `config.settings.test` or
 `config.settings.prod` it exits with an error and prints nothing.
 
-## Password-only demo login (development only)
+## Password-only demo login (local development and explicitly enabled public demo)
 
 `seed_demo` accounts (`demo_admin`, `demo_hod`, `demo_teacher`, `demo_student`) skip the authenticator code at
-login, so a local demo is usable. **Never enable `DEMO_SKIP_SECOND_FACTOR` outside local
-development.** It is `False` in `base.py` and `True` only in `dev.py`. The login service
-(`login.is_demo_account`) honours it only when all of these hold:
+login, so the sample roles are usable. Production permits this only when the owner explicitly sets
+`PUBLIC_DEMO_ENABLED=true` and configures `DEMO_PASSWORD`; only the four seeded demo identities
+are affected, while normal production accounts keep the regular second-factor flow. The login
+service (`login.is_demo_account`) honours it only when all demo identity checks hold:
 
-- the flag, `DEBUG` and `SETTINGS_MODULE == "config.settings.dev"`;
+- either the flag, `DEBUG` and `SETTINGS_MODULE == "config.settings.dev"`, plus loopback access
+  without a forwarding header; an isolated `config.settings.demo` deployment; or
+  `DEBUG=False`, `SETTINGS_MODULE == "config.settings.prod"` and explicit `PUBLIC_DEMO_ENABLED`;
 - the username starts with `demo_` and the account is tied to a `DEMO-` registry row (the Admin
   has none, so the `admin.created` audit event written by `seed_demo` stands in);
-- the peer address (`REMOTE_ADDR`) is `127.0.0.1` or `::1`, and no `X-Forwarded-For` header is
-  present, so a LAN, tunnel or proxy never qualifies.
+- the username is one of the four fixed demo usernames.
 
 The password, lockout and rate limits still apply; the session is a normal fully authenticated one;
 each such login writes the audit event `auth.login_demo_bypass`. System check `core.E004` is an
-error when the flag is on with `DEBUG` off or another settings module, so production cannot start
-with it. Real accounts (including any made by `create_admin`) are never affected.
+error when the flag is enabled outside local dev, isolated demo, or explicitly enabled public demo
+mode. Real accounts (including any made by `create_admin`) are never affected.
 
 The login page's "Demo accounts" box (usernames, roles, "Fill in" buttons and, when `DEMO_PASSWORD`
-still matches the demo accounts, the password) is rendered only with `DEBUG` on and
-`SETTINGS_MODULE == "config.settings.dev"`; `DEMO_PASSWORD` is empty in `base.py` and `test.py`.
+still matches all demo accounts, the password) is rendered only in local dev or an explicitly
+enabled public demo. Production seeding remains disabled unless `PUBLIC_DEMO_ENABLED=true`, and the
+seeder hides credentials from logs in public demo mode.
 
 ## Removed
 

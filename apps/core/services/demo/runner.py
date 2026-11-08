@@ -1,8 +1,7 @@
-"""Demo accounts and demo data for development (``manage.py seed_demo``).
+"""Demo accounts and data for development, isolated demo, or explicitly enabled public demo.
 
 ``seed`` is idempotent: every step looks for what it would create and skips it, so a second
-run changes nothing. It refuses to run anywhere but the development settings, so no demo
-password or authenticator key can ever exist in another environment.
+run changes nothing. Production seeding requires an explicit public-demo setting and PostgreSQL.
 """
 
 from dataclasses import dataclass
@@ -18,6 +17,8 @@ from apps.accounts.services.passwords import validate_strong_password
 from apps.core.services.demo import academics, constants, feedback, notices, people, reset
 
 DEV_SETTINGS = "config.settings.dev"
+DEMO_SETTINGS = "config.settings.demo"
+PROD_SETTINGS = "config.settings.prod"
 USERNAMES = constants.USERNAMES
 
 
@@ -36,17 +37,34 @@ class Report:
     submitted: int  # forms submitted by this run
 
 
-def require_development() -> None:
-    if not settings.DEBUG or settings.SETTINGS_MODULE != DEV_SETTINGS:
+def require_seed_environment() -> None:
+    local_dev = settings.DEBUG and settings.SETTINGS_MODULE == DEV_SETTINGS
+    isolated_demo = (
+        not settings.DEBUG
+        and settings.SETTINGS_MODULE == DEMO_SETTINGS
+        and settings.IS_DEMO_SITE
+        and settings.DEMO_DATABASE_ISOLATED
+        and settings.DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql"
+    )
+    public_demo = (
+        not settings.DEBUG
+        and settings.SETTINGS_MODULE == PROD_SETTINGS
+        and settings.IS_DEMO_SITE
+        and settings.PUBLIC_DEMO_ENABLED
+        and settings.DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql"
+    )
+    if not (local_dev or isolated_demo or public_demo):
         raise ValidationError(
-            _("The demo data only exists with DEBUG on and DJANGO_SETTINGS_MODULE=%(module)s.")
-            % {"module": DEV_SETTINGS}
+            _(
+                "Demo data can be seeded only with local development settings, an isolated demo "
+                "deployment, or production with PUBLIC_DEMO_ENABLED on PostgreSQL."
+            )
         )
 
 
 def delete_all() -> int:
     """Remove the demo data; returns how many accounts were deleted."""
-    require_development()
+    require_seed_environment()
     return reset.delete_all()
 
 
@@ -58,7 +76,7 @@ def _teacher_means(cast) -> dict[int, float]:
 def seed(password: str | None = None) -> Report:
     """Create the demo data that is missing. ``password`` (checked against the strict rule) is
     set on the four accounts; without one, a random password is made when any is missing."""
-    require_development()
+    require_seed_environment()
     generated = password is None and User.objects.filter(username__in=USERNAMES).count() < len(
         USERNAMES
     )

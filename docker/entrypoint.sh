@@ -8,4 +8,12 @@ if [ "${RUN_MIGRATIONS:-0}" = "1" ]; then
     python manage.py migrate --noinput
 fi
 
+if [ "${RUN_DEMO_SEED:-0}" = "1" ]; then
+    if [ "${RUN_MIGRATIONS:-0}" != "1" ]; then
+        echo "RUN_DEMO_SEED=1 requires RUN_MIGRATIONS=1." >&2
+        exit 1
+    fi
+    python manage.py seed_demo
+fi
+
 exec "$@"

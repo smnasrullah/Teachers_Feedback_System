@@ -1,6 +1,7 @@
 import os
 import sys
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand, CommandError, no_translations
 from django.utils.translation import gettext as _
@@ -13,8 +14,8 @@ PASSWORD_ENV = "DEMO_PASSWORD"  # noqa: S105 - the name of the variable, not a s
 
 class Command(BaseCommand):
     help = gettext_lazy(
-        "Development only: create the demo accounts and demo data (safe to run again). Refuses to "
-        "run unless DEBUG is on and the settings module is config.settings.dev."
+        "Create sample demo accounts and data (safe to run again). Production requires an explicit "
+        "public-demo opt-in."
     )
 
     def add_arguments(self, parser):
@@ -34,7 +35,7 @@ class Command(BaseCommand):
             if hasattr(stream, "reconfigure"):
                 stream.reconfigure(errors="replace")
         try:
-            runner.require_development()  # refuse before any database connection is opened
+            runner.require_seed_environment()  # refuse before any database connection is opened
             if reset:
                 removed = runner.delete_all()
                 self.stdout.write(
@@ -56,6 +57,9 @@ class Command(BaseCommand):
                 % {"count": report.submitted}
             )
         )
+        if settings.IS_DEMO_SITE:
+            out(_("Demo accounts are ready; credentials are shown on the demo login page."))
+            return
         out("")
         out(_("Demo accounts (add the key to an authenticator app: time-based, 6 digits):"))
         for account in report.accounts:

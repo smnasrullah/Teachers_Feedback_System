@@ -6,6 +6,7 @@ from django.core.management.base import SystemCheckError
 from django.test import Client
 from django.urls import reverse
 
+from apps.accounts import ratelimits
 from apps.accounts.models import User
 from apps.accounts.services import login as login_service
 from apps.auditlog.models import AuditEvent
@@ -14,6 +15,7 @@ from apps.core.permissions import Role
 from apps.core.services.demo import constants as demo
 from tests.auth_helpers import enable_totp
 from tests.factories import claim, make_admin, make_student, make_teacher, make_user
+from tests.factories import sign_in as force_sign_in
 from tests.test_demo_seed import PASSWORD, seed
 
 LOOPBACK = {"REMOTE_ADDR": "127.0.0.1"}
@@ -137,6 +139,17 @@ def test_the_check_refuses_the_flag_outside_development(settings):
     settings.DEBUG = True
     settings.SETTINGS_MODULE = "config.settings.dev"
     assert check_demo_second_factor(None) == []
+
+
+def test_the_check_allows_password_only_login_only_for_the_isolated_demo_module(settings):
+    settings.DEBUG = False
+    settings.IS_DEMO_SITE = True
+    settings.DEMO_DATABASE_ISOLATED = True
+    settings.DEMO_SKIP_SECOND_FACTOR = True
+    settings.SETTINGS_MODULE = "config.settings.demo"
+    assert check_demo_second_factor(None) == []
+    settings.SETTINGS_MODULE = "config.settings.prod"
+    assert [error.id for error in check_demo_second_factor(None)] == ["core.E004"]
     settings.DEMO_SKIP_SECOND_FACTOR = False
     settings.DEBUG = False
     assert check_demo_second_factor(None) == []
@@ -160,6 +173,27 @@ def test_the_demo_teacher_signs_in_with_the_password_only_from_loopback(seeded, 
     assert asks_for_code(response)
 
 
+def test_public_demo_accounts_skip_second_factor_only_on_isolated_demo_site(seeded, settings):
+    settings.DEBUG = False
+    settings.SETTINGS_MODULE = "config.settings.demo"
+    settings.IS_DEMO_SITE = True
+    settings.DEMO_DATABASE_ISOLATED = True
+    settings.SITE_URL = "https://teachers-feedback-demo.onrender.com"
+    settings.DEMO_SKIP_SECOND_FACTOR = True
+    settings.SETTINGS_MODULE = "config.settings.demo"
+
+    for username in demo.USERNAMES:
+        client, response = sign_in(
+            username,
+            REMOTE_ADDR="203.0.113.20",
+            HTTP_X_FORWARDED_FOR="198.51.100.30",
+        )
+        assert response.status_code == 302
+        assert not asks_for_code(response)
+        assert client.get(response["Location"]).status_code == 200
+    assert AuditEvent.objects.filter(action="auth.login_demo_bypass").count() == len(demo.USERNAMES)
+
+
 def test_the_login_box_shows_the_password_only_in_development(seeded, dev, settings):
     settings.DEMO_PASSWORD = PASSWORD
     settings.SETTINGS_MODULE = "config.settings.dev"  # set last: each override resets it
@@ -178,6 +212,108 @@ def test_the_login_box_shows_the_password_only_in_development(seeded, dev, setti
     settings.SETTINGS_MODULE = "config.settings.test"
     html = Client(HTTP_ACCEPT_LANGUAGE="en").get(url).content.decode()
     assert PASSWORD not in html
+
+
+def test_public_demo_login_box_shows_credentials_only_when_all_accounts_match(seeded, settings):
+    settings.DEBUG = False
+    settings.SETTINGS_MODULE = "config.settings.demo"
+    settings.IS_DEMO_SITE = True
+    settings.DEMO_DATABASE_ISOLATED = True
+    settings.SITE_URL = "https://teachers-feedback-demo.onrender.com"
+    settings.DEMO_PASSWORD = PASSWORD
+    settings.SETTINGS_MODULE = "config.settings.demo"
+    url = reverse("accounts:login")
+
+    html = Client(HTTP_ACCEPT_LANGUAGE="en").get(url).content.decode()
+    assert html.count(PASSWORD) == len(demo.USERNAMES) + 1
+    assert all(username in html for username in demo.USERNAMES)
+
+    settings.DEMO_PASSWORD = "Stale-Demo-Password-2026!"
+    html = Client(HTTP_ACCEPT_LANGUAGE="en").get(url).content.decode()
+    assert "Demo accounts" not in html
+    assert "Stale-Demo-Password-2026!" not in html
+
+
+def test_public_demo_accounts_work_on_the_production_site(seeded, settings):
+    settings.DEBUG = False
+    settings.IS_DEMO_SITE = True
+    settings.DEMO_DATABASE_ISOLATED = False
+    settings.PUBLIC_DEMO_ENABLED = True
+    settings.DEMO_SKIP_SECOND_FACTOR = True
+    settings.DEMO_PASSWORD = PASSWORD
+    settings.SETTINGS_MODULE = "config.settings.prod"  # set last: overrides reset this marker
+
+    assert (
+        settings.DEBUG,
+        settings.IS_DEMO_SITE,
+        settings.SETTINGS_MODULE,
+        settings.PUBLIC_DEMO_ENABLED,
+        settings.DEMO_DATABASE_ISOLATED,
+    ) == (False, True, "config.settings.prod", True, False)
+    users = User.objects.filter(username__in=demo.USERNAMES, is_active=True)
+    assert users.count() == len(demo.USERNAMES)
+    assert all(user.check_password(PASSWORD) for user in users)
+    assert login_service.demo_box() == {
+        "accounts": login_service.DEMO_ROLES,
+        "password": PASSWORD,
+    }
+    html = Client(HTTP_ACCEPT_LANGUAGE="en").get(reverse("accounts:login")).content.decode()
+    assert all(username in html for username in demo.USERNAMES)
+    assert html.count(PASSWORD) == len(demo.USERNAMES) + 1
+
+    for username in demo.USERNAMES:
+        client, response = sign_in(username, PASSWORD, REMOTE_ADDR="203.0.113.10")
+        assert response.status_code == 302
+        assert not asks_for_code(response)
+        assert "_auth_user_id" in client.session
+
+
+def test_public_demo_bypass_does_not_apply_to_real_accounts(seeded, settings):
+    settings.DEBUG = False
+    settings.IS_DEMO_SITE = True
+    settings.PUBLIC_DEMO_ENABLED = True
+    settings.DEMO_SKIP_SECOND_FACTOR = True
+    settings.DEMO_PASSWORD = PASSWORD
+    settings.SETTINGS_MODULE = "config.settings.prod"  # set last: overrides reset this marker
+    real = make_user("stu_real", Role.STUDENT, PASSWORD)
+    enable_totp(real)
+
+    _client, response = sign_in(real.username, PASSWORD, REMOTE_ADDR="203.0.113.10")
+    assert asks_for_code(response)
+
+
+def test_public_demo_rate_limit_subject_is_separated_by_visitor_ip(settings, rf):
+    settings.PUBLIC_DEMO_ENABLED = True
+    first = rf.post("/login/", {"username": demo.STUDENT}, REMOTE_ADDR="198.51.100.10")
+    second = rf.post("/login/", {"username": demo.STUDENT}, REMOTE_ADDR="198.51.100.20")
+    assert ratelimits.username(None, first) != ratelimits.username(None, second)
+
+    first_real = rf.post("/login/", {"username": "stu_someone"}, REMOTE_ADDR="198.51.100.10")
+    second_real = rf.post("/login/", {"username": "stu_someone"}, REMOTE_ADDR="198.51.100.20")
+    assert ratelimits.username(None, first_real) == ratelimits.username(None, second_real)
+
+
+def test_shared_demo_account_cannot_change_the_public_password(seeded, settings):
+    settings.DEBUG = False
+    settings.IS_DEMO_SITE = True
+    settings.DEMO_DATABASE_ISOLATED = True
+    settings.SETTINGS_MODULE = "config.settings.demo"
+    user = User.objects.get(username=demo.STUDENT)
+    client = Client(HTTP_ACCEPT_LANGUAGE="en")
+    force_sign_in(client, user)
+
+    response = client.post(
+        reverse("accounts:password_change"),
+        {
+            "current_password": PASSWORD,
+            "password1": "New-Demo-Pass-2026!",
+            "password2": "New-Demo-Pass-2026!",
+        },
+    )
+
+    user.refresh_from_db()
+    assert response.status_code == 302
+    assert user.check_password(PASSWORD)
 
 
 def test_a_stale_password_is_never_shown(seeded, dev, settings):

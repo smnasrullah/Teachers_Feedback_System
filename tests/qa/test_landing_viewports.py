@@ -10,6 +10,9 @@ VIEWPORTS = [
     (1280, 800),
     (1024, 768),
     (768, 1024),
+    (430, 932),
+    (375, 812),
+    (320, 720),
     (390, 844),
 ]
 
@@ -27,7 +30,9 @@ def browser():
 
 
 @pytest.mark.parametrize(
-    "width,height", VIEWPORTS, ids=["1480px", "1280px", "1024px", "768px", "390px"]
+    "width,height",
+    VIEWPORTS,
+    ids=["1480px", "1280px", "1024px", "768px", "430px", "375px", "320px", "390px"],
 )
 @pytest.mark.parametrize("language", ["en", "bn"])
 @pytest.mark.parametrize("theme", ["light", "dark"])
@@ -47,7 +52,14 @@ def test_landing_navbar_and_hero_at_viewport(
     no_overflow = page.evaluate(
         "document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1"
     )
-    assert no_overflow, f"Horizontal overflow detected at {width}px {language} {theme}"
+    overflow_nodes = page.evaluate("""() => Array.from(document.querySelectorAll('body *'))
+        .map(el => ({tag: el.tagName, className: el.className.baseVal || el.className,
+                    text: (el.textContent || '').slice(0, 32), parent: el.parentElement.className,
+                    left: Math.round(el.getBoundingClientRect().left),
+                    right: Math.round(el.getBoundingClientRect().right)}))
+        .filter(el => el.left < -1 || el.right > document.documentElement.clientWidth + 1)
+        .slice(0, 8)""")
+    assert no_overflow, f"Horizontal overflow at {width}px {language} {theme}: {overflow_nodes}"
 
     # 2. Check desktop vs compact navigation
     if width >= 1280:
@@ -103,11 +115,40 @@ def test_landing_navbar_and_hero_at_viewport(
         menu_visible = page.is_visible("#nav-anchors-menu")
         assert menu_visible, f"Compact menu failed to open at {width}px"
 
+        menu_state = page.locator("#nav-anchors-menu").evaluate("""menu => {
+            const box = menu.getBoundingClientRect();
+            const links = Array.from(menu.querySelectorAll('a.menu-item'));
+            return {
+                left: box.left,
+                right: box.right,
+                viewport: document.documentElement.clientWidth,
+                labels: links.map(link => link.innerText.trim()),
+                visible: links.every(link => {
+                    const rect = link.getBoundingClientRect();
+                    return rect.width > 0 && rect.height > 0 &&
+                        getComputedStyle(link).visibility === 'visible';
+                }),
+            };
+        }""")
+        assert menu_state["left"] >= 0, f"Compact menu clipped on the left: {menu_state}"
+        assert menu_state["right"] <= menu_state["viewport"], (
+            f"Compact menu clipped on the right: {menu_state}"
+        )
+        assert menu_state["visible"], f"Compact menu labels are not visible: {menu_state}"
+        assert all(menu_state["labels"]), f"Compact menu contains a blank label: {menu_state}"
+
         # Ensure all 5 section links exist in menu
         menu_links = page.eval_on_selector_all(
             "#nav-anchors-menu a.menu-item", "els => els.map(e => e.getAttribute('href'))"
         )
         assert menu_links == ["#demo", "#how", "#roles", "#preview", "#faq"]
+        page.keyboard.press("Escape")
+        assert not page.is_visible("#nav-anchors-menu"), "Escape should close the compact menu"
+        page.click(".nav-anchors-compact [data-toggle]")
+        page.mouse.click(5, height - 5)
+        assert not page.is_visible("#nav-anchors-menu"), (
+            "Tapping outside should close the compact menu"
+        )
 
     # 3. The landing hero intentionally has no campus scene or replacement artwork.
     assert page.locator(".a-hero-art, .hero-arch, .scene, .mini-stub").count() == 0

@@ -265,9 +265,17 @@
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-pop);
     padding: 8px;
+    color: var(--text);
+    max-height: min(70vh, 420px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .menu[hidden] {
     display: none;
+  }
+  .nav-anchors-compact .menu {
+    right: auto;
+    width: min(320px, calc(100vw - 32px));
   }
   .menu-head {
     padding: 8px 12px;
@@ -1686,11 +1694,11 @@
       display: none;
     }
   }
-  @media (max-width: 399px) {
+  @media (max-width: 639px) {
     .live-clock-date {
       display: none;
     }
-    /* The header row is full on a phone: the clock takes a line of its own under it. */
+    /* Give phone navigation a second row for the clock and enough room for its controls. */
     .nav .wrap {
       --clock-line: 20px;
       flex-wrap: wrap;

@@ -4,11 +4,13 @@ Both limits apply to every attempt, valid or not, so a limit trips identically f
 unknown IDs. The view reads ``request.limited`` and answers 429 without doing the work.
 """
 
+from django.conf import settings
 from django_ratelimit.decorators import ratelimit
 
 from apps.accounts.services.identifiers import normalize_registry_id
 from apps.core.encryption import blind_index
 from apps.core.net import client_ip
+from apps.core.services.demo import constants as demo
 
 PURPOSE = "ratelimit.subject"
 
@@ -22,7 +24,12 @@ def registry_id(group, request) -> str:
 
 
 def username(group, request) -> str:
-    return _hashed("user:" + request.POST.get("username", "").strip().lower())
+    username = request.POST.get("username", "").strip().lower()
+    if settings.PUBLIC_DEMO_ENABLED and username in demo.USERNAMES:
+        # These credentials are intentionally shared publicly. Keep the subject bucket per
+        # visitor IP so one tester cannot exhaust every other visitor's demo login attempts.
+        return _hashed(f"user:{username}:ip:{client_ip(request)}")
+    return _hashed("user:" + username)
 
 
 def identifier(group, request) -> str:

@@ -1,5 +1,6 @@
 """The signed-in person's own account: username, password, sessions."""
 
+from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.shortcuts import redirect, render
@@ -11,6 +12,7 @@ from apps.accounts.auth_forms import PasswordChangeForm
 from apps.accounts.services import account as account_service
 from apps.accounts.services import twofactor
 from apps.core.permissions import ALL_ROLES, role_required
+from apps.core.services.demo import constants as demo
 from apps.core.services.navigation import user_nav_items
 
 EVERYONE = tuple(sorted(ALL_ROLES))
@@ -36,6 +38,9 @@ def account_home(request):
 @ratelimits.limited(ratelimits.session_subject, ip_rate="20/10m", subject_rate="8/15m")
 @role_required(*EVERYONE)
 def password_change(request):
+    if settings.IS_DEMO_SITE and request.user.username in demo.USERNAMES:
+        messages.info(request, _("Shared demo accounts cannot change their password."))
+        return redirect("accounts:account")
     form = PasswordChangeForm(request.POST or None, user=request.user)
     status = 200
     if request.method == "POST":

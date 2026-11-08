@@ -1,8 +1,11 @@
 """Login, second factor and logout."""
 
+import logging
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout
+from django.db import DatabaseError
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _lazy
@@ -15,6 +18,8 @@ from apps.accounts.services import twofactor
 from apps.core.permissions import public
 
 GENERIC_LOGIN_ERROR = _lazy("The username or password is not correct.")
+LOGIN_UNAVAILABLE_ERROR = _lazy("Sign-in is temporarily unavailable. Please try again shortly.")
+logger = logging.getLogger(__name__)
 
 
 def _too_many_message() -> str:
@@ -45,11 +50,23 @@ def login_view(request):
             status = 429
         elif form.is_valid():
             username = form.cleaned_data["username"].strip().lower()
-            user = authenticate(request, username=username, password=form.cleaned_data["password"])
-            if user is not None:
-                return _after_password(request, user)
-            login_service.note_failure(request, username, stage="password")
-            form.add_error(None, GENERIC_LOGIN_ERROR)
+            try:
+                user = authenticate(
+                    request, username=username, password=form.cleaned_data["password"]
+                )
+                if user is None:
+                    login_service.note_failure(request, username, stage="password")
+            except DatabaseError:
+                logger.exception(
+                    "Login authentication database failure (request_id=%s)",
+                    getattr(request, "request_id", ""),
+                )
+                form.add_error(None, LOGIN_UNAVAILABLE_ERROR)
+                status = 503
+            else:
+                if user is not None:
+                    return _after_password(request, user)
+                form.add_error(None, GENERIC_LOGIN_ERROR)
     context = {
         "form": form,
         "next": login_service.safe_next(request) or "",

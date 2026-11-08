@@ -1,7 +1,11 @@
 # Demo accounts and demo data
 
-For development only. `seed_demo` refuses to run unless `DEBUG` is on and the settings module is
-`config.settings.dev`, so no demo password or authenticator key can exist anywhere else.
+The demo seed runs locally by default. To run it on the existing production site and Supabase
+database, explicitly enable `PUBLIC_DEMO_ENABLED` and set `DEMO_PASSWORD` in Render. Keep
+`DJANGO_SETTINGS_MODULE=config.settings.prod` and the current `DATABASE_URL`; no extra site or
+database is needed. These are shared, ordinary app accounts, including an administrator. Their
+changes persist in the connected database and can affect other testers. Use this only while the
+database contains test data or when those changes are acceptable.
 
 ## Seed and reset (Windows PowerShell)
 
@@ -39,19 +43,17 @@ Linux/CI: `make seed` and `make seed ARGS="--reset"`.
 | `demo_teacher` | Teacher, CSE | Teaches Data Structures and Data Structures Lab in Summer 2026 (`demo_student` is enrolled in both). Sees only the reports of those two courses. |
 | `demo_student` | Student, CSE, Level 2 Term 1 | Nickname "Demo Student"; enrolled in all six Level 2 Term 1 courses of Summer 2026. |
 
-On this machine in development the four accounts sign in with **username and password only**:
+In local development and when public demo accounts are enabled the four accounts sign in with
+**username and password only**:
 no authenticator code is asked (see "Password-only demo login" in `docs/SECURITY.md` for the guard
 rails). The authenticator is still enrolled, so a real-flow test works: add a printed setup key to
 an app, or read a code with `python manage.py totp_code <username>`. The spare sign-up students
 (`DEMO-S014`, `DEMO-S015`) are ordinary accounts once claimed and always ask for the code.
 
-On the login page (only with `DEBUG` on **and** `config.settings.dev`) a collapsed "Demo accounts"
-box lists the four usernames with their roles and a "Fill in" button for each (a small external
-script, no inline JS). The box shows the password too when the `DEMO_PASSWORD` environment variable
-(or `.env` entry) holds it, which is also what `seed_demo` reads; it is shown only while it still
-fits the demo accounts, so a stale value never appears. Set `DEMO_PASSWORD` in `.env` to see it. It
-never shows an authenticator key, and under production-like settings neither the box nor the
-password is in the page.
+The login page lists the usernames and roles with copy-friendly IDs and the shared password. It
+shows the password only after all four active accounts have hashes matching `DEMO_PASSWORD`. The
+public seeder does not print credentials, authenticator keys, or activation codes to deployment
+logs. Normal accounts continue to use the regular second-factor flow.
 
 ## What the data contains
 

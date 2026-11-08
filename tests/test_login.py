@@ -1,7 +1,7 @@
 import time
 
 import pytest
-from django.db import connection
+from django.db import OperationalError, connection
 from django.test import Client
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
@@ -124,6 +124,22 @@ def test_wrong_password_and_unknown_username_look_identical(web):
         assert response.status_code == 200
         assert response.context["form"].non_field_errors() == [GENERIC]
     assert len(known) == len(missing)
+
+
+def test_authentication_database_failure_is_a_friendly_service_error(web, monkeypatch):
+    from apps.accounts.views import auth
+
+    def unavailable(*args, **kwargs):
+        raise OperationalError("database connection details must not reach the response")
+
+    monkeypatch.setattr(auth, "authenticate", unavailable)
+    response = web.post(url("login"), {"username": "stu_known", "password": "secret-value"})
+
+    assert response.status_code == 503
+    assert "temporarily unavailable" in response.content.decode()
+    assert "database connection details" not in response.content.decode()
+    assert "secret-value" not in response.content.decode()
+    assert response.context["form"]["username"].value() == "stu_known"
 
 
 def test_disabled_account_gets_the_same_generic_error(web):

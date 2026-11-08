@@ -141,6 +141,9 @@ def test_production_flags_are_set():
         "SECURE_CONTENT_TYPE_NOSNIFF",
         "DEMO_SKIP_SECOND_FACTOR",
         "DEMO_PASSWORD",
+        "IS_DEMO_SITE",
+        "DEMO_DATABASE_ISOLATED",
+        "PUBLIC_DEMO_ENABLED",
         "TRUSTED_PROXY_COUNT",
     ]
     code = (
@@ -166,6 +169,9 @@ def test_production_flags_are_set():
         "SECURE_CONTENT_TYPE_NOSNIFF": True,
         "DEMO_SKIP_SECOND_FACTOR": False,
         "DEMO_PASSWORD": "",
+        "IS_DEMO_SITE": False,
+        "DEMO_DATABASE_ISOLATED": False,
+        "PUBLIC_DEMO_ENABLED": False,
         "TRUSTED_PROXY_COUNT": 1,
     }
 
@@ -185,12 +191,16 @@ def test_the_admin_path_is_not_routed_in_production():
 
 
 @pytest.mark.parametrize(
-    "command", [["seed_demo", "--password", "Demo-Pass-123!"], ["totp_code", "x"]]
+    ("command", "message"),
+    [
+        (["seed_demo", "--password", "Demo-Pass-123!"], "PUBLIC_DEMO_ENABLED"),
+        (["totp_code", "x"], "config.settings.dev"),
+    ],
 )
-def test_dev_commands_refuse_to_run_in_production(command):
+def test_dev_commands_refuse_to_run_in_production(command, message):
     result = run_manage(*command)
     assert result.returncode != 0
-    assert "config.settings.dev" in result.stderr
+    assert message in result.stderr
 
 
 def test_the_login_demo_box_is_closed_in_production():
@@ -198,10 +208,75 @@ def test_the_login_demo_box_is_closed_in_production():
     assert shell(code, overrides={"DEMO_PASSWORD": "Demo-Pass-123!"}) == "None"
 
 
+def test_public_demo_is_explicitly_enabled_in_the_existing_production_settings():
+    code = (
+        "import json; from django.conf import settings as s; "
+        "print(json.dumps([s.DEBUG, s.IS_DEMO_SITE, s.PUBLIC_DEMO_ENABLED, "
+        "s.DEMO_SKIP_SECOND_FACTOR, s.DEMO_PASSWORD]))"
+    )
+    result = shell(
+        code,
+        overrides={
+            "PUBLIC_DEMO_ENABLED": "true",
+            "DEMO_PASSWORD": "Public-Demo-2026!x",
+        },
+    )
+    assert json.loads(result) == [
+        False,
+        True,
+        True,
+        True,
+        "Public-Demo-2026!x",
+    ]
+
+
+def test_public_demo_requires_a_strong_configured_password():
+    result = run_manage(
+        "check",
+        overrides={"PUBLIC_DEMO_ENABLED": "true", "DEMO_PASSWORD": "short"},
+    )
+    assert result.returncode != 0, result.stdout
+    assert "at least 12 characters" in result.stderr
+
+
 def test_the_demo_shortcut_fails_the_system_check_in_production():
     result = run_manage("check", settings_module="tests.prod_demo_settings")
     assert result.returncode != 0
     assert "core.E004" in result.stderr
+
+
+def test_dedicated_demo_settings_keep_debug_off_and_enable_only_demo_login():
+    demo_host = "teachers-feedback-demo.onrender.com"
+    overrides = {
+        "DEMO_DATABASE_ISOLATED": "true",
+        "DEMO_PASSWORD": "Demo-Pass-2026!x",
+        "DJANGO_ALLOWED_HOSTS": demo_host,
+        "DJANGO_CSRF_TRUSTED_ORIGINS": f"https://{demo_host}",
+        "SITE_URL": f"https://{demo_host}",
+    }
+    code = (
+        "import json; from django.conf import settings as s; "
+        "print(json.dumps([s.DEBUG, s.IS_DEMO_SITE, s.DEMO_DATABASE_ISOLATED, "
+        "s.DEMO_SKIP_SECOND_FACTOR, s.DEMO_PASSWORD]))"
+    )
+    flags = json.loads(shell(code, settings_module="config.settings.demo", overrides=overrides))
+    assert flags == [False, True, True, True, "Demo-Pass-2026!x"]
+
+
+def test_demo_settings_refuse_without_isolation_acknowledgement():
+    result = run_manage(
+        "shell",
+        "-c",
+        "from django.conf import settings; print(settings.DEMO_DATABASE_ISOLATED)",
+        settings_module="config.settings.demo",
+        overrides={
+            "DEMO_DATABASE_ISOLATED": "false",
+            "DEMO_PASSWORD": "Demo-Pass-2026!x",
+            "SITE_URL": "https://teachers-feedback-system.onrender.com",
+        },
+    )
+    assert result.returncode != 0
+    assert "DEMO_DATABASE_ISOLATED=true" in result.stderr
 
 
 @pytest.mark.django_db
