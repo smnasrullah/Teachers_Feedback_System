@@ -200,6 +200,8 @@ def test_the_login_box_shows_the_password_only_in_development(seeded, dev, setti
     url = reverse("accounts:login")
     html = Client(HTTP_ACCEPT_LANGUAGE="en").get(url).content.decode()
     assert html.count(PASSWORD) == len(demo.USERNAMES) + 1  # per "Fill in" button, and once shown
+    assert "<details" not in html
+    assert 'data-demo-login' in html
     for label in ("Administrator", "Head of department", "Teacher", "Student"):
         assert label in html
     settings.DEBUG = False

@@ -123,6 +123,8 @@ def test_wrong_password_and_unknown_username_look_identical(web):
     for response in (wrong, unknown):
         assert response.status_code == 200
         assert response.context["form"].non_field_errors() == [GENERIC]
+        assert GENERIC in response.content.decode()
+    assert f'value="{user.username}"' in wrong.content.decode()
     assert len(known) == len(missing)
 
 
@@ -181,6 +183,7 @@ def test_demo_login_panel_does_not_load_encrypted_profile_fields(web, monkeypatc
 
     assert response.status_code == 200
     assert response.context["demo"] is not None
+    assert 'data-demo-login' in response.content.decode()
 
 
 def test_demo_panel_database_failure_does_not_return_an_http_500(web, monkeypatch):

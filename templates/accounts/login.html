@@ -19,8 +19,8 @@
     <a href="{% url 'accounts:signup' %}">{% translate "First time here? Create your account" %}</a>
   </nav>
   {% if demo %}
-  <details class="card card-flat text-sm" data-demo-login>
-    <summary>{% translate "Demo accounts" %}</summary>
+  <section class="card card-flat grid gap-3" data-demo-login aria-labelledby="demo-login-title">
+    <h2 id="demo-login-title" class="text-base font-semibold">{% translate "Demo accounts" %}</h2>
     <ul class="grid gap-2">
       {% for username, role in demo.accounts %}
       <li class="flex flex-wrap items-center gap-2">
@@ -29,9 +29,9 @@
       </li>
       {% endfor %}
     </ul>
-    {% if demo.password %}<p>{% translate "Password" %}: <code>{{ demo.password }}</code></p>{% endif %}
+    {% if demo.password %}<p><span class="text-muted">{% translate "Password" %}:</span> <code>{{ demo.password }}</code></p>{% endif %}
     <p class="text-muted">{% translate "Demo accounts sign in with password only" %}</p>
-  </details>
+  </section>
   {% endif %}
 </section>
 {% endblock %}

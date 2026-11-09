@@ -66,6 +66,11 @@ In Supabase, use **Connect → Session pooler** and copy its PostgreSQL URI into
 pooler for this Django service. Keep Supabase's generated host and username intact, and URL-encode
 reserved characters in the database password.
 
+When importing data from the local SQLite database, Render's `FIELD_ENCRYPTION_KEYS` and
+`BLIND_INDEX_KEY` must exactly match the local `.env` keys that were used to create and export that
+data. Set these before import and keep them unchanged afterward. A mismatch prevents encrypted
+profile fields from decrypting and breaks lookups; never generate replacement keys after importing.
+
 On the current Render service, keep `DJANGO_SETTINGS_MODULE=config.settings.prod` and its existing
 `DATABASE_URL`. Set `RUN_MIGRATIONS=1` on the web service. Public demo accounts are enabled by
 default; the public password defaults to `Demo-Pass-2026!x`. You may override it in the Render
