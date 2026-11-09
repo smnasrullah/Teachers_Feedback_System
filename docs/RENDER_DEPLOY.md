@@ -22,7 +22,8 @@ Connect the GitHub repository and configure the Render service as follows:
 The supplied Render log shows a native Python service starting Gunicorn directly, which bypasses
 `docker/entrypoint.sh`. For that existing service, set **Start Command** to
 `sh scripts/render_start.sh`; it runs the production check, migrations, public demo seed, and then
-Gunicorn. Keep `RUN_MIGRATIONS=1` on the web service. Do not use the direct `gunicorn ...` command
+Gunicorn. Keep `RUN_MIGRATIONS=1` on the web service. The script accepts `true` or `1` for
+`PUBLIC_DEMO_ENABLED`. Do not use the direct `gunicorn ...` command
 when relying on automatic migrations or demo seeding.
 
 Render's `PORT` is used by Gunicorn. Do not replace the image command with Django's development
