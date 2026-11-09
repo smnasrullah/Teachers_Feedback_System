@@ -176,11 +176,11 @@
 
 @media (max-width: 639px) {
   :root {
-    --text-sm: 13px;
-    --text-base: 15px;
-    --text-xl: 18px;
-    --text-2xl: 22px;
-    --text-3xl: 28px;
-    --radius-card: 14px;
+    --text-sm: 12px;
+    --text-base: 14px;
+    --text-xl: 17px;
+    --text-2xl: 20px;
+    --text-3xl: 26px;
+    --radius-card: 12px;
   }
 }

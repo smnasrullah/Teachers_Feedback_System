@@ -543,3 +543,19 @@
     max-width: none;
   }
 }
+
+@layer components {
+  @media (max-width: 639px) {
+    .auth-form {
+      padding: 24px 12px 30px;
+    }
+    .auth-brand {
+      padding: 24px 12px 0;
+      gap: 16px;
+    }
+    .form-page {
+      gap: 16px;
+      padding-bottom: 16px;
+    }
+  }
+}

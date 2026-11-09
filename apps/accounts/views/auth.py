@@ -15,6 +15,7 @@ from apps.accounts import ratelimits
 from apps.accounts.auth_forms import LoginForm, SecondFactorForm
 from apps.accounts.services import login as login_service
 from apps.accounts.services import twofactor
+from apps.core.encryption import DecryptionError
 from apps.core.permissions import public
 
 GENERIC_LOGIN_ERROR = _lazy("Invalid ID or password.")
@@ -57,7 +58,7 @@ def login_view(request):
                 )
                 if user is None:
                     login_service.note_failure(request, username, stage="password")
-            except DatabaseError:
+            except (DatabaseError, DecryptionError):
                 logger.exception(
                     "Login authentication database failure (request_id=%s)",
                     getattr(request, "request_id", ""),
@@ -72,7 +73,7 @@ def login_view(request):
     if status < 500:
         try:
             demo = login_service.demo_box()
-        except DatabaseError:
+        except (DatabaseError, DecryptionError):
             logger.exception(
                 "Unable to load demo login information (request_id=%s)",
                 getattr(request, "request_id", ""),

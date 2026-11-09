@@ -142,6 +142,47 @@ def test_authentication_database_failure_is_a_friendly_service_error(web, monkey
     assert response.context["form"]["username"].value() == "stu_known"
 
 
+def test_authentication_encryption_failure_is_a_friendly_service_error(web, monkeypatch):
+    from apps.accounts.views import auth
+    from apps.core.encryption import DecryptionError
+
+    def unavailable(*args, **kwargs):
+        raise DecryptionError("private encryption detail")
+
+    monkeypatch.setattr(auth, "authenticate", unavailable)
+    response = web.post(url("login"), {"username": "stu_known", "password": "secret-value"})
+
+    assert response.status_code == 503
+    assert "temporarily unavailable" in response.content.decode()
+    assert "private encryption detail" not in response.content.decode()
+    assert "secret-value" not in response.content.decode()
+
+
+def test_demo_login_panel_does_not_load_encrypted_profile_fields(web, monkeypatch):
+    from django.test import override_settings
+
+    from apps.accounts.services import login as login_service
+
+    user = student()
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "UPDATE accounts_user SET contact_email = %s WHERE id = %s",
+            ["not-a-fernet-token", user.pk],
+        )
+    monkeypatch.setattr(login_service.demo, "USERNAMES", (user.username,))
+    with override_settings(
+        DEBUG=False,
+        IS_DEMO_SITE=True,
+        SETTINGS_MODULE="config.settings.prod",
+        PUBLIC_DEMO_ENABLED=True,
+        DEMO_PASSWORD=PASSWORD,
+    ):
+        response = web.get(url("login"))
+
+    assert response.status_code == 200
+    assert response.context["demo"] is not None
+
+
 def test_demo_panel_database_failure_does_not_return_an_http_500(web, monkeypatch):
     from apps.accounts.services import login as login_service
 

@@ -2208,16 +2208,28 @@
 
   @media (max-width: 639px) {
     body {
-      line-height: 1.55;
+      line-height: 1.48;
     }
     html[lang="bn"] body {
-      line-height: 1.62;
+      line-height: 1.56;
+    }
+    h1 {
+      font-size: clamp(24px, 7vw, 27px);
+    }
+    h2 {
+      font-size: clamp(20px, 5.6vw, 22px);
+    }
+    h3 {
+      font-size: 17px;
     }
     .wrap {
-      padding-inline: 14px;
+      padding-inline: 12px;
+    }
+    .nav .wrap {
+      min-height: 52px;
     }
     .card {
-      padding: 16px;
+      padding: 14px;
     }
   }
 }

@@ -151,7 +151,11 @@ def demo_box() -> dict | None:
     if not (local_dev or public_demo):
         return None
     password = settings.DEMO_PASSWORD
-    users = list(User.objects.filter(username__in=demo.USERNAMES, is_active=True))
+    # The login panel only needs usernames and password hashes. Do not fetch encrypted profile
+    # or TOTP fields while rendering public demo credentials.
+    users = list(
+        User.objects.filter(username__in=demo.USERNAMES, is_active=True).only("username", "password")
+    )
     matches = len(users) == len(demo.USERNAMES) and all(
         user.check_password(password) for user in users
     )
