@@ -27,6 +27,25 @@ def _too_many_message() -> str:
     return _("Too many attempts. Please wait a few minutes and try again.")
 
 
+def _rate_limit_unavailable(request):
+    form = LoginForm(request.POST or None)
+    form.add_error(None, LOGIN_UNAVAILABLE_ERROR)
+    try:
+        demo = login_service.demo_box()
+    except (DatabaseError, DecryptionError):
+        logger.exception(
+            "Unable to load demo login information (request_id=%s)",
+            getattr(request, "request_id", ""),
+        )
+        demo = None
+    return render(
+        request,
+        "accounts/login.html",
+        {"form": form, "next": login_service.safe_next(request) or "", "demo": demo},
+        status=503,
+    )
+
+
 def lockout_response(request, response=None, credentials=None):
     """``AXES_LOCKOUT_CALLABLE``: the same answer for known and unknown usernames."""
     minutes = int(settings.AXES_COOLOFF_TIME.total_seconds() // 60)
@@ -38,7 +57,12 @@ def lockout_response(request, response=None, credentials=None):
 
 
 @require_http_methods(["GET", "POST"])
-@ratelimits.limited(ratelimits.username, ip_rate="30/10m", subject_rate="10/15m")
+@ratelimits.limited(
+    ratelimits.username,
+    ip_rate="30/10m",
+    subject_rate="10/15m",
+    on_cache_error=_rate_limit_unavailable,
+)
 @public
 def login_view(request):
     if request.user.is_authenticated:

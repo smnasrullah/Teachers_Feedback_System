@@ -83,6 +83,22 @@ def _host_problems(allowed_hosts: list[str], csrf_origins: list[str], site_url: 
     return problems
 
 
+def _redis_problems(name: str, value: str) -> list[str]:
+    parts = urlsplit(value)
+    if parts.scheme not in REDIS_SCHEMES:
+        return [f"{name} must be a redis:// or rediss:// URL"]
+    try:
+        host = parts.hostname
+        port = parts.port
+    except ValueError:
+        return [f"{name} must contain a valid Redis host and port"]
+    if not host or host in {".", ".."}:
+        return [f"{name} must contain the Redis internal host from Render Key Value"]
+    if port is not None and not 1 <= port <= 65535:
+        return [f"{name} must contain a valid Redis port"]
+    return []
+
+
 def require_production_settings(
     *,
     secret_key: str,
@@ -104,10 +120,7 @@ def require_production_settings(
     ]
     if secret_key in fernet_keys:
         problems.append("DJANGO_SECRET_KEY must differ from FIELD_ENCRYPTION_KEYS")
-    problems.extend(
-        f"{name} must be a redis:// or rediss:// URL"
-        for name, url in redis_urls.items()
-        if urlsplit(url).scheme not in REDIS_SCHEMES
-    )
+    for name, url in redis_urls.items():
+        problems.extend(_redis_problems(name, url))
     if problems:
         raise ImproperlyConfigured("Production settings refused: " + "; ".join(problems) + ".")

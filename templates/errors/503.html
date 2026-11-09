@@ -1,0 +1,7 @@
+{% extends "errors/error.html" %}
+{% load i18n %}
+{% block error_title %}{% translate "Service temporarily unavailable" %}{% endblock %}
+{% block error_code %}503{% endblock %}
+{% block error_heading %}{% translate "Please try again shortly" %}{% endblock %}
+{% block error_text %}{% translate "Sign-in is temporarily unavailable. Please try again shortly." %}{% endblock %}
+{% block error_art %}{% include "components/illustrations/vignette_desk.html" %}{% endblock %}

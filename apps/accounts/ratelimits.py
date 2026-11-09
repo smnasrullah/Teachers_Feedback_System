@@ -4,8 +4,13 @@ Both limits apply to every attempt, valid or not, so a limit trips identically f
 unknown IDs. The view reads ``request.limited`` and answers 429 without doing the work.
 """
 
+import logging
+from functools import wraps
+
 from django.conf import settings
+from django.shortcuts import render
 from django_ratelimit.decorators import ratelimit
+from redis.exceptions import RedisError
 
 from apps.accounts.services.identifiers import normalize_registry_id
 from apps.core.encryption import blind_index
@@ -13,6 +18,7 @@ from apps.core.net import client_ip
 from apps.core.services.demo import constants as demo
 
 PURPOSE = "ratelimit.subject"
+logger = logging.getLogger(__name__)
 
 
 def _hashed(value: str) -> str:
@@ -41,11 +47,34 @@ def session_subject(group, request) -> str:
     return _hashed(f"session:{request.session.session_key or client_ip(request)}")
 
 
-def limited(subject_key, *, ip_rate: str = "30/10m", subject_rate: str = "8/15m"):
+def limited(
+    subject_key,
+    *,
+    ip_rate: str = "30/10m",
+    subject_rate: str = "8/15m",
+    on_cache_error=None,
+):
     """Per-IP and per-subject limits on POST; sets ``request.limited`` instead of blocking."""
 
     def decorator(view):
-        view = ratelimit(key=subject_key, rate=subject_rate, method="POST", block=False)(view)
-        return ratelimit(key="ip", rate=ip_rate, method="POST", block=False)(view)
+        limited_view = ratelimit(key=subject_key, rate=subject_rate, method="POST", block=False)(
+            view
+        )
+        limited_view = ratelimit(key="ip", rate=ip_rate, method="POST", block=False)(limited_view)
+
+        @wraps(view)
+        def guarded(request, *args, **kwargs):
+            try:
+                return limited_view(request, *args, **kwargs)
+            except RedisError:
+                logger.exception(
+                    "Rate-limit cache unavailable; refusing request (request_id=%s)",
+                    getattr(request, "request_id", ""),
+                )
+                if on_cache_error is not None:
+                    return on_cache_error(request)
+                return render(request, "errors/503.html", status=503)
+
+        return guarded
 
     return decorator

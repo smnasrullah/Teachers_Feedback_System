@@ -19,6 +19,12 @@ Connect the GitHub repository and configure the Render service as follows:
 | Docker Command / Start Command | Leave blank; the image runs its existing entrypoint and Gunicorn command |
 | Health Check Path | `/healthz` |
 
+The supplied Render log shows a native Python service starting Gunicorn directly, which bypasses
+`docker/entrypoint.sh`. For that existing service, set **Start Command** to
+`sh scripts/render_start.sh`; it runs the production check, migrations, public demo seed, and then
+Gunicorn. Keep `RUN_MIGRATIONS=1` on the web service. Do not use the direct `gunicorn ...` command
+when relying on automatic migrations or demo seeding.
+
 Render's `PORT` is used by Gunicorn. Do not replace the image command with Django's development
 server. Set the environment variables below on the web service. Use the existing Render
 PostgreSQL/Key Value resources if the app already has production data; do not provision a new
@@ -36,7 +42,7 @@ Set secrets in the Render dashboard, never in Git:
 | `FIELD_ENCRYPTION_KEYS` | A valid Fernet key; preserve the existing production key when migrating an existing database |
 | `BLIND_INDEX_KEY` | A unique random value of at least 32 characters; preserve the existing production key when migrating existing data |
 | `DATABASE_URL` | The URI for the existing Supabase PostgreSQL database |
-| `CACHE_URL` | The internal Redis URL for the Render Key Value instance |
+| `CACHE_URL` | The internal Redis URL copied from Render Key Value → Connect; it must be `redis://` or `rediss://` |
 | `CELERY_BROKER_URL` | Redis URL, e.g. the Key Value URL with `/0` appended |
 | `CELERY_RESULT_BACKEND` | Redis URL, e.g. the same Key Value URL with `/1` appended |
 | `DJANGO_ALLOWED_HOSTS` | Render hostname, without scheme, e.g. `your-service.onrender.com` |
@@ -49,6 +55,11 @@ Generate new secrets with the commands documented in `.env.production.example`. 
 regenerate encryption or blind-index keys for an existing database: losing or changing them
 can make encrypted data unreadable or break identifier lookups. Configure the same database,
 Redis, and key values on any worker services.
+
+For `CACHE_URL`, use the Key Value instance's internal connection URL from its **Connect** menu.
+The service and Key Value must share a Render region. A value that resolves to a Unix socket such as
+`.` makes rate limiting fail before the login view runs, so every login POST returns an error.
+Render documents the internal URL format as `redis://red-...:6379`.
 
 For a custom domain, include its hostname in `DJANGO_ALLOWED_HOSTS`, and its HTTPS origin in
 `DJANGO_CSRF_TRUSTED_ORIGINS`; set `SITE_URL` to the canonical public URL.

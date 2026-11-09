@@ -54,6 +54,7 @@ def test_strong_settings_are_accepted():
         ({"database_url": "sqlite:///db.sqlite3"}, "DATABASE_URL"),
         ({"database_url": "postgres://tfs:change-me@db:5432/tfs"}, "DATABASE_URL"),
         ({"redis_urls": {"CACHE_URL": "locmemcache://tfs"}}, "CACHE_URL"),
+        ({"redis_urls": {"CACHE_URL": "redis://."}}, "CACHE_URL"),
         ({"allowed_hosts": []}, "DJANGO_ALLOWED_HOSTS"),
         ({"allowed_hosts": ["*"]}, "DJANGO_ALLOWED_HOSTS"),
         ({"csrf_origins": ["http://feedback.example.edu"]}, "DJANGO_CSRF_TRUSTED_ORIGINS"),

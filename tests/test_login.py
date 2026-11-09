@@ -160,6 +160,22 @@ def test_authentication_encryption_failure_is_a_friendly_service_error(web, monk
     assert "secret-value" not in response.content.decode()
 
 
+def test_rate_limit_redis_failure_keeps_login_form_and_never_returns_500(web, monkeypatch):
+    from redis.exceptions import ConnectionError as RedisConnectionError
+
+    def unavailable(*args, **kwargs):
+        raise RedisConnectionError("private Redis connection detail")
+
+    monkeypatch.setattr("django_ratelimit.core.get_usage", unavailable)
+    response = web.post(url("login"), {"username": "stu_known", "password": "secret-value"})
+
+    assert response.status_code == 503
+    assert "temporarily unavailable" in response.content.decode()
+    assert "private Redis connection detail" not in response.content.decode()
+    assert "secret-value" not in response.content.decode()
+    assert response.context["form"]["username"].value() == "stu_known"
+
+
 def test_demo_login_panel_does_not_load_encrypted_profile_fields(web, monkeypatch):
     from django.test import override_settings
 
@@ -183,7 +199,7 @@ def test_demo_login_panel_does_not_load_encrypted_profile_fields(web, monkeypatc
 
     assert response.status_code == 200
     assert response.context["demo"] is not None
-    assert 'data-demo-login' in response.content.decode()
+    assert "data-demo-login" in response.content.decode()
 
 
 def test_demo_panel_database_failure_does_not_return_an_http_500(web, monkeypatch):
