@@ -63,18 +63,21 @@ def require_seed_environment() -> None:
         )
 
 
-def _lock_seed() -> None:
+def _lock_seed() -> bool:
     """Ensure only one Render instance mutates the demo dataset at a time."""
     if connection.vendor == "postgresql":
         with connection.cursor() as cursor:
-            cursor.execute("SELECT pg_advisory_xact_lock(%s)", [SEED_LOCK_ID])
+            cursor.execute("SELECT pg_try_advisory_xact_lock(%s)", [SEED_LOCK_ID])
+            return bool(cursor.fetchone()[0])
+    return True
 
 
 @transaction.atomic
 def delete_all() -> int:
     """Remove the demo data; returns how many accounts were deleted."""
     require_seed_environment()
-    _lock_seed()
+    if not _lock_seed():
+        return 0
     return reset.delete_all()
 
 
@@ -87,7 +90,8 @@ def seed(password: str | None = None) -> Report:
     """Create the demo data that is missing. ``password`` (checked against the strict rule) is
     set on the four accounts; without one, a random password is made when any is missing."""
     require_seed_environment()
-    _lock_seed()
+    if not _lock_seed():
+        return Report((), password, False, (), 0)
     generated = password is None and User.objects.filter(username__in=USERNAMES).count() < len(
         USERNAMES
     )

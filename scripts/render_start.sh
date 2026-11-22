@@ -20,7 +20,8 @@ if is_enabled "${RUN_MIGRATIONS:-1}"; then
     python manage.py check --deploy --fail-level ERROR
     python manage.py migrate --noinput
     if is_enabled "${PUBLIC_DEMO_ENABLED:-1}"; then
-        python manage.py seed_demo
+        # Seed in background so Gunicorn binds to $PORT immediately without hitting Render's port scan timeout
+        python manage.py seed_demo &
     fi
 fi
 
