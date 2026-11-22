@@ -27,6 +27,12 @@ class Role(models.TextChoices):
 HOD = "hod"
 ALL_ROLES = frozenset({*Role.values, HOD})
 ROLE_PRECEDENCE = (Role.ADMIN.value, HOD, Role.TEACHER.value, Role.STUDENT.value)
+ROLE_LABELS = {
+    Role.ADMIN.value: _("Admin"),
+    HOD: _("Head of department"),
+    Role.TEACHER.value: _("Teacher"),
+    Role.STUDENT.value: _("Student"),
+}
 
 ACCESS_POLICY_ATTR = "access_policy"
 PUBLIC = "public"

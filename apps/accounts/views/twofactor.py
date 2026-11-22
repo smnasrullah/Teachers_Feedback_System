@@ -15,6 +15,7 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 
 from apps.accounts import ratelimits
 from apps.accounts.auth_forms import ReauthForm, TotpCodeForm
+from apps.accounts.guards import guest_only
 from apps.accounts.services import account as account_service
 from apps.accounts.services import login as login_service
 from apps.accounts.services import twofactor
@@ -38,6 +39,7 @@ def _show_codes(request, codes, continue_url):
 @ratelimits.limited(ratelimits.session_subject, ip_rate="30/10m", subject_rate="10/15m")
 @never_cache
 @public
+@guest_only
 def login_two_factor_setup(request):
     """An account without an authenticator (made before it was required) enrols at login."""
     user = login_service.pending_user(request)

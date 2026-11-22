@@ -79,6 +79,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "apps.core.context_processors.csp_nonce",
                 "apps.core.context_processors.server_time",
+                "apps.core.context_processors.guest_auth",
                 "apps.accounts.context_processors.account_menu",
             ],
         },

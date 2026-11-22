@@ -3,7 +3,7 @@
 {% block title %}{% translate "Teacher Feedback System" %} — {% translate "Honest, anonymous course feedback" %}{% endblock %}
 {% block pre_alpine %}<script src="{% static 'js/preview.js' %}" nonce="{{ csp_nonce }}" defer></script>{% endblock %}
 {% block head %}<script src="{% static 'js/art.js' %}" nonce="{{ csp_nonce }}" defer></script><script src="{% static 'js/demo.js' %}" nonce="{{ csp_nonce }}" defer></script>{% endblock %}
-{% block nav %}{% include "components/navbar.html" with user_name=request.user.get_username|default:"" anchors=True %}{% endblock %}
+{% block nav %}{% include "components/navbar.html" with user_name=account_name|default:"" anchors=True %}{% endblock %}
 {% block content %}
 {% url 'accounts:login' as login_url %}
 {% url 'accounts:signup' as signup_url %}
@@ -16,8 +16,12 @@
       <h1 id="hero-title">{% translate "Honest feedback, kept anonymous." %}</h1>
       <p class="lead">{% translate "Rate your courses and teachers each semester. Teachers see only combined results, after the round closes." %}</p>
       <div class="a-cta">
+        {% if show_guest_auth_links %}
         {% if login_url %}<a class="btn btn-primary" href="{{ login_url }}">{% translate "Log in" %}</a>{% endif %}
         {% if signup_url %}<a class="btn btn-ghost" href="{{ signup_url }}">{% translate "Create account" %}</a>{% endif %}
+        {% elif dashboard_url %}
+        <a class="btn btn-primary" href="{{ dashboard_url }}">{% translate "Go to dashboard" %}</a>
+        {% endif %}
       </div>
       <ul class="a-facts">
         <li>{% icon "shield" %}{% translate "Anonymous by design" %}</li>
@@ -329,11 +333,18 @@
   <div class="a-wrap a-cta-grid">
     <div>
       <h2 id="cta-title" class="a-h2">{% translate "Ready to share honest feedback?" %}</h2>
+      {% if show_guest_auth_links %}
       <p class="a-sub">{% translate "Log in with your account, or create one with your student ID and the code from your department." %}</p>
       <div class="a-cta">
         {% if login_url %}<a class="btn btn-primary" href="{{ login_url }}">{% translate "Log in" %}</a>{% endif %}
         {% if signup_url %}<a class="btn btn-ghost" href="{{ signup_url }}">{% translate "Create account" %}</a>{% endif %}
       </div>
+      {% elif dashboard_url %}
+      <p class="a-sub">{% translate "You are signed in. Your courses, rounds and results are on your dashboard." %}</p>
+      <div class="a-cta">
+        <a class="btn btn-primary" href="{{ dashboard_url }}">{% translate "Go to dashboard" %}</a>
+      </div>
+      {% endif %}
     </div>
     <svg class="cta-fig p-b" viewBox="0 0 64 96" aria-hidden="true" focusable="false"><use href="#fig-celebrate"/></svg>
   </div>

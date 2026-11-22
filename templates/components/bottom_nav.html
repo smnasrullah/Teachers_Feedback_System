@@ -19,6 +19,16 @@
       {% else %}<a class="side-link" href="{{ item.url }}"{% if item.current %} aria-current="page"{% endif %}>{% if item.icon %}{% icon item.icon %}{% endif %}{{ item.label }}</a>{% endif %}
     {% endfor %}
   </nav>
+  {% if account_name %}
+  <div class="grid gap-2">
+    <p class="menu-head">{{ account_name }}{% if account_role %} <span class="text-sm text-muted">· {{ account_role }}</span>{% endif %}</p>
+    {% if logout_url %}
+    <form action="{{ logout_url }}" method="post" class="m-0">{% csrf_token %}
+      <button type="submit" class="side-link">{% icon "logout" %}{% translate "Log out" %}</button>
+    </form>
+    {% endif %}
+  </div>
+  {% endif %}
 </dialog>
 {% endif %}
 {% endwith %}

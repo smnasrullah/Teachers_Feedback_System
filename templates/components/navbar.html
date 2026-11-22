@@ -1,5 +1,5 @@
 {% load i18n ui %}
-{# Params: user_name (empty = signed out), user_menu [{label,url,icon}], logout_url, static_nav, anchors (landing section links). The bell fills itself over HTMX. #}
+{# Params: user_name (empty = signed out), account_role, dashboard_url, user_menu [{label,url,icon}], logout_url, static_nav, anchors (landing section links). Log in is offered only while show_guest_auth_links. The bell fills itself over HTMX. #}
 <header class="nav{% if static_nav %} nav-static{% endif %}"><div class="wrap">
   {% include "components/logo.html" %}
   {% if anchors %}
@@ -44,6 +44,8 @@
     <button type="button" class="avatar cursor-pointer" data-toggle="#nav-user" aria-expanded="false" aria-controls="nav-user" aria-label="{% blocktranslate %}Account menu for {{ user_name }}{% endblocktranslate %}">{{ user_name|first|upper }}</button>
     <div class="menu" id="nav-user" hidden>
       <p class="menu-head">{{ user_name }}</p>
+      {% if account_role %}<p class="menu-head text-sm text-muted">{{ account_role }}</p>{% endif %}
+      {% if dashboard_url %}<a class="menu-item" href="{{ dashboard_url }}">{% icon "home" %}{% translate "My dashboard" %}</a>{% endif %}
       {% for entry in user_menu %}
         <a class="menu-item" href="{{ entry.url }}">{% if entry.icon %}{% icon entry.icon %}{% endif %}{{ entry.label }}</a>
       {% endfor %}
@@ -56,7 +58,9 @@
   </div>
   {% else %}
   {% include "components/theme_toggle.html" %}
+  {% if show_guest_auth_links %}
   {% url 'accounts:login' as login_url %}
   {% if login_url %}<a class="btn btn-primary" href="{{ login_url }}">{% translate "Log in" %}</a>{% endif %}
+  {% endif %}
   {% endif %}
 </div></header>

@@ -21,6 +21,7 @@ PUBLIC = (200,) * 5
 SIGNED_IN = (LOGIN, 200, 200, 200, 200)
 ADMIN = (LOGIN, 403, 403, 403, 200)
 POST_ONLY = (405,) * 5
+GUEST_ONLY = (200, 302, 302, 302, 302)
 REDIRECT = (302,) * 5
 # Any answer but a server error: Django's own admin decides the rest for its Admin user.
 ANSWERS = "answers"
@@ -32,12 +33,12 @@ EXPECTED = {
     "accounts:login_second_factor": REDIRECT,
     "accounts:login_two_factor_setup": REDIRECT,
     "accounts:logout": POST_ONLY,
-    "accounts:signup": PUBLIC,
-    "accounts:signup_password": PUBLIC,
-    "accounts:signup_authenticator": PUBLIC,
-    "accounts:password_forgot": PUBLIC,
+    "accounts:signup": GUEST_ONLY,
+    "accounts:signup_password": GUEST_ONLY,
+    "accounts:signup_authenticator": GUEST_ONLY,
+    "accounts:password_forgot": GUEST_ONLY,
     "accounts:password_forgot_new": REDIRECT,
-    "accounts:username_forgot": PUBLIC,
+    "accounts:username_forgot": GUEST_ONLY,
     "accounts:dashboard": REDIRECT,
     "accounts:dashboard_student": (LOGIN, 200, 403, 403, 403),
     "accounts:dashboard_teacher": (LOGIN, 403, 200, 200, 403),

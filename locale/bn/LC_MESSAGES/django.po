@@ -5412,3 +5412,33 @@ msgstr "সাইন-আপের অগ্রগতি"
 
 msgid "On this page"
 msgstr "এই পাতায়"
+
+msgid "My dashboard"
+msgstr "আমার ড্যাশবোর্ড"
+
+msgid "Go to dashboard"
+msgstr "ড্যাশবোর্ডে যান"
+
+msgid "You are signed in. Your courses, rounds and results are on your dashboard."
+msgstr "আপনি সাইন ইন করে আছেন। আপনার কোর্স, রাউন্ড ও ফলাফল ড্যাশবোর্ডে আছে।"
+
+msgid "Shared demo accounts cannot change their password."
+msgstr "শেয়ার করা ডেমো অ্যাকাউন্টের পাসওয়ার্ড বদলানো যায় না।"
+
+msgid "Create sample demo accounts and data (safe to run again). Production requires an explicit public-demo opt-in."
+msgstr "নমুনা ডেমো অ্যাকাউন্ট ও ডেটা তৈরি করুন (আবার চালানো নিরাপদ)। প্রোডাকশনে পাবলিক ডেমো স্পষ্টভাবে চালু করতে হয়।"
+
+msgid "Demo accounts are ready; credentials are shown on the demo login page."
+msgstr "ডেমো অ্যাকাউন্ট প্রস্তুত; লগ ইনের তথ্য ডেমো লগ ইন পাতায় দেখানো হয়।"
+
+msgid "Demo data can be seeded only with local development settings, an isolated demo deployment, or production with PUBLIC_DEMO_ENABLED on PostgreSQL."
+msgstr "ডেমো ডেটা শুধু লোকাল ডেভেলপমেন্ট সেটিংসে, আলাদা ডেমো ডিপ্লয়মেন্টে, অথবা PostgreSQL-এ PUBLIC_DEMO_ENABLED চালু থাকা প্রোডাকশনে তৈরি করা যায়।"
+
+msgid "Please try again shortly"
+msgstr "অনুগ্রহ করে একটু পরে আবার চেষ্টা করুন"
+
+msgid "Service temporarily unavailable"
+msgstr "সেবা সাময়িকভাবে বন্ধ আছে"
+
+msgid "Sign-in is temporarily unavailable. Please try again shortly."
+msgstr "সাইন ইন সাময়িকভাবে বন্ধ আছে। অনুগ্রহ করে একটু পরে আবার চেষ্টা করুন।"

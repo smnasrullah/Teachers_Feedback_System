@@ -562,7 +562,7 @@ def test_logout_needs_post(web):
     full_login(web, student())
     assert web.get(url("logout")).status_code == 405
     assert is_signed_in(web)
-    assert web.post(url("logout"))["Location"] == url("login")
+    assert web.post(url("logout"))["Location"] == reverse("core:home")
     assert not is_signed_in(web)
 
 

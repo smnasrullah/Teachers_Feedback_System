@@ -9,6 +9,7 @@ from django.views.decorators.http import require_GET, require_http_methods
 
 from apps.accounts import ratelimits
 from apps.accounts.auth_forms import ForgotPasswordForm, NewPasswordForm
+from apps.accounts.guards import guest_only
 from apps.accounts.services import login as login_service
 from apps.accounts.services import recovery
 from apps.accounts.views.auth import lockout_response
@@ -24,6 +25,7 @@ def _too_many() -> str:
 @require_http_methods(["GET", "POST"])
 @ratelimits.limited(ratelimits.username, ip_rate="10/10m", subject_rate="5/15m")
 @public
+@guest_only
 def password_forgot(request):
     form = ForgotPasswordForm(request.POST or None)
     status = 200
@@ -45,6 +47,7 @@ def password_forgot(request):
 @require_http_methods(["GET", "POST"])
 @ratelimits.limited(ratelimits.session_subject, ip_rate="20/10m", subject_rate="8/15m")
 @public
+@guest_only
 def password_forgot_new(request):
     user = recovery.pending_user(request)
     if user is None:
@@ -68,5 +71,6 @@ def password_forgot_new(request):
 
 @require_GET
 @public
+@guest_only
 def username_forgot(request):
     return render(request, "accounts/recovery/username.html")

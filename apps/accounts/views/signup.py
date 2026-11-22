@@ -15,6 +15,7 @@ from django.views.decorators.http import require_http_methods
 
 from apps.accounts import ratelimits
 from apps.accounts.auth_forms import ClaimForm, NewPasswordForm, TotpCodeForm
+from apps.accounts.guards import guest_only
 from apps.accounts.models import IdRegistry
 from apps.accounts.services import signup, twofactor
 from apps.core.encryption import encrypt
@@ -111,6 +112,7 @@ def _restart(request) -> None:
 @require_http_methods(["GET", "POST"])
 @ratelimits.limited(ratelimits.registry_id, ip_rate="30/10m", subject_rate="8/15m")
 @public
+@guest_only
 def signup_claim(request):
     if request.method == "GET":
         if request.GET.get("restart"):
@@ -137,6 +139,7 @@ def signup_claim(request):
 @require_http_methods(["GET", "POST"])
 @ratelimits.limited(ratelimits.session_subject, ip_rate="20/10m", subject_rate="8/15m")
 @public
+@guest_only
 def signup_password(request):
     registry = _registry(request)
     if request.method == "GET" or registry is None:
@@ -156,6 +159,7 @@ def signup_password(request):
 @ratelimits.limited(ratelimits.session_subject, ip_rate="30/10m", subject_rate="12/15m")
 @never_cache
 @public
+@guest_only
 def signup_authenticator(request):
     registry = _registry(request)
     password_hash = signup.unseal(_state(request).get("password"))

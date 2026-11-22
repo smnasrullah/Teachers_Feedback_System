@@ -13,6 +13,7 @@ from django.views.decorators.http import require_http_methods, require_POST
 
 from apps.accounts import ratelimits
 from apps.accounts.auth_forms import LoginForm, SecondFactorForm
+from apps.accounts.guards import guest_only
 from apps.accounts.services import login as login_service
 from apps.accounts.services import twofactor
 from apps.core.encryption import DecryptionError
@@ -64,9 +65,8 @@ def lockout_response(request, response=None, credentials=None):
     on_cache_error=_rate_limit_unavailable,
 )
 @public
+@guest_only
 def login_view(request):
-    if request.user.is_authenticated:
-        return redirect(login_service.landing_url(request.user))
     form = LoginForm(request.POST or None)
     status = 200
     page_error = None
@@ -131,6 +131,7 @@ def _after_password(request, user):
 @require_http_methods(["GET", "POST"])
 @ratelimits.limited(ratelimits.session_subject, ip_rate="30/10m", subject_rate="10/15m")
 @public
+@guest_only
 def login_second_factor(request):
     user = login_service.pending_user(request)
     if user is None or not user.totp_enabled:
@@ -166,4 +167,4 @@ def login_second_factor(request):
 def logout_view(request):
     logout(request)
     messages.info(request, _("You have been logged out."))
-    return redirect("accounts:login")
+    return redirect("core:home")
