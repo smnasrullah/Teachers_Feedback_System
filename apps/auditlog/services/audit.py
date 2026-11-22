@@ -124,7 +124,10 @@ def record(
 
 def _append(fields: dict) -> AuditEvent:
     with transaction.atomic():
-        last = AuditEvent.objects.select_for_update().order_by("-id").only("hash").first()
+        # Do not use select_for_update(): PostgreSQL requires UPDATE privilege for FOR UPDATE locks,
+        # but 0002_append_only_guard revokes UPDATE on auditlog_auditevent. Concurrency conflicts
+        # are caught by prev_hash's unique constraint and retried in record().
+        last = AuditEvent.objects.order_by("-id").only("hash").first()
         event = AuditEvent(
             created_at=timezone.now(),
             prev_hash=last.hash if last else GENESIS_HASH,
