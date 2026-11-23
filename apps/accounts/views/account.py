@@ -26,10 +26,12 @@ def account_context(request, current: str) -> dict:
 @role_required(*EVERYONE)
 def account_home(request):
     user = request.user
+    second_factor = twofactor.required_for(user)
     context = {
         **account_context(request, "account"),
         "sessions": account_service.active_sessions(user),
-        "recovery_left": twofactor.recovery_codes_left(user),
+        "second_factor": second_factor,
+        "recovery_left": twofactor.recovery_codes_left(user) if second_factor else 0,
     }
     return render(request, "accounts/account.html", context)
 

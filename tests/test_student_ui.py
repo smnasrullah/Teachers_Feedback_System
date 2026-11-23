@@ -637,7 +637,7 @@ def test_account_page_links_to_profile_security_and_sessions(world):
     html = world.web.get(reverse("accounts:account")).content.decode()
     assert reverse("accounts:profile") in html
     assert reverse("accounts:password_change") in html
-    assert reverse("accounts:two_factor") in html
+    assert reverse("accounts:two_factor") not in html  # no role needs an authenticator by default
     assert "Where you are signed in" in html
 
 

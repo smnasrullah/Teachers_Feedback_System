@@ -1,9 +1,10 @@
 """TOTP (RFC 6238) enrolment and verification, plus single-use recovery codes.
 
-Every account signs in with an authenticator app. The secret is encrypted at rest and shown
-only while enrolling. A TOTP code is accepted at most once (``totp_last_step`` only moves
-forward); recovery codes are stored as keyed hashes and burned on use. Nothing here logs a
-secret or a code.
+Only the roles in ``settings.TOTP_REQUIRED_ROLES`` sign in with an authenticator app (none by
+default); for every other role a stored secret is kept but ignored. The secret is encrypted at
+rest and shown only while enrolling. A TOTP code is accepted at most once (``totp_last_step``
+only moves forward); recovery codes are stored as keyed hashes and burned on use. Nothing here
+logs a secret or a code.
 """
 
 import hmac
@@ -18,9 +19,10 @@ from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 
-from apps.accounts.models import RecoveryCode, User
+from apps.accounts.models import IdRegistry, IdType, RecoveryCode, User
 from apps.accounts.services.identifiers import BANGLA_DIGITS, CODE_ALPHABET
 from apps.core.encryption import blind_index
+from apps.core.permissions import HOD, Role, user_roles
 
 STEP_SECONDS = 30
 WINDOW_STEPS = 1  # one step either side, for clock drift
@@ -43,6 +45,29 @@ class SecondFactor:
     ok: bool
     recovery: bool = False
     recovery_left: int = 0
+
+
+def _required(roles) -> bool:
+    return not settings.TOTP_REQUIRED_ROLES.isdisjoint(roles)
+
+
+def required_for(user) -> bool:
+    """Whether ``user`` must pass an authenticator code (any role they hold is in the set)."""
+    return _required(user_roles(user))
+
+
+def required_for_registry(registry: IdRegistry) -> bool:
+    """Whether the account signing up with this registry row must enrol an authenticator."""
+    if registry.id_type == IdType.STUDENT:
+        return _required({Role.STUDENT.value})
+    profile = getattr(registry, "teacher_profile", None)
+    heads = profile is not None and profile.is_hod
+    return _required({Role.TEACHER.value, HOD} if heads else {Role.TEACHER.value})
+
+
+def required_at_signup() -> bool:
+    """Whether a sign-up may need an authenticator (some self-registering role is in the set)."""
+    return _required({Role.STUDENT.value, Role.TEACHER.value, HOD})
 
 
 def normalize_code(value: str) -> str:

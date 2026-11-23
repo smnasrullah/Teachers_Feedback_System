@@ -18,6 +18,9 @@ from tests.factories import claim, make_admin, make_student, make_teacher, make_
 from tests.factories import sign_in as force_sign_in
 from tests.test_demo_seed import PASSWORD, seed
 
+# The P22b bypass skips a second factor, so it only matters for roles that require one.
+pytestmark = pytest.mark.usefixtures("totp_everyone")
+
 LOOPBACK = {"REMOTE_ADDR": "127.0.0.1"}
 
 

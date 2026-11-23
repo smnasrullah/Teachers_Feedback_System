@@ -1,0 +1,17 @@
+{% extends "layouts/dashboard.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Password reset codes" %} · {% translate "Teacher Feedback System" %}{% endblock %}
+{% block content %}
+<section class="card grid gap-4 max-w-xl" aria-labelledby="reset-code-title">
+  <h1 id="reset-code-title">{% translate "Password reset codes" %}</h1>
+  <p>{% translate "For someone who forgot their password. Enter their student or teacher ID to issue a one-time reset code. It works for 24 hours; with it they choose a new password on the “Forgot password?” page, which signs them out everywhere." %}</p>
+  {% if request.user.is_hod %}<p class="field-hint">{% translate "You can issue codes only for accounts in the department you head." %}</p>{% endif %}
+  <p class="callout">{% icon "alert" %}<span>{% translate "Check who is asking before you do this. The code is shown only once." %}</span></p>
+  <form method="post" action="{% url 'accounts:reset_code' %}" class="grid gap-4">
+    {% csrf_token %}
+    {% include "components/form_errors.html" with form=form %}
+    {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <div><button type="submit" class="btn btn-primary">{% icon "lock" %}{% translate "Issue reset code" %}</button></div>
+  </form>
+</section>
+{% endblock %}

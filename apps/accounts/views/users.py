@@ -1,21 +1,24 @@
-"""Admin screens for accounts: list, detail, role assignment and reset access (lost phone)."""
+"""Account screens: the Admin's list, detail and role assignment, and password reset codes
+(Admin for anyone, a head of department for their own department)."""
 
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import never_cache
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
-from apps.accounts.forms import ResetAccessForm, RoleForm, UserFilterForm
+from apps.accounts import ratelimits
+from apps.accounts.forms import ResetCodeLookupForm, RoleForm, UserFilterForm
+from apps.accounts.guards import step_up_required
 from apps.accounts.models import User
 from apps.accounts.services import registry as registry_service
-from apps.accounts.services import roles
-from apps.accounts.views.registry import codes_csv_response
-from apps.core.permissions import Role, role_required
-from apps.core.services.navigation import admin_nav_items
+from apps.accounts.services import roles, twofactor
+from apps.core.permissions import HOD, Role, role_required
+from apps.core.services.navigation import admin_nav_items, user_nav_items
 
 PAGE_SIZE = 50
 
@@ -51,6 +54,7 @@ def user_list(request):
 
 @require_GET
 @role_required(Role.ADMIN)
+@step_up_required
 def user_detail(request, pk):
     account = get_object_or_404(User.objects.select_related("department"), pk=pk)
     registry = getattr(account, "registry", None)
@@ -63,15 +67,15 @@ def user_detail(request, pk):
             "account": account,
             "registry": registry,
             "role_form": RoleForm(initial={"role": account.role}) if can_change_role else None,
-            "reset_form": ResetAccessForm()
-            if registry_service.can_reset_access(account, request.user)
-            else None,
+            "can_issue_reset_code": registry_service.can_issue_reset_code(account, request.user),
+            "second_factor": twofactor.required_for(account),
         },
     )
 
 
 @require_POST
 @role_required(Role.ADMIN)
+@step_up_required
 def user_role(request, pk):
     account = get_object_or_404(User, pk=pk)
     form = RoleForm(request.POST)
@@ -91,32 +95,55 @@ def user_role(request, pk):
     return redirect("accounts:user_detail", pk=pk)
 
 
-@require_POST
-@never_cache
-@role_required(Role.ADMIN)
-def user_reset_access(request, pk):
-    account = get_object_or_404(User, pk=pk)
-    form = ResetAccessForm(request.POST)
-    if not form.is_valid():
-        for errors in form.errors.values():
-            for message in errors:
-                messages.error(request, message)
-        return redirect("accounts:user_detail", pk=pk)
+def _issue_reset_code(request, account, back_url: str):
+    """Issue the code and show it this once (the page is never cached)."""
     try:
-        issued = registry_service.reset_access(
-            account,
-            valid_days=form.cleaned_data["valid_days"],
-            actor=request.user,
-            request=request,
-        )
+        issued = registry_service.issue_reset_code(account, actor=request.user, request=request)
     except ValidationError as error:
         for message in error.messages:
             messages.error(request, message)
-        return redirect("accounts:user_detail", pk=pk)
-    if form.cleaned_data["output"] == ResetAccessForm.OUTPUT_CSV:
-        return codes_csv_response([issued])
+        return redirect(back_url)
     return render(
         request,
-        "admin_panel/reset_access_done.html",
-        {"nav_items": admin_nav_items("users"), "account": account, "issued": issued},
+        "accounts/reset_code_done.html",
+        {
+            "nav_items": user_nav_items(request.user, "reset_code"),
+            "account": account,
+            "issued": issued,
+            "back_url": back_url,
+        },
     )
+
+
+@require_POST
+@never_cache
+@role_required(Role.ADMIN)
+@step_up_required
+def user_reset_code(request, pk):
+    account = get_object_or_404(User, pk=pk)
+    return _issue_reset_code(request, account, reverse("accounts:user_detail", args=[pk]))
+
+
+@require_http_methods(["GET", "POST"])
+@never_cache
+@ratelimits.limited(ratelimits.registry_id, ip_rate="30/10m", subject_rate="10/15m")
+@role_required(HOD, Role.ADMIN)
+@step_up_required
+def reset_code(request):
+    """Look an account up by its ID, within the issuer's scope, and issue it a reset code."""
+    form = ResetCodeLookupForm(request.POST or None)
+    status = 200
+    if request.method == "POST":
+        if request.limited:
+            form.add_error(None, _("Too many attempts. Please wait a few minutes and try again."))
+            status = 429
+        elif form.is_valid():
+            account = registry_service.resettable_account(
+                form.cleaned_data["registry_id"], request.user
+            )
+            if account is not None:
+                return _issue_reset_code(request, account, reverse("accounts:reset_code"))
+            form.add_error("registry_id", _("No account you may reset has this ID."))
+            status = 404
+    context = {"nav_items": user_nav_items(request.user, "reset_code"), "form": form}
+    return render(request, "accounts/reset_code.html", context, status=status)

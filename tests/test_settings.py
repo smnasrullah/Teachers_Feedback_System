@@ -61,8 +61,21 @@ def test_client_ip_trusts_only_configured_proxies(rf, settings, proxies, meta, e
 
 
 def test_prod_settings_pass_deploy_checks():
-    result = run_manage("check", "--deploy", "--fail-level", "WARNING")
+    result = run_manage(
+        "check",
+        "--deploy",
+        "--fail-level",
+        "WARNING",
+        overrides={"TOTP_REQUIRED_ROLES": "admin,hod"},
+    )
     assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_prod_warns_when_no_role_needs_a_second_factor():
+    result = run_manage("check", "--deploy")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "core.W001" in result.stdout + result.stderr
+    assert "No second factor is required for any role." in result.stdout + result.stderr
 
 
 def test_django_admin_not_installed_in_prod():

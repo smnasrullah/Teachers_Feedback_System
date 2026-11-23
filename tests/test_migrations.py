@@ -48,7 +48,7 @@ def test_fresh_database_migrate_create_admin_then_log_in(monkeypatch):
     web = Client(HTTP_ACCEPT_LANGUAGE="en")
     response = web.post(reverse("accounts:login"), {"username": admin.username, "password": STRONG})
     assert response.status_code == 302
-    assert response["Location"] == reverse("accounts:login_two_factor_setup")
+    assert response["Location"] == reverse("accounts:dashboard_admin")
 
 
 def test_create_admin_refuses_while_migrations_are_unapplied(monkeypatch):

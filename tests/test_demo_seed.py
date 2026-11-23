@@ -128,13 +128,17 @@ def test_production_seed_requires_explicit_public_demo_and_postgres(db, settings
     require_seed_environment()
 
 
-def test_the_password_and_keys_are_printed_but_never_stored(db, settings, capsys):
+def test_the_password_is_printed_but_never_stored_and_no_authenticator_is_made(
+    db, settings, capsys
+):
     seed(settings, "--password", PASSWORD)
     out = capsys.readouterr().out
     assert PASSWORD in out
+    assert "setup key" not in out
+    assert "totp_code" not in out
     for user in User.objects.filter(username__in=demo.USERNAMES):
-        assert user.totp_enabled
-        assert twofactor.manual_key(user.totp_secret) in out
+        assert not user.totp_enabled
+        assert user.totp_secret is None
     stored = json.dumps(list(AuditEvent.objects.values_list("metadata", flat=True)))
     assert PASSWORD not in stored
     assert not any(external_id in stored for external_id in demo.all_registry_ids())
@@ -277,6 +281,16 @@ def test_the_promotion_preview_shows_every_outcome(seeded):
         assert label in html
 
 
+@pytest.mark.usefixtures("totp_everyone")
+def test_the_keys_are_printed_when_every_role_needs_an_authenticator(db, settings, capsys):
+    seed(settings, "--password", PASSWORD)
+    out = capsys.readouterr().out
+    for user in User.objects.filter(username__in=demo.USERNAMES):
+        assert user.totp_enabled
+        assert twofactor.manual_key(user.totp_secret) in out
+    assert "python manage.py totp_code" in out
+
+
 def test_the_login_page_lists_the_demo_accounts_only_in_development(db, settings):
     web = Client(HTTP_ACCEPT_LANGUAGE="en")
     settings.DEBUG = True
@@ -284,13 +298,23 @@ def test_the_login_page_lists_the_demo_accounts_only_in_development(db, settings
     html = web.get(reverse("accounts:login")).content.decode()
     assert all(username in html for username in demo.USERNAMES)
     assert html.count("data-fill-username=") == len(demo.USERNAMES)
-    assert "sign in with password only" in html
+    assert "Sign in with username and password" in html
     settings.DEBUG = False
     html = web.get(reverse("accounts:login")).content.decode()
     assert not any(username in html for username in demo.USERNAMES)
     assert "data-fill-username" not in html
 
 
+def test_every_demo_account_logs_in_with_username_and_password_only(seeded):
+    for username in demo.USERNAMES:
+        web = Client(HTTP_ACCEPT_LANGUAGE="en")
+        step = web.post(reverse("accounts:login"), {"username": username, "password": PASSWORD})
+        assert step.status_code == 302
+        assert step["Location"] != reverse("accounts:login_second_factor")
+        assert web.get(step["Location"]).status_code == 200
+
+
+@pytest.mark.usefixtures("totp_everyone")
 def test_every_demo_account_can_log_in_with_its_authenticator(seeded):
     for username in demo.USERNAMES:
         web = Client(HTTP_ACCEPT_LANGUAGE="en")
@@ -370,7 +394,6 @@ def test_the_demo_teacher_teaches_in_the_heads_department_and_the_students_cours
     teacher = User.objects.get(username=demo.TEACHER)
     head = User.objects.get(username=demo.HOD)
     assert teacher.registry.external_id.startswith(demo.ID_PREFIX)
-    assert teacher.totp_enabled
     assert teacher.teacher_profile.registry.department == head.teacher_profile.hod_department
     student = User.objects.get(username=demo.STUDENT).student_profile
     taught = CourseOffering.objects.filter(teacher=teacher.teacher_profile)

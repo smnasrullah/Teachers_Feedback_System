@@ -21,7 +21,8 @@ from tests.factories import (
     sign_in,
 )
 
-pytestmark = pytest.mark.django_db
+# The authenticator path, with every role required to use it (see test_password_only.py).
+pytestmark = [pytest.mark.django_db, pytest.mark.usefixtures("totp_everyone")]
 
 ROLES = ["student", "teacher", "hod", "admin"]
 LANGUAGES = ["en", "bn"]

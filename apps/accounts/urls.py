@@ -5,7 +5,18 @@ from apps.reports.admin_views import home as admin_dashboard
 from apps.reports.hod_views import overview as hod_dashboard
 from apps.reports.views import dashboard as teacher_dashboard
 
-from .views import account, auth, dashboards, profile, recovery, registry, signup, twofactor, users
+from .views import (
+    account,
+    auth,
+    dashboards,
+    profile,
+    recovery,
+    registry,
+    signup,
+    stepup,
+    twofactor,
+    users,
+)
 
 app_name = "accounts"
 
@@ -29,6 +40,7 @@ urlpatterns = [
     path("account/profile/", profile.profile_edit, name="profile"),
     path("account/password/", account.password_change, name="password_change"),
     path("account/sessions/end/", account.sign_out_everywhere, name="sign_out_everywhere"),
+    path("account/confirm/", stepup.step_up, name="step_up"),
     path("account/2fa/", twofactor.two_factor, name="two_factor"),
     path("account/2fa/recovery/", twofactor.two_factor_regenerate, name="two_factor_regenerate"),
     path("account/2fa/device/", twofactor.two_factor_device, name="two_factor_device"),
@@ -45,5 +57,6 @@ urlpatterns = [
     path("manage/users/", users.user_list, name="user_list"),
     path("manage/users/<int:pk>/", users.user_detail, name="user_detail"),
     path("manage/users/<int:pk>/role/", users.user_role, name="user_role"),
-    path("manage/users/<int:pk>/reset/", users.user_reset_access, name="user_reset_access"),
+    path("manage/users/<int:pk>/reset-code/", users.user_reset_code, name="user_reset_code"),
+    path("manage/reset-code/", users.reset_code, name="reset_code"),
 ]

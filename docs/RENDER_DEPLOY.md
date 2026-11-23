@@ -99,8 +99,9 @@ Keep the existing encryption keys, Django secret, Redis settings, allowed hosts,
 `SITE_URL`. Never paste database or signing secrets into chat or commit them to Git. After the
 updated code is deployed, the container runs migrations first, then automatically seeds the accounts
 and sample workflows. The seed is idempotent and serialized across web instances. Confirm Render
-logs report `Demo data is ready`. The database rows persist; only the four seeded identities skip
-second factor. Normal accounts retain the regular login flow.
+logs report `Demo data is ready`. The database rows persist. Every account signs in with
+username and password unless `TOTP_REQUIRED_ROLES` names its role; then only the four seeded
+identities skip the code.
 
 The login page lists the four usernames and shared password after all accounts exist and have the
 configured password. The shared accounts are mutable and `demo_admin` is an administrator. A tester

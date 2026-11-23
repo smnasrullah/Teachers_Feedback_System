@@ -100,7 +100,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-        "OPTIONS": {"min_length": 10},
+        "OPTIONS": {"min_length": 12},
     },
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
@@ -192,12 +192,21 @@ DEFAULT_FROM_EMAIL = env(
     "DEFAULT_FROM_EMAIL", default="Teacher Feedback System <no-reply@localhost>"
 )
 
+# Roles that must also sign in with an authenticator app (TOTP): any of "student", "teacher",
+# "hod", "admin". Empty means password-only sign-in for everyone; a role in the set gets the
+# full second factor (enrolment, code at login, recovery codes). Re-enable for the most
+# powerful roles with, e.g., TOTP_REQUIRED_ROLES=admin,hod in the environment.
+TOTP_REQUIRED_ROLES = frozenset(env.list("TOTP_REQUIRED_ROLES", default=[]))
 # Authenticator apps show this as the account's issuer.
 TOTP_ISSUER = "Teacher Feedback System"
 # A password-checked login waits this long for its second factor.
 SECOND_FACTOR_PENDING_SECONDS = 10 * 60
-# Off by default. Only dev.py and the separately deployed demo settings may enable the seeded
-# demo accounts' password-only login; production user accounts always require 2FA.
+# Sensitive actions need the password again once the last password entry is this old.
+STEP_UP_SECONDS = 10 * 60
+# A password reset code issued by the Admin or a head of department lasts this long.
+RESET_CODE_HOURS = 24
+# Off by default. Only dev.py and the separately deployed demo settings may let the seeded demo
+# accounts skip a second factor that TOTP_REQUIRED_ROLES asks of their role.
 DEMO_SKIP_SECOND_FACTOR = False
 # Password ``seed_demo`` applies to the sample accounts and may be shown on a dedicated demo site.
 DEMO_PASSWORD = ""

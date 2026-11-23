@@ -20,6 +20,7 @@ from apps.accounts.forms import (
     HodForm,
     RegistryFilterForm,
 )
+from apps.accounts.guards import step_up_required
 from apps.accounts.models import IdRegistry, IdType
 from apps.accounts.services import registry as registry_service
 from apps.accounts.services import roles
@@ -137,6 +138,7 @@ def codes_csv_response(issued) -> HttpResponse:
 @require_POST
 @never_cache
 @role_required(Role.ADMIN)
+@step_up_required
 def registry_bulk(request):
     form = BulkActionForm(request.POST)
     back = _list_url(request.POST.get("return_query", ""))

@@ -1,8 +1,9 @@
 """Authenticator enrolment at login (accounts without one yet) and its management.
 
-Every account signs in with an authenticator app. From the account page a person can see how
-many recovery codes are left, make new ones, or move to a new phone; both changes need the
-password and a current code.
+Only roles in ``settings.TOTP_REQUIRED_ROLES`` use an authenticator; for everyone else these
+pages send the person back (to the login or to their account page). From the account page a
+person can see how many recovery codes are left, make new ones, or move to a new phone; both
+changes need the password and a current code.
 """
 
 from django.contrib import messages
@@ -15,7 +16,7 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 
 from apps.accounts import ratelimits
 from apps.accounts.auth_forms import ReauthForm, TotpCodeForm
-from apps.accounts.guards import guest_only
+from apps.accounts.guards import guest_only, second_factor_users
 from apps.accounts.services import account as account_service
 from apps.accounts.services import login as login_service
 from apps.accounts.services import twofactor
@@ -36,14 +37,14 @@ def _show_codes(request, codes, continue_url):
 
 
 @require_http_methods(["GET", "POST"])
-@ratelimits.limited(ratelimits.session_subject, ip_rate="30/10m", subject_rate="10/15m")
 @never_cache
+@ratelimits.limited(ratelimits.session_subject, ip_rate="30/10m", subject_rate="10/15m")
 @public
 @guest_only
 def login_two_factor_setup(request):
     """An account without an authenticator (made before it was required) enrols at login."""
     user = login_service.pending_user(request)
-    if user is None or user.totp_enabled:
+    if user is None or user.totp_enabled or not twofactor.required_for(user):
         return redirect("accounts:login")
     secret = twofactor.begin_enrolment(user)
     form = TotpCodeForm(request.POST or None)
@@ -55,7 +56,7 @@ def login_two_factor_setup(request):
         elif form.is_valid():
             codes = account_service.enable_two_factor(request, user, form.cleaned_data["code"])
             if codes is not None:
-                login_service.complete_login(request, user)
+                login_service.complete_login(request, user, second_factor=True)
                 return _show_codes(request, codes, login_service.landing_url(user))
             login_service.note_failure(request, user.username, stage="enrolment")
             form.add_error("code", _("That code is not correct. Check the time on your phone."))
@@ -70,6 +71,7 @@ def login_two_factor_setup(request):
 
 @require_GET
 @role_required(*EVERYONE)
+@second_factor_users
 def two_factor(request):
     user = request.user
     context = {
@@ -98,6 +100,7 @@ def _reauthenticated(request, prefix: str) -> bool:
 @ratelimits.limited(ratelimits.session_subject, ip_rate="20/10m", subject_rate="8/15m")
 @never_cache
 @role_required(*EVERYONE)
+@second_factor_users
 def two_factor_regenerate(request):
     if not _reauthenticated(request, "regenerate"):
         return redirect("accounts:two_factor")
@@ -108,6 +111,7 @@ def two_factor_regenerate(request):
 @require_POST
 @ratelimits.limited(ratelimits.session_subject, ip_rate="20/10m", subject_rate="8/15m")
 @role_required(*EVERYONE)
+@second_factor_users
 def two_factor_device(request):
     if not _reauthenticated(request, "device"):
         return redirect("accounts:two_factor")
@@ -119,6 +123,7 @@ def two_factor_device(request):
 @ratelimits.limited(ratelimits.session_subject, ip_rate="30/10m", subject_rate="10/15m")
 @never_cache
 @role_required(*EVERYONE)
+@second_factor_users
 def two_factor_device_confirm(request):
     user = request.user
     secret = account_service.pending_device_secret(request)

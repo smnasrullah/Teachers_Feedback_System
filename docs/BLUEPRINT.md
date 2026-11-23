@@ -11,7 +11,7 @@ Visual source of truth: `design/*.html` (open in a browser). Tokens in §6 are W
 | Jobs | Celery + Redis | Reminders, window notices. Window open/closed is **computed from datetimes at request time**, never trusted to a job |
 | Passwords | Argon2id | Strongest default |
 | Field encryption | Fernet (MultiFernet for rotation) + separate HMAC key for blind-index lookups | Student/teacher ID, contacts, names, free text, drafts |
-| 2FA | TOTP (`pyotp`) authenticator app mandatory for **every role**; 8 hashed single-use recovery codes; no e-mail/SMS codes | Works offline, no SMS/e-mail cost, no contact data needed for auth |
+| 2FA | **Password only by default** (owner's decision, P31). TOTP (`pyotp`) authenticator switchable **per role** with `TOTP_REQUIRED_ROLES` (e.g. `admin,hod`), then 8 hashed single-use recovery codes; no e-mail/SMS codes. Prod `check` warns while the set is empty | Less friction at sign-up/login; still works offline, no SMS/e-mail cost, no contact data needed for auth |
 | Abuse control | django-axes + django-ratelimit (Redis cache) | Lockout + throttling |
 | Answer filter | 3 layers: word-list/regex (EN+BN+Banglish) → junk heuristics → optional AI classifier (pluggable, OFF by default) + PII scrubber | Local-first protects privacy |
 | Exports | openpyxl, WeasyPrint (server-rendered SVG/CSS charts, no JS), csv (UTF-8 BOM, formula-injection safe) | Excel/PDF/CSV |
@@ -25,7 +25,7 @@ Visual source of truth: `design/*.html` (open in a browser). Tokens in §6 are W
 flowchart TD
   A[Admin: dept, program, level/term, semester, courses] --> B[Admin: import Student/Teacher ID registry + activation codes]
   B --> C[Admin: assign teacher to offering, enroll students by level/term]
-  C --> D[User signup: ID + activation code match, password, authenticator enrolled, unique username issued]
+  C --> D[User signup: ID + activation code match, password, unique username issued, signed in]
   D --> E[Admin: open feedback window / round]
   E --> F[Student dashboard: only enrolled courses + teachers]
   F --> G[Form: all required questions answered]
@@ -45,11 +45,11 @@ TFS
 ├── F1 Identity & Access
 │   ├── Roles Student/Teacher/Admin + HOD flag (department-scoped)
 │   ├── ID registry: admin pre-registers Student IDs + Teacher IDs (+ dept/level/term) and one-time activation codes
-│   ├── Signup only if ID matches + unclaimed + activation code valid; set password; enrol authenticator (QR) and verify the first code; 8 recovery codes shown once
+│   ├── Signup only if ID matches + unclaimed + activation code valid; set password; signed in (roles in `TOTP_REQUIRED_ROLES` also enrol an authenticator via QR, verify the first code, get 8 recovery codes shown once)
 │   ├── Unique non-guessable username per ID (immutable); editable nickname only; forgotten username: ask the department/Admin (shown on the account page)
 │   ├── Student ID (and optional full name) visible to Admin + HOD of the student's own department only
-│   ├── Login: Argon2 password then TOTP (or recovery code) for every role, lockout, rate limit, single session, idle timeout
-│   └── Password reset with username + TOTP/recovery code; lost phone: Admin "Reset access" (new activation code, re-enrol); strong password policy, session list, "log out everywhere"
+│   ├── Login: username + Argon2 password (then TOTP or a recovery code only for required roles), lockout, rate limit, single session, idle timeout; step-up (password again, 10 min) before sensitive actions
+│   └── Forgotten password: one-time reset code (24 h, hashed, audited) issued by Admin (anyone) or HOD (own department), then ID + code + new password (ends every session); strong password policy, session list, "log out everywhere"
 ├── F2 Academic Management (Admin does everything)
 │   ├── Department, Program, Level/Term, Semester (one current), Course (theory/lab, belongs to a level/term)
 │   ├── CourseOffering = course + semester + teacher + section
@@ -98,7 +98,7 @@ TFS
 
 **HOD / Admin** → `design/admin_dashboard.html` (HOD uses the same layout, department-scoped): stat tiles → teacher ranking → category heatmap → pending list (Student ID visible) → quick actions → recent audit → moderation queue.
 
-Pages: landing, login, signup stepper (ID+code → password → authenticator → recovery codes), forgot password/username, dashboards per role, management screens, audit log, settings, 403/404/500.
+Pages: landing, login, signup stepper (ID+code → password → account ready; required roles: → authenticator → recovery codes), step-up password prompt, reset codes (Admin/HOD), forgot password/username, dashboards per role, management screens, audit log, settings, 403/404/500.
 
 ## §5 Data, anonymity, permissions
 ### §5.1 Entities
@@ -155,7 +155,7 @@ Edge rules: an offering's **department = `course.department`**; HOD scope follow
 ### §5.4 Threat model (checked in P20)
 | Threat | Mitigation |
 |---|---|
-| Account squatting (someone claims another student's ID) | Single-use hashed activation code + authenticator enrolment; admin can revoke a claim |
+| Account squatting (someone claims another student's ID) | Single-use hashed activation code (+ authenticator enrolment for required roles); admin can revoke a claim |
 | Proxy submitting | Re-auth at submit, single session, new-device notice, rate limit, audit |
 | De-anonymising via time/order/ids | A1–A5, no timestamps, UUIDs, stable shuffle, results after close |
 | User/ID enumeration | Generic messages, constant-time work, throttling |
@@ -165,7 +165,9 @@ Edge rules: an offering's **department = `course.department`**; HOD scope follow
 | Malicious upload (avatar) | Type sniff, size cap, Pillow re-encode, strip EXIF, random file name |
 | Secret/PII in logs | Log scrubber filter; never log TOTP codes/secrets, recovery or activation codes, passwords, feedback |
 | Audit tampering | Append-only model, DB-level revoke of UPDATE/DELETE where possible, hash-chained rows |
-| Brute force | axes lockout + ratelimit + Argon2 |
+| Brute force | axes lockout + ratelimit + Argon2 + 12-character minimum, common/numeric/similar passwords refused |
+| Stolen or reused password (no second factor by default) | **Accepted risk** (owner's decision): with `TOTP_REQUIRED_ROLES` empty a correct password alone signs in, so a phished or reused password gives that account's access. Limits: strong password rules, lockout, single session + new-device notice, step-up before ID exports/user management/promotion, reset codes only person-to-person (Admin, own-dept HOD), audit of every login, reset and step-up; feedback stays anonymous and results appear only after close. Re-enable per role with `TOTP_REQUIRED_ROLES=admin,hod` (prod `check` warns `core.W001` while empty) |
+| Forgotten password without e-mail | One-time reset code, 24 h, keyed hash, single use, shown once, never logged; Admin for anyone, HOD for own department only; use ends every session; form rate-limited and locked out by hashed ID; generic errors |
 | Key loss/leak | Key rotation command, keys only in env, documented backup |
 
 **Promotion rule** (admin-configurable): max failed courses, min CGPA, min credits. Outcomes: promote / retain / promote-with-retakes / graduate (last term). Preview -> apply (atomic, idempotent) -> admin override with reason (audited).

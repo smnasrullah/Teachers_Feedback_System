@@ -2,6 +2,7 @@ import pytest
 from django.core.cache import cache
 from django.db import connection
 
+from apps.core.permissions import ALL_ROLES
 from tests import outbox
 
 POSTGRES_ONLY = pytest.mark.skip(
@@ -34,3 +35,9 @@ def web(client):
     """A test client that asks for English (the site default is Bangla)."""
     client.defaults["HTTP_ACCEPT_LANGUAGE"] = "en"
     return client
+
+
+@pytest.fixture
+def totp_everyone(settings):
+    """Every role signs in with an authenticator, as before ``TOTP_REQUIRED_ROLES`` existed."""
+    settings.TOTP_REQUIRED_ROLES = ALL_ROLES

@@ -29,13 +29,17 @@
 
   <section class="card grid gap-3" aria-labelledby="security-title">
     <h2 id="security-title" class="text-lg">{% translate "Security" %}</h2>
+    {% if second_factor %}
     <p class="flex flex-wrap gap-2">
       <span class="badge badge-done">{% icon "check" %}{% translate "Authenticator app on" %}</span>
       {% if recovery_left %}<span class="badge badge-info">{% blocktranslate count left=recovery_left %}{{ left }} recovery code left{% plural %}{{ left }} recovery codes left{% endblocktranslate %}</span>
       {% else %}<span class="badge badge-alert">{% icon "alert" %}{% translate "No recovery codes left" %}</span>{% endif %}
     </p>
+    {% else %}
+    <p class="field-hint">{% translate "You sign in with your username and password. Use a long password that you use nowhere else. If you forget it, your head of department or the Admin can give you a reset code." %}</p>
+    {% endif %}
     <div class="flex flex-wrap gap-3">
-      <a class="btn btn-ghost" href="{% url 'accounts:two_factor' %}">{% icon "shield" %}{% translate "Authenticator and recovery codes" %}</a>
+      {% if second_factor %}<a class="btn btn-ghost" href="{% url 'accounts:two_factor' %}">{% icon "shield" %}{% translate "Authenticator and recovery codes" %}</a>{% endif %}
       <a class="btn btn-ghost" href="{% url 'accounts:password_change' %}">{% icon "lock" %}{% translate "Change password" %}</a>
     </div>
   </section>

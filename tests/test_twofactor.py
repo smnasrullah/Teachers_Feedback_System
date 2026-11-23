@@ -7,7 +7,8 @@ from apps.accounts.templatetags.identity import mask_contact
 from tests.auth_helpers import code_for_secret, enable_totp, totp_code
 from tests.factories import claim, make_admin, make_student
 
-pytestmark = pytest.mark.django_db
+# The authenticator path, with every role required to use it (see test_password_only.py).
+pytestmark = [pytest.mark.django_db, pytest.mark.usefixtures("totp_everyone")]
 
 
 def pending_user():

@@ -83,11 +83,11 @@ Resume dorkar hole: `docs/SUPPORT_PROMPTS.md` theke "Resume" prompt.
 2. Teacher/HOD feedback result dekhbe **round shesh hoyar por** (anonymity-r jonno).
 3. Ekta offering-e ekjon teacher (lab/theory alada offering).
 4. Student signup-e ID-r sathe **activation code** lagbe (onno keu tomar ID diye account khule felte parbe na).
-5. **Shob role**-er jonno authenticator app (TOTP 2FA) baddhotamulok; e-mail/SMS OTP nei.
+5. Login **username + password** diye (shob role); authenticator app (TOTP) role onujayi chalu kora jay: `TOTP_REQUIRED_ROLES=admin,hod` (default khali). E-mail/SMS OTP nei.
 
-## Local-e login korar shomoy authenticator code (shudhu dev)
+## Authenticator code (shudhu jodi kono role-e chalu thake)
 
-Prottek account-e login-er por authenticator app-er 6-digit code lage. Local development-e phone chhara code pete:
+Default-e kono code lage na: username ar password diyei login. `TOTP_REQUIRED_ROLES`-e kono role dile oi role-er account-e login-er por authenticator app-er 6-digit code lage. Local development-e phone chhara code pete:
 
 ```powershell
 python manage.py totp_code <username>

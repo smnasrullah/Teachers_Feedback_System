@@ -82,7 +82,8 @@ def ensure_admin(password: str | None) -> User:
             user = User.objects.create_admin(
                 password, username=c.ADMIN, nickname=c.NICKNAMES[c.ADMIN]
             )
-            twofactor.activate(user, twofactor.new_secret(), 0)
+            if twofactor.required_for(user):
+                twofactor.activate(user, twofactor.new_secret(), 0)
             audit.record("admin.created", target=user, metadata={"via": "seed_demo"})
     return user
 
@@ -112,13 +113,14 @@ def _login_for(registry, username, password, actor) -> User:
     registry_service.issue_activation_codes(
         IdRegistry.objects.filter(pk=registry.pk), valid_days=1, actor=actor
     )
-    secret = twofactor.new_secret()
+    # An authenticator only for a role TOTP_REQUIRED_ROLES names, as in a real sign-up.
+    secret = twofactor.new_secret() if twofactor.required_for_registry(registry) else None
     done = signup.complete(
         registry.pk,
         username=username,
         password_hash=signup.hash_password(password),
         secret=secret,
-        code=twofactor.current_code(secret),
+        code=twofactor.current_code(secret) if secret else "",
     )
     if done is None:
         raise ValidationError(_("The demo authenticator code was refused. Run the command again."))

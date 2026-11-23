@@ -1,10 +1,11 @@
-"""Forgot password (username + authenticator or recovery code) and forgot username (help page)."""
+"""Forgot password (registry ID + one-time reset code) and forgot username (help page)."""
 
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _lazy
+from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET, require_http_methods
 
 from apps.accounts import ratelimits
@@ -15,7 +16,7 @@ from apps.accounts.services import recovery
 from apps.accounts.views.auth import lockout_response
 from apps.core.permissions import public
 
-GENERIC_RESET_ERROR = _lazy("The username or code is not correct.")
+GENERIC_RESET_ERROR = _lazy("The ID or reset code is not valid, or it has already been used.")
 
 
 def _too_many() -> str:
@@ -23,7 +24,8 @@ def _too_many() -> str:
 
 
 @require_http_methods(["GET", "POST"])
-@ratelimits.limited(ratelimits.username, ip_rate="10/10m", subject_rate="5/15m")
+@never_cache
+@ratelimits.limited(ratelimits.registry_id, ip_rate="10/10m", subject_rate="5/15m")
 @public
 @guest_only
 def password_forgot(request):
@@ -34,17 +36,20 @@ def password_forgot(request):
             form.add_error(None, _too_many())
             status = 429
         elif form.is_valid():
-            username = form.cleaned_data["username"].strip().lower()
-            if login_service.is_locked(request, username):
+            registry_id = form.cleaned_data["registry_id"]
+            # django-axes counts failures under a hash, so no student ID reaches its log lines.
+            subject = recovery.lockout_subject(registry_id)
+            if login_service.is_locked(request, subject):
                 return lockout_response(request)
-            if recovery.verify(request, username, form.cleaned_data["code"]) is not None:
+            if recovery.verify(request, registry_id, form.cleaned_data["reset_code"]) is not None:
                 return redirect("accounts:password_forgot_new")
-            login_service.note_failure(request, username, stage="password_reset")
+            login_service.note_failure(request, subject, stage="password_reset")
             form.add_error(None, GENERIC_RESET_ERROR)
     return render(request, "accounts/recovery/forgot.html", {"form": form}, status=status)
 
 
 @require_http_methods(["GET", "POST"])
+@never_cache
 @ratelimits.limited(ratelimits.session_subject, ip_rate="20/10m", subject_rate="8/15m")
 @public
 @guest_only
@@ -60,8 +65,11 @@ def password_forgot_new(request):
             status = 429
         elif form.is_valid():
             try:
-                recovery.reset_password(request, user, form.cleaned_data["password1"])
+                recovery.reset_password(request, form.cleaned_data["password1"])
             except ValidationError as error:
+                if error.code == "expired":
+                    messages.error(request, error.messages[0])
+                    return redirect("accounts:password_forgot")
                 form.add_error("password1", error)
             else:
                 messages.success(request, _("Your password was changed. You can log in now."))
@@ -70,6 +78,7 @@ def password_forgot_new(request):
 
 
 @require_GET
+@never_cache
 @public
 @guest_only
 def username_forgot(request):

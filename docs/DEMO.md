@@ -23,10 +23,11 @@ Linux/CI: `make seed` and `make seed ARGS="--reset"`.
 - Running it twice changes nothing. A step that was done is skipped, so you can run it after a reset
   or after the database was migrated again. A database seeded before `demo_teacher` existed gets it,
   and Data Structures and its Lab move to it from the other demo teachers.
-- The password, the four authenticator setup keys and two spare sign-up pairs are printed to the
-  terminal at the end, and nowhere else (no file, no log, no audit event). The setup keys are
-  printed on every run; the password only when it was generated or given; the spare pairs only
-  right after they were created (use `--reset` and seed again for new ones).
+- The usernames, the password and two spare sign-up pairs are printed to the terminal at the
+  end, and nowhere else (no file, no log, no audit event). The password is printed only when it
+  was generated or given; the spare pairs only right after they were created (use `--reset` and
+  seed again for new ones). Authenticator setup keys are printed only for accounts whose role is
+  in `TOTP_REQUIRED_ROLES` (none by default).
 - `--reset` deletes the `demo_` accounts, the `DEMO-` IDs and everything attached to them
   (enrolments, results, receipts, responses, notices, ...). The academic rows it created
   (departments, courses, semesters, ...) and the demo questions are removed only when nothing
@@ -44,17 +45,17 @@ Linux/CI: `make seed` and `make seed ARGS="--reset"`.
 | `demo_teacher` | Teacher, CSE | Teaches Data Structures and Data Structures Lab in Summer 2026 (`demo_student` is enrolled in both). Sees only the reports of those two courses. |
 | `demo_student` | Student, CSE, Level 2 Term 1 | Nickname "Demo Student"; enrolled in all six Level 2 Term 1 courses of Summer 2026. |
 
-In local development and when public demo accounts are enabled the four accounts sign in with
-**username and password only**:
-no authenticator code is asked (see "Password-only demo login" in `docs/SECURITY.md` for the guard
-rails). The authenticator is still enrolled, so a real-flow test works: add a printed setup key to
-an app, or read a code with `python manage.py totp_code <username>`. The spare sign-up students
-(`DEMO-S014`, `DEMO-S015`) are ordinary accounts once claimed and always ask for the code.
+The four accounts sign in with **username and password**, like every account (no role needs an
+authenticator by default). The spare sign-up students (`DEMO-S014`, `DEMO-S015`) are ordinary
+accounts once claimed: sign up with the printed ID and code, choose a password, and you are signed
+in. If the server owner requires an authenticator for a role (`TOTP_REQUIRED_ROLES`), the demo
+accounts of that role still skip the code in local development and on an enabled public demo (see
+"Demo second-factor bypass" in `docs/SECURITY.md`).
 
 The login page lists the usernames and roles with copy-friendly IDs and the shared password. It
 shows the password only after all four active accounts have hashes matching `DEMO_PASSWORD`. The
 public seeder does not print credentials, authenticator keys, or activation codes to deployment
-logs. Normal accounts continue to use the regular second-factor flow.
+logs.
 
 ## What the data contains
 
@@ -89,7 +90,7 @@ logs. Normal accounts continue to use the regular second-factor flow.
 4. Submit (the page asks you to confirm the password again) and see the course become Sealed.
 5. Try to open a submitted form again: it cannot be changed.
 6. Open the bell: three notices, one already read. Switch language and theme in the top bar.
-7. Open My account: the nickname is "Demo Student"; two-factor shows enabled.
+7. Open My account: the nickname is "Demo Student"; Security says you sign in with username and password.
 8. **Must not be visible:** any Student ID (yours or anyone's), any other student's name.
 9. **Must not be visible:** other students' answers, or who wrote any comment.
 10. Edit the URL to a course you are not enrolled in (an EEE offering): you get 404, not the form.

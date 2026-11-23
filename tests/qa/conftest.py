@@ -173,7 +173,7 @@ SAMPLES = {
     "accounts:registry_hod": lambda user: [{"pk": registry(demo.TEACHERS[1].external_id).pk}],
     "accounts:user_detail": lambda user: [_user(demo.STUDENT)],
     "accounts:user_role": lambda user: [_user(demo.TEACHER)],
-    "accounts:user_reset_access": lambda user: [_user(demo.STUDENT)],
+    "accounts:user_reset_code": lambda user: [_user(demo.STUDENT)],
     "academics:import_upload": lambda user: [{"kind": key} for key in IMPORTERS],
     "academics:import_apply": lambda user: [{"kind": key} for key in IMPORTERS],
     "academics:import_template": lambda user: [{"kind": key} for key in IMPORTERS],

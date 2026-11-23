@@ -195,6 +195,12 @@ def user_nav_items(user, current: str = "") -> list[dict]:
                 "url": reverse("reports:hod_audit"),
                 "icon": "shield",
             },
+            {
+                "key": "reset_code",
+                "label": _("Password reset codes"),
+                "url": reverse("accounts:reset_code"),
+                "icon": "lock",
+            },
         ]
     if is_admin:
         entries += admin_nav_items()

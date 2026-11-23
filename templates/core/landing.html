@@ -131,7 +131,7 @@
       <li class="tl-line" aria-hidden="true"><span class="tl-fill"></span></li>
       <li class="tl-item reveal">
         <span class="tl-node num" aria-hidden="true">1</span>
-        <div><h3>{% translate "Get your ID and code" %}</h3><p>{% translate "Your department gives you a student ID and a sign-up code. Create your account and link an authenticator app on your phone." %}</p></div>
+        <div><h3>{% translate "Get your ID and code" %}</h3><p>{% translate "Your department gives you a student ID and a sign-up code. Create your account and choose a strong password." %}</p></div>
         <svg class="tl-fig p-a" viewBox="0 0 64 96" aria-hidden="true" focusable="false"><use href="#fig-read"/></svg>
       </li>
       <li class="tl-item reveal">
@@ -304,7 +304,7 @@
       <article class="sec-item reveal"><div class="sec-tile">{% include "components/illustrations/sec_unlink.html" %}</div><h3>{% translate "Answers cannot be traced back" %}</h3><p>{% translate "Your answers are stored separately from your account. There is no link between who you are and what you wrote." %}</p></article>
       <article class="sec-item reveal [--d:.08s]"><div class="sec-tile">{% include "components/illustrations/sec_encrypt.html" %}</div><h3>{% translate "Sensitive data is encrypted" %}</h3><p>{% translate "Student IDs, contact details and comments are encrypted in the database." %}</p></article>
       <article class="sec-item reveal [--d:.16s]"><div class="sec-tile">{% include "components/illustrations/sec_password.html" %}</div><h3>{% translate "Passwords are hashed" %}</h3><p>{% translate "We never keep your password itself, only a scrambled form that cannot be turned back." %}</p></article>
-      <article class="sec-item reveal"><div class="sec-tile">{% include "components/illustrations/sec_phone.html" %}</div><h3>{% translate "Sign in with an authenticator app" %}</h3><p>{% translate "Every role confirms sign-in with a code from an app on their own phone." %}</p></article>
+      <article class="sec-item reveal"><div class="sec-tile">{% include "components/illustrations/sec_phone.html" %}</div><h3>{% translate "Strong passwords, locked against guessing" %}</h3><p>{% translate "Passwords must be long and uncommon, repeated wrong guesses lock the sign-in for a while, and sensitive actions ask for the password again." %}</p></article>
       <article class="sec-item reveal [--d:.08s]"><div class="sec-tile">{% include "components/illustrations/sec_nosite.html" %}</div><h3>{% translate "Nothing from other websites" %}</h3><p>{% translate "Fonts, scripts and images all come from this site. No outside trackers or ads are loaded." %}</p></article>
       <article class="sec-item reveal [--d:.16s]"><div class="sec-tile">{% include "components/illustrations/sec_screen.html" %}</div><h3>{% translate "Comments are screened" %}</h3><p>{% translate "Comments are screened for abusive language before teachers can read them." %}</p></article>
     </div>
@@ -321,7 +321,7 @@
       <details><summary>{% translate "Can my teacher see what I wrote?" %}{% icon "chevron-down" %}</summary><p>{% translate "Teachers see comments without any name or ID, and only after the round closes. If fewer than five students answered, nothing is shown at all." %}</p></details>
       <details><summary>{% translate "Do I have to give feedback?" %}{% icon "chevron-down" %}</summary><p>{% translate "Feedback is requested for every course, but your answers are always your own choice. You can save a draft and come back until the round ends." %}</p></details>
       <details><summary>{% translate "Can I change my feedback after submitting?" %}{% icon "chevron-down" %}</summary><p>{% translate "No. Submission is final so that results can be trusted. Please review your answers before you confirm." %}</p></details>
-      <details><summary>{% translate "What if I forget my password?" %}{% icon "chevron-down" %}</summary><p>{% translate "Use the forgot password option on the login page with your username and the code from your authenticator app (or a recovery code)." %}</p></details>
+      <details><summary>{% translate "What if I forget my password?" %}{% icon "chevron-down" %}</summary><p>{% translate "Ask your head of department or the Admin for a one-time reset code, then use the forgot password option on the login page with your ID and that code." %}</p></details>
       <details><summary>{% translate "Who can see my student ID?" %}{% icon "chevron-down" %}</summary><p>{% translate "Only administrators and the head of your own department. Teachers never see it." %}</p></details>
       <details><summary>{% translate "Which devices does it work on?" %}{% icon "chevron-down" %}</summary><p>{% translate "Any modern phone, tablet or computer browser. Bangla and English are both available, in light or dark mode." %}</p></details>
     </div>

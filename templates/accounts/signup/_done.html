@@ -6,7 +6,12 @@
     <span class="text-sm text-muted">{% translate "Your username" %}</span>
     <span class="num text-2xl font-bold">{{ username }}</span>
   </div>
+  {% if codes %}
   <p class="field-hint">{% translate "You log in with this username, your password and the code from your authenticator app, not with your ID. You can always see the username on your account page." %}</p>
   {% include "accounts/_recovery_codes.html" %}
   <a class="btn btn-primary btn-block no-print" href="{% url 'accounts:login' %}">{% translate "I have saved my codes. Go to log in" %}</a>
+  {% else %}
+  <p class="field-hint">{% translate "You are signed in. Next time, log in with this username and your password, not with your ID. You can always see the username on your account page." %}</p>
+  <a class="btn btn-primary btn-block" href="{{ continue_url }}">{% translate "Go to your dashboard" %}</a>
+  {% endif %}
 </div>

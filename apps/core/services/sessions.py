@@ -9,6 +9,7 @@ from django.utils import timezone
 
 from apps.core.models import ActiveSession
 from apps.core.net import UNKNOWN_IP, client_ip
+from apps.core.permissions import user_roles
 
 LOGIN_ID_KEY = "_tfs_login_id"
 AUTH_AT_KEY = "_tfs_auth_at"
@@ -88,9 +89,10 @@ def problem(request) -> SessionProblem | None:
     )
     if active is None or not secrets.compare_digest(active, login_id):
         return SessionProblem.REPLACED
-    # Fail closed: every account signs in with its authenticator, so a session that skipped it
-    # (for example one opened before this rule) never continues.
-    if not session.get(SECOND_FACTOR_KEY):
+    # Fail closed: a role in TOTP_REQUIRED_ROLES signs in with its authenticator, so its session
+    # never continues without one (for example a session opened before the role was added).
+    needs_second_factor = not settings.TOTP_REQUIRED_ROLES.isdisjoint(user_roles(request.user))
+    if needs_second_factor and not session.get(SECOND_FACTOR_KEY):
         return SessionProblem.SECOND_FACTOR
     return None
 

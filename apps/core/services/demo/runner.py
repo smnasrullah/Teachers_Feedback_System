@@ -131,7 +131,7 @@ def seed(password: str | None = None) -> Report:
         len(constants.SUMMER_COURSES) - len(constants.DEMO_STUDENT_SEALED),
     )
     accounts = tuple(
-        Account(user.username, twofactor.manual_key(user.totp_secret))
+        Account(user.username, twofactor.manual_key(user.totp_secret) if user.totp_secret else "")
         for user in User.objects.filter(username__in=USERNAMES).order_by("username")
     )
     return Report(

@@ -225,22 +225,13 @@ class RoleForm(StyledForm):
     )
 
 
-class ResetAccessForm(StyledForm):
-    """Lost phone: how long the new activation code lasts and how it is handed over."""
+class ResetCodeLookupForm(StyledForm):
+    """The ID of the person who forgot their password (looked up in the issuer's scope)."""
 
-    OUTPUT_PAGE = "page"
-    OUTPUT_CSV = "csv"
-
-    valid_days = forms.IntegerField(
-        label=_("Code valid for (days)"),
-        min_value=1,
-        max_value=MAX_CODE_VALID_DAYS,
-        initial=DEFAULT_CODE_VALID_DAYS,
-    )
-    output = forms.ChoiceField(
-        label=_("Hand the code over as"),
-        choices=[(OUTPUT_PAGE, _("A printable page")), (OUTPUT_CSV, _("A CSV file"))],
-        initial=OUTPUT_PAGE,
+    registry_id = forms.CharField(
+        label=_("Student or teacher ID"),
+        max_length=40,
+        widget=forms.TextInput(attrs={"autocomplete": "off", "autocapitalize": "characters"}),
     )
 
 

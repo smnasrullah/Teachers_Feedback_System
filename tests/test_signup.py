@@ -16,7 +16,8 @@ from apps.core.permissions import Role
 from tests.auth_helpers import claimable_student, claimable_teacher, code_for_secret
 from tests.factories import claim, make_admin
 
-pytestmark = pytest.mark.django_db
+# The authenticator path, with every role required to use it (see test_password_only.py).
+pytestmark = [pytest.mark.django_db, pytest.mark.usefixtures("totp_everyone")]
 
 PASSWORD = "Str0ng-Passw0rd!x"
 GENERIC = "The ID or code is not valid, or it has already been used. Check both and try again."

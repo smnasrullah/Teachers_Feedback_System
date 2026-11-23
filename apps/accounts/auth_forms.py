@@ -120,15 +120,31 @@ class TotpCodeForm(SecondFactorForm):
     )
 
 
-class ForgotPasswordForm(SecondFactorForm):
-    username = forms.CharField(
-        label=_("Username"),
-        max_length=64,
-        widget=forms.TextInput(
-            attrs={"autocomplete": "username", "autocapitalize": "none", "spellcheck": "false"}
-        ),
+class ForgotPasswordForm(StyledForm):
+    """Registry ID plus the one-time reset code from the Admin or the head of department."""
+
+    registry_id = forms.CharField(
+        label=_("Student or teacher ID"),
+        max_length=40,
+        widget=forms.TextInput(attrs={"autocomplete": "off", "autocapitalize": "characters"}),
     )
-    field_order = ["username", "code"]
+    reset_code = forms.CharField(
+        label=_("Reset code"),
+        max_length=40,
+        help_text=_("The one-time code your department or the Admin gave you."),
+        widget=CodeInput(attrs={"autocomplete": "off", "autocapitalize": "characters"}),
+    )
+
+
+class StepUpForm(StyledForm):
+    """The current password again, before a sensitive action (the service checks it)."""
+
+    password = forms.CharField(
+        label=_("Your password"),
+        strip=False,
+        max_length=256,
+        widget=forms.PasswordInput(attrs={"autocomplete": "current-password"}),
+    )
 
 
 class PasswordChangeForm(NewPasswordForm):

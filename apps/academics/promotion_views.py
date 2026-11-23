@@ -15,6 +15,7 @@ from apps.academics.forms import OverrideForm, PromotionFilterForm, PromotionRul
 from apps.academics.models import Outcome, PromotionOverride, PromotionRule, Semester
 from apps.academics.selectors import promotion_rows
 from apps.academics.services import promotion, semesters
+from apps.accounts.guards import step_up_required
 from apps.accounts.models import StudentProfile
 from apps.accounts.services.student_id_policy import visible_full_name, visible_student_id
 from apps.core.permissions import Role, role_required
@@ -91,6 +92,7 @@ def promotion_preview(request):
 @require_http_methods(["GET", "POST"])
 @never_cache
 @role_required(Role.ADMIN)
+@step_up_required
 def promotion_confirm(request, semester_pk):
     semester = get_object_or_404(Semester, pk=semester_pk)
     planned = promotion.preview(semester)

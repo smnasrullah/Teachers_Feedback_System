@@ -61,9 +61,14 @@ class Command(BaseCommand):
             out(_("Demo accounts are ready; credentials are shown on the demo login page."))
             return
         out("")
-        out(_("Demo accounts (add the key to an authenticator app: time-based, 6 digits):"))
+        with_keys = [account for account in report.accounts if account.totp_key]
+        out(_("Demo accounts (sign in with username and password):"))
         for account in report.accounts:
-            out(f"  {account.username:<14} {_('setup key')}: {account.totp_key}")
+            out(f"  {account.username}")
+        if with_keys:
+            out(_("Authenticator setup keys (time-based, 6 digits):"))
+            for account in with_keys:
+                out(f"  {account.username:<14} {_('setup key')}: {account.totp_key}")
         if report.password:
             note = _("generated, shown only now") if report.password_generated else _("as given")
             out(
@@ -74,7 +79,8 @@ class Command(BaseCommand):
                 _("Passwords are unchanged. Use --password or %(env)s to set them.")
                 % {"env": PASSWORD_ENV}
             )
-        out(_("Current code of an account: python manage.py totp_code <username>"))
+        if with_keys:
+            out(_("Current code of an account: python manage.py totp_code <username>"))
         if report.spare_codes:
             out("")
             out(_("Spare sign-up pairs (student ID + activation code, shown only now):"))

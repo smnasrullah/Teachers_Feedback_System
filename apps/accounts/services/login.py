@@ -1,8 +1,9 @@
-"""Password login followed by the authenticator code, kept as pending state.
+"""Password login, followed by the authenticator code for the roles that require one.
 
-A correct password alone never signs anyone in: the user is held in the session as
-*pending* until the code (or a recovery code) checks out, or, for an account without an
-authenticator yet, until one is enrolled. Nothing authenticated exists in between.
+For a role in ``settings.TOTP_REQUIRED_ROLES`` a correct password alone never signs anyone
+in: the user is held in the session as *pending* until the code (or a recovery code) checks
+out, or, for an account without an authenticator yet, until one is enrolled. Nothing
+authenticated exists in between. Every other role signs in with the password alone.
 Failures are audited by hash, never by name.
 """
 
@@ -29,6 +30,8 @@ from apps.core.services.demo import constants as demo
 
 DEMO_SETTINGS = "config.settings.demo"
 PENDING_KEY = "_tfs_pending_login"
+# When this session last proved the password (login or step-up), in epoch seconds.
+STEP_UP_KEY = "_tfs_password_confirmed_at"
 MODEL_BACKEND = "django.contrib.auth.backends.ModelBackend"
 USERNAME_PURPOSE = "audit.username"
 DEMO_ID_PREFIX = "DEMO-"
@@ -79,11 +82,17 @@ def pending_user(request) -> User | None:
     return User.objects.filter(pk=state["user"], is_active=True).first()
 
 
-def complete_login(request, user: User) -> None:
-    """Sign in after the second factor (or a fresh enrolment) checked out."""
+def mark_password_confirmed(request) -> None:
+    request.session[STEP_UP_KEY] = int(time.time())
+
+
+def complete_login(request, user: User, *, second_factor: bool) -> None:
+    """Sign in once the password (and, where required, the second factor) checked out."""
     login(request, user, backend=MODEL_BACKEND)
     request.session.pop(PENDING_KEY, None)
-    sessions.mark_second_factor(request)
+    mark_password_confirmed(request)
+    if second_factor:
+        sessions.mark_second_factor(request)
     audit.record("auth.login", request=request, actor=user, department_id=user.department_id)
 
 
@@ -131,7 +140,7 @@ def is_demo_account(request, user: User) -> bool:
 
 def complete_demo_login(request, user: User) -> None:
     """Sign a demo account in on its password alone and audit that the code was skipped."""
-    complete_login(request, user)
+    complete_login(request, user, second_factor=True)
     audit.record(
         "auth.login_demo_bypass", request=request, actor=user, department_id=user.department_id
     )

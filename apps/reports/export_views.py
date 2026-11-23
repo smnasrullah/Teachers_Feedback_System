@@ -16,6 +16,7 @@ from django.views.decorators.http import require_GET
 from django_ratelimit.decorators import ratelimit
 
 from apps.academics.models import Department, LevelTerm
+from apps.accounts.guards import step_up_required
 from apps.core.permissions import HOD, Role, has_role, role_required
 from apps.reports.forms import UniversityFilterForm
 from apps.reports.services import department as department_service
@@ -98,6 +99,7 @@ def department(request, fmt):
 
 @_guarded
 @role_required(HOD, Role.ADMIN)
+@step_up_required
 def pending(request, fmt):
     department = _department_of(request)
     now = timezone.now()

@@ -1,13 +1,14 @@
-"""Sign-up stepper: ID + activation code -> password -> authenticator -> recovery codes.
+"""Sign-up stepper: ID + activation code -> password -> account ready (signed in).
 
-Each step is a partial swapped into ``#signup-step`` by HTMX; without JavaScript the same
-views answer with the full page. Progress lives in the session (the claimed registry row,
-the username to be, then the password hash and TOTP secret, both encrypted) and the current
-step is always derived from it. Nothing is written to the account tables before the first
-authenticator code checks out.
+A role in ``settings.TOTP_REQUIRED_ROLES`` has two more steps instead of the last one:
+authenticator -> recovery codes. Each step is a partial swapped into ``#signup-step`` by HTMX;
+without JavaScript the same views answer with the full page. Progress lives in the session
+(the claimed registry row, the username to be, then the password hash and any TOTP secret,
+both encrypted) and the current step is always derived from it. Nothing is written to the
+account tables before the last step.
 """
 
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _lazy
 from django.views.decorators.cache import never_cache
@@ -17,17 +18,22 @@ from apps.accounts import ratelimits
 from apps.accounts.auth_forms import ClaimForm, NewPasswordForm, TotpCodeForm
 from apps.accounts.guards import guest_only
 from apps.accounts.models import IdRegistry
+from apps.accounts.services import login as login_service
 from apps.accounts.services import signup, twofactor
 from apps.core.encryption import encrypt
 from apps.core.permissions import public
 
 STATE_KEY = "signup"
-STEPS = ("claim", "password", "authenticator", "done")
-STEP_LABELS = (
-    _lazy("ID and code"),
-    _lazy("Password"),
-    _lazy("Authenticator"),
-    _lazy("Recovery codes"),
+PASSWORD_ONLY_STEPS = (
+    ("claim", _lazy("ID and code")),
+    ("password", _lazy("Password")),
+    ("done", _lazy("Account ready")),
+)
+AUTHENTICATOR_STEPS = (
+    ("claim", _lazy("ID and code")),
+    ("password", _lazy("Password")),
+    ("authenticator", _lazy("Authenticator")),
+    ("done", _lazy("Recovery codes")),
 )
 GENERIC_CLAIM_ERROR = _lazy(
     "The ID or code is not valid, or it has already been used. Check both and try again."
@@ -50,7 +56,17 @@ def _registry(request) -> IdRegistry | None:
     pk = _state(request).get("registry")
     if not pk:
         return None
-    return IdRegistry.objects.select_related("department", "claimed_by").filter(pk=pk).first()
+    return (
+        IdRegistry.objects.select_related("department", "teacher_profile")
+        .filter(pk=pk, claimed_by__isnull=True)
+        .first()
+    )
+
+
+def _needs_authenticator(registry: IdRegistry | None) -> bool:
+    if registry is None:
+        return twofactor.required_at_signup()
+    return twofactor.required_for_registry(registry)
 
 
 def _secret(request) -> str:
@@ -63,18 +79,25 @@ def _secret(request) -> str:
 
 
 def _stage(request) -> str:
-    if _registry(request) is None:
+    registry = _registry(request)
+    if registry is None:
         return "claim"
     if signup.unseal(_state(request).get("password")) is None:
         return "password"
-    return "authenticator"
+    return "authenticator" if _needs_authenticator(registry) else "password"
 
 
-def _render(request, stage: str, context: dict | None = None, status: int = 200):
+def _render(
+    request, stage: str, context: dict | None = None, status: int = 200, *, authenticator=None
+):
+    if authenticator is None:
+        authenticator = _needs_authenticator(_registry(request))
+    steps = AUTHENTICATOR_STEPS if authenticator else PASSWORD_ONLY_STEPS
+    keys = [key for key, _label in steps]
     context = {
         "stage": stage,
-        "step_number": STEPS.index(stage) + 1,
-        "steps": list(enumerate(STEP_LABELS, start=1)),
+        "step_number": keys.index(stage) + 1,
+        "steps": [(number, label) for number, (_key, label) in enumerate(steps, start=1)],
         **(context or {}),
     }
     template = f"accounts/signup/_{stage}.html"
@@ -109,7 +132,35 @@ def _restart(request) -> None:
     request.session.pop(STATE_KEY, None)
 
 
+def _finish(request, registry: IdRegistry, password_hash: str, secret=None, code=""):
+    """Create the account; ``None`` when the authenticator code was wrong (try again)."""
+    try:
+        result = signup.complete(
+            registry.pk,
+            username=_state(request)["username"],
+            password_hash=password_hash,
+            secret=secret,
+            code=code,
+            request=request,
+        )
+    except signup.SignupError:
+        _restart(request)
+        notice = _("Sign-up could not be completed. Please start again.")
+        return _render(request, "claim", {"form": ClaimForm(), "error": notice})
+    if result is None:
+        return None
+    user, codes = result
+    _restart(request)
+    if not codes:
+        login_service.complete_login(request, user, second_factor=False)
+    context = {"username": user.username, "codes": codes, "done": True}
+    if not codes:
+        context["continue_url"] = login_service.landing_url(user)
+    return _render(request, "done", context, authenticator=bool(codes))
+
+
 @require_http_methods(["GET", "POST"])
+@never_cache
 @ratelimits.limited(ratelimits.registry_id, ip_rate="30/10m", subject_rate="8/15m")
 @public
 @guest_only
@@ -137,6 +188,7 @@ def signup_claim(request):
 
 
 @require_http_methods(["GET", "POST"])
+@never_cache
 @ratelimits.limited(ratelimits.session_subject, ip_rate="20/10m", subject_rate="8/15m")
 @public
 @guest_only
@@ -144,24 +196,32 @@ def signup_password(request):
     registry = _registry(request)
     if request.method == "GET" or registry is None:
         return _current(request)
-    form = NewPasswordForm(request.POST, user=registry.claimed_by, role=signup.role_for(registry))
+    form = NewPasswordForm(
+        request.POST,
+        user=signup.password_subject(registry, _state(request)["username"]),
+        role=signup.role_for(registry),
+    )
     if request.limited:
         form.add_error(None, _too_many())
         return _render(request, "password", {"form": form}, status=429)
-    if form.is_valid():
-        password_hash = signup.hash_password(form.cleaned_data["password1"])
-        _save_state(request, password=encrypt(password_hash))
-        return _current(request)
-    return _render(request, "password", {"form": form})
+    if not form.is_valid():
+        return _render(request, "password", {"form": form})
+    password_hash = signup.hash_password(form.cleaned_data["password1"])
+    if not _needs_authenticator(registry):
+        return _finish(request, registry, password_hash)
+    _save_state(request, password=encrypt(password_hash))
+    return _current(request)
 
 
 @require_http_methods(["GET", "POST"])
-@ratelimits.limited(ratelimits.session_subject, ip_rate="30/10m", subject_rate="12/15m")
 @never_cache
+@ratelimits.limited(ratelimits.session_subject, ip_rate="30/10m", subject_rate="12/15m")
 @public
 @guest_only
 def signup_authenticator(request):
     registry = _registry(request)
+    if not _needs_authenticator(registry):
+        return redirect("accounts:signup")
     password_hash = signup.unseal(_state(request).get("password"))
     if request.method == "GET" or registry is None or password_hash is None:
         return _current(request)
@@ -171,22 +231,10 @@ def signup_authenticator(request):
         return _current(request, {"form": form}, status=429)
     if not form.is_valid():
         return _current(request, {"form": form})
-    try:
-        result = signup.complete(
-            registry.pk,
-            username=_state(request)["username"],
-            password_hash=password_hash,
-            secret=_secret(request),
-            code=form.cleaned_data["code"],
-            request=request,
-        )
-    except signup.SignupError:
-        _restart(request)
-        notice = _("Sign-up could not be completed. Please start again.")
-        return _render(request, "claim", {"form": ClaimForm(), "error": notice})
-    if result is None:
+    response = _finish(
+        request, registry, password_hash, secret=_secret(request), code=form.cleaned_data["code"]
+    )
+    if response is None:
         form.add_error("code", _("That code is not correct. Check the time on your phone."))
         return _current(request, {"form": form})
-    user, codes = result
-    _restart(request)
-    return _render(request, "done", {"username": user.username, "codes": codes, "done": True})
+    return response

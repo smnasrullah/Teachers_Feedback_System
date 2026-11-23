@@ -14,6 +14,7 @@ from apps.accounts.models import (
     TeacherProfile,
     User,
 )
+from apps.accounts.services.login import STEP_UP_KEY
 from apps.core.permissions import Role
 from apps.core.services.sessions import LANGUAGE_KEY, SECOND_FACTOR_KEY
 
@@ -120,10 +121,13 @@ def make_admin(password=None, **fields) -> User:
 
 
 def sign_in(client, user: User) -> None:
-    """Log ``user`` in as if they had also passed the second factor (see ``sessions.problem``)."""
+    """Log ``user`` in as a real login would: password just entered (step-up fresh) and, for a
+    role that requires it, the second factor passed (see ``sessions.problem``)."""
     client.force_login(user)
     session = client.session
-    session[SECOND_FACTOR_KEY] = int(time.time())
+    now = int(time.time())
+    session[SECOND_FACTOR_KEY] = now
+    session[STEP_UP_KEY] = now
     # Tests pick their own language; the saved-language cookie is tested through real logins.
     session.pop(LANGUAGE_KEY, None)
     session.save()

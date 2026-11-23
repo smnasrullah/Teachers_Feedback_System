@@ -1,4 +1,4 @@
-"""Create, edit, revoke and re-activate ID registry entries, issue activation codes, reset access.
+"""Create, edit, revoke and re-activate ID registry entries; issue activation and reset codes.
 
 Every change is audited with row ids and counts only: never an ID, a name or a code.
 """
@@ -6,7 +6,7 @@ Every change is audited with row ids and counts only: never an ID, a name or a c
 from dataclasses import dataclass
 from datetime import timedelta
 
-from axes.handlers.proxy import AxesProxyHandler
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from django.utils import timezone
@@ -20,10 +20,11 @@ from apps.accounts.models import (
     TeacherProfile,
     registry_index,
 )
-from apps.accounts.services import activation, twofactor
-from apps.accounts.services.identifiers import clean_registry_id
+from apps.accounts.services import activation
+from apps.accounts.services.identifiers import clean_registry_id, normalize_registry_id
 from apps.auditlog.services import audit
 from apps.core.models import ActiveSession
+from apps.core.permissions import HOD, Role, has_role
 
 PROFILE_MODELS = {IdType.STUDENT: StudentProfile, IdType.TEACHER: TeacherProfile}
 MAX_BULK_ROWS = 2000
@@ -216,15 +217,20 @@ def activate(registries, *, actor, request=None) -> int:
     return len(rows)
 
 
-def can_reset_access(account, actor) -> bool:
-    """Students and teachers (HODs included) with a live claim; never the Admin's own account."""
+def can_issue_reset_code(account, actor) -> bool:
+    """Admin: any active student or teacher account (HODs included) with a live claim. HOD: the
+    same, within the department they head (the ``StudentIdPolicy`` scope). Never oneself."""
     registry = getattr(account, "registry", None)
-    return (
-        account.pk != actor.pk
-        and registry is not None
-        and registry.status == RegistryStatus.CLAIMED
-        and account.is_active
-    )
+    if (
+        account.pk == actor.pk
+        or registry is None
+        or registry.status != RegistryStatus.CLAIMED
+        or not account.is_active
+    ):
+        return False
+    if has_role(actor, Role.ADMIN):
+        return True
+    return has_role(actor, HOD) and registry.department_id == actor.hod_department_id
 
 
 def _new_code(row: IdRegistry, expires_at) -> str:
@@ -236,13 +242,25 @@ def _new_code(row: IdRegistry, expires_at) -> str:
     return code
 
 
-@transaction.atomic
-def reset_access(account, *, valid_days: int, actor, request=None) -> IssuedCode:
-    """Lost phone: clear the password and authenticator, end every session, issue a new code.
+def resettable_account(external_id: str, actor):
+    """The account behind this ID if ``actor`` may issue it a reset code, else ``None``.
 
-    The person then signs up again with their ID and this code; the same steps re-enrol the
-    existing account (same username, same history). The plaintext code exists only in the
-    returned value.
+    Out of scope and unknown look the same, so a HOD learns nothing about other departments.
+    """
+    index = registry_index(normalize_registry_id(external_id)) or ""
+    for row in IdRegistry.objects.select_related("claimed_by").filter(external_id_index=index):
+        if row.claimed_by is not None and can_issue_reset_code(row.claimed_by, actor):
+            return row.claimed_by
+    return None
+
+
+@transaction.atomic
+def issue_reset_code(account, *, actor, request=None) -> IssuedCode:
+    """A forgotten password: a one-time code, valid ``RESET_CODE_HOURS``, replacing any earlier.
+
+    The person enters their ID and this code on the "Forgot password?" page and chooses a new
+    password. Their current password keeps working until then. Only the keyed hash is stored;
+    the plaintext exists only in the returned value.
     """
     row = (
         IdRegistry.objects.select_for_update(of=("self",))
@@ -250,22 +268,19 @@ def reset_access(account, *, valid_days: int, actor, request=None) -> IssuedCode
         .filter(claimed_by=account)
         .first()
     )
-    if row is None or not can_reset_access(row.claimed_by, actor):
-        raise ValidationError(_("Access to this account cannot be reset."), code="not_resettable")
-    user = row.claimed_by
-    user.set_unusable_password()
-    user.save(update_fields=["password"])
-    twofactor.clear(user)
-    ActiveSession.objects.filter(user=user).delete()
-    AxesProxyHandler.reset_attempts(username=user.username)
-    code = _new_code(row, timezone.now() + timedelta(days=valid_days))
+    if row is None or not can_issue_reset_code(row.claimed_by, actor):
+        raise ValidationError(
+            _("A reset code cannot be issued for this account."), code="not_resettable"
+        )
+    expires_at = timezone.now() + timedelta(hours=settings.RESET_CODE_HOURS)
+    code = _new_code(row, expires_at)
     audit.record(
-        "account.access_reset",
+        "account.reset_code_issued",
         request=request,
         actor=actor,
-        target=user,
+        target=row.claimed_by,
         department_id=row.department_id,
-        metadata={"valid_days": valid_days, "registry_id": row.pk},
+        metadata={"valid_hours": settings.RESET_CODE_HOURS, "registry_id": row.pk},
     )
     return IssuedCode(row, code)
 

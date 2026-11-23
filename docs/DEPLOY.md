@@ -24,7 +24,7 @@ Replace anything in `<angle brackets>` with your own value (without the brackets
 | A domain or sub-domain | For example `feedback.your-university.edu`. You must be able to change its DNS records. |
 | An SMTP e-mail account | For round reminders and result notices (sign-in never uses e-mail). Your university's mail server or a mail service. |
 | A safe place for keys | A password manager or an encrypted USB stick, **not** on the server. |
-| An authenticator app | Google or Microsoft Authenticator on your phone, for the first Admin account. |
+| An authenticator app (optional) | Google or Microsoft Authenticator, if you require it for Admin accounts (`TOTP_REQUIRED_ROLES=admin,hod`, recommended). |
 
 ---
 
@@ -227,8 +227,14 @@ docker compose -f docker-compose.prod.yml exec web python manage.py create_admin
 ```
 
 Enter a contact e-mail and a strong password. Note the **username** it prints. Open
-`https://<your domain>` and sign in; you are asked to set up the authenticator app right
-away. Save the recovery codes it shows.
+`https://<your domain>` and sign in with the username and password. If you set
+`TOTP_REQUIRED_ROLES=admin,hod` in `.env` (recommended), you are asked to set up the
+authenticator app right away; save the recovery codes it shows.
+
+> **Second factor.** By default every role signs in with username and password only, and
+> `python manage.py check --deploy` prints warning `core.W001`: "No second factor is required
+> for any role. Consider requiring it for admin and hod." To require it, add
+> `TOTP_REQUIRED_ROLES=admin,hod` to `.env` and restart (details in `docs/SECURITY.md`).
 
 ## 11. Load the question bank and the people registry
 
@@ -374,7 +380,10 @@ Tick every line before announcing the address:
 - [ ] **Unique keys generated** on this server for `DJANGO_SECRET_KEY`, `FIELD_ENCRYPTION_KEYS`,
       `BLIND_INDEX_KEY` and `POSTGRES_PASSWORD` (none copied from an example, a test or
       another install), and the `.env` copy is stored apart from the database backups.
-- [ ] **Every Admin account has TOTP** (authenticator app) set up and its recovery codes stored.
+- [ ] **Second factor decided.** Recommended: `TOTP_REQUIRED_ROLES=admin,hod` in `.env`, and
+      every Admin and HOD account has its authenticator set up and recovery codes stored. If you
+      keep it empty (password only), you accept that a stolen Admin or HOD password is enough
+      to sign in; `check --deploy` keeps warning (`core.W001`).
 - [ ] **`MIN_RESPONSES` is set** to the agreed value (default 5, never below 3) on
       Manage → System settings.
 - [ ] **One full test round on a staging copy**: open a round, submit as test students,

@@ -1,4 +1,4 @@
-"""Login, second factor and logout."""
+"""Login (password, then the authenticator code for roles that require one) and logout."""
 
 import logging
 
@@ -9,6 +9,7 @@ from django.db import DatabaseError
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _lazy
+from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods, require_POST
 
 from apps.accounts import ratelimits
@@ -58,6 +59,7 @@ def lockout_response(request, response=None, credentials=None):
 
 
 @require_http_methods(["GET", "POST"])
+@never_cache
 @ratelimits.limited(
     ratelimits.username,
     ip_rate="30/10m",
@@ -118,23 +120,27 @@ def login_view(request):
 
 
 def _after_password(request, user):
+    next_url = login_service.safe_next(request)
+    if not twofactor.required_for(user):
+        login_service.complete_login(request, user, second_factor=False)
+        return redirect(next_url or login_service.landing_url(user))
     if login_service.is_demo_account(request, user):
-        next_url = login_service.safe_next(request)
         login_service.complete_demo_login(request, user)
         return redirect(next_url or login_service.landing_url(user))
-    login_service.begin_pending(request, user, login_service.safe_next(request))
+    login_service.begin_pending(request, user, next_url)
     if login_service.next_step(user) is login_service.NextStep.CODE:
         return redirect("accounts:login_second_factor")
     return redirect("accounts:login_two_factor_setup")
 
 
 @require_http_methods(["GET", "POST"])
+@never_cache
 @ratelimits.limited(ratelimits.session_subject, ip_rate="30/10m", subject_rate="10/15m")
 @public
 @guest_only
 def login_second_factor(request):
     user = login_service.pending_user(request)
-    if user is None or not user.totp_enabled:
+    if user is None or not user.totp_enabled or not twofactor.required_for(user):
         return redirect("accounts:login")
     form = SecondFactorForm(request.POST or None)
     status = 200
@@ -148,7 +154,7 @@ def login_second_factor(request):
             result = twofactor.check_second_factor(user, form.cleaned_data["code"])
             if result.ok:
                 next_url = login_service.pending_next(request)
-                login_service.complete_login(request, user)
+                login_service.complete_login(request, user, second_factor=True)
                 if result.recovery:
                     login_service.record_recovery_use(request, user, result.recovery_left)
                     messages.warning(

@@ -4739,18 +4739,6 @@ msgstr "কে কী দেখে"
 msgid "The 6-digit code from your authenticator app, or one recovery code."
 msgstr "অথেন্টিকেটর অ্যাপের ৬ অঙ্কের কোড, অথবা একটি রিকভারি কোড।"
 
-msgid "Code valid for (days)"
-msgstr "কোডের মেয়াদ (দিন)"
-
-msgid "Hand the code over as"
-msgstr "কোডটি যেভাবে দেবেন"
-
-msgid "A printable page"
-msgstr "প্রিন্টযোগ্য পাতা"
-
-msgid "A CSV file"
-msgstr "একটি CSV ফাইল"
-
 msgid ""
 "Development only: print the current authenticator code of an account. "
 "Refuses to run unless DEBUG is on and the settings module is "
@@ -4769,12 +4757,6 @@ msgstr "এই ইউজারনেমে অথেন্টিকেটরস�
 
 msgid "This reset has expired. Start again."
 msgstr "এই রিসেটের মেয়াদ শেষ। আবার শুরু করুন।"
-
-msgid "Access to this account cannot be reset."
-msgstr "এই অ্যাকাউন্টের অ্যাক্সেস রিসেট করা যাবে না।"
-
-msgid "The username or code is not correct."
-msgstr "ইউজারনেম বা কোড সঠিক নয়।"
 
 msgid "Authenticator"
 msgstr "অথেন্টিকেটর"
@@ -4850,20 +4832,6 @@ msgstr "কোনো রিকভারি কোড বাকি নেই"
 
 msgid "Authenticator and recovery codes"
 msgstr "অথেন্টিকেটর ও রিকভারি কোড"
-
-msgid ""
-"Enter your username and the code your authenticator app shows now. Lost your"
-" phone? Use one of your recovery codes."
-msgstr ""
-"আপনার ইউজারনেম এবং অথেন্টিকেটর অ্যাপে এখন দেখানো কোডটি দিন। ফোন হারিয়েছেন? "
-"একটি রিকভারি কোড ব্যবহার করুন।"
-
-msgid ""
-"No phone and no recovery code? Ask your department or the Admin to reset "
-"your access."
-msgstr ""
-"ফোন বা রিকভারি কোড কোনোটিই নেই? আপনার বিভাগ বা অ্যাডমিনকে অ্যাক্সেস রিসেট "
-"করতে বলুন।"
 
 msgid ""
 "Ask your department office or the Admin. They can look up the username that "
@@ -4959,37 +4927,20 @@ msgstr ""
 msgid "Verify and continue"
 msgstr "যাচাই করে চালিয়ে যান"
 
-msgid "Access reset"
-msgstr "অ্যাক্সেস রিসেট হয়েছে"
-
 msgid ""
 "This code is shown only once. Print it or copy it now and hand it to the "
 "person in private."
 msgstr ""
 "এই কোডটি শুধু একবার দেখানো হবে। এখনই প্রিন্ট বা কপি করে ব্যক্তিকে গোপনে দিন।"
 
-msgid "One-time activation code"
-msgstr "এককালীন অ্যাক্টিভেশন কোড"
-
-msgid "Open the sign-up page and enter your ID and this code."
-msgstr "নিবন্ধন পাতা খুলে আপনার আইডি ও এই কোডটি দিন।"
-
 msgid "Choose a new password."
 msgstr "নতুন পাসওয়ার্ড বেছে নিন।"
-
-msgid ""
-"Scan the new QR code with an authenticator app and type its 6-digit code."
-msgstr ""
-"অথেন্টিকেটর অ্যাপ দিয়ে নতুন QR কোড স্ক্যান করে এর ৬ অঙ্কের কোডটি লিখুন।"
 
 msgid "Copy code"
 msgstr "কোড কপি করুন"
 
 msgid "Print"
 msgstr "প্রিন্ট করুন"
-
-msgid "Back to the account"
-msgstr "অ্যাকাউন্টে ফিরে যান"
 
 msgid "Authenticator app"
 msgstr "অথেন্টিকেটর অ্যাপ"
@@ -4999,43 +4950,6 @@ msgstr "চালু আছে"
 
 msgid "Not set up yet (asked at the next login)"
 msgstr "এখনো চালু হয়নি (পরের লগইনে চাওয়া হবে)"
-
-msgid "Waiting for the person to enrol again"
-msgstr "ব্যক্তির আবার নিবন্ধনের অপেক্ষায়"
-
-msgid "Reset access"
-msgstr "অ্যাক্সেস রিসেট করুন"
-
-msgid ""
-"For a lost phone. This clears the password and the authenticator, deletes "
-"the recovery codes, signs the person out everywhere and issues a new one-"
-"time activation code. They then sign up again with their ID and the new code"
-" and keep the same username."
-msgstr ""
-"ফোন হারালে ব্যবহার করুন। এতে পাসওয়ার্ড ও অথেন্টিকেটর মুছে যায়, রিকভারি কোড"
-" বাতিল হয়, সব ডিভাইস থেকে লগআউট হয় এবং নতুন এককালীন অ্যাক্টিভেশন কোড তৈরি "
-"হয়। এরপর ব্যক্তি নিজের আইডি ও নতুন কোড দিয়ে আবার নিবন্ধন করবেন এবং একই "
-"ইউজারনেম থাকবে।"
-
-msgid ""
-"Check who is asking before you do this. The new code is shown only once."
-msgstr ""
-"এটি করার আগে অনুরোধকারীর পরিচয় যাচাই করুন। নতুন কোডটি শুধু একবার দেখানো "
-"হবে।"
-
-msgid ""
-"Your department gives you a student ID and a sign-up code. Create your "
-"account and link an authenticator app on your phone."
-msgstr ""
-"আপনার বিভাগ আপনাকে একটি শিক্ষার্থী আইডি ও নিবন্ধন কোড দেয়। অ্যাকাউন্ট তৈরি "
-"করে আপনার ফোনের অথেন্টিকেটর অ্যাপ যুক্ত করুন।"
-
-msgid ""
-"Use the forgot password option on the login page with your username and the "
-"code from your authenticator app (or a recovery code)."
-msgstr ""
-"লগইন পাতার পাসওয়ার্ড ভুলে যাওয়ার অপশনে আপনার ইউজারনেম এবং অথেন্টিকেটর "
-"অ্যাপের কোড (বা একটি রিকভারি কোড) দিন।"
 
 msgid "%(left)s recovery code left"
 msgid_plural "%(left)s recovery codes left"
@@ -5085,13 +4999,6 @@ msgstr "মন্তব্য, এলোমেলো করে সাজান�
 #: templates/core/landing.html:0
 msgid "Dashboard role"
 msgstr "ড্যাশবোর্ডের ভূমিকা"
-
-#: templates/core/landing.html:0
-msgid ""
-"Every role confirms sign-in with a code from an app on their own phone."
-msgstr ""
-"প্রতিটি ভূমিকার ব্যবহারকারী নিজের ফোনের অ্যাপের কোড দিয়ে লগ ইন নিশ্চিত "
-"করেন।"
 
 #: templates/core/landing.html:0
 msgid ""
@@ -5174,10 +5081,6 @@ msgid "Sensitive data is encrypted"
 msgstr "গোপনীয় তথ্য এনক্রিপ্ট করা থাকে"
 
 #: templates/core/landing.html:0
-msgid "Sign in with an authenticator app"
-msgstr "অথেনটিকেটর অ্যাপ দিয়ে লগ ইন"
-
-#: templates/core/landing.html:0
 msgid ""
 "Student IDs, contact details and comments are encrypted in the database."
 msgstr ""
@@ -5241,10 +5144,6 @@ msgstr "+1 মতামত"
 msgid "Demo accounts"
 msgstr "ডেমো অ্যাকাউন্ট"
 
-#: templates/accounts/login.html:0
-msgid "Demo accounts sign in with password only"
-msgstr "ডেমো অ্যাকাউন্ট শুধু পাসওয়ার্ড দিয়ে ঢোকে"
-
 #: apps/core/management/commands/seed_demo.py:0
 msgid "Development only: create the demo accounts and demo data (safe to run again). Refuses to run unless DEBUG is on and the settings module is config.settings.dev."
 msgstr "শুধু ডেভেলপমেন্টের জন্য: ডেমো অ্যাকাউন্ট ও ডেমো ডেটা তৈরি করে (আবার চালালে ক্ষতি নেই)। DEBUG চালু এবং সেটিংস মডিউল config.settings.dev না হলে চলে না।"
@@ -5256,10 +5155,6 @@ msgstr "ডেমো ডেটা মুছে ফেলা হয়েছে (
 #: apps/core/management/commands/seed_demo.py:0
 msgid "Demo data is ready (%(count)d new forms submitted)."
 msgstr "ডেমো ডেটা প্রস্তুত (%(count)d টি নতুন ফর্ম জমা হয়েছে)।"
-
-#: apps/core/management/commands/seed_demo.py:0
-msgid "Demo accounts (add the key to an authenticator app: time-based, 6 digits):"
-msgstr "ডেমো অ্যাকাউন্ট (কীটি অথেনটিকেটর অ্যাপে যোগ করুন: সময়ভিত্তিক, ৬ অঙ্ক):"
 
 #: apps/core/management/commands/seed_demo.py:0
 msgid "setup key"
@@ -5442,3 +5337,108 @@ msgstr "সেবা সাময়িকভাবে বন্ধ আছে"
 
 msgid "Sign-in is temporarily unavailable. Please try again shortly."
 msgstr "সাইন ইন সাময়িকভাবে বন্ধ আছে। অনুগ্রহ করে একটু পরে আবার চেষ্টা করুন।"
+
+msgid "A reset code cannot be issued for this account."
+msgstr "এই অ্যাকাউন্টের জন্য রিসেট কোড দেওয়া যাবে না।"
+
+msgid "A reset code works once and only for a short time. Choosing a new password signs you out on every device."
+msgstr "রিসেট কোড একবারই এবং অল্প সময়ের জন্য কাজ করে। নতুন পাসওয়ার্ড বেছে নিলে আপনি সব ডিভাইস থেকে সাইন আউট হয়ে যাবেন।"
+
+msgid "Ask your head of department or the Admin for a one-time reset code, then use the forgot password option on the login page with your ID and that code."
+msgstr "আপনার বিভাগীয় প্রধান বা অ্যাডমিনের কাছ থেকে একটি এককালীন রিসেট কোড নিন, তারপর লগইন পাতার “পাসওয়ার্ড ভুলে গেছেন?” অংশে আপনার আইডি ও সেই কোড দিন।"
+
+msgid "Ask your head of department or the Admin for a password reset code. Then enter your student or teacher ID and that code here."
+msgstr "আপনার বিভাগীয় প্রধান বা অ্যাডমিনের কাছ থেকে একটি পাসওয়ার্ড রিসেট কোড নিন। তারপর এখানে আপনার শিক্ষার্থী বা শিক্ষকের আইডি এবং সেই কোড লিখুন।"
+
+msgid "Authenticator setup keys (time-based, 6 digits):"
+msgstr "অথেন্টিকেটর সেটআপ কী (সময়ভিত্তিক, ৬ অঙ্ক):"
+
+msgid "Back"
+msgstr "ফিরে যান"
+
+msgid "Check who is asking before you do this. The code is shown only once."
+msgstr "এটি করার আগে কে চাইছেন তা যাচাই করুন। কোডটি কেবল একবার দেখানো হয়।"
+
+msgid "Confirm your password"
+msgstr "আপনার পাসওয়ার্ড নিশ্চিত করুন"
+
+msgid "Confirm your password, then try again."
+msgstr "আপনার পাসওয়ার্ড নিশ্চিত করুন, তারপর আবার চেষ্টা করুন।"
+
+msgid "Confirm"
+msgstr "নিশ্চিত করুন"
+
+msgid "Demo accounts (sign in with username and password):"
+msgstr "ডেমো অ্যাকাউন্ট (ইউজারনেম ও পাসওয়ার্ড দিয়ে সাইন ইন করুন):"
+
+msgid "Enter your ID and this code."
+msgstr "আপনার আইডি এবং এই কোডটি লিখুন।"
+
+msgid "For a forgotten password. This issues a one-time reset code that works for 24 hours. With their ID and the code the person chooses a new password on the “Forgot password?” page, which signs them out everywhere. Their current password keeps working until then."
+msgstr "পাসওয়ার্ড ভুলে গেলে। এটি ২৪ ঘণ্টা কার্যকর একটি এককালীন রিসেট কোড দেয়। আইডি ও কোড দিয়ে ব্যক্তি “পাসওয়ার্ড ভুলে গেছেন?” পাতায় নতুন পাসওয়ার্ড বেছে নেন, এতে তিনি সব ডিভাইস থেকে সাইন আউট হয়ে যান। ততক্ষণ বর্তমান পাসওয়ার্ডটি কাজ করবে।"
+
+msgid "For someone who forgot their password. Enter their student or teacher ID to issue a one-time reset code. It works for 24 hours; with it they choose a new password on the “Forgot password?” page, which signs them out everywhere."
+msgstr "যিনি পাসওয়ার্ড ভুলে গেছেন তার জন্য। এককালীন রিসেট কোড দিতে তার শিক্ষার্থী বা শিক্ষকের আইডি লিখুন। কোডটি ২৪ ঘণ্টা কাজ করে; এটি দিয়ে তিনি “পাসওয়ার্ড ভুলে গেছেন?” পাতায় নতুন পাসওয়ার্ড বেছে নেন, এতে তিনি সব ডিভাইস থেকে সাইন আউট হয়ে যান।"
+
+msgid "Go to your dashboard"
+msgstr "আপনার ড্যাশবোর্ডে যান"
+
+msgid "Issue reset code"
+msgstr "রিসেট কোড দিন"
+
+msgid "No account you may reset has this ID."
+msgstr "এই আইডির এমন কোনো অ্যাকাউন্ট নেই যা আপনি রিসেট করতে পারেন।"
+
+msgid "On the login page, choose “Forgot your password?”."
+msgstr "লগইন পাতায় “পাসওয়ার্ড ভুলে গেছেন?” বেছে নিন।"
+
+msgid "One-time reset code"
+msgstr "এককালীন রিসেট কোড"
+
+msgid "Password reset codes"
+msgstr "পাসওয়ার্ড রিসেট কোড"
+
+msgid "Passwords must be long and uncommon, repeated wrong guesses lock the sign-in for a while, and sensitive actions ask for the password again."
+msgstr "পাসওয়ার্ড দীর্ঘ ও অপ্রচলিত হতে হয়, বারবার ভুল চেষ্টায় সাইন-ইন কিছুক্ষণ বন্ধ থাকে, আর সংবেদনশীল কাজে আবার পাসওয়ার্ড চাওয়া হয়।"
+
+msgid "Reset code issued"
+msgstr "রিসেট কোড দেওয়া হয়েছে"
+
+msgid "Reset code"
+msgstr "রিসেট কোড"
+
+msgid "Sign in with username and password"
+msgstr "ইউজারনেম ও পাসওয়ার্ড দিয়ে সাইন ইন করুন"
+
+msgid "Strong passwords, locked against guessing"
+msgstr "শক্ত পাসওয়ার্ড, অনুমানে ঢোকার পথ বন্ধ"
+
+msgid "The one-time code your department or the Admin gave you."
+msgstr "আপনার বিভাগ বা অ্যাডমিন যে এককালীন কোড দিয়েছেন।"
+
+msgid "This is a sensitive action. Enter your password again to continue. You will not be asked again for the next 10 minutes."
+msgstr "এটি একটি সংবেদনশীল কাজ। চালিয়ে যেতে আবার আপনার পাসওয়ার্ড লিখুন। পরের ১০ মিনিট আর জিজ্ঞেস করা হবে না।"
+
+msgid "Too many failed attempts. Please try again later."
+msgstr "অনেকবার ব্যর্থ চেষ্টা হয়েছে। পরে আবার চেষ্টা করুন।"
+
+msgid "You are signed in. Next time, log in with this username and your password, not with your ID. You can always see the username on your account page."
+msgstr "আপনি সাইন ইন করেছেন। এরপর আইডি নয়, এই ইউজারনেম ও আপনার পাসওয়ার্ড দিয়ে লগ ইন করবেন। ইউজারনেমটি সবসময় আপনার অ্যাকাউন্ট পাতায় দেখা যাবে।"
+
+msgid "You can issue codes only for accounts in the department you head."
+msgstr "আপনি কেবল আপনার নেতৃত্বাধীন বিভাগের অ্যাকাউন্টের জন্য কোড দিতে পারেন।"
+
+msgid "You sign in with your username and password. Use a long password that you use nowhere else. If you forget it, your head of department or the Admin can give you a reset code."
+msgstr "আপনি ইউজারনেম ও পাসওয়ার্ড দিয়ে সাইন ইন করেন। এমন দীর্ঘ পাসওয়ার্ড ব্যবহার করুন যা আর কোথাও ব্যবহার করেন না। ভুলে গেলে আপনার বিভাগীয় প্রধান বা অ্যাডমিন আপনাকে একটি রিসেট কোড দিতে পারেন।"
+
+msgid "Your department gives you a student ID and a sign-up code. Create your account and choose a strong password."
+msgstr "আপনার বিভাগ আপনাকে একটি শিক্ষার্থী আইডি ও সাইন-আপ কোড দেয়। অ্যাকাউন্ট তৈরি করে একটি শক্ত পাসওয়ার্ড বেছে নিন।"
+
+msgid "Account ready"
+msgstr "অ্যাকাউন্ট প্রস্তুত"
+
+msgid "The ID or reset code is not valid, or it has already been used."
+msgstr "আইডি বা রিসেট কোডটি সঠিক নয়, অথবা এটি আগেই ব্যবহার করা হয়েছে।"
+
+msgid "No phone and no recovery code? Ask your head of department or the Admin for a password reset code."
+msgstr "ফোন বা রিকভারি কোড কোনোটিই নেই? আপনার বিভাগীয় প্রধান বা অ্যাডমিনের কাছে একটি পাসওয়ার্ড রিসেট কোড চান।"
