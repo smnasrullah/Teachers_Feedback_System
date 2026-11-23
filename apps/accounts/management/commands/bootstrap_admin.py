@@ -20,22 +20,25 @@ class Command(BaseCommand):
         email = os.environ.get("REAL_ADMIN_EMAIL", "").strip()
         password = os.environ.get("REAL_ADMIN_PASSWORD", "")
 
-        if not username or not email or not password:
-            raise CommandError(
-                "Set REAL_ADMIN_USERNAME, REAL_ADMIN_EMAIL, and REAL_ADMIN_PASSWORD."
-            )
+        if not username or not password:
+            raise CommandError("Set REAL_ADMIN_USERNAME and REAL_ADMIN_PASSWORD.")
 
         try:
-            validate_email(email)
+            if email:
+                validate_email(email)
             validate_strong_password(password)
         except ValidationError as error:
             raise CommandError(" ".join(error.messages)) from error
 
-        email_index = blind_index(email, EMAIL_INDEX_PURPOSE)
+        email_index = blind_index(email, EMAIL_INDEX_PURPOSE) if email else None
 
         with transaction.atomic():
             user = User.objects.select_for_update().filter(username=username).first()
             if user is None:
+                if not email:
+                    raise CommandError(
+                        "Set REAL_ADMIN_EMAIL when creating a new real Admin account."
+                    )
                 email_owner = User.objects.filter(contact_email_index=email_index).first()
                 if email_owner is not None:
                     raise CommandError("REAL_ADMIN_EMAIL belongs to another account.")
@@ -49,14 +52,20 @@ class Command(BaseCommand):
             else:
                 if user.role != Role.ADMIN:
                     raise CommandError("REAL_ADMIN_USERNAME belongs to a non-Admin account.")
-                email_owner = (
-                    User.objects.filter(contact_email_index=email_index).exclude(pk=user.pk).first()
-                )
-                if email_owner is not None:
-                    raise CommandError("REAL_ADMIN_EMAIL belongs to another account.")
+                if email:
+                    email_owner = (
+                        User.objects.filter(contact_email_index=email_index)
+                        .exclude(pk=user.pk)
+                        .first()
+                    )
+                    if email_owner is not None:
+                        raise CommandError("REAL_ADMIN_EMAIL belongs to another account.")
+                    user.contact_email = email
                 user.set_password(password)
-                user.contact_email = email
-                user.save(update_fields=["password", "contact_email"])
+                update_fields = ["password"]
+                if email:
+                    update_fields.append("contact_email")
+                user.save(update_fields=update_fields)
                 audit.record(
                     "admin.password_reset",
                     target=user,

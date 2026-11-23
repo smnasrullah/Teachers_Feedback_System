@@ -58,7 +58,7 @@ to the web service and redeploy:
 | Variable | Value |
 | --- | --- |
 | `REAL_ADMIN_USERNAME` | Existing real Admin username, such as `adm_ysdhmy`, or a desired new username |
-| `REAL_ADMIN_EMAIL` | Real Admin contact e-mail |
+| `REAL_ADMIN_EMAIL` | Real Admin contact e-mail (required only when creating a new account) |
 | `REAL_ADMIN_PASSWORD` | A strong unique password |
 
 On each startup the command updates the existing account or creates it with the supplied

@@ -42,6 +42,23 @@ def test_bootstrap_admin_updates_password(monkeypatch):
     assert user.check_password("Correct-Horse-Battery-9")
 
 
+def test_bootstrap_admin_updates_existing_password_without_email(monkeypatch):
+    user = User.objects.create_admin(
+        "Old-Password-123!",
+        username="adm_real01",
+        contact_email="keep@example.edu",
+    )
+    monkeypatch.setenv("REAL_ADMIN_USERNAME", "adm_real01")
+    monkeypatch.delenv("REAL_ADMIN_EMAIL", raising=False)
+    monkeypatch.setenv("REAL_ADMIN_PASSWORD", "Correct-Horse-Battery-9")
+
+    call_command("bootstrap_admin")
+
+    user.refresh_from_db()
+    assert user.check_password("Correct-Horse-Battery-9")
+    assert user.contact_email == "keep@example.edu"
+
+
 def test_bootstrap_admin_rejects_missing_environment(monkeypatch):
     monkeypatch.delenv("REAL_ADMIN_USERNAME", raising=False)
     monkeypatch.delenv("REAL_ADMIN_EMAIL", raising=False)
