@@ -52,6 +52,19 @@ Set secrets in the Render dashboard, never in Git:
 | `RUN_MIGRATIONS` | `1` (the existing container entrypoint runs deploy checks and migrations before Gunicorn) |
 | `PORT` | `10000` (Render's default; Gunicorn binds to this value) |
 
+To create or reset the real Admin without Render Shell access, add these environment variables
+to the web service and redeploy:
+
+| Variable | Value |
+| --- | --- |
+| `REAL_ADMIN_USERNAME` | Existing real Admin username, such as `adm_ysdhmy`, or a desired new username |
+| `REAL_ADMIN_EMAIL` | Real Admin contact e-mail |
+| `REAL_ADMIN_PASSWORD` | A strong unique password |
+
+On each startup the command updates the existing account or creates it with the supplied
+username. Remove `REAL_ADMIN_PASSWORD` after the account is verified so it is not retained
+longer than necessary.
+
 Generate new secrets with the commands documented in `.env.production.example`. Do not
 regenerate encryption or blind-index keys for an existing database: losing or changing them
 can make encrypted data unreadable or break identifier lookups. Configure the same database,

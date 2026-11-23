@@ -19,6 +19,9 @@ is_enabled() {
 if is_enabled "${RUN_MIGRATIONS:-1}"; then
     python manage.py check --deploy --fail-level ERROR
     python manage.py migrate --noinput
+    if [ -n "${REAL_ADMIN_PASSWORD:-}" ]; then
+        python manage.py bootstrap_admin
+    fi
     if is_enabled "${PUBLIC_DEMO_ENABLED:-1}"; then
         # Seed in background so Gunicorn binds to $PORT immediately without hitting Render's port scan timeout
         python manage.py seed_demo &
