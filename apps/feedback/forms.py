@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from apps.academics.services import semesters
 from apps.core.forms import StyledFormMixin
 from apps.feedback.models import (
     AppliesTo,
@@ -158,6 +159,9 @@ class WindowForm(StyledFormMixin, forms.ModelForm):
         if self.is_locked:
             for name in self.LOCKED_AFTER_CLOSE:
                 self.fields[name].disabled = True
+        elif self.instance.pk is None and not self.is_bound:
+            current = semesters.current_semester()
+            self.initial.setdefault("semester", current.pk if current else None)
 
     def clean(self):
         cleaned = super().clean()
@@ -165,6 +169,10 @@ class WindowForm(StyledFormMixin, forms.ModelForm):
             return cleaned
         if cleaned["closes_at"] <= cleaned["opens_at"]:
             self.add_error("closes_at", _("The round must close after it opens."))
-        elif cleaned["is_active"]:
+            return cleaned
+        windows.ensure_inside_semester(
+            cleaned["semester"], cleaned["opens_at"], cleaned["closes_at"]
+        )
+        if cleaned["is_active"]:
             windows.ensure_no_overlap(cleaned, exclude_pk=self.instance.pk)
         return cleaned

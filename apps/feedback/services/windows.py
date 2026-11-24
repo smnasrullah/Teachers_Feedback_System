@@ -9,6 +9,7 @@ from django.db import transaction
 from django.utils.translation import gettext as _
 
 from apps.academics.models import Semester
+from apps.academics.services import semesters
 from apps.analytics import services as analytics
 from apps.auditlog.services import audit
 from apps.feedback.models import FeedbackWindow
@@ -41,6 +42,25 @@ def find_overlapping(
     ]
 
 
+def ensure_inside_semester(semester, opens_at, closes_at) -> None:
+    """A round runs within its semester's days (local time), or no student or teacher of that
+    semester would ever see it open: their pages show the semester running today."""
+    begins, ends = semesters.day_bounds(semester.start_date, semester.end_date)
+    if opens_at < begins or closes_at > ends:
+        raise ValidationError(
+            _(
+                "The round must run inside the semester %(semester)s (%(start)s to %(end)s). "
+                "Choose the semester the round belongs to, or change its dates."
+            ),
+            code="outside_semester",
+            params={
+                "semester": semester.name,
+                "start": semesters.short_date(semester.start_date),
+                "end": semesters.short_date(semester.end_date),
+            },
+        )
+
+
 def ensure_no_overlap(data: dict, *, exclude_pk=None) -> None:
     clashes = find_overlapping(
         data["semester"],
@@ -70,9 +90,11 @@ def save_window(form, *, actor, request=None) -> FeedbackWindow:
     if not created and not changed:
         return form.instance
     data = form.cleaned_data
-    Semester.objects.select_for_update().get(pk=data["semester"].pk)
-    if data["is_active"] and not form.is_locked:
-        ensure_no_overlap(data, exclude_pk=form.instance.pk)
+    semester = Semester.objects.select_for_update().get(pk=data["semester"].pk)
+    if not form.is_locked:
+        ensure_inside_semester(semester, data["opens_at"], data["closes_at"])
+        if data["is_active"]:
+            ensure_no_overlap(data, exclude_pk=form.instance.pk)
     window = form.save()
     transaction.on_commit(lambda: analytics.invalidate(window))
     audit.record(

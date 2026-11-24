@@ -61,10 +61,10 @@ def short_date(day: date) -> str:
 
 def ends_at(semester: Semester) -> datetime:
     """The instant the semester's last day ends, in local time."""
-    return _day_bounds(semester.start_date, semester.end_date)[1]
+    return day_bounds(semester.start_date, semester.end_date)[1]
 
 
-def _day_bounds(start: date, end: date) -> tuple[datetime, datetime]:
+def day_bounds(start: date, end: date) -> tuple[datetime, datetime]:
     """The first instant of ``start`` and the instant after ``end`` ends, in local time."""
     zone = timezone.get_default_timezone()
     return (
@@ -84,7 +84,7 @@ def stranded_rounds(semester: Semester, start: date, end: date) -> list[Feedback
     """Rounds of ``semester`` that would open before ``start`` or close after ``end``."""
     if semester.pk is None:
         return []
-    begins, ends = _day_bounds(start, end)
+    begins, ends = day_bounds(start, end)
     return list(
         FeedbackWindow.objects.filter(semester=semester)
         .filter(Q(opens_at__lt=begins) | Q(closes_at__gt=ends))

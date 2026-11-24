@@ -1,4 +1,4 @@
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 
 import pytest
 from django.core.exceptions import ValidationError
@@ -6,7 +6,7 @@ from django.core.management import call_command
 from django.urls import reverse
 from django.utils import timezone, translation
 
-from apps.academics.models import CourseType
+from apps.academics.models import CourseType, Semester
 from apps.auditlog.models import AuditEvent
 from apps.feedback.forms import WindowForm
 from apps.feedback.models import (
@@ -55,6 +55,11 @@ def actions() -> set[str]:
 
 def at(hour=0, minute=0, second=0) -> datetime:
     return datetime(2030, 3, 1, hour, minute, second, tzinfo=UTC)
+
+
+def semester_of_2030():
+    """A semester the 2030 rounds of these tests lie inside."""
+    return make_semester(start_date=date(2029, 12, 1), end_date=date(2030, 6, 30))
 
 
 class TestParser:
@@ -578,7 +583,7 @@ class TestWindowStatus:
 class TestWindowOverlap:
     @pytest.fixture
     def semester(self):
-        return make_semester()
+        return semester_of_2030()
 
     def make(self, semester, opens, closes, **fields):
         departments = fields.pop("departments", ())
@@ -696,6 +701,43 @@ class TestWindowOverlap:
         assert saved.closes_at < timezone.now()
 
 
+class TestRoundInsideItsSemester:
+    def data(self, semester, opens, closes):
+        return {
+            "semester": semester.pk,
+            "name": "Mid",
+            "opens_at": opens,
+            "closes_at": closes,
+            "is_active": "on",
+        }
+
+    def test_a_round_outside_its_semester_is_refused_with_the_dates(self):
+        semester = semester_of_2030()
+        form = WindowForm(self.data(semester, "2030-06-30T09:00", "2030-07-01T00:01"))
+        assert not form.is_valid()
+        message = form.non_field_errors()[0]
+        assert semester.name in message and "inside the semester" in message
+
+    def test_the_first_and_last_local_instants_of_the_semester_count(self):
+        semester = semester_of_2030()
+        form = WindowForm(self.data(semester, "2029-12-01T00:00", "2030-07-01T00:00"))
+        assert form.is_valid(), form.errors
+
+    def test_save_rechecks_the_semester_under_the_lock(self):
+        semester = semester_of_2030()
+        form = WindowForm(self.data(semester, "2030-03-01T09:00", "2030-03-02T09:00"))
+        assert form.is_valid()
+        Semester.objects.filter(pk=semester.pk).update(end_date=date(2030, 2, 28))
+        with pytest.raises(ValidationError):
+            windows.save_window(form, actor=make_admin())
+        assert not FeedbackWindow.objects.exists()
+
+    def test_a_new_round_starts_on_the_current_semester(self):
+        current = make_semester(current=True)
+        semester_of_2030()
+        assert WindowForm().initial["semester"] == current.pk
+
+
 class TestWindowScreens:
     @pytest.fixture
     def client_admin(self, client, admin):
@@ -704,7 +746,7 @@ class TestWindowScreens:
         return client
 
     def test_create_list_and_preview(self, client_admin):
-        semester = make_semester(current=True)
+        semester = semester_of_2030()
         offering = make_offering(make_course(course_type=CourseType.LAB), semester)
         make_question(QuestionType.RATING, text="Lab question", applies_to=AppliesTo.LAB)
         make_question(QuestionType.RATING, text="Theory question", applies_to=AppliesTo.THEORY)
@@ -732,7 +774,7 @@ class TestWindowScreens:
         assert "feedback.window_created" in actions()
 
     def test_overlap_is_a_form_error_not_a_second_round(self, client_admin):
-        semester = make_semester()
+        semester = semester_of_2030()
         data = {
             "semester": semester.pk,
             "name": "A",
