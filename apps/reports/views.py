@@ -15,6 +15,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
 
 from apps.academics.models import CourseOffering
+from apps.academics.services import semesters
 from apps.core.permissions import HOD, Role, has_role, role_required
 from apps.core.services.navigation import user_nav_items
 from apps.feedback.models import FeedbackWindow, Question, QuestionType
@@ -68,6 +69,7 @@ def dashboard(request):
     now = timezone.now()
     context = {
         "nav_items": user_nav_items(request.user, "dashboard"),
+        "semester": semesters.current_semester(timezone.localdate(now, timezone.get_default_timezone())),
         "courses": teacher.dashboard(profile, request.user, now),
     }
     return render(request, "reports/dashboard.html", context)

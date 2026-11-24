@@ -5,9 +5,10 @@ from django.db import transaction
 from django.db.models import ProtectedError
 from django.utils.translation import gettext as _
 
-from apps.academics.models import Semester
+from apps.academics.models import CourseOffering, Semester
 from apps.academics.services import semesters
 from apps.auditlog.services import audit
+from apps.enrollment.services import enrollments
 
 
 def _describe_blockers(blockers) -> str:
@@ -42,6 +43,9 @@ def save(screen, form, *, actor, request=None):
         department_id=_audit_department_id(screen, obj),
         metadata={"entity": screen.key, "changed": changed},
     )
+    if isinstance(obj, CourseOffering) and (created or {"semester", "section"} & set(changed)):
+        # The students of its level/term see it at once (same rule as group enrolment).
+        enrollments.apply_rule(offerings=[obj.pk], trigger="offering", actor=actor, request=request)
     return obj
 
 

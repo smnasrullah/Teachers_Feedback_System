@@ -4,6 +4,7 @@ from apps.academics.models import Course, CourseOffering, LevelTerm, Outcome
 from apps.academics.services import semesters
 from apps.accounts.models import StudentProfile
 from apps.accounts.services.student_id_policy import with_visible_ids
+from apps.enrollment.services.courses import courses_for_student
 
 # Badge variant and icon per outcome: the label always says it too, never colour alone.
 OUTCOME_BADGES = {
@@ -16,11 +17,7 @@ OUTCOME_BADGES = {
 
 def get_current_courses(student_profile) -> list[CourseOffering]:
     """Offerings of the current semester that ``student_profile`` is enrolled in."""
-    return list(
-        CourseOffering.objects.filter(
-            semester__in=semesters.ongoing(), enrollments__student_profile=student_profile
-        ).select_related("course", "semester", "teacher__registry")
-    )
+    return courses_for_student(student_profile, semesters.current_semester())
 
 
 def _badge(outcome: str) -> dict:

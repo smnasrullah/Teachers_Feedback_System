@@ -15,6 +15,7 @@ from django.utils.translation import gettext as _
 from apps.academics.models import CourseOffering, Semester
 from apps.academics.services import semesters
 from apps.core.services.localize import pick
+from apps.enrollment.services.courses import courses_for_student
 from apps.feedback.models import (
     FeedbackWindow,
     Question,
@@ -127,16 +128,10 @@ def build_dashboard(student_profile, now) -> Dashboard:
     The round card and progress ring describe the most relevant round (see
     ``_pick_window``); every course still carries the state of its own round.
     """
-    semester = semesters.current_semester(timezone.localdate(now))
+    semester = semesters.current_semester(timezone.localdate(now, timezone.get_default_timezone()))
     if semester is None:
         return Dashboard(None, [], None)
-    offerings = list(
-        CourseOffering.objects.filter(
-            semester=semester, enrollments__student_profile=student_profile
-        )
-        .select_related("course__department", "teacher__registry")
-        .order_by("course__code", "section")
-    )
+    offerings = courses_for_student(student_profile, semester)
     windows = list(
         FeedbackWindow.objects.filter(semester=semester, is_active=True).prefetch_related(
             "departments", "level_terms"
@@ -154,7 +149,10 @@ def build_dashboard(student_profile, now) -> Dashboard:
             window, window is not None and (offering.pk, window.pk) in submitted, now
         )
         entries.append(CourseEntry(offering, window, state))
+    # The round of the student's own courses; with none of them in a round, still the
+    # semester's round, so an open round is never reported as "not announced".
     current = _pick_window({entry.window for entry in entries if entry.window}, now)
+    current = current or _pick_window(windows, now)
     summary = _round_summary(current, entries, now) if current else None
     return Dashboard(semester, entries, summary)
 
@@ -162,17 +160,23 @@ def build_dashboard(student_profile, now) -> Dashboard:
 def find_target(student_profile, window_id: int, offering_id: int):
     """``(offering, window)`` when the student is enrolled in the offering and the round
     covers it, else ``None`` (the caller answers 404, never saying which part was wrong)."""
-    offering = (
-        CourseOffering.objects.select_related("course__department", "semester", "teacher__registry")
-        .filter(pk=offering_id, enrollments__student_profile=student_profile)
-        .first()
-    )
     window = (
-        FeedbackWindow.objects.prefetch_related("departments", "level_terms")
+        FeedbackWindow.objects.select_related("semester")
+        .prefetch_related("departments", "level_terms")
         .filter(pk=window_id, is_active=True)
         .first()
     )
-    if offering is None or window is None or not window.covers(offering):
+    if window is None:
+        return None
+    offering = next(
+        (
+            offering
+            for offering in courses_for_student(student_profile, window.semester)
+            if offering.pk == offering_id
+        ),
+        None,
+    )
+    if offering is None or not window.covers(offering):
         return None
     return offering, window
 

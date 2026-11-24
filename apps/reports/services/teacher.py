@@ -13,6 +13,7 @@ from django.utils.translation import gettext as _
 
 from apps.academics.models import CourseOffering
 from apps.academics.services import semesters
+from apps.academics.services.teaching import offerings_for_teacher
 from apps.analytics import services as analytics
 from apps.analytics.services import InsufficientData
 from apps.core.services.localize import pick
@@ -190,14 +191,9 @@ def summarize(offering, window, viewer, now) -> CourseSummary:
 def overview(profile, window, viewer, now) -> list[CourseSummary]:
     """Summaries of the teacher's offerings that ``window`` covers. A round still open gives
     no figure at all, not even a count of who is still pending."""
-    offerings = (
-        CourseOffering.objects.filter(teacher=profile, semester=window.semester)
-        .select_related("course", "semester")
-        .order_by("course__code", "section")
-    )
     return [
         summarize(offering, window, viewer, now)
-        for offering in offerings
+        for offering in offerings_for_teacher(profile, window.semester)
         if window.covers(offering)
     ]
 
@@ -208,14 +204,10 @@ def dashboard(profile, viewer, now) -> list[DashboardCourse]:
     An upcoming or open round gives its status and dates only; a closed one adds the summary,
     which itself holds back groups below the response threshold.
     """
-    current = semesters.ongoing()
-    offerings = list(
-        CourseOffering.objects.filter(teacher=profile, semester__in=current)
-        .select_related("course", "semester")
-        .order_by("course__code", "section")
-    )
+    current = semesters.current_semester(timezone.localdate(now, timezone.get_default_timezone()))
+    offerings = offerings_for_teacher(profile, current)
     windows = list(
-        FeedbackWindow.objects.filter(semester__in=current, is_active=True)
+        FeedbackWindow.objects.filter(semester=current, is_active=True)
         .prefetch_related("departments", "level_terms")
         .order_by("opens_at")
     )

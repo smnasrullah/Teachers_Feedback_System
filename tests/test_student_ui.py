@@ -204,7 +204,7 @@ def test_not_enrolled_student_sees_the_empty_state(web):
     user = make_student_user()
     sign_in(web, user)
     html = dashboard(web).content.decode()
-    assert "You are not enrolled in any course this semester" in html
+    assert "You have no courses in" in html and "Ask your department office" in html
     assert "Give feedback" not in html
 
 

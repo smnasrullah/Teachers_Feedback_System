@@ -1,7 +1,15 @@
 [tool.ruff]
 line-length = 100
 target-version = "py312"
-extend-exclude = ["migrations", "static", "design"]
+# The one-off report and slide builders in the root are not part of the app.
+extend-exclude = [
+    "migrations",
+    "static",
+    "design",
+    "build_presentation.py",
+    "build_project_report.py",
+    "polish_existing_report.py",
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "DJ", "S", "C4", "SIM", "RUF"]

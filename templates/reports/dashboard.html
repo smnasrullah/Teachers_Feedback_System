@@ -8,8 +8,10 @@
     {% semester_badge %}{% semester_countdown %}
     <a class="btn btn-ghost" href="{% url 'reports:overview' %}">{% translate "All my courses" %}</a>
   </div>
-  {% if not courses %}
-  <div class="card">{% translate "No courses this semester" as empty_title %}{% translate "The courses you teach in the running semester appear here." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="book" %}</div>
+  {% if not semester %}
+  <div class="card">{% translate "No current semester" as empty_title %}{% translate "Your courses will appear here when the university starts a semester." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="calendar" %}</div>
+  {% elif not courses %}
+  <div class="card">{% blocktranslate with semester=semester.name asvar empty_title %}You teach no courses in {{ semester }}{% endblocktranslate %}{% translate "Ask the administrator to assign your courses. They appear here as soon as they are assigned." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="book" %}</div>
   {% else %}
   <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
     {% for course in courses %}

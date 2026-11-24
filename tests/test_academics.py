@@ -418,7 +418,7 @@ class TestCurrentCourses:
         for n in range(3):
             offering = make_offering(make_course(department, f"C{n}"), current)
             Enrollment.objects.create(student_profile=student, offering=offering)
-        with django_assert_num_queries(1):
+        with django_assert_num_queries(2):  # the semester, then its courses
             titles = [
                 (offering.course.title, offering.teacher.registry.full_name)
                 for offering in get_current_courses(student)

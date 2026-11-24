@@ -59,7 +59,7 @@
     {% if not dashboard.semester %}
     <div class="card">{% translate "No current semester" as empty_title %}{% translate "Your courses will appear here when the university starts a semester." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="calendar" %}</div>
     {% elif not dashboard.entries %}
-    <div class="card">{% translate "You are not enrolled in any course this semester" as empty_title %}{% translate "If this looks wrong, please contact your department office. They enroll students in courses." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="book" %}</div>
+    <div class="card">{% blocktranslate with semester=dashboard.semester.name asvar empty_title %}You have no courses in {{ semester }}{% endblocktranslate %}{% translate "Ask your department office or the administrator to add your courses. They appear here as soon as they are added." as empty_text %}{% include "components/empty_state.html" with title=empty_title text=empty_text icon="book" %}</div>
     {% else %}
     <div class="course-list">
       {% for entry in dashboard.entries %}{% include "student/_course_card.html" %}{% endfor %}

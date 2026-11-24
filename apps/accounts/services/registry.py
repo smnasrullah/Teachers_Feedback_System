@@ -25,6 +25,7 @@ from apps.accounts.services.identifiers import clean_registry_id, normalize_regi
 from apps.auditlog.services import audit
 from apps.core.models import ActiveSession
 from apps.core.permissions import HOD, Role, has_role
+from apps.enrollment.services import enrollments
 
 PROFILE_MODELS = {IdType.STUDENT: StudentProfile, IdType.TEACHER: TeacherProfile}
 MAX_BULK_ROWS = 2000
@@ -87,7 +88,7 @@ def register(
             )
     except IntegrityError:
         raise _duplicate_error() from None
-    PROFILE_MODELS[id_type].objects.create(registry=registry, **profile)
+    entry = PROFILE_MODELS[id_type].objects.create(registry=registry, **profile)
     audit.record(
         "registry.created",
         request=request,
@@ -96,7 +97,23 @@ def register(
         department_id=department.pk,
         metadata={"id_type": id_type},
     )
+    if id_type == IdType.STUDENT:
+        _place(entry, actor=actor, request=request)
     return registry
+
+
+# A change to any of these can give a student courses of the running semester.
+PLACEMENT_FIELDS = frozenset({"program", "level_term", "section", "academic_status"})
+
+
+def _place(student_profile, *, actor, request) -> None:
+    """Give the student the current semester's courses of their level/term right away."""
+    enrollments.apply_rule(
+        students=StudentProfile.objects.filter(pk=student_profile.pk),
+        trigger="student",
+        actor=actor,
+        request=request,
+    )
 
 
 @transaction.atomic
@@ -151,6 +168,8 @@ def update(
             department_id=department.pk,
             metadata={"fields": sorted(changed)},
         )
+    if registry.id_type == IdType.STUDENT and PLACEMENT_FIELDS.intersection(changed):
+        _place(entry, actor=actor, request=request)
     return changed
 
 

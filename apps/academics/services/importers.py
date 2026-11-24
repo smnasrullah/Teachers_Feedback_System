@@ -49,6 +49,7 @@ from apps.auditlog.services import audit
 from apps.core.csv_safe import clean_cell
 from apps.core.services.localize import ASCII_DIGITS, parse_term
 from apps.enrollment.models import Enrollment, EnrollmentStatus
+from apps.enrollment.services import enrollments
 
 MAX_BYTES = 5 * 1024 * 1024
 MAX_ROWS = 10_000
@@ -246,6 +247,9 @@ class Importer:
         """Checks that need every record at once (for example against stored rows)."""
         return []
 
+    def place(self, records: list, *, actor, request) -> None:
+        """After ``save``: enrollments the new rows bring (the level/term rule)."""
+
     def save(self, records: list, *, with_codes: bool) -> list[IssuedCode]:
         raise NotImplementedError
 
@@ -348,6 +352,17 @@ class StudentImporter(_RegistryImporter):
             "level_term": self.lookups.level_term(row),
             "section": _text(row, "section", max_length=16),
         }
+
+    def place(self, records, *, actor, request):
+        enrollments.apply_rule(
+            students=StudentProfile.objects.filter(
+                registry__id_type=IdType.STUDENT,
+                registry__external_id_index__in=[record.index for record in records],
+            ),
+            trigger="import",
+            actor=actor,
+            request=request,
+        )
 
 
 class TeacherImporter(_RegistryImporter):
@@ -475,6 +490,14 @@ class OfferingImporter(Importer):
     def save(self, records, *, with_codes):
         CourseOffering.objects.bulk_create(records, batch_size=BULK_BATCH)
         return []
+
+    def place(self, records, *, actor, request):
+        enrollments.apply_rule(
+            offerings=[record.pk for record in records],
+            trigger="import",
+            actor=actor,
+            request=request,
+        )
 
 
 class EnrollmentImporter(Importer):
@@ -739,7 +762,9 @@ def run(importer: Importer, text: str, *, apply: bool, actor, request=None) -> I
         return result
     try:
         with transaction.atomic():
-            result.issued = importer.save([record for _line, record in records], with_codes=apply)
+            saved = [record for _line, record in records]
+            result.issued = importer.save(saved, with_codes=apply)
+            importer.place(saved, actor=actor, request=request)
             if not apply:
                 transaction.set_rollback(True)
     except IntegrityError:
