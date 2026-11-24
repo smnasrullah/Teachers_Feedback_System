@@ -127,8 +127,9 @@ class RegistryEntryForm(StyledForm):
             self.fields["external_id"].help_text = (
                 _("The ID of a claimed entry cannot be changed.") if registry.claimed_by_id else ""
             )
-            if not self.is_bound:
-                self.initial = self._initial_from(registry)
+            # Also when bound: a disabled field (the ID of a claimed entry) takes its value
+            # from ``initial``, so without it every edit of a signed-up person failed.
+            self.initial = {**self._initial_from(registry), **self.initial}
 
     def _initial_from(self, registry: IdRegistry) -> dict:
         initial = {

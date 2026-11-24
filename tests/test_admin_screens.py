@@ -279,17 +279,21 @@ def test_claimed_id_field_is_locked_in_the_form(admin_client, secret_student):
     claim(secret_student)
     url = reverse("accounts:registry_edit", args=[secret_student.registry.pk])
     department = secret_student.registry.department
-    admin_client.post(
+    response = admin_client.post(
         url,
         student_form(
             department,
             external_id="1111111",
+            full_name="Renamed After Signup",
             program=secret_student.program.pk,
+            batch="",
             level_term=secret_student.level_term.pk,
         ),
     )
+    assert response.status_code == 302  # the rest of a claimed entry can still be edited
     secret_student.registry.refresh_from_db()
     assert secret_student.registry.external_id == SECRET_ID
+    assert secret_student.registry.full_name == "Renamed After Signup"
 
 
 # --- bulk actions and activation codes -------------------------------------------------
