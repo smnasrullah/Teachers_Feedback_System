@@ -5615,3 +5615,46 @@ msgstr ""
 
 msgid "Head of department (HOD)"
 msgstr "বিভাগীয় প্রধান (HOD)"
+
+msgid "No registry entry has this ID."
+msgstr "এই আইডির কোনো রেজিস্ট্রি এন্ট্রি নেই।"
+
+msgid ""
+"Operator check: why a student or teacher sees (or does not see) their "
+"courses and rounds. Prints no passwords, codes, secrets or feedback."
+msgstr ""
+"অপারেটরের যাচাই: একজন শিক্ষার্থী বা শিক্ষক কেন তাঁর কোর্স ও রাউন্ড দেখেন (বা"
+" দেখেন না)। কোনো পাসওয়ার্ড, কোড, গোপন তথ্য বা মতামত দেখায় না।"
+
+msgid "Courses on the dashboard"
+msgstr "ড্যাশবোর্ডের কোর্স"
+
+msgid "Current semester"
+msgstr "চলতি সেমিস্টার"
+
+msgid "Enrollments in other semesters (not shown)"
+msgstr "অন্য সেমিস্টারের ভর্তি (দেখানো হয় না)"
+
+msgid "Level/term courses not enrolled"
+msgstr "লেভেল/টার্মের যে কোর্সে ভর্তি নেই"
+
+msgid "No round in this semester yet."
+msgstr "এই সেমিস্টারে এখনো কোনো রাউন্ড নেই।"
+
+msgid "None runs today: no courses are shown."
+msgstr "আজ কোনো সেমিস্টার চলছে না: কোনো কোর্স দেখানো হয় না।"
+
+msgid "Not signed up yet: nothing can be seen."
+msgstr "এখনো সাইন আপ করেননি: কিছুই দেখা যায় না।"
+
+msgid "Offerings in other semesters (not shown)"
+msgstr "অন্য সেমিস্টারের অফারিং (দেখানো হয় না)"
+
+msgid "Student profile"
+msgstr "শিক্ষার্থীর প্রোফাইল"
+
+msgid "covers"
+msgstr "অন্তর্ভুক্ত"
+
+msgid "submitted"
+msgstr "জমা দেওয়া"

@@ -29,6 +29,9 @@ from apps.enrollment.models import Enrollment, EnrollmentStatus
 from apps.enrollment.services.courses import courses_for_student
 from apps.feedback.models import FeedbackResponse, FeedbackWindow, QuestionType, SubmissionReceipt
 from apps.feedback.services import portal
+from apps.reports.services import department as department_report
+from apps.reports.services import teacher as teacher_report
+from apps.reports.services import university as university_report
 from tests.factories import PASSWORD, make_admin, sign_in
 from tests.test_feedback_core import make_question
 
@@ -553,3 +556,20 @@ def test_every_screen_reads_the_same_course_list(term):
     for offering in listed:
         assert portal.find_target(alice, window.pk, offering.pk) == (offering, window)
     assert not SubmissionReceipt.objects.exists()
+
+    # The teacher's own list, the HOD's department view and the Admin's round progress
+    # are built from the same offerings, and the enrolled counts they report are the sum
+    # of what each student's own list says.
+    taught = offerings_for_teacher(term.teacher, term.current)
+    assert [course.offering for course in teacher_report.dashboard(term.teacher, None, now)] == (
+        taught
+    )
+    covered = [offering for offering in taught if window.covers(offering)]
+    assert department_report.offerings_in_scope(term.cse, window) == covered
+    assert university_report.offerings_in_scope(window) == covered
+    students = StudentProfile.objects.all()
+    for offering in covered:
+        listed_by_students = sum(
+            offering in courses_for_student(student, term.current) for student in students
+        )
+        assert listed_by_students == Enrollment.objects.filter(offering=offering).count()
