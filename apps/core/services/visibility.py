@@ -40,7 +40,7 @@ def _account(registry: IdRegistry) -> list[Check]:
         Check(
             registry.status != RegistryStatus.REVOKED,
             _("Registry entry"),
-            f"{registry.get_id_type_display()} · {registry.get_status_display()} · "
+            f"{registry.get_id_type_display()} | {registry.get_status_display()} | "
             f"{registry.department.code}",
         )
     ]
@@ -52,8 +52,8 @@ def _account(registry: IdRegistry) -> list[Check]:
             Check(
                 account.is_active,
                 _("Account"),
-                f"{account.username} · {role}"
-                + ("" if account.is_active else f" · {_('inactive')}"),
+                f"{account.username} | {role}"
+                + ("" if account.is_active else f" | {_('inactive')}"),
             )
         )
     return checks
@@ -77,11 +77,11 @@ def _rounds(semester, offerings, now, receipts) -> list[Check]:
     for window in windows:
         covered = [offering for offering in offerings if window.covers(offering)]
         status = window.status(now) if window.is_active else _("inactive")
-        detail = f"{window.name} · {status} · {_('covers')}: {_codes(covered)}"
+        detail = f"{window.name} | {status} | {_('covers')}: {_codes(covered)}"
         if receipts is not None:
             done = sum((offering.pk, window.pk) in receipts for offering in covered)
-            detail += f" · {_('submitted')}: {done}/{len(covered)}"
-        checks.append(Check(window.is_open(now) and bool(covered), _("Round"), detail))
+            detail += f" | {_('submitted')}: {done}/{len(covered)}"
+        checks.append(Check(window.is_active and bool(covered), _("Round"), detail))
     if not checks:
         checks.append(Check(False, _("Round"), _("No round in this semester yet.")))
     return checks
@@ -93,8 +93,8 @@ def _student(registry, now) -> list[Check]:
         Check(
             profile.academic_status == AcademicStatus.ACTIVE,
             _("Student profile"),
-            f"{profile.program} · {profile.level_term.name} · "
-            f"{_('section')} {profile.section or '-'} · {profile.get_academic_status_display()}",
+            f"{profile.program} | {profile.level_term.name} | "
+            f"{_('section')} {profile.section or '-'} | {profile.get_academic_status_display()}",
         )
     ]
     more, semester = _semester(now)

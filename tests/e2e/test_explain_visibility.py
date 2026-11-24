@@ -36,10 +36,10 @@ def test_a_student_checklist_names_courses_rounds_and_receipts(term):
 
     report = explain("s-001")  # the ID as an operator might type it
     username = IdRegistry.objects.get(pk=alice.registry_id).claimed_by.username
-    assert f"[ok] Account: {username} · student" in report
+    assert f"[ok] Account: {username} | student" in report
     assert term.current.name in report
     assert "Courses on the dashboard: CSE101, CSE201" in report
-    assert "Mid-term · open · covers: CSE101, CSE201 · submitted: 1/2" in report
+    assert "Mid-term | open | covers: CSE101, CSE201 | submitted: 1/2" in report
     assert "Enrollments in other semesters" not in report
     for secret in (PASSWORD, code, "Helpful classes.", "Student S-001", "argon2"):
         assert secret not in report
