@@ -69,7 +69,9 @@ def dashboard(request):
     now = timezone.now()
     context = {
         "nav_items": user_nav_items(request.user, "dashboard"),
-        "semester": semesters.current_semester(timezone.localdate(now, timezone.get_default_timezone())),
+        "semester": semesters.current_semester(
+            timezone.localdate(now, timezone.get_default_timezone())
+        ),
         "courses": teacher.dashboard(profile, request.user, now),
     }
     return render(request, "reports/dashboard.html", context)

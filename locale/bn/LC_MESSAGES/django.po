@@ -5576,3 +5576,42 @@ msgstr ""
 #, python-format
 msgid "You have no courses in %(semester)s"
 msgstr "%(semester)s-এ আপনার কোনো কোর্স নেই"
+
+#, python-format
+msgid ""
+"%(department)s already has a head of department. Import this teacher as a "
+"teacher, then make them head on their entry page."
+msgstr ""
+"%(department)s-এ ইতিমধ্যে একজন বিভাগীয় প্রধান আছেন। এই শিক্ষককে শিক্ষক "
+"হিসেবে ইমপোর্ট করুন, তারপর তাঁর এন্ট্রি পেজ থেকে প্রধান করুন।"
+
+msgid "Use teacher or hod."
+msgstr "teacher অথবা hod লিখুন।"
+
+msgid ""
+"A head of department (HOD) heads the department chosen above and sees the "
+"student IDs and names of that department only."
+msgstr ""
+"বিভাগীয় প্রধান (HOD) ওপরে বেছে নেওয়া বিভাগের প্রধান হন এবং শুধু সেই "
+"বিভাগের শিক্ষার্থীদের আইডি ও নাম দেখতে পান।"
+
+msgid ""
+"Needed when the department already has a head. The current head stays on as "
+"a normal teacher; both are signed out so their new rights apply."
+msgstr ""
+"বিভাগে আগে থেকেই প্রধান থাকলে এটি লাগবে। বর্তমান প্রধান সাধারণ শিক্ষক হিসেবে"
+" থাকবেন; নতুন অধিকার কার্যকর করতে দুজনকেই সাইন আউট করা হবে।"
+
+msgid "Replace the current head of department"
+msgstr "বর্তমান বিভাগীয় প্রধানকে প্রতিস্থাপন করুন"
+
+#, python-format
+msgid ""
+"%(department)s already has a head of department. Confirm that this teacher "
+"replaces them; the current head stays on as a teacher."
+msgstr ""
+"%(department)s-এ ইতিমধ্যে একজন বিভাগীয় প্রধান আছেন। এই শিক্ষক তাঁর জায়গা "
+"নেবেন তা নিশ্চিত করুন; বর্তমান প্রধান শিক্ষক হিসেবে থাকবেন।"
+
+msgid "Head of department (HOD)"
+msgstr "বিভাগীয় প্রধান (HOD)"

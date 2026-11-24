@@ -124,8 +124,6 @@ class Office:
             "designation": "Lecturer",
             "role": role,
         }
-        if role == "hod":
-            data["hod_department"] = department.pk
         self.post("accounts:registry_create", data, IdType.TEACHER)
         return TeacherProfile.objects.get(registry__external_id_index=_index(external_id))
 
@@ -388,6 +386,22 @@ def test_an_hod_registered_by_the_admin_sees_the_department(term):
     page = head_web.get(reverse("accounts:dashboard_hod"))
     assert page.status_code == 200
     assert page.context["window"] == window
+
+    # Student IDs: the head of the student's own department sees them, a teacher never does.
+    own = office.register_student("S-777", term.cse, term.bsc, term.first)
+    eee = office.department("EEE")
+    other = office.register_student("S-888", eee, office.program(eee), term.first)
+    office.enroll(other, term.offerings["CSE101"], EnrollmentStatus.RETAKE)  # a service course
+    pending = head_web.get(reverse("reports:hod_pending"), {"round": window.pk}).content.decode()
+    assert own.registry.external_id in pending
+    assert other.registry.external_id not in pending
+    office.issue_codes(term.teacher)
+    teacher_web = sign_up(office, term.teacher)
+    for name in ("accounts:dashboard_teacher", "reports:overview"):
+        html = teacher_web.get(reverse(name)).content.decode()
+        assert own.registry.external_id not in html and "Student S-777" not in html
+    # The head also teaches: their own courses stay on the teacher pages.
+    assert head_web.get(reverse("accounts:dashboard_teacher")).status_code == 200
 
 
 # --- the boundaries that commonly break ------------------------------------------------------

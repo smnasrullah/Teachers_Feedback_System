@@ -356,7 +356,11 @@ def test_assigning_a_hod_replaces_the_current_one(admin):
     department = DepartmentFactory()
     old = make_hod(department)
     newcomer = make_teacher(department)
-    replaced = roles.assign_hod(newcomer, department, actor=admin)
+    with pytest.raises(ValidationError) as caught:
+        roles.assign_hod(newcomer, department, actor=admin)  # not confirmed
+    assert caught.value.code == "hod_exists"
+    assert not AuditEvent.objects.exists()
+    replaced = roles.assign_hod(newcomer, department, replace=True, actor=admin)
     assert replaced.pk == old.teacher_profile.pk
     heads = TeacherProfile.objects.filter(is_hod=True, hod_department=department)
     assert [head.pk for head in heads] == [newcomer.pk]

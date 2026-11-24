@@ -27,27 +27,5 @@
       <a class="btn btn-ghost" href="{% url 'accounts:registry_list' %}">{% translate "Cancel" %}</a>
     </div>
   </form>
-
-  {% if hod_form %}
-  <section class="card grid gap-4" aria-labelledby="hod-title">
-    <h2 id="hod-title" class="text-lg">{% translate "Head of department" %}</h2>
-    {% if registry.teacher_profile.is_hod %}
-      <p>{% blocktranslate with department=registry.teacher_profile.hod_department.name %}This teacher heads {{ department }}.{% endblocktranslate %}</p>
-      <form method="post" action="{% url 'accounts:registry_hod' registry.pk %}">
-        {% csrf_token %}
-        <input type="hidden" name="action" value="remove">
-        <button type="submit" class="btn btn-danger">{% translate "Remove as head of department" %}</button>
-      </form>
-    {% else %}
-      <p class="text-muted">{% translate "A head of department sees student IDs and names of their own department. Naming a new head replaces the current one." %}</p>
-    {% endif %}
-    <form method="post" action="{% url 'accounts:registry_hod' registry.pk %}" class="grid gap-4">
-      {% csrf_token %}
-      <input type="hidden" name="action" value="assign">
-      {% for field in hod_form %}{% include "components/form_field.html" with field=field %}{% endfor %}
-      <div><button type="submit" class="btn btn-ghost">{% translate "Assign as head of department" %}</button></div>
-    </form>
-  </section>
-  {% endif %}
 </div>
 {% endblock %}

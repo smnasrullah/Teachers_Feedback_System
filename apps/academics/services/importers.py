@@ -42,7 +42,7 @@ from apps.accounts.models import (
     TeacherProfile,
     registry_index,
 )
-from apps.accounts.services import activation
+from apps.accounts.services import activation, roles
 from apps.accounts.services.identifiers import clean_registry_id
 from apps.accounts.services.registry import IssuedCode
 from apps.auditlog.services import audit
@@ -375,11 +375,58 @@ class TeacherImporter(_RegistryImporter):
     id_column = "teacher_id"
     profile_model = TeacherProfile
     required = ("teacher_id", "department")
-    optional = ("full_name", "designation")
-    sample = (("T0001", "CSE", "Karim Sir", "Lecturer"), ("T0002", "CSE", "", ""))
+    optional = ("full_name", "designation", "role")
+    sample = (
+        ("T0001", "CSE", "Prof. Head", "Professor", "hod"),
+        ("T0002", "CSE", "Karim Sir", "Lecturer", "teacher"),
+    )
+
+    def __init__(self, **options):
+        super().__init__(**options)
+        # Departments that have a head already, or get one from an earlier row of the file.
+        self._headed = set(
+            TeacherProfile.objects.filter(is_hod=True).values_list("hod_department_id", flat=True)
+        )
 
     def profile(self, row, department):
-        return {"designation": _text(row, "designation", max_length=100)}
+        values = {"designation": _text(row, "designation", max_length=100)}
+        if self._role(row) == roles.TeacherRole.HOD:
+            if department.pk in self._headed:
+                raise RowInvalid(
+                    "role",
+                    _(
+                        "%(department)s already has a head of department. Import this "
+                        "teacher as a teacher, then make them head on their entry page."
+                    )
+                    % {"department": department.code},
+                )
+            self._headed.add(department.pk)
+            values.update(is_hod=True, hod_department=department)
+        return values
+
+    @staticmethod
+    def _role(row: dict) -> str:
+        word = row.get("role", "").strip().casefold()
+        if word in {"", roles.TeacherRole.TEACHER}:
+            return roles.TeacherRole.TEACHER
+        if word == roles.TeacherRole.HOD:
+            return roles.TeacherRole.HOD
+        raise RowInvalid("role", _("Use teacher or hod."))
+
+    def place(self, records, *, actor, request):
+        for head in TeacherProfile.objects.filter(
+            is_hod=True,
+            registry__id_type=IdType.TEACHER,
+            registry__external_id_index__in=[record.index for record in records],
+        ):
+            audit.record(
+                "hod.assigned",
+                request=request,
+                actor=actor,
+                target=head,
+                department_id=head.hod_department_id,
+                metadata={"replaced": None, "via": "import"},
+            )
 
 
 class CourseImporter(Importer):

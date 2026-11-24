@@ -22,7 +22,7 @@ from apps.accounts.models import (
     registry_index,
 )
 from apps.accounts.services import registry as registry_service
-from apps.accounts.services import signup, twofactor
+from apps.accounts.services import roles, signup, twofactor
 from apps.accounts.services.passwords import validate_strong_password
 from apps.auditlog.services import audit
 from apps.core.services.demo import constants as c
@@ -136,15 +136,17 @@ def _teachers(structure: Structure, actor, password) -> tuple[dict, dict[str, Us
     profiles, logins = {}, {}
     for spec in c.TEACHERS:
         department = structure.departments[spec.department]
-        head = {"is_hod": True, "hod_department": department} if spec.key == "hod" else {}
         registry, _created = _register(
             IdType.TEACHER,
             spec.external_id,
             spec.full_name,
             department,
-            {"designation": spec.designation, **head},
+            {"designation": spec.designation},
             actor,
         )
+        if spec.key == "hod":
+            # The Admin's own path; a real head of the department is never replaced.
+            roles.set_teacher_role(registry.teacher_profile, roles.TeacherRole.HOD, actor=actor)
         profiles[spec.key] = registry.teacher_profile
         if spec.key in c.LOGIN_KEYS:
             logins[spec.key] = _login_for(registry, c.LOGIN_KEYS[spec.key], password, actor)

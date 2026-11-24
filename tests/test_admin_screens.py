@@ -10,6 +10,7 @@ from django.urls import reverse
 from apps.accounts.models import IdRegistry, RegistryStatus, TeacherProfile, User
 from apps.accounts.services.activation import hash_code
 from apps.auditlog.models import AuditEvent
+from apps.core.models import ActiveSession
 from apps.core.permissions import Role
 from tests.factories import (
     BatchFactory,
@@ -56,7 +57,6 @@ def urls_for(registry, account):
 def post_urls_for(registry, account):
     return [
         reverse("accounts:registry_bulk"),
-        reverse("accounts:registry_hod", args=[registry.pk]),
         reverse("accounts:user_role", args=[account.pk]),
     ]
 
@@ -111,12 +111,6 @@ def test_unknown_entry_type_and_ids_are_404(admin_client):
 def test_state_changing_screens_reject_get(admin_client, secret_student):
     for name in ("registry_bulk",):
         assert admin_client.get(reverse(f"accounts:{name}")).status_code == 405
-    assert (
-        admin_client.get(
-            reverse("accounts:registry_hod", args=[secret_student.registry.pk])
-        ).status_code
-        == 405
-    )
 
 
 # --- registry list ---------------------------------------------------------------------
@@ -396,23 +390,82 @@ def test_return_query_cannot_redirect_off_site(admin_client):
 # --- HOD and roles through the screens -------------------------------------------------
 
 
-def test_admin_assigns_and_removes_a_hod(admin_client):
+def teacher_entry(teacher, **changes):
+    registry = teacher.registry
+    return {
+        "external_id": registry.external_id,
+        "full_name": registry.full_name or "",
+        "department": registry.department_id,
+        "designation": teacher.designation,
+        **changes,
+    }
+
+
+def test_admin_promotes_and_demotes_a_hod_on_the_entry_page(admin_client):
     department = DepartmentFactory()
     teacher = make_teacher(department)
-    url = reverse("accounts:registry_hod", args=[teacher.registry.pk])
-    admin_client.post(url, {"action": "assign", "department": department.pk})
+    url = reverse("accounts:registry_edit", args=[teacher.registry.pk])
+    assert admin_client.post(url, teacher_entry(teacher, role="hod")).status_code == 302
     teacher.refresh_from_db()
     assert teacher.is_hod and teacher.hod_department == department
-    page = admin_client.get(reverse("accounts:registry_edit", args=[teacher.registry.pk]))
-    assert "heads" in page.content.decode()
-    admin_client.post(url, {"action": "remove"})
+    page = admin_client.get(url).content.decode()
+    assert 'value="hod" selected' in page
+    assert admin_client.post(url, teacher_entry(teacher, role="teacher")).status_code == 302
     teacher.refresh_from_db()
-    assert not teacher.is_hod
+    assert not teacher.is_hod and teacher.hod_department is None
+    assert TeacherProfile.objects.filter(pk=teacher.pk).exists()  # demoted, not deleted
 
 
-def test_hod_screen_ignores_student_entries(admin_client, secret_student):
-    url = reverse("accounts:registry_hod", args=[secret_student.registry.pk])
-    assert admin_client.post(url, {"action": "assign", "department": 1}).status_code == 404
+def test_admin_registers_a_new_teacher_as_hod(admin_client):
+    department = DepartmentFactory()
+    data = {"external_id": "T-HOD1", "full_name": "", "department": department.pk}
+    response = admin_client.post(
+        reverse("accounts:registry_create", args=["teacher"]), {**data, "role": "hod"}
+    )
+    assert response.status_code == 302
+    head = TeacherProfile.objects.get()
+    assert head.is_hod and head.hod_department == department
+    actions = list(AuditEvent.objects.values_list("action", flat=True))
+    assert "registry.created" in actions and "hod.assigned" in actions
+
+
+def test_replacing_a_head_needs_an_explicit_confirmation(admin_client):
+    department = DepartmentFactory()
+    current = make_hod(department)
+    newcomer = make_teacher(department)
+    url = reverse("accounts:registry_edit", args=[newcomer.registry.pk])
+    refused = admin_client.post(url, teacher_entry(newcomer, role="hod"))
+    assert refused.status_code == 200
+    assert "already has a head of department" in refused.content.decode()
+    assert TeacherProfile.objects.get(pk=current.teacher_profile.pk).is_hod
+    confirmed = admin_client.post(url, teacher_entry(newcomer, role="hod", replace_hod="on"))
+    assert confirmed.status_code == 302
+    heads = TeacherProfile.objects.filter(is_hod=True, hod_department=department)
+    assert [head.pk for head in heads] == [newcomer.pk]
+    former = TeacherProfile.objects.get(pk=current.teacher_profile.pk)
+    assert not former.is_hod and former.registry.claimed_by.role == Role.TEACHER
+
+
+def test_a_change_of_head_signs_both_people_out(admin_client):
+    department = DepartmentFactory()
+    current = make_hod(department)
+    newcomer = make_teacher(department)
+    account = claim(newcomer)
+    for user in (current, account):
+        ActiveSession.objects.create(user=user, login_id=f"login-{user.pk}")
+    url = reverse("accounts:registry_edit", args=[newcomer.registry.pk])
+    admin_client.post(url, teacher_entry(newcomer, role="hod", replace_hod="on"))
+    assert not ActiveSession.objects.filter(user__in=[current, account]).exists()
+
+
+def test_saving_a_head_without_a_change_keeps_them_signed_in(admin_client):
+    head = make_hod()
+    ActiveSession.objects.create(user=head, login_id="login")
+    url = reverse("accounts:registry_edit", args=[head.teacher_profile.registry.pk])
+    entry = teacher_entry(head.teacher_profile, full_name="Renamed Head")
+    assert admin_client.post(url, entry).status_code == 302  # no role posted: kept as head
+    assert TeacherProfile.objects.get(pk=head.teacher_profile.pk).is_hod
+    assert ActiveSession.objects.filter(user=head).exists()
 
 
 def test_admin_changes_a_role_through_the_screen(admin_client):

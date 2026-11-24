@@ -1,12 +1,21 @@
-"""Admin forms for the ID registry, bulk actions, roles and HOD assignment."""
+"""Admin forms for the ID registry (a teacher's role, HOD included), bulk actions and roles."""
 
 from django import forms
+from django.db import transaction
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from apps.academics.models import Batch, Department, LevelTerm, Program
-from apps.accounts.models import AcademicStatus, IdRegistry, IdType, RegistryStatus, registry_index
+from apps.accounts.models import (
+    AcademicStatus,
+    IdRegistry,
+    IdType,
+    RegistryStatus,
+    TeacherProfile,
+    registry_index,
+)
 from apps.accounts.services import registry as registry_service
+from apps.accounts.services import roles
 from apps.accounts.services.identifiers import clean_registry_id
 from apps.accounts.services.roles import CHANGEABLE_ROLES
 from apps.core.forms import StyledFormMixin
@@ -194,9 +203,29 @@ class StudentEntryForm(RegistryEntryForm):
 
 
 class TeacherEntryForm(RegistryEntryForm):
+    """A teacher ID, registered as a teacher or as head of the entry's department."""
+
     id_type = IdType.TEACHER
     profile_fields = ("designation", "photo")
 
+    role = forms.ChoiceField(
+        label=_("Role"),
+        choices=roles.TeacherRole.choices,
+        initial=roles.TeacherRole.TEACHER,
+        required=False,
+        help_text=_(
+            "A head of department (HOD) heads the department chosen above and sees the "
+            "student IDs and names of that department only."
+        ),
+    )
+    replace_hod = forms.BooleanField(
+        label=_("Replace the current head of department"),
+        required=False,
+        help_text=_(
+            "Needed when the department already has a head. The current head stays on as a "
+            "normal teacher; both are signed out so their new rights apply."
+        ),
+    )
     designation = forms.CharField(label=_("Designation"), required=False, max_length=100)
     photo = SafeImageField(
         label=_("Photo"),
@@ -208,16 +237,38 @@ class TeacherEntryForm(RegistryEntryForm):
     def _initial_from(self, registry):
         initial = super()._initial_from(registry)
         initial.pop("photo", None)
+        initial["role"] = (
+            roles.TeacherRole.HOD if registry.teacher_profile.is_hod else roles.TeacherRole.TEACHER
+        )
         return initial
+
+    def chosen_role(self) -> str:
+        """The role picked; left out, the entry keeps its role (a new one: teacher)."""
+        return self.cleaned_data.get("role") or self.initial.get("role", roles.TeacherRole.TEACHER)
+
+    def clean(self):
+        cleaned = super().clean()
+        department = cleaned.get("department")
+        if self.chosen_role() == roles.TeacherRole.HOD and not cleaned.get("replace_hod"):
+            profile = self.registry.teacher_profile if self.registry else None
+            if roles.current_head(department, exclude=profile) is not None:
+                self.add_error("replace_hod", roles.head_exists_error(department))
+        return cleaned
+
+    @transaction.atomic
+    def save(self, *, actor, request=None):
+        registry = super().save(actor=actor, request=request)
+        roles.set_teacher_role(
+            TeacherProfile.objects.get(registry=registry),
+            self.chosen_role(),
+            replace=self.cleaned_data["replace_hod"],
+            actor=actor,
+            request=request,
+        )
+        return registry
 
 
 ENTRY_FORMS = {IdType.STUDENT: StudentEntryForm, IdType.TEACHER: TeacherEntryForm}
-
-
-class HodForm(StyledForm):
-    department = forms.ModelChoiceField(
-        label=_("Department to head"), queryset=Department.objects.filter(is_active=True)
-    )
 
 
 class RoleForm(StyledForm):

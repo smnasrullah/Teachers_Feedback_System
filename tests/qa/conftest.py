@@ -170,7 +170,6 @@ SAMPLES = {
     "reports:export_university": lambda user: _formats(),
     "accounts:registry_create": lambda user: [{"id_type": value} for value in IdType.values],
     "accounts:registry_edit": lambda user: [{"pk": _student().registry_id}],
-    "accounts:registry_hod": lambda user: [{"pk": registry(demo.TEACHERS[1].external_id).pk}],
     "accounts:user_detail": lambda user: [_user(demo.STUDENT)],
     "accounts:user_role": lambda user: [_user(demo.TEACHER)],
     "accounts:user_reset_code": lambda user: [_user(demo.STUDENT)],

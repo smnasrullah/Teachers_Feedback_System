@@ -295,6 +295,32 @@ class TestOtherImports:
         assert (teacher.designation, teacher.registry.id_type) == ("Lecturer", IdType.TEACHER)
         assert run("teachers", text, admin).error_count == 2
 
+    def test_teachers_with_a_role_column_name_the_head(self, world, admin):
+        text = "teacher_id,department,role\nT200,CSE,hod\nT201,CSE,teacher\nT202,CSE,\n"
+        assert run("teachers", text, admin).created == 3
+        head = TeacherProfile.objects.get(is_hod=True)
+        assert head.registry.external_id == "T200" and head.hod_department.code == "CSE"
+        event = AuditEvent.objects.get(action="hod.assigned")
+        assert event.metadata == {"replaced": None, "via": "import"}
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "teacher_id,department,role\nT300,CSE,hod\nT301,CSE,hod\n",  # two in one file
+            "teacher_id,department,role\nT300,CSE,principal\n",  # not a role
+        ],
+    )
+    def test_teacher_roles_are_checked(self, world, admin, text):
+        result = run("teachers", text, admin)
+        assert result.error_count == 1 and result.errors[0].column == "role"
+        assert not TeacherProfile.objects.filter(is_hod=True).exists()
+
+    def test_a_department_with_a_head_keeps_it(self, world, admin):
+        run("teachers", "teacher_id,department,role\nT400,CSE,hod\n", admin)
+        result = run("teachers", "teacher_id,department,role\nT401,CSE,hod\n", admin)
+        assert "already has a head" in result.errors[0].message
+        assert TeacherProfile.objects.get(is_hod=True).registry.external_id == "T400"
+
     def test_courses(self, world, admin):
         text = (
             "department,code,title,credit,program,level_term,type,elective\n"

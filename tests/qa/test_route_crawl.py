@@ -59,7 +59,6 @@ EXPECTED = {
     "accounts:registry_bulk": POST_ONLY,
     "accounts:registry_create": ADMIN,
     "accounts:registry_edit": ADMIN,
-    "accounts:registry_hod": POST_ONLY,
     "accounts:user_list": ADMIN,
     "accounts:user_detail": ADMIN,
     "accounts:user_role": POST_ONLY,

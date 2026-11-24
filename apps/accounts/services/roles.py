@@ -1,15 +1,37 @@
-"""Role and head-of-department (HOD) assignment. Both change who sees what, so both are audited."""
+"""Role and head-of-department (HOD) assignment. Both change who sees what, so both are audited,
+and a change of head signs the people concerned out so their next login has the new rights.
+
+HOD is not a stored role: it is a teacher whose profile carries the flag and the department
+(at most one head per department, a database constraint). The Admin names a head on the
+teacher's registry entry or in the teacher import; both end in ``set_teacher_role``.
+"""
 
 from django.core.exceptions import ValidationError
 from django.db import transaction
+from django.db.models import TextChoices
 from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy
 
 from apps.accounts.models import IdType, RegistryStatus, TeacherProfile, User
 from apps.auditlog.services import audit
+from apps.core.models import ActiveSession
 from apps.core.permissions import Role
 
 # Students stay students: their profile, enrolment and results hang off a student ID.
 CHANGEABLE_ROLES = (Role.TEACHER, Role.ADMIN)
+
+
+class TeacherRole(TextChoices):
+    """What the Admin registers a teacher ID as."""
+
+    TEACHER = "teacher", gettext_lazy("Teacher")
+    HOD = "hod", gettext_lazy("Head of department (HOD)")
+
+
+def _end_sessions(*profiles: TeacherProfile) -> None:
+    """Sign the accounts out everywhere, so the next login carries the changed rights."""
+    accounts = [p.registry.claimed_by_id for p in profiles if p.registry.claimed_by_id]
+    ActiveSession.objects.filter(user_id__in=accounts).delete()
 
 
 def _drop_hod(profile: TeacherProfile) -> None:
@@ -50,11 +72,36 @@ def change_role(user: User, new_role: str, *, actor, request=None) -> bool:
     return True
 
 
+def current_head(department, *, exclude=None) -> TeacherProfile | None:
+    """The teacher heading ``department`` now (other than ``exclude``), if any."""
+    if department is None:
+        return None
+    heads = TeacherProfile.objects.select_related("registry").filter(
+        is_hod=True, hod_department=department
+    )
+    return heads.exclude(pk=getattr(exclude, "pk", None)).first()
+
+
+def head_exists_error(department) -> ValidationError:
+    return ValidationError(
+        _(
+            "%(department)s already has a head of department. Confirm that this teacher "
+            "replaces them; the current head stays on as a teacher."
+        ),
+        code="hod_exists",
+        params={"department": department.code},
+    )
+
+
 @transaction.atomic
 def assign_hod(
-    profile: TeacherProfile, department, *, actor, request=None
+    profile: TeacherProfile, department, *, replace: bool = False, actor, request=None
 ) -> TeacherProfile | None:
-    """Make ``profile`` head of ``department``; returns the previous head it replaced, if any."""
+    """Make ``profile`` head of ``department``; returns the previous head it replaced, if any.
+
+    A department that already has a head needs ``replace=True`` (the Admin's explicit
+    confirmation); the previous head then becomes a normal teacher, in the same transaction.
+    """
     profile = (
         TeacherProfile.objects.select_for_update().select_related("registry").get(pk=profile.pk)
     )
@@ -68,10 +115,13 @@ def assign_hod(
         raise ValidationError(_("Only teachers can be head of department."), code="hod_not_teacher")
     replaced = (
         TeacherProfile.objects.select_for_update()
+        .select_related("registry")
         .filter(is_hod=True, hod_department=department)
         .exclude(pk=profile.pk)
         .first()
     )
+    if replaced is not None and not replace:
+        raise head_exists_error(department)
     if replaced is not None:
         _drop_hod(replaced)
         audit.record(
@@ -93,12 +143,16 @@ def assign_hod(
         department_id=department.pk,
         metadata={"replaced": replaced.pk if replaced is not None else None},
     )
+    _end_sessions(profile, *([replaced] if replaced is not None else []))
     return replaced
 
 
 @transaction.atomic
 def remove_hod(profile: TeacherProfile, *, actor, request=None) -> bool:
-    profile = TeacherProfile.objects.select_for_update().get(pk=profile.pk)
+    """Make a head of department a normal teacher again (the account is kept)."""
+    profile = (
+        TeacherProfile.objects.select_for_update().select_related("registry").get(pk=profile.pk)
+    )
     if not profile.is_hod:
         return False
     department_id = profile.hod_department_id
@@ -111,4 +165,26 @@ def remove_hod(profile: TeacherProfile, *, actor, request=None) -> bool:
         department_id=department_id,
         metadata={},
     )
+    _end_sessions(profile)
     return True
+
+
+@transaction.atomic
+def set_teacher_role(
+    profile: TeacherProfile, role: str, *, replace: bool = False, actor, request=None
+) -> TeacherProfile | None:
+    """Register or edit a teacher as a teacher or as head of their own department.
+
+    Promoting names them head of their registry entry's department (``replace`` confirms
+    taking over from a current head); demoting keeps them as a teacher. Returns the head
+    who was replaced, if any. Nothing changes (and nobody is signed out) when the role is
+    already what was asked.
+    """
+    profile = TeacherProfile.objects.select_related("registry").get(pk=profile.pk)
+    if role == TeacherRole.HOD:
+        department = profile.registry.department
+        if profile.is_hod and profile.hod_department_id == department.pk:
+            return None
+        return assign_hod(profile, department, replace=replace, actor=actor, request=request)
+    remove_hod(profile, actor=actor, request=request)
+    return None

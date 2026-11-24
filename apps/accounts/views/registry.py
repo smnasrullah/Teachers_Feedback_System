@@ -1,4 +1,5 @@
-"""Admin screens for the ID registry: list, create, edit, bulk actions, HOD assignment."""
+"""Admin screens for the ID registry: list, create, edit (a teacher's role, HOD included)
+and bulk actions."""
 
 import csv
 
@@ -14,16 +15,10 @@ from django.utils.translation import ngettext
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
-from apps.accounts.forms import (
-    ENTRY_FORMS,
-    BulkActionForm,
-    HodForm,
-    RegistryFilterForm,
-)
+from apps.accounts.forms import ENTRY_FORMS, BulkActionForm, RegistryFilterForm
 from apps.accounts.guards import step_up_required
-from apps.accounts.models import IdRegistry, IdType
+from apps.accounts.models import IdRegistry
 from apps.accounts.services import registry as registry_service
-from apps.accounts.services import roles
 from apps.core.csv_safe import safe_cell
 from apps.core.permissions import Role, role_required
 from apps.core.services.navigation import admin_nav_items
@@ -88,9 +83,6 @@ def _entry_page(request, id_type: str, registry: IdRegistry | None = None):
             "form": form,
             "registry": registry,
             "id_type": id_type,
-            "hod_form": HodForm(initial={"department": registry.department_id})
-            if registry is not None and id_type == IdType.TEACHER
-            else None,
         },
     )
 
@@ -180,35 +172,3 @@ def registry_bulk(request):
     except ValidationError as error:
         _flash_errors(request, error)
     return redirect(back)
-
-
-@require_POST
-@role_required(Role.ADMIN)
-def registry_hod(request, pk):
-    registry = get_object_or_404(
-        IdRegistry.objects.select_related("teacher_profile"), pk=pk, id_type=IdType.TEACHER
-    )
-    profile = registry.teacher_profile
-    try:
-        if request.POST.get("action") == "remove":
-            if roles.remove_hod(profile, actor=request.user, request=request):
-                messages.success(request, _("The head of department was removed."))
-        else:
-            form = HodForm(request.POST)
-            if not form.is_valid():
-                for errors in form.errors.values():
-                    for message in errors:
-                        messages.error(request, message)
-                return redirect("accounts:registry_edit", pk=pk)
-            replaced = roles.assign_hod(
-                profile, form.cleaned_data["department"], actor=request.user, request=request
-            )
-            messages.success(
-                request,
-                _("The head of department was assigned and the previous head was replaced.")
-                if replaced
-                else _("The head of department was assigned."),
-            )
-    except ValidationError as error:
-        _flash_errors(request, error)
-    return redirect("accounts:registry_edit", pk=pk)
